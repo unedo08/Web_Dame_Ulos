@@ -19,7 +19,7 @@
 
       <!-- Add Button that triggers Modal -->
       <div>
-        <button class="btn-add p-2 bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[34px]"
+        <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[34px]"
           @click="openModal">
           + Tambah
         </button>
@@ -50,7 +50,7 @@
                 Print
               </button>
               <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[15px]"
-                @click="deleteProduct(barang.no)">
+                @click="deleteProduct(barang.no, barang.nama_barang)">
                 Delete
               </button>
             </td>
@@ -245,8 +245,8 @@ const handlePrint = () => {
 }
 
 // Delete Product
-const deleteProduct = (no) => {
-  if (confirm('Yakin ingin menghapus barang ini?')) {
+const deleteProduct = (no, nama_barang) => {  
+  if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
     barang.value = barang.value.filter(item => item.no !== no)
   }
 }
