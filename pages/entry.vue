@@ -1,16 +1,20 @@
 <template>
   <div>
     <!-- Barcode text at the top -->
-    <div class="text-xl font-semibold mb-4">
-      Wait to Entry
-    </div>
+    <div class="text-xl font-semibold mb-4">Wait to Entry</div>
     <div class="flex space-x-4 mb-6">
       <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[45px]"
-        @click="openModal('desc')">+ Desc</button>
+        @click="openModal('desc')">
+        + Desc
+      </button>
       <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[45px]"
-        @click="openModal('size')">+ Size</button>
+        @click="openModal('size')">
+        + Size
+      </button>
       <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[110px] h-[45px]"
-        @click="openModal('priceTag')">Print Price Tag</button>
+        @click="openModal('priceTag')">
+        Print Price Tag
+      </button>
     </div>
 
     <BaseModal :show="modalOpen" :type="modalType" :barang-database="barangDatabase" @close="modalOpen = false"
@@ -87,7 +91,9 @@
     <!-- Modal Add -->
     <div v-if="showModalAdd" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
-        <h2 class="text-xl font-semibold mb-6 text-left">Tambah Barang Masuk</h2>
+        <h2 class="text-xl font-semibold mb-6 text-left">
+          Tambah Barang Masuk
+        </h2>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
@@ -183,51 +189,51 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import BaseModal from '../components/Modal.vue'
+import { ref } from "vue";
+import BaseModal from "../components/Modal.vue";
 
-const modalOpen = ref(false)
-const modalType = ref('desc')
-const showModalAdd = ref(false)
-const showModalAddSize = ref(false)
-const selectedBarang = ref({})
+const modalOpen = ref(false);
+const modalType = ref("desc");
+const showModalAdd = ref(false);
+const showModalAddSize = ref(false);
+const selectedBarang = ref({});
 
 const barangDatabase = [
-  { kode_barang: 'ULS001', nama_ulos: 'Ulos Ragidup', jumlah_barang: 10 },
-  { kode_barang: 'ULS002', nama_ulos: 'Ulos Sibolang', jumlah_barang: 5 }
-]
+  { kode_barang: "ULS001", nama_ulos: "Ulos Ragidup", jumlah_barang: 10 },
+  { kode_barang: "ULS002", nama_ulos: "Ulos Sibolang", jumlah_barang: 5 },
+];
 
-const listBarang = ref([])
+const listBarang = ref([]);
 
 function openModal(type) {
-  console.log('asdasdaszx', type)
-  modalType.value = type
-  modalOpen.value = true
+  console.log("asdasdaszx", type);
+  modalType.value = type;
+  modalOpen.value = true;
 }
 
 function tambahBarang(barang) {
-  selectedBarang.value = { ...barang }
-  showModalAdd.value = true
+  selectedBarang.value = { ...barang };
+  showModalAdd.value = true;
 }
 
 function submitBarang() {
   listBarang.value.push({
     no: listBarang.value.length + 1,
-    ...selectedBarang.value
-  })
-  selectedBarang.value = {}
-  showModalAdd.value = false
-  modalOpen.value = false
+    ...selectedBarang.value,
+  });
+  selectedBarang.value = {};
+  showModalAdd.value = false;
+  modalOpen.value = false;
 }
 
 function handleSizeSubmitted() {
-  showModalAddSize.value = true
+  showModalAddSize.value = true;
   // const index = listBarang.value.findIndex(item => item.kode_barang === barangWithSize.kode_barang)
 
   // if (index !== -1) {
   //   listBarang.value[index].ukuran_mandar = barangWithSize.ukuran_mandar
   //   listBarang.value[index].ukuran_ulos = barangWithSize.ukuran_ulos
-  // } else {
+  // } else {s
   //   listBarang.value.push({
   //     no: listBarang.value.length + 1,
   //     ...barangWithSize
@@ -238,13 +244,12 @@ function handleSizeSubmitted() {
 function submitSizeBarang() {
   listBarang.value.push({
     no: listBarang.value.length + 1,
-    ...selectedBarang.value
-  })
-  selectedBarang.value = {}
+    ...selectedBarang.value,
+  });
+  selectedBarang.value = {};
   showModalAddSize.value = false;
   modalOpen.value = false;
 }
-
 </script>
 
 <style scoped>
@@ -273,14 +278,14 @@ function submitSizeBarang() {
 }
 
 .btn-add {
-  background-color: #3D8BFD;
+  background-color: #3d8bfd;
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .btn-add:hover {
-  background-color: #3D8BFD;
+  background-color: #3d8bfd;
 }
 
 /* Modal styles */
