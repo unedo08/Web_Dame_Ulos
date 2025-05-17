@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\JenisBarangMController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -23,7 +22,7 @@ Route::middleware('jwt')->group(function () {
 });
 
 // // jenis barang
-// Route::get('/jenisbarang', [JenisBarangMController::class, 'index']);
+// Route::get('/getDataTable', [BarangEntryTempController::class, 'showDataTable']);
 // Route::post('/jenisbarang', [JenisBarangMController::class, 'store']);
 // Route::delete('/jenisbarang/{id}', [JenisBarangMController::class, 'destroy']);
 
@@ -33,4 +32,12 @@ Route::prefix('jenisbarang')->group(function () {
 
 Route::prefix('codebarang')->group(function () {
     require __DIR__.'/api/codeBarangM.php';  // Relative path
+});
+
+Route::prefix('entrybarangtemp')->group(function () {
+    require __DIR__.'/api/entryBarangTemp.php';  // Relative path
+});
+
+Route::prefix('entrybarang')->group(function () {
+    require __DIR__.'/api/entryBarangM.php';  // Relative path
 });
