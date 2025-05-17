@@ -7,7 +7,7 @@
             <template v-if="type === 'desc'">
                 <div class="mb-4">
                     <label>Scan / Input Kode Barang:</label>
-                    <input v-model="barcode" @keyup.enter="handleScan" class="w-full border rounded px-3 py-2"
+                    <input ref="barcodeDesc" v-model="barcode" @keyup.enter="handleScan" class="w-full border rounded px-3 py-2"
                         autofocus />
                 </div>
             </template>
@@ -16,7 +16,7 @@
             <template v-if="type === 'size'">
                 <div class="mb-4">
                     <label for="">Scan / Input Kode Barang:</label>
-                    <input v-model="barcode" @keyup.enter="handleScanSize" class="w-full border rounded px-3 py-2"
+                    <input ref="barcodeSize" v-model="barcode" @keyup.enter="handleScanSize" class="w-full border rounded px-3 py-2"
                         autofocus />
                 </div>
             </template>
@@ -115,6 +115,32 @@ const props = defineProps({
     show: Boolean,
     type: String,
     barangDatabase: Array
+})
+
+const barcodeDesc = ref(null)
+watch(() => props.show, (val) => {
+  if (val) {
+    nextTick(() => {
+      barcodeDesc.value?.focus()
+    })
+  } else {
+    barcode.value = ''
+    barang.value = null
+    size.value = { mandar: '', ulos: '' }
+  }
+})
+
+const barcodeSize = ref(null)
+watch(() => props.show, (val) => {
+  if (val) {
+    nextTick(() => {
+      barcodeSize.value?.focus()
+    })
+  } else {
+    barcode.value = ''
+    barang.value = null
+    size.value = { mandar: '', ulos: '' }
+  }
 })
 
 const emit = defineEmits(['close', 'scanned', 'sizeSubmitted'])

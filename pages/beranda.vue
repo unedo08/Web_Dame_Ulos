@@ -85,7 +85,7 @@
               type="text"
               id="jenisbarang_kode"
               maxlength="5"
-              class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm w-[382px] h-[41px]"
+              class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
               placeholder=" Masukkan nama barang"
               required
             />
@@ -100,7 +100,7 @@
               v-model="newProduct.jenisbarang_nama"
               type="text"
               id="jenisbarang_nama"
-              class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm w-[382px] h-[41px]"
+              class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm pl-3 w-[382px] h-[41px]"
               placeholder=" Masukkan nama barang"
               required
             />
