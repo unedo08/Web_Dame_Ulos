@@ -16,7 +16,6 @@ class CodeMController extends Controller
         return response()->json(CodeM::all(), 200);
     }
 
-    // GET /api/jenisbarang/{id}
     public function show($id)
     {
         $item = CodeM::find($id);
@@ -79,5 +78,16 @@ class CodeMController extends Controller
         }
 
         throw new \Exception("Unable to generate unique code after $maxRetries attempts.");
+    }
+
+    public function destroy($jenisbarang_id)
+    {
+        $items = CodeM::where('code_jenisbarang_id', $jenisbarang_id)->get();
+        if ($items->isEmpty()) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        CodeM::where('code_jenisbarang_id', $jenisbarang_id)->delete();
+        return response()->json(['message' => 'Deleted successfully'], 200);
     }
 }
