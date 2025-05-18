@@ -37,6 +37,16 @@ class BarangEntryMController extends Controller
         return BarangEntryM::findOrFail($id);
     }
 
+    public function getDataByCode($code_id)
+    {
+        $item = BarangEntryM::where('barangentry_code_id', $code_id)->get();
+        if (!$item) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+        return response()->json($item, 200);
+    }
+
+
     public function update(Request $request, $id)
     {
         $barangEntry = BarangEntryM::findOrFail($id);
