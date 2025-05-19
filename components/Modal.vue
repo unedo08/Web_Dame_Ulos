@@ -114,7 +114,7 @@ import { ref, watch, computed } from 'vue'
 const props = defineProps({
     show: Boolean,
     type: String,
-    barangDatabase: Array
+    barangDatabase: Object
 })
 
 const barcodeDesc = ref(null)
@@ -162,9 +162,9 @@ const modalTitle = computed(() => {
 })
 
 function handleScan() {
-    console.log('testttestte');
+    console.log('testttestte', props.barangDatabase.value);
+    const found = props.barangDatabase.find(b => b.code_nama === barcode.value.trim())
 
-    const found = props.barangDatabase.find(b => b.kode_barang === barcode.value.trim())
     if (found) {
         barang.value = { ...found }
         emit('scanned', { ...found })
@@ -176,7 +176,7 @@ function handleScan() {
 
 function handleScanSize() {
     console.log('asdsad')
-    const found = props.barangDatabase.find(b => b.kode_barang === barcode.value.trim())
+    const found = props.barangDatabase.find(b => b.code_nama === barcode.value.trim())
     console.log('primadona', found);
 
     if (found) {

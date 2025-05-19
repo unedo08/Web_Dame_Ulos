@@ -2,12 +2,12 @@
     <div class="flex flex-col h-screen bg-gray-100">
         <div class="flex flex-grow">
             <!-- Sidebar -->
-            <div class="w-1/4 bg-[#520000] text-white p-6">
+            <div class="w-56 md:w-48 lg:w-56 bg-[#520000] text-white p-6">
                <Sidebar />
             </div>
 
             <!-- Main Content -->
-            <div class="w-3/4 p-8 bg-white">
+            <div class="flex-1 p-8 bg-white">
                 <Topbar />
                 <div class="mt-6">
                     <slot />

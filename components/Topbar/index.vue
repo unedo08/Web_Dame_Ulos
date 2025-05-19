@@ -1,84 +1,146 @@
 <template>
-    <div class="topbar">
-        <div class="topbar-content">
-            <div class="text-right">
-                <img src="@/assets/image/avatar.png" alt="avatar" class="avatar">
-                <span class="username">Nama User</span>
-                <button class="btn btn-link dropdown-toggle" type="button" @click="toggleDropdown"
-                    aria-expanded="dropdownVisible.toString()" style="border: none; background: none; padding: 0;">
-                    <img src="@/assets/image/arrow_drop_down.png" alt="arrow_dropdown" class="arrow_dropdown">
-                </button>
-                <ul v-if="dropdownVisible" class="dropdown-menu dropdown-menu-end"
-                    style="position: absolute; right: 0; top: 100%; margin-top: 5px; z-index: 1000;">
-                    <li><a class="dropdown-item" href="#" @click="onMenuItemClick('Profile')">Profile</a></li>
-                    <li><a class="dropdown-item" href="#" @click="onMenuItemClick('Settings')">Settings</a></li>
-                    <li><a class="dropdown-item" href="#" @click="onMenuItemClick('Logout')">Logout</a></li>
-                </ul>
-            </div>
+  <div class="topbar">
+    <div class="topbar-content">
+      <div class="text-right">
+        <!-- Clickable area for dropdown: avatar, name, and arrow -->
+        <div class="user-info" @click="toggleDropdown">
+          <img src="@/assets/image/avatar.png" alt="avatar" class="avatar" />
+          <span class="username">{{ userEmail }}</span>
+          <img
+            src="@/assets/image/arrow_drop_down.png"
+            alt="arrow_dropdown"
+            class="arrow_dropdown"
+          />
         </div>
+
+        <!-- Dropdown menu -->
+        <ul
+          v-if="dropdownVisible"
+          class="dropdown-menu dropdown-menu-end"
+          style="
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 5px;
+            z-index: 1000;
+          "
+        >
+          <li>
+            <a
+              class="dropdown-item"
+              href="#"
+              @click="onMenuItemClick('Profile')"
+              >Profile</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              href="#"
+              @click="onMenuItemClick('Settings')"
+              >Settings</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" @click="onMenuItemClick('Logout')"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </template>
 
+<style>
+.user-info {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.arrow_dropdown {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+}
+</style>
+
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 const dropdownVisible = ref(false);
+const userEmail = ref("User");
 
 const toggleDropdown = () => {
-    dropdownVisible.value = !dropdownVisible.value;
+  dropdownVisible.value = !dropdownVisible.value;
 };
 
 // Function to handle item click
-const onMenuItemClick = (item) => {
-    dropdownVisible.value = false; 
+const onMenuItemClick = async (item) => {
+  dropdownVisible.value = false;
+  console.log("item", item);
+  if (item === "Logout") {
+    localStorage.removeItem("auth_token");
+    // localStorage.removeItem("user_email");
+    sessionStorage.clear();
+    console.log("sini", item);
+    await router.push("/");
+  }
 };
-</script>
 
+onMounted(() => {
+  userEmail.value = localStorage.getItem("user_email") || "User";
+});
+</script>
 
 <style scoped>
 .topbar {
-    background-color: #fff;
-    color: #424242;
-    padding: 15px;
-    border-bottom: 2px solid #CFCFCF;
+  background-color: #fff;
+  color: #424242;
+  padding: 15px;
+  border-bottom: 2px solid #cfcfcf;
 }
 
 .topbar-content {
-    display: flex;
-    justify-content: flex-end;
-    max-width: 1200px;
-    margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .text-right {
-    display: flex;
-    text-align: right;
-    align-items: center;
-    position: relative;
+  display: flex;
+  text-align: right;
+  align-items: center;
+  position: relative;
 }
 
 .username {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .avatar {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
 
 .dropdown-menu {
-    background-color: #fff;
-    border: 1px solid #CFCFCF;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px 15px;
-    min-width: 140px;
-    text-align: center;
+  background-color: #fff;
+  border: 1px solid #cfcfcf;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 15px;
+  min-width: 140px;
+  text-align: center;
 }
 
-.dropdown-item{
-    font-size: 16px;
+.dropdown-item {
+  font-size: 16px;
 }
 .dropdown-item:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 </style>

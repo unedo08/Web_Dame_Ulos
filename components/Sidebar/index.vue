@@ -1,7 +1,6 @@
 <template>
-    <div class="relative">
-        <div>
-            <SidebarMenu />
-        </div>
-    </div>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <SidebarMenu />
+  </div>
 </template>

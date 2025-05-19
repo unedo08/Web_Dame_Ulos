@@ -50,33 +50,55 @@
 
 <script lang="ts">
 import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 export default {
     name: 'LoginPage',
     setup() {
         const email = ref<string>('')
         const password = ref<string>('')
-        const errorMessage = ref<string | null>(null)
         const rememberMe = ref<boolean>(false)
+        const errorMessage = ref<string | null>(null)
+        const router = useRouter()
+        const url = 'https://api-dame-ulos.databasedameulos.com'
 
-        const handleLogin = () => {
+        const handleLogin = async() => {
             // Simulate a login process
-            if (email.value === 'user@example.com' && password.value === 'password') {
-                console.log('Login successful!')
-                // You can use `useRouter` to navigate to another page
-                // const router = useRouter()
-                // router.push('/')
-            } else {
-                errorMessage.value = 'Invalid email or password.'
+            errorMessage.value = null
+            try{
+                const response = await axios.post(`${url}/api/login`, {
+                    email : email.value,
+                    password : password.value
+                })
+
+                const token = response.data.token
+                if(token){
+                    if(rememberMe.value){
+                        localStorage.setItem('auth_token', token)
+                    }else{
+                        sessionStorage.setItem('auth_token', token)
+                    }
+
+                    router.push('/beranda')
+                }else{
+                    errorMessage.value = 'Login Failed: token not found'
+                }
+            }catch(error: any){
+                if(error.response && error.response.data && error.response.data.message){
+                    errorMessage.value = error.response.data.message
+                }else{
+                    errorMessage.value = "Login Gagal. Silahkan coba lagi!"
+                }
             }
         }
 
         return {
             email,
             password,
+            rememberMe,
             errorMessage,
             handleLogin,
-            rememberMe
         }
     }
 }
