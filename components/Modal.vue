@@ -177,8 +177,6 @@ function handleScan() {
 function handleScanSize() {
     console.log('asdsad')
     const found = props.barangDatabase.find(b => b.code_nama === barcode.value.trim())
-    console.log('primadona', found);
-
     if (found) {
         barang.value = { ...found }
         emit('sizeSubmitted', { ...found })
