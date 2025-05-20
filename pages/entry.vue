@@ -212,7 +212,7 @@
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
         <div class="grid gap-4">
-          <div>
+          <div hidden>
             <label class="block text-gray-700 mb-1">Code ID:</label>
             <input
               v-model="selectedBarang.code_id"
@@ -221,7 +221,7 @@
               :readonly="true"
             />
           </div>
-          <div>
+          <div hidden>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
             <input
               v-model="selectedBarang.kode_barang"
