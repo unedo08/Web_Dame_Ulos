@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-xl font-semibold mb-4">Acara</div>
+    <div class="judul text-xl font-semibold mb-4">Acara</div>
 
     <div class="flex items-center justify-between pt-2">
       <div>

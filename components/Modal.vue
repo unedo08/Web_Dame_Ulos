@@ -67,7 +67,7 @@
             <div style="display: flex; gap: 40px">
               <!-- Kolom 1: Info Produk -->
               <div style="flex: 1">
-                <h1>HANDE - HANDE</h1>
+                <h1>{{item.barangentry_nama}}</h1>
                 <p class="text-xl font-semibold mb-4">Horas!</p>
                 <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
                 <p>
@@ -151,7 +151,7 @@
                   <li>Hindari tempat lembab dan penyimpanan dalam plastik</li>
                   <li>Khusus kain pewarna tekstil bisa di dry clean</li>
                 </ol>
-                <p class="mt-4">Selamat Pakai 🌿</p>
+                <p class="mt-4">Selamat Pakai</p>
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@
 import { ref, watch, computed, nextTick } from "vue";
 import axios from "axios";
 
-const priceTagData = ref(null);
+const priceTagData = ref([]);
 const url = "https://api-dame-ulos.databasedameulos.com";
 
 const props = defineProps({
@@ -245,7 +245,6 @@ const modalTitle = computed(() => {
 });
 
 function handleScan() {
-  console.log("testttestte", props.barangDatabase.value);
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
@@ -260,7 +259,6 @@ function handleScan() {
 }
 
 function handleScanSize() {
-  console.log("asdsad");
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
@@ -281,7 +279,7 @@ async function handleScanPriceTag() {
 
   if (scanned.length) {
     barcodeList.value = [...new Set(scanned)];
-    emit("scanned", barcodeList.value);
+    // emit("scanned", barcodeList.value);
   }
 
   barcodeInput.value = "";
@@ -298,36 +296,17 @@ async function printPriceTag() {
       return;
     }
     barcodeList.value = [...new Set(scanned)];
-
-    const responseCode = await axios.get(`${url}/api/codebarang`);
-    const codes = responseCode.data;
-
-    const codeIDTemp = codes.filter((item) =>
-      barcodeList.value.includes(item.code_nama)
-    );
-    if (codeIDTemp.length === 0) {
-      return;
+    const results= [];
+    for (const code of barcodeList.value) {
+      try {
+        const res = await axios.get(`${url}/api/entrybarang/getDataByCode/${code}`);
+        if (res.data) results.push(res.data);
+      } catch (err) {
+        console.error(`Gagal ambil data untuk ${code}`, err);
+      }
     }
-    const code_id = codeIDTemp.map((item) => item.code_id);
 
-    const responseEntry = await axios.get(
-      `${url}/api/entrybarangtemp/getDataTable`
-    );
-    const entry = responseEntry.data.data;
-    const entryTemp = entry.filter((entrys) => {
-      const barangCode = parseInt(entrys.barangentry_temp_code_id, 10);
-      return code_id.includes(barangCode);
-    });
-
-    if (entryTemp.length === 0) {
-      return;
-    }
-    const barangEntryTempIds = entryTemp.map(
-      (item) => item.barangentry_temp_id
-    );
-
-    const response = await axios.get(`${url}/api/entrybarang/getDataByCode/`+barangEntryTempIds);
-    priceTagData.value = response.data;
+    priceTagData.value = results;
   } catch (error) {
     console.error("Gagal Mengambil data price tag:", error);
   }

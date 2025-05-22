@@ -1,21 +1,21 @@
 <template>
   <div>
-    <div class="text-xl font-semibold mb-4">Wait to Entry</div>
+    <div class="judul text-xl font-semibold mb-4">Wait to Entry</div>
     <div class="flex space-x-4 mb-6">
       <button
-        class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[45px]"
+        class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
         @click="openModal('desc')"
       >
         + Desc
       </button>
       <button
-        class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[45px]"
+        class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
         @click="openModal('size')"
       >
         + Size
       </button>
       <button
-        class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[110px] h-[45px]"
+        class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
         @click="openModal('priceTag')"
       >
         Print Price Tag
@@ -375,7 +375,12 @@ async function submitSizeBarang() {
   }
 }
 </script>
+<style>
+.judul{
+  font-size: 40px;
+}
 
+</style>
 <style scoped>
 * {
   font-family: 'Nunito', sans-serif;
@@ -404,15 +409,26 @@ async function submitSizeBarang() {
   background-color: #f4f4f4;
 }
 
+.btn-print {
+  background-color: #12c90e;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-print:hover {
+  background-color: #7df67b;
+}
+
 .btn-add {
-  background-color: #3d8bfd;
+  background-color: #2e26d0;
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .btn-add:hover {
-  background-color: #3d8bfd;
+  background-color: #665eed;
 }
 
 /* Modal styles */

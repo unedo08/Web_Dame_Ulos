@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-xl font-semibold mb-4">Menu Code</div>
+    <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
       <div class="flex-1">
         <input
@@ -41,13 +41,13 @@
             <td>{{ barang.jenisbarang_nama }}</td>
             <td>{{ barang.jenisbarang_jumlah }}</td>
             <td>{{ barang.jenisbarang_tipe }}</td>
-            <td class="space-x-2">
+            <td class="flex space-x-2">
               <button
-                class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[15px]"
+                class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
                 @click="openModelPrint(barang)"
               >
                 <!-- Icon Print -->
-                <svg
+                <!-- <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-4 w-4"
                   fill="none"
@@ -60,17 +60,17 @@
                     stroke-linejoin="round"
                     d="M6 9V2h12v7M6 18h12v4H6v-4zm0 0v-6h12v6H6z"
                   />
-                </svg>
+                </svg> -->
                 Print
               </button>
               <button
-                class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[15px]"
+                class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
                 @click="
                   deleteProduct(barang.jenisbarang_id, barang.jenisbarang_nama)
                 "
               >
                 <!-- Icon Delete (Trash) -->
-                <svg
+                <!-- <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-4 w-4"
                   fill="none"
@@ -83,7 +83,7 @@
                     stroke-linejoin="round"
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-3h4m-4 0a1 1 0 00-1 1v1h6V5a1 1 0 00-1-1m-4 0h4"
                   />
-                </svg>
+                </svg> -->
                 Delete
               </button>
             </td>
