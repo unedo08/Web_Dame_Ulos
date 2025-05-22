@@ -312,7 +312,6 @@ const submitProduct = async () => {
     }
   } catch (error) {
     console.error("Error adding product:", error);
-    alert("An error occurred while adding the product. Please try again.");
   }
 };
 
@@ -345,17 +344,14 @@ const handlePrint = async () => {
   try {
     let barcodeData = [];
     // if (tipeBarang === "majemuk") {
-    console.log("sadsada", jumlah);
-    console.log("sadsada", jenisbarang_id);
+    // console.log("sadsada", jumlah);
+    // console.log("sadsada", jenisbarang_id);
 
     const response = await axios.post(`${url}/api/codebarang`, {
       jumlah_barang: jumlah,
       code_jenisbarang_id: jenisbarang_id,
     });
     barcodeData = response.data.data;
-    // } else {
-    //   barcodeData = [{ code_nama: kodeBarang }];
-    // }
 
     const win = window.open("", "", "width=800,height=600");
     if (!win) return;
@@ -432,32 +428,6 @@ const handlePrint = async () => {
   }
 };
 
-// Delete Product
-// const deleteProduct = async (id, nama_barang) => {
-//   if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
-//     try {
-//       const responeDeleteCode = await axios.delete(
-//         `${url}/api/codebarang/delete/` + id
-//       );
-//       if (responeDeleteCode.status === 200) {
-//         const response = await axios.delete(`${url}/api/jenisbarang/` + id);
-
-//         if (response.status === 200) {
-//           barang.value = barang.value.filter(
-//             (item) => item.jenisbarang_id !== id
-//           );
-//           alert(`Produk "${nama_barang}" berhasil dihapus.`);
-//         }
-//       } else {
-//         alert("Gagal menghapus code barang");
-//       }
-//     } catch (error) {
-//       console.error("Error deleting product:", error);
-//       alert("Terjadi kesalahan saat menghapus barang. Coba lagi.");
-//     }
-//   }
-// };
-
 const deleteProduct = async (id, nama_barang) => {
   if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
     try {
@@ -467,11 +437,9 @@ const deleteProduct = async (id, nama_barang) => {
         barang.value = barang.value.filter(
           (item) => item.jenisbarang_id !== id
         );
-        alert(`Produk "${nama_barang}" berhasil dihapus.`);
       }
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Terjadi kesalahan saat menghapus barang. Coba lagi.");
     }
   }
 };

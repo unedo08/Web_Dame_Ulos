@@ -276,9 +276,6 @@ const handlePrint = async () => {
       code_jenisbarang_id: jenisbarang_id,
     });
     barcodeData = response.data.data;
-    // } else {
-    //   barcodeData = [{ code_nama: kodeBarang }];
-    // }
 
     const win = window.open("", "", "width=800,height=600");
     if (!win) return;
@@ -351,7 +348,6 @@ const handlePrint = async () => {
     closePrintModal();
   } catch (error) {
     console.error("Gagal update jumlah code barang:", error);
-    alert("Gagal melakukan update jumlah barcode. Coba lagi.");
   }
 };
 
@@ -365,11 +361,9 @@ const deleteProduct = async (id, nama_barang) => {
         barang.value = barang.value.filter(
           (item) => item.jenisbarang_id !== id
         );
-        alert(`Produk "${nama_barang}" berhasil dihapus.`);
       }
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Terjadi kesalahan saat menghapus barang. Coba lagi.");
     }
   }
 };

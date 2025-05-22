@@ -288,7 +288,7 @@ function formatTanggal(tanggal) {
 async function getListBarangTemp() {
   try {
     const response = await axios.get(`${url}/api/entrybarangtemp/getDataTable`);
-    console.log("asdsad", response);
+    // console.log("asdsad", response);
 
     listBarang.value = response.data.data;
   } catch (error) {

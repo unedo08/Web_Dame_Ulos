@@ -33,5 +33,7 @@ definePageMeta({
 </script>
 
 <style scoped>
-/* Custom styling for DefaultLayout */
+* {
+  font-family: 'Nunito', sans-serif;
+}
 </style>
