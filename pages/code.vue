@@ -7,7 +7,7 @@
           class="search-box p-2 border rounded-md"
           v-model="searchQuery"
           type="text"
-          placeholder="Search products..."
+          placeholder="Search barang..."
         />
       </div>
 
@@ -112,7 +112,7 @@
               id="jenisbarang_kode"
               maxlength="5"
               class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
-              placeholder=" Masukkan nama barang"
+              placeholder=" Masukkan kode barang"
               required
             />
           </div>
@@ -127,7 +127,7 @@
               type="text"
               id="jenisbarang_nama"
               class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm pl-3 w-[382px] h-[41px]"
-              placeholder=" Masukkan nama barang"
+              placeholder=" Masukkan jenis barang"
               required
             />
           </div>
@@ -478,6 +478,10 @@ const deleteProduct = async (id, nama_barang) => {
 </script>
 
 <style scoped>
+* {
+  font-family: 'Nunito', sans-serif;
+}
+
 .search-box {
   border: 1px solid #ccc;
   padding: 10px;

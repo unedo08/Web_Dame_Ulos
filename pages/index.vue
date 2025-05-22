@@ -109,6 +109,10 @@ definePageMeta({
 </script>
 
 <style scoped>
+* {
+  font-family: 'Nunito', sans-serif;
+}
+
 .container-login {
     margin: 0;
     padding: 0;

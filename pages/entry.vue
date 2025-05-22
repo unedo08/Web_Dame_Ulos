@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Barcode text at the top -->
     <div class="text-xl font-semibold mb-4">Wait to Entry</div>
     <div class="flex space-x-4 mb-6">
       <button
@@ -32,7 +31,6 @@
       @sizeSubmitted="handleSizeSubmitted"
     />
 
-    <!-- Product Table -->
     <div>
       <table class="datatable">
         <thead>
@@ -49,7 +47,6 @@
             <th>Acara</th>
             <th>Ukuran Mandar</th>
             <th>Ukuran Ulos</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -66,26 +63,11 @@
             <td>{{ barang.barangentry_temp_acara }}</td>
             <td>{{ barang.barangentry_temp_ukuran_mandar }}</td>
             <td>{{ barang.barangentry_temp_ukuran_ulos }}</td>
-            <td class="space-x-2">
-              <button
-                class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[15px]"
-                @click="openModelPrint(barang)"
-              >
-                Print
-              </button>
-              <button
-                class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[15px]"
-                @click="deleteProduct(barang.no)"
-              >
-                Delete
-              </button>
-            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Modal Add -->
     <div
       v-if="showModalAdd"
       class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
@@ -347,11 +329,8 @@ async function submitBarang() {
     selectedBarang.value = {};
     showModalAdd.value = false;
     modalOpen.value = false;
-
-    alert("Barang berhasil ditambahkan!");
   } catch (error) {
     console.error("Gagal meyimpan barang:", error);
-    alert("Gagal menambahkan barang masuk");
   }
 }
 
@@ -388,18 +367,19 @@ async function submitSizeBarang() {
       });
     }
 
-    alert("Ukuran barang berhasil ditambahkan");
     selectedBarang.value = {};
     showModalAddSize.value = false;
     modalOpen.value = false;
   } catch (error) {
     console.error("Gagal menyimpan size:", error);
-    alert("Gagal menyimpan barang");
   }
 }
 </script>
 
 <style scoped>
+* {
+  font-family: 'Nunito', sans-serif;
+}
 .search-box {
   border: 1px solid #ccc;
   padding: 10px;

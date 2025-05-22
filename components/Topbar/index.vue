@@ -25,7 +25,7 @@
             z-index: 1000;
           "
         >
-          <li>
+          <!-- <li>
             <a
               class="dropdown-item"
               href="#"
@@ -40,7 +40,7 @@
               @click="onMenuItemClick('Settings')"
               >Settings</a
             >
-          </li>
+          </li> -->
           <li>
             <a class="dropdown-item" href="#" @click="onMenuItemClick('Logout')"
               >Logout</a
