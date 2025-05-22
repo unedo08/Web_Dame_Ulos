@@ -95,7 +95,7 @@ const items = ref([
         <Logo />
       </NuxtLink>
     </header>
-    <div class="px-4 grow">
+    <div class="grow">
       <div class="grid gap-2 text-left">
         <NuxtLink
           v-for="(item, index) in items"
@@ -103,7 +103,7 @@ const items = ref([
           :to="item.path"
           class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition"
         >
-          <component :is="item.icon" class="w-5 h-5 text-gray-500" />
+          <component :is="item.icon" class="w-5 h-5 text-white" />
           <span>{{ item.title }}</span>
         </NuxtLink>
       </div>
