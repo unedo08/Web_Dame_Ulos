@@ -29,25 +29,45 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="barang in listBarang" :key="barang.jenisbarang_id">
-            <td>{{ barang.jenisbarang_kode }}</td>
-            <td>{{ barang.jenisbarang_nama }}</td>
-            <td>{{ barang.jenisbarang_jumlah }}</td>
-            <td>{{ barang.jenisbarang_tipe }}</td>
-            <td class="space-x-2">
+          <tr v-for="acara in listAcara" :key="acara.acara_id">
+            <td>{{ acara.nama_acara }}</td>
+            <td>{{ acara.jenisbarang_jumlah }}</td>
+            <td>{{ acara.modal_barang }}</td>
+            <td>{{ acara.harga_net }}</td>
+            <td>{{ acara.harga_pricetag }}</td>
+            <td>{{ acara.keterangan }}</td>
+            <td>{{ acara.status }}</td>
+            <td class="flex space-x-2">
               <button
-                class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[15px]"
-                @click="openModelPrint(barang)"
+                class="text-blue-500 hover:text-blue-700"
+                @click="editItem(acara)"
+                title="Edit"
               >
-                Print
+                <PencilIcon class="w-5 h-5" />
               </button>
+
               <button
-                class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[15px]"
-                @click="
-                  deleteProduct(barang.jenisbarang_id, barang.jenisbarang_nama)
-                "
+                class="text-green-500 hover:text-green-700"
+                @click="markAsDone(acara)"
+                title="Selesai"
               >
-                Delete
+                <CheckCircleIcon class="w-5 h-5" />
+              </button>
+
+              <button
+                class="text-yellow-500 hover:text-yellow-700"
+                @click="exportItem(acara)"
+                title="Export"
+              >
+                <ArrowDownTrayIcon class="w-5 h-5" />
+              </button>
+
+              <button
+                class="text-red-500 hover:text-red-700"
+                @click="deleteProduct(acara.acara_id, acara.nama_acara)"
+                title="Delete"
+              >
+                <TrashIcon class="w-5 h-5" />
               </button>
             </td>
           </tr>
@@ -151,50 +171,62 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import axios from "axios";
+import { ref, computed, onMounted, watch } from "vue";
+import {
+  PencilIcon,
+  CheckCircleIcon,
+  ArrowDownTrayIcon,
+  TrashIcon
+} from '@heroicons/vue/24/solid'
 
 // State
 const searchQuery = ref("");
 const barang = ref([]);
+const acara = ref([]);
+const acaraCounter = ref(1);
+
 const newProduct = ref({
-  jenisbarang_nama: "",
-  jenisbarang_kode: "",
+  acara_id: 0,
+  nama_acara: "",
   jenisbarang_jumlah: 0,
-  jenisbarang_tipe: "tunggal",
+  modal_barang: "",
+  harga_net: 0,
+  harga_pricetag: 0,
+  keterangan: "",
+  status: "Draft",
 });
 
 const isModalOpen = ref(false);
 const isModalPrintOpen = ref(false);
 const selectedProduct = ref(null);
 const printJumlah = ref(1);
-const url = "https://api-dame-ulos.databasedameulos.com";
 
-const fetchData = async () => {
-  try {
-  } catch (error) {}
-};
-
+// Load local acara data
 onMounted(() => {
-  fetchData();
+  const savedAcara = localStorage.getItem("acaraList");
+  const savedCounter = localStorage.getItem("acaraIdCounter");
+  if (savedAcara) acara.value = JSON.parse(savedAcara);
+  if (savedCounter) acaraCounter.value = parseInt(savedCounter);
   isModalPrintOpen.value = false;
 });
 
-// List with Search
-const listBarang = computed(() => {
-  if (!searchQuery.value) return barang.value;
-  return barang.value.filter(
-    (item) =>
-      item.jenisbarang_kode
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase()) ||
-      item.jenisbarang_nama
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase())
-  );
+// Watcher: update localStorage when data changes
+watch(
+  acara,
+  (val) => {
+    localStorage.setItem("acaraList", JSON.stringify(val));
+  },
+  { deep: true }
+);
+
+watch(acaraCounter, (val) => {
+  localStorage.setItem("acaraIdCounter", val.toString());
 });
 
-// Modal Add
+// List for datatable
+const listAcara = computed(() => acara.value);
+
+// Modal actions
 const openModal = () => {
   isModalOpen.value = true;
 };
@@ -203,54 +235,44 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const submitProduct = async () => {
-  const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 0;
-  const product = {
-    no: barang.value.length + 1,
-    jenisbarang_kode: newProduct.value.jenisbarang_kode,
-    jenisbarang_nama: newProduct.value.jenisbarang_nama,
-    jenisbarang_tipe: newProduct.value.jenisbarang_tipe,
-    jenisbarang_jumlah: jumlah,
+// Submit acara (local only)
+const submitProduct = () => {
+  acara.value.push({
+    acara_id: acaraCounter.value++,
+    nama_acara: newProduct.value.nama_barang,
+    keterangan: newProduct.value.keterangan,
+    status: "Belum Selesai",
+    modal_barang: "-",
+    harga_net: "-",
+    harga_pricetag: "-",
+    jenisbarang_jumlah: 0,
+  });
+
+  newProduct.value = {
+    acara_id: 0,
+    nama_acara: "",
+    keterangan: "",
+    status: "",
+    modal_barang: "",
+    harga_net: "",
+    harga_pricetag: "",
+    jenisbarang_jumlah: 0,
   };
-  try {
-    // Send POST request to the API
-    const response = await axios.post(`${url}/api/jenisbarang`, product);
-    if (response.status === 201) {
-      const newProductData = response.data;
-      barang.value.push({
-        no: barang.value.length + 1,
-        jenisbarang_id: newProductData.jenisbarang_id,
-        jenisbarang_kode: newProductData.jenisbarang_kode,
-        jenisbarang_nama: newProductData.jenisbarang_nama,
-        jenisbarang_tipe: newProductData.jenisbarang_tipe,
-        jenisbarang_jumlah: newProductData.jenisbarang_jumlah,
-      });
-      closeModal();
-      newProduct.value = {
-        jenisbarang_kode: "",
-        jenisbarang_nama: "",
-        jenisbarang_jumlah: 0,
-        jenisbarang_tipe: "tunggal",
-      };
-    }
-  } catch (error) {
-    console.error("Error adding product:", error);
-    alert("An error occurred while adding the product. Please try again.");
+  closeModal();
+};
+
+// Delete acara from local list
+const deleteProduct = (id, nama_acara) => {
+  if (confirm(`Anda yakin ingin menghapus "${nama_acara}"?`)) {
+    acara.value = acara.value.filter((item) => item.acara_id !== id);
   }
 };
 
-// Modal Print
+// Dummy print logic (if needed for acara)
 const openModelPrint = (product) => {
   selectedProduct.value = { ...product };
-  const tipe = product.jenisbarang_tipe;
-
-  if (tipe === "tunggal") {
-    printJumlah.value = 1;
-    handlePrint();
-  } else {
-    printJumlah.value = product.jenisbarang_jumlah;
-    isModalPrintOpen.value = true;
-  }
+  printJumlah.value = 1;
+  isModalPrintOpen.value = true;
 };
 
 const closePrintModal = () => {
@@ -258,120 +280,15 @@ const closePrintModal = () => {
   selectedProduct.value = null;
 };
 
-// Print Barcode
-const handlePrint = async () => {
-  const kodeBarang = selectedProduct.value.jenisbarang_kode;
-  const jenisbarang_id = selectedProduct.value.jenisbarang_id;
-  const tipeBarang = selectedProduct.value.jenisbarang_tipe;
-
-  const jumlah = tipeBarang === "majemuk" ? printJumlah.value : 1;
-  try {
-    let barcodeData = [];
-    // if (tipeBarang === "majemuk") {
-    console.log("sadsada", jumlah);
-    console.log("sadsada", jenisbarang_id);
-
-    const response = await axios.post(`${url}/api/codebarang`, {
-      jumlah_barang: jumlah,
-      code_jenisbarang_id: jenisbarang_id,
-    });
-    barcodeData = response.data.data;
-
-    const win = window.open("", "", "width=800,height=600");
-    if (!win) return;
-
-    win.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Print Barcode</title>
-          <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
-          <style>
-            @media print {
-              @page {
-                size: A4 landscape;
-                margin: 0;
-              }
-              body {
-                margin: 0;
-              }
-              .page {
-                page-break-after: always;
-                width: 100vw;
-                height: 100vh;
-                position: relative;
-              }
-            }
-            .barcode-container {
-              position: absolute;
-              bottom: 20px;
-              right: 20px;
-              text-align: center;
-              font-size: 10px;
-            }
-          </style>
-        </head>
-        <body>
-          ${barcodeData
-            .map(
-              (item, i) => `
-            <div class="page">
-              <div class="barcode-container">
-                <div>${item.code_nama}</div>
-                <svg id="barcode-${i}"></svg>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-
-          <script>
-            window.onload = function() {
-              const barcodes = ${JSON.stringify(barcodeData)};
-              for (let i = 0; i < barcodes.length; i++) {
-                JsBarcode("#barcode-" + i, barcodes[i].code_nama, {
-                  format: "CODE128",
-                  lineColor: "#000",
-                  width: 2,
-                  height: 60,
-                  displayValue: false
-                });
-              }
-              window.print();
-            }
-          <\/script>
-        </body>
-      </html>
-    `);
-
-    win.document.close();
-    closePrintModal();
-  } catch (error) {
-    console.error("Gagal update jumlah code barang:", error);
-  }
-};
-
-// Delete Product
-const deleteProduct = async (id, nama_barang) => {
-  if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
-    try {
-      const response = await axios.delete(`${url}/api/jenisbarang/` + id);
-
-      if (response.status === 200) {
-        barang.value = barang.value.filter(
-          (item) => item.jenisbarang_id !== id
-        );
-      }
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
-  }
+const handlePrint = () => {
+  alert("Simulasi print acara: " + selectedProduct.value.nama_acara);
+  closePrintModal();
 };
 </script>
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .search-box {
