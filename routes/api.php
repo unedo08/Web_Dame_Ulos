@@ -41,3 +41,11 @@ Route::prefix('entrybarangtemp')->group(function () {
 Route::prefix('entrybarang')->group(function () {
     require __DIR__.'/api/entryBarangM.php';  // Relative path
 });
+
+Route::prefix('acara')->group(function () {
+    require __DIR__.'/api/acaraM.php';  // Relative path
+});
+
+Route::prefix('acaradet')->group(function () {
+    require __DIR__.'/api/acaradetM.php';  // Relative path
+});

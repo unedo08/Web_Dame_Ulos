@@ -88,4 +88,14 @@ class JenisBarangMController extends Controller
         $item->delete();
         return response()->json(['message' => 'Deleted successfully'], 200);
     }
+
+    public function getAllJenisBarangAmount(){
+        $jumlah = JenisBarangM::count();
+
+        return response()->json([
+            'message' => 'Total jumlah barang entry',
+            'code' => 200,
+            'total' => $jumlah
+        ]);
+    }
 }

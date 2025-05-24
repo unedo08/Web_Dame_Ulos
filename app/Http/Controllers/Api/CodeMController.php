@@ -90,4 +90,14 @@ class CodeMController extends Controller
         CodeM::where('code_jenisbarang_id', $jenisbarang_id)->delete();
         return response()->json(['message' => 'Deleted successfully'], 200);
     }
+
+    public function getAllCodeAmount(){
+        $jumlah = CodeM::count();
+
+        return response()->json([
+            'message' => 'Total jumlah barang entry',
+            'code' => 200,
+            'total' => $jumlah
+        ]);
+    }
 }
