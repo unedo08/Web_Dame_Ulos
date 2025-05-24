@@ -218,6 +218,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import { useRuntimeConfig } from '#imports'
 
 // State
 const searchQuery = ref("");
@@ -233,7 +234,8 @@ const isModalOpen = ref(false);
 const isModalPrintOpen = ref(false);
 const selectedProduct = ref(null);
 const printJumlah = ref(1);
-const url = "https://api-dame-ulos.databasedameulos.com";
+const config = useRuntimeConfig();
+const url = config.public.apiBase
 
 const fetchData = async () => {
   try {

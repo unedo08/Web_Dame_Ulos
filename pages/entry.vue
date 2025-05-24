@@ -254,13 +254,15 @@
 import { ref, onMounted } from "vue";
 import BaseModal from "../components/Modal.vue";
 import axios from "axios";
+import { useRuntimeConfig } from '#imports'
 
 const modalOpen = ref(false);
 const modalType = ref("desc");
 const showModalAdd = ref(false);
 const showModalAddSize = ref(false);
 const selectedBarang = ref({});
-const url = "https://api-dame-ulos.databasedameulos.com";
+const config = useRuntimeConfig();
+const url = config.public.apiBase
 const isLoading = ref(false);
 
 const barangDatabase = ref([]);
@@ -272,7 +274,7 @@ onMounted(async () => {
     barangDatabase.value = response.data;
     await getListBarangTemp();
   } catch (error) {
-    console.log("Gagal mengambil data barang: ", error);
+    console.error("Gagal mengambil data barang: ", error);
   }
 });
 

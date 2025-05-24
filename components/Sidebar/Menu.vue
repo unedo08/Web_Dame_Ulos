@@ -14,7 +14,8 @@ import {
   CalendarDaysIcon,
   PaintBrushIcon,
   DocumentChartBarIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
+  ChartPieIcon
 } from "@heroicons/vue/24/outline";
 
 const items = ref([
@@ -72,6 +73,11 @@ const items = ref([
     title: "Pewarna Alam",
     path: "/pewarnaAlam",
     icon: PaintBrushIcon
+  },
+  {
+    title: "Statistik",
+    path: "/statistik",
+    icon: ChartPieIcon
   },
   {
     title: "Database Penjualan",

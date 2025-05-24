@@ -22,7 +22,7 @@
             <th>Jumlah Barang</th>
             <th>Modal Barang</th>
             <th>Harga Net</th>
-            <th>Harga Prive Tag</th>
+            <th>Harga Price Tag</th>
             <th>Keterangan</th>
             <th>Status</th>
             <th>Aksi</th>
@@ -30,14 +30,14 @@
         </thead>
         <tbody>
           <tr v-for="acara in listAcara" :key="acara.acara_id">
-            <td>{{ acara.nama_acara }}</td>
-            <td>{{ acara.jenisbarang_jumlah }}</td>
-            <td>{{ acara.modal_barang }}</td>
-            <td>{{ acara.harga_net }}</td>
-            <td>{{ acara.harga_pricetag }}</td>
-            <td>{{ acara.keterangan }}</td>
-            <td>{{ acara.status }}</td>
-            <td class="flex space-x-2">
+            <td>{{ acara.acara_nama }}</td>
+            <td>{{ acara.acara_jumlahbarang }}</td>
+            <td>{{ formatRupiah(acara.acara_modalbarang) }}</td>
+            <td>{{ formatRupiah(acara.acara_harganetbarang) }}</td>
+            <td>{{ formatRupiah(acara.acara_hargapricetagbarang) }}</td>
+            <td>{{ acara.acara_keterangan }}</td>
+            <td>{{ acara.acara_status }}</td>
+            <td class="space-x-2">
               <button
                 class="text-blue-500 hover:text-blue-700"
                 @click="editItem(acara)"
@@ -82,19 +82,18 @@
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Form Tambah Acara</h3>
-        <form @submit.prevent="submitProduct">
+        <form @submit.prevent="submitAcara">
           <h5 class="text-xl mb-2">Event Form</h5>
           <div class="mb-4">
             <label
-              for="nama_acara"
+              for="acara_nama"
               class="block text-sm font-medium text-gray-700"
               >Nama Acara</label
             >
             <input
-              v-model="newProduct.jenisbarang_kode"
+              v-model="newProduct.acara_nama"
               type="text"
-              id="nama_acara"
-              maxlength="5"
+              id="acara_nama"
               class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
               placeholder=" ..."
               required
@@ -102,14 +101,14 @@
           </div>
           <div class="mb-4">
             <label
-              for="keterangan"
+              for="acara_keterangan"
               class="block text-sm font-medium text-gray-700"
               >Keterangan</label
             >
             <input
-              v-model="newProduct.jenisbarang_nama"
+              v-model="newProduct.acara_keterangan"
               type="text"
-              id="keterangan"
+              id="acara_keterangan"
               class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm pl-3 w-[382px] h-[41px]"
               placeholder=" ..."
               required
@@ -167,6 +166,92 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Edit Acara -->
+    <div
+      v-if="isEditModalOpen"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+        <h3 class="text-lg font-semibold mb-4">
+          Edit Acara - {{ editForm.nama_acara }}
+        </h3>
+
+        <!-- Input Scan Barcode -->
+        <div class="flex space-x-2 items-end mb-4">
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-gray-700"
+              >Scan Barcode / Kode Barang</label
+            >
+            <input
+              v-model="barcodeInput"
+              @keyup.enter="addToTempBarang"
+              type="text"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              placeholder="Scan atau ketik kode barang"
+            />
+          </div>
+          <button
+            @click="addToTempBarang"
+            class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Tambah
+          </button>
+        </div>
+
+        <!-- Tabel Barang Sementara -->
+        <table class="datatable w-full mb-4">
+          <thead>
+            <tr>
+              <th>Kode Barang</th>
+              <th>Status</th>
+              <th class="hide-col">Acara ID</th>
+              <th class="hide-col">Barang Entry ID</th>
+              <th class="hide-col">Harga Modal</th>
+              <th class="hide-col">Harga Net</th>
+              <th class="hide-col">Harga Price tag</th>
+              <th class="hide-col">Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(barang, index) in tempBarangList" :key="index">
+              <td>{{ barang.code }}</td>
+              <td></td>
+              <td class="hide-col">{{ barang.acara_id }}</td>
+              <td class="hide-col">{{ barang.barangentry_id }}</td>
+              <td class="hide-col">{{ barang.acara_modalbarang }}</td>
+              <td class="hide-col">{{ barang.acara_harganetbarang }}</td>
+              <td class="hide-col">{{ barang.acara_hargapricetagbarang }}</td>
+              <td class="hide-col">{{ barang.acara_status }}</td>
+              <td>
+                <button
+                  @click="removeFromTempBarang(barang.acara_id, barang.barangentry_id)"
+                  class="text-red-500 hover:text-red-700"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-end">
+          <button
+            @click="closeEditModal"
+            class="mr-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Batal
+          </button>
+          <button
+            @click="submitEdit"
+            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -176,24 +261,31 @@ import {
   PencilIcon,
   CheckCircleIcon,
   ArrowDownTrayIcon,
-  TrashIcon
-} from '@heroicons/vue/24/solid'
+  TrashIcon,
+} from "@heroicons/vue/24/solid";
+import * as XLSX from "xlsx";
+import { useRuntimeConfig } from "#imports";
+import axios from "axios";
 
-// State
-const searchQuery = ref("");
-const barang = ref([]);
+const config = useRuntimeConfig();
+const url = config.public.apiBase;
 const acara = ref([]);
 const acaraCounter = ref(1);
+const isEditModalOpen = ref(false);
+const editForm = ref({});
+const barcodeInput = ref("");
+const tempBarangList = ref([]);
+const listAcara = ref([]);
 
 const newProduct = ref({
   acara_id: 0,
-  nama_acara: "",
-  jenisbarang_jumlah: 0,
-  modal_barang: "",
-  harga_net: 0,
-  harga_pricetag: 0,
-  keterangan: "",
-  status: "Draft",
+  acara_nama: "",
+  acara_jumlahbarang: 0,
+  acara_modalbarang: "",
+  acara_harganetbarang: 0,
+  acara_hargapricetagbarang: 0,
+  acara_keterangan: "",
+  acara_status: "Belum Selesai",
 });
 
 const isModalOpen = ref(false);
@@ -201,16 +293,33 @@ const isModalPrintOpen = ref(false);
 const selectedProduct = ref(null);
 const printJumlah = ref(1);
 
-// Load local acara data
-onMounted(() => {
-  const savedAcara = localStorage.getItem("acaraList");
-  const savedCounter = localStorage.getItem("acaraIdCounter");
-  if (savedAcara) acara.value = JSON.parse(savedAcara);
-  if (savedCounter) acaraCounter.value = parseInt(savedCounter);
+onMounted(async () => {
+  try {
+    await getListAcara();
+  } catch (error) {
+    console.error("Gagal mengambil data acara: ", error);
+  }
   isModalPrintOpen.value = false;
 });
 
-// Watcher: update localStorage when data changes
+const formatRupiah = (harga) => {
+  if(!harga) return '';
+  return new Intl.NumberFormat('id-ID',{
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(harga);
+}
+
+async function getListAcara() {
+  try {
+    const response = await axios.get(`${url}/api/acara`);
+    listAcara.value = response.data.data;
+  } catch (error) {
+    console.error("Gagal memuat data acara:", error);
+  }
+}
+
 watch(
   acara,
   (val) => {
@@ -223,10 +332,6 @@ watch(acaraCounter, (val) => {
   localStorage.setItem("acaraIdCounter", val.toString());
 });
 
-// List for datatable
-const listAcara = computed(() => acara.value);
-
-// Modal actions
 const openModal = () => {
   isModalOpen.value = true;
 };
@@ -235,44 +340,148 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-// Submit acara (local only)
-const submitProduct = () => {
-  acara.value.push({
-    acara_id: acaraCounter.value++,
-    nama_acara: newProduct.value.nama_barang,
-    keterangan: newProduct.value.keterangan,
-    status: "Belum Selesai",
-    modal_barang: "-",
-    harga_net: "-",
-    harga_pricetag: "-",
-    jenisbarang_jumlah: 0,
-  });
+const submitAcara = async () => {
+  try {
+    const response = await axios.post(`${url}/api/acara/addAcara`, {
+      acara_nama: newProduct.value.acara_nama,
+      acara_keterangan: newProduct.value.acara_keterangan
+    });
 
-  newProduct.value = {
-    acara_id: 0,
-    nama_acara: "",
-    keterangan: "",
-    status: "",
-    modal_barang: "",
-    harga_net: "",
-    harga_pricetag: "",
-    jenisbarang_jumlah: 0,
-  };
-  closeModal();
+    await getListAcara();
+    newProduct.value = {
+      acara_id: 0,
+      acara_nama: "",
+      acara_jumlahbarang: 0,
+      acara_modalbarang: "",
+      acara_harganetbarang: 0,
+      acara_hargapricetagbarang: 0,
+      acara_keterangan: "",
+      acara_status: "Belum Selesai",
+    };
+    closeModal();
+  } catch (error) {
+    console.error("Gagal menambahkan data acara:", error);
+  }
 };
 
-// Delete acara from local list
 const deleteProduct = (id, nama_acara) => {
   if (confirm(`Anda yakin ingin menghapus "${nama_acara}"?`)) {
     acara.value = acara.value.filter((item) => item.acara_id !== id);
   }
 };
 
-// Dummy print logic (if needed for acara)
-const openModelPrint = (product) => {
-  selectedProduct.value = { ...product };
-  printJumlah.value = 1;
-  isModalPrintOpen.value = true;
+const editItem = (item) => {
+  isEditModalOpen.value = true;
+  editForm.value = { ...item };
+  barcodeInput.value = "";
+  tempBarangList.value = [];
+};
+
+// Tutup modal edit
+const closeEditModal = () => {
+  isEditModalOpen.value = false;
+  barcodeInput.value = "";
+  tempBarangList.value = [];
+};
+
+const addToTempBarang = async () => {
+  const code = barcodeInput.value.trim();
+  if (!code) return;
+
+  try {
+    const response = await axios.get(
+      `${url}/api/entrybarang/getDataByCode/` + code
+    );    
+    const barang = response.data.data;
+
+    if (!barang || !barang.barangentry_id) {
+      alert("Barang tidak ditemukan");
+      return;
+    }
+
+    await axios.post(`${url}/api/acaradet/addDetAcara`, {
+      acaradet_acara_id: editForm.value.acara_id,
+      acaradet_barangentry_id: barang.barangentry_id,
+    });
+
+    if (!tempBarangList.value.includes(code)) {
+      tempBarangList.value.push({
+        code: code,
+        acara_id: editForm.value.acara_id,
+        barangentry_id: barang.barangentry_id,
+        acara_modalbarang: barang.barangentry_modal,
+        acara_harganetbarang: barang.barangentry_harga_net,
+        acara_hargapricetagbarang: barang.barangentry_price_tag,
+        acara_status: barang.barangentry_status
+      });
+    }
+
+    barcodeInput.value = "";
+  } catch (error) {
+    alert("Barcode tidak ditemukan")
+    barcodeInput.value = ""
+    console.error("Data tidak ditemukan: ", error);
+  }
+};
+
+const removeFromTempBarang = (index) => {
+  tempBarangList.value.splice(index, 1);
+};
+
+const submitEdit = async () => {
+  try {
+    const jumlahBarang = tempBarangList.value.length;
+    const totalModal = tempBarangList.value.reduce(
+      (acc, curr) => acc + (Number(curr.acara_modalbarang) || 0),
+      0
+    );
+    const totalHargaNet = tempBarangList.value.reduce(
+      (acc, curr) => acc + (Number(curr.acara_harganetbarang) || 0),
+      0
+    );
+    const totalPriceTag = tempBarangList.value.reduce(
+      (acc, curr) => acc + (Number(curr.acara_hargapricetagbarang) || 0),
+      0
+    );
+    
+    await axios.put(`${url}/api/acara/updateAcara/${editForm.value.acara_id}`, {
+      acara_nama: editForm.value.acara_nama,
+      acara_keterangan: editForm.value.acara_keterangan,
+      acara_jumlahbarang: jumlahBarang,
+      acara_modalbarang: totalModal,
+      acara_harganetbarang: totalHargaNet,
+      acara_hargapricetagbarang: totalPriceTag,
+      acara_keterangan: "Ready To store",
+      acara_status: "Ready",
+    });
+
+    await getListAcara();
+    closeEditModal();
+  } catch (error) {
+    console.error("Gagal mengupdate acara:", error);
+    alert("Gagal menyimpan perubahan.");
+  }
+};
+
+const exportItem = (acara) => {
+  const data = [
+    {
+      "Nama Acara": acara.nama_acara,
+      "Jumlah Barang": acara.jenisbarang_jumlah,
+      "Modal Barang": acara.modal_barang,
+      "Harga Net": acara.harga_net,
+      "Harga Pricetag": acara.harga_pricetag,
+      Keterangan: acara.keterangan,
+      Status: acara.status,
+    },
+  ];
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Data Acara");
+
+  const filename = `Export_Acara_${acara.nama_acara.replace(/\s+/g, "_")}.xlsx`;
+  XLSX.writeFile(workbook, filename);
 };
 
 const closePrintModal = () => {
@@ -289,6 +498,10 @@ const handlePrint = () => {
 <style scoped>
 * {
   font-family: "Nunito", sans-serif;
+}
+
+.hide-col {
+  display: none;
 }
 
 .search-box {

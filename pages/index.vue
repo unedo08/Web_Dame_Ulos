@@ -52,7 +52,9 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { useRuntimeConfig } from '#imports'
 
+const config = useRuntimeConfig();
 export default {
     name: 'LoginPage',
     setup() {
@@ -61,7 +63,7 @@ export default {
         const rememberMe = ref<boolean>(false)
         const errorMessage = ref<string | null>(null)
         const router = useRouter()
-        const url = 'https://api-dame-ulos.databasedameulos.com'
+        const url = config.public.apiBase
 
         const handleLogin = async() => {
             // Simulate a login process

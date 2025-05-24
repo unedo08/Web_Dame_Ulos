@@ -180,9 +180,11 @@
 <script setup>
 import { ref, watch, computed, nextTick } from "vue";
 import axios from "axios";
+import { useRuntimeConfig } from '#imports'
+const config = useRuntimeConfig();
 
 const priceTagData = ref([]);
-const url = "https://api-dame-ulos.databasedameulos.com";
+const url = config.public.apiBase
 
 const props = defineProps({
   show: Boolean,
@@ -244,30 +246,51 @@ const modalTitle = computed(() => {
   }
 });
 
-function handleScan() {
+async function handleScan() {
+  const code = barcode.value.trim();
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
 
-  if (found) {
-    barang.value = { ...found };
-    emit("scanned", { ...found });
-  } else {
+  if (!found) {
     alert("Barang tidak ditemukan.");
     barang.value = null;
   }
+  
+  try{
+    const res = await axios.get(`${url}/api/entrybarang/checkBarangEntry/`+code);    
+    if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
+      return;
+    }
+    barang.value = {...found}
+    emit("scanned", { ...found });
+  }catch(err){
+    alert("Kode sudah digunakan, tidak bisa entry ulang");
+    console.error("Gagal Memeriksa Kode Barang:", err)
+  }
 }
 
-function handleScanSize() {
+async function handleScanSize() {
+  const code = barcode.value.trim();
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
+  
   if (found) {
-    barang.value = { ...found };
-    emit("sizeSubmitted", { ...found });
-  } else {
     alert("Barang tidak ditemukan.");
     barang.value = null;
+  }
+
+  try{
+    const res = await axios.get(`${url}/api/entrybarang/checkBarangEntry/`+code);    
+    if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
+      return;
+    }
+    barang.value = {...found}
+    emit("sizeSubmitted", { ...found });
+  }catch(err){
+    alert("Kode sudah digunakan, tidak bisa entry ulang");
+    console.error("Gagal Memeriksa Kode Barang:", err)
   }
 }
 

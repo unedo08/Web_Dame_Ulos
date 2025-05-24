@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   plugins: ['~/plugins/pinia.ts'],
   runtimeConfig: {
     public:{
-      apiBase: 'http://test-api/api'
+      apiBase: process.env.API_BASE_URL
     }
   },
   compatibilityDate: '2025-04-02',
