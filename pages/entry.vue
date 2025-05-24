@@ -261,16 +261,17 @@ const modalType = ref("desc");
 const showModalAdd = ref(false);
 const showModalAddSize = ref(false);
 const selectedBarang = ref({});
-const config = useRuntimeConfig();
-const url = config.public.apiBase
+const url = ref('')
 const isLoading = ref(false);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
 
 onMounted(async () => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase
   try {
-    const response = await axios.get(`${url}/api/codebarang`);
+    const response = await axios.get(`${url.value}/api/codebarang`);
     barangDatabase.value = response.data;
     await getListBarangTemp();
   } catch (error) {
@@ -289,7 +290,7 @@ function formatTanggal(tanggal) {
 
 async function getListBarangTemp() {
   try {
-    const response = await axios.get(`${url}/api/entrybarangtemp/getDataTable`);
+    const response = await axios.get(`${url.value}/api/entrybarangtemp/getDataTable`);
     // console.log("asdsad", response);
 
     listBarang.value = response.data.data;
@@ -325,7 +326,7 @@ async function submitBarang() {
         selectedBarang.value.barangentry_temp_harga_net,
     };
 
-    await axios.post(`${url}/api/entrybarangtemp/storeDescription`, payload);
+    await axios.post(`${url.value}/api/entrybarangtemp/storeDescription`, payload);
     await getListBarangTemp();
 
     selectedBarang.value = {};
@@ -349,7 +350,7 @@ async function submitSizeBarang() {
       barangentry_temp_ukuran_ulos: selectedBarang.value.ukuran_ulos,
     };
 
-    await axios.post(`${url}/api/entrybarangtemp/storeSize`, payload);
+    await axios.post(`${url.value}/api/entrybarangtemp/storeSize`, payload);
     
     const index = listBarang.value.findIndex(
       (item) => item.barangentry_temp_code_id === selectedBarang.value.code_id

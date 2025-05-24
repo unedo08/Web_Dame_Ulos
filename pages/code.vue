@@ -234,12 +234,11 @@ const isModalOpen = ref(false);
 const isModalPrintOpen = ref(false);
 const selectedProduct = ref(null);
 const printJumlah = ref(1);
-const config = useRuntimeConfig();
-const url = config.public.apiBase
+const url = ref('')
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${url}/api/jenisbarang`);
+    const response = await axios.get(`${url.value}/api/jenisbarang`);
     const fetchedData = response.data;
     barang.value = fetchedData.map((item, index) => ({
       no: index + 1,
@@ -255,6 +254,8 @@ const fetchData = async () => {
 };
 
 onMounted(() => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase
   fetchData();
   isModalPrintOpen.value = false;
 });
@@ -293,7 +294,7 @@ const submitProduct = async () => {
   };
   try {
     // Send POST request to the API
-    const response = await axios.post(`${url}/api/jenisbarang`, product);
+    const response = await axios.post(`${url.value}/api/jenisbarang`, product);
     if (response.status === 201) {
       const newProductData = response.data;
       barang.value.push({
@@ -349,7 +350,7 @@ const handlePrint = async () => {
     // console.log("sadsada", jumlah);
     // console.log("sadsada", jenisbarang_id);
 
-    const response = await axios.post(`${url}/api/codebarang`, {
+    const response = await axios.post(`${url.value}/api/codebarang`, {
       jumlah_barang: jumlah,
       code_jenisbarang_id: jenisbarang_id,
     });
@@ -433,7 +434,7 @@ const handlePrint = async () => {
 const deleteProduct = async (id, nama_barang) => {
   if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
     try {
-      const response = await axios.delete(`${url}/api/jenisbarang/` + id);
+      const response = await axios.delete(`${url.value}/api/jenisbarang/` + id);
 
       if (response.status === 200) {
         barang.value = barang.value.filter(

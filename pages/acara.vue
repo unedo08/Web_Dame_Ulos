@@ -267,8 +267,7 @@ import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
 import axios from "axios";
 
-const config = useRuntimeConfig();
-const url = config.public.apiBase;
+const url = ref('')
 const acara = ref([]);
 const acaraCounter = ref(1);
 const isEditModalOpen = ref(false);
@@ -294,6 +293,8 @@ const selectedProduct = ref(null);
 const printJumlah = ref(1);
 
 onMounted(async () => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase;
   try {
     await getListAcara();
   } catch (error) {
@@ -313,7 +314,7 @@ const formatRupiah = (harga) => {
 
 async function getListAcara() {
   try {
-    const response = await axios.get(`${url}/api/acara`);
+    const response = await axios.get(`${url.value}/api/acara`);
     listAcara.value = response.data.data;
   } catch (error) {
     console.error("Gagal memuat data acara:", error);
@@ -342,7 +343,7 @@ const closeModal = () => {
 
 const submitAcara = async () => {
   try {
-    const response = await axios.post(`${url}/api/acara/addAcara`, {
+    const response = await axios.post(`${url.value}/api/acara/addAcara`, {
       acara_nama: newProduct.value.acara_nama,
       acara_keterangan: newProduct.value.acara_keterangan
     });
@@ -390,7 +391,7 @@ const addToTempBarang = async () => {
 
   try {
     const response = await axios.get(
-      `${url}/api/entrybarang/getDataByCode/` + code
+      `${url.value}/api/entrybarang/getDataByCode/` + code
     );    
     const barang = response.data.data;
 
@@ -399,7 +400,7 @@ const addToTempBarang = async () => {
       return;
     }
 
-    await axios.post(`${url}/api/acaradet/addDetAcara`, {
+    await axios.post(`${url.value}/api/acaradet/addDetAcara`, {
       acaradet_acara_id: editForm.value.acara_id,
       acaradet_barangentry_id: barang.barangentry_id,
     });
@@ -444,7 +445,7 @@ const submitEdit = async () => {
       0
     );
     
-    await axios.put(`${url}/api/acara/updateAcara/${editForm.value.acara_id}`, {
+    await axios.put(`${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`, {
       acara_nama: editForm.value.acara_nama,
       acara_keterangan: editForm.value.acara_keterangan,
       acara_jumlahbarang: jumlahBarang,

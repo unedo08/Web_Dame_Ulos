@@ -49,12 +49,15 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useRuntimeConfig } from '#imports'
-
-const config = useRuntimeConfig();
+const url = ref('')
+onMounted(() => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase;
+});
 export default {
     name: 'LoginPage',
     setup() {
@@ -63,13 +66,12 @@ export default {
         const rememberMe = ref<boolean>(false)
         const errorMessage = ref<string | null>(null)
         const router = useRouter()
-        const url = config.public.apiBase
 
         const handleLogin = async() => {
             // Simulate a login process
             errorMessage.value = null
             try{
-                const response = await axios.post(`${url}/api/login`, {
+                const response = await axios.post(`${url.value}/api/login`, {
                     email : email.value,
                     password : password.value
                 })

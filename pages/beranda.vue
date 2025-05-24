@@ -21,12 +21,13 @@ import { useRuntimeConfig } from '#imports'
 import { CubeIcon } from '@heroicons/vue/24/solid'
 
 const totalBarang = ref(0)
-const config = useRuntimeConfig()
-const url = config.public.apiBase
+const url = ref('')
 
 onMounted(async () => {
+  const config = useRuntimeConfig()
+  url.value = config.public.apiBase
   try {
-    const response = await axios.get(`${url}/api/codebarang`)
+    const response = await axios.get(`${url.value}/api/codebarang`)
     const data = response.data
 
     totalBarang.value = data.length

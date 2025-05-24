@@ -178,14 +178,17 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, nextTick } from "vue";
+import { ref, watch, computed, nextTick, onMounted } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from '#imports'
-const config = useRuntimeConfig();
 
 const priceTagData = ref([]);
-const url = config.public.apiBase
+const url = ref('')
 
+onMounted(() => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase;
+});
 const props = defineProps({
   show: Boolean,
   type: String,
@@ -258,7 +261,7 @@ async function handleScan() {
   }
   
   try{
-    const res = await axios.get(`${url}/api/entrybarang/checkBarangEntry/`+code);    
+    const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
     if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
       return;
     }
@@ -282,7 +285,7 @@ async function handleScanSize() {
   }
 
   try{
-    const res = await axios.get(`${url}/api/entrybarang/checkBarangEntry/`+code);    
+    const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
     if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
       return;
     }
@@ -322,7 +325,7 @@ async function printPriceTag() {
     const results= [];
     for (const code of barcodeList.value) {
       try {
-        const res = await axios.get(`${url}/api/entrybarang/getDataByCode/${code}`);
+        const res = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${code}`);
         if (res.data) results.push(res.data);
       } catch (err) {
         console.error(`Gagal ambil data untuk ${code}`, err);
