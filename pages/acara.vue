@@ -228,7 +228,7 @@
                 <button
                   @click="removeFromTempBarang(barang.acaradet_id)"
                   class="text-red-500 hover:text-red-700"
-                >
+                > 
                   Delete
                 </button>
               </td>
