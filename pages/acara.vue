@@ -64,7 +64,7 @@
 
               <button
                 class="text-red-500 hover:text-red-700"
-                @click="deleteProduct(acara.acara_id, acara.nama_acara)"
+                @click="deleteProduct(acara.acara_id, acara.acara_nama)"
                 title="Delete"
               >
                 <TrashIcon class="w-5 h-5" />
@@ -174,7 +174,7 @@
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
         <h3 class="text-lg font-semibold mb-4">
-          Edit Acara - {{ editForm.nama_acara }}
+          Edit Acara - {{ editForm.acara_nama }}
         </h3>
 
         <!-- Input Scan Barcode -->
@@ -226,7 +226,7 @@
               <td class="hide-col">{{ barang.acara_status }}</td>
               <td>
                 <button
-                  @click="removeFromTempBarang(barang.acara_id, barang.barangentry_id)"
+                  @click="removeFromTempBarang(barang.acaradet_id)"
                   class="text-red-500 hover:text-red-700"
                 >
                   Delete
@@ -267,7 +267,7 @@ import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
 import axios from "axios";
 
-const url = ref('')
+const url = ref("");
 const acara = ref([]);
 const acaraCounter = ref(1);
 const isEditModalOpen = ref(false);
@@ -296,7 +296,7 @@ onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
   try {
-    await getListAcara();
+    getListAcara();
   } catch (error) {
     console.error("Gagal mengambil data acara: ", error);
   }
@@ -304,13 +304,13 @@ onMounted(async () => {
 });
 
 const formatRupiah = (harga) => {
-  if(!harga) return '';
-  return new Intl.NumberFormat('id-ID',{
-    style: 'currency',
-    currency: 'IDR',
+  if (!harga) return "";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
     minimumFractionDigits: 0,
   }).format(harga);
-}
+};
 
 async function getListAcara() {
   try {
@@ -345,7 +345,7 @@ const submitAcara = async () => {
   try {
     const response = await axios.post(`${url.value}/api/acara/addAcara`, {
       acara_nama: newProduct.value.acara_nama,
-      acara_keterangan: newProduct.value.acara_keterangan
+      acara_keterangan: newProduct.value.acara_keterangan,
     });
 
     await getListAcara();
@@ -365,17 +365,82 @@ const submitAcara = async () => {
   }
 };
 
-const deleteProduct = (id, nama_acara) => {
-  if (confirm(`Anda yakin ingin menghapus "${nama_acara}"?`)) {
-    acara.value = acara.value.filter((item) => item.acara_id !== id);
+const deleteProduct = async (id, acara_nama) => {
+  if (confirm(`Anda yakin ingin menghapus "${acara_nama}" ini?`)) {
+    try {
+      const response = await axios.delete(
+        `${url.value}/api/acara/deleteAcara/` + id
+      );
+      if (response.status === 200) {
+        acara.value = acara.value.filter((item) => item.acara_id !== id);
+      }
+      await getListAcara();
+    } catch (error) {
+      console.error("Gagal menghapus data acara: ", error);
+    }
   }
 };
 
-const editItem = (item) => {
+const editItem = async (item) => {
   isEditModalOpen.value = true;
   editForm.value = { ...item };
   barcodeInput.value = "";
   tempBarangList.value = [];
+  try {
+    const response = await axios.get(
+      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`
+    );
+
+    const data = response.data.data || [];
+    const detailedBarangList = await Promise.all(
+      data.map(async (barang) => {
+        try {
+          const detailResponse = await axios.get(
+            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`
+          );
+          const detail = detailResponse.data.data;
+
+          let codeData = null;
+          try {
+            const codeId = parseInt(detail.barangentry_code_id, 10);
+            if (!isNaN(codeId)) {
+              const codeResponse = await axios.get(
+                `${url.value}/api/codebarang/${codeId}`
+              );
+              codeData = codeResponse.data;
+            } else {
+              console.warn(
+                "Code ID bukan angka yang valid:",
+                detail.barangentry_code_id
+              );
+            }
+          } catch (codeErr) {
+            console.error("Gagal ambil data codebarang:", codeErr);
+          }
+
+          return {
+            code: codeData.code_nama,
+            acara_id: item.acara_id,
+            acaradet_id: barang.acaradet_id,
+            barangentry_id: detail.barangentry_id,
+            acara_modalbarang: detail.barangentry_modal,
+            acara_harganetbarang: detail.barangentry_harga_net,
+            acara_hargapricetagbarang: detail.barangentry_price_tag,
+            acara_status: detail.barangentry_status,
+          };
+        } catch (err) {
+          console.error("Gagal ambil detail barangentry:", err);
+          return null;
+        }
+      })
+    );
+
+    // Filter out null (gagal ambil data)
+    tempBarangList.value = detailedBarangList.filter(Boolean);
+  } catch (error) {
+    console.error("Gagal mengambil data barang acara:", error);
+    tempBarangList.value = [];
+  }
 };
 
 // Tutup modal edit
@@ -392,7 +457,7 @@ const addToTempBarang = async () => {
   try {
     const response = await axios.get(
       `${url.value}/api/entrybarang/getDataByCode/` + code
-    );    
+    );
     const barang = response.data.data;
 
     if (!barang || !barang.barangentry_id) {
@@ -413,20 +478,33 @@ const addToTempBarang = async () => {
         acara_modalbarang: barang.barangentry_modal,
         acara_harganetbarang: barang.barangentry_harga_net,
         acara_hargapricetagbarang: barang.barangentry_price_tag,
-        acara_status: barang.barangentry_status
+        acara_status: barang.barangentry_status,
       });
     }
 
     barcodeInput.value = "";
   } catch (error) {
-    alert("Barcode tidak ditemukan")
-    barcodeInput.value = ""
+    alert("Barcode tidak ditemukan");
+    barcodeInput.value = "";
     console.error("Data tidak ditemukan: ", error);
   }
 };
 
-const removeFromTempBarang = (index) => {
-  tempBarangList.value.splice(index, 1);
+const removeFromTempBarang = async (id) => {
+  if (confirm(`Anda yakin ingin menghapus data ini?`)) {
+    try {
+      const response = await axios.delete(
+        `${url.value}/api/acaradet/deleteDetAcara/` + id
+      );
+      if (response.status === 200) {
+        tempBarangList.value = tempBarangList.value.filter(
+          (item) => item.acaradet_id !== id
+        );
+      }
+    } catch (error) {
+      console.error("Gagal menghapus data acara: ", error);
+    }
+  }
 };
 
 const submitEdit = async () => {
@@ -444,17 +522,20 @@ const submitEdit = async () => {
       (acc, curr) => acc + (Number(curr.acara_hargapricetagbarang) || 0),
       0
     );
-    
-    await axios.put(`${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`, {
-      acara_nama: editForm.value.acara_nama,
-      acara_keterangan: editForm.value.acara_keterangan,
-      acara_jumlahbarang: jumlahBarang,
-      acara_modalbarang: totalModal,
-      acara_harganetbarang: totalHargaNet,
-      acara_hargapricetagbarang: totalPriceTag,
-      acara_keterangan: "Ready To store",
-      acara_status: "Ready",
-    });
+
+    await axios.put(
+      `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
+      {
+        acara_nama: editForm.value.acara_nama,
+        acara_keterangan: editForm.value.acara_keterangan,
+        acara_jumlahbarang: jumlahBarang,
+        acara_modalbarang: totalModal,
+        acara_harganetbarang: totalHargaNet,
+        acara_hargapricetagbarang: totalPriceTag,
+        acara_keterangan: "Ready To store",
+        acara_status: "Ready",
+      }
+    );
 
     await getListAcara();
     closeEditModal();
