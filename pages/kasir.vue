@@ -57,7 +57,12 @@
         </tr>
       </thead>
       <tbody>
-
+        <tr v-for="(item, index) in datatableItems" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -296,8 +301,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import ModalKasir from "../components/ModalKasir.vue";
+import axios from "axios";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
@@ -307,6 +313,10 @@ const openModalProcess = ref(false);
 const openModalPO = ref(false);
 const openModalOnline = ref(false);
 
+const barcodeInput = ref("")
+let barcodeTimeout = null
+
+const datatableItems = ref([]) // <-- ini untuk datatable
 // Hold modal state
 const holdForm = ref({
   customerName: "",
@@ -401,6 +411,48 @@ function checkoutOnline() {
   );
   openModalOnline.value = false;
 }
+
+const handleBarcodeInput = (e) => {
+  if (barcodeTimeout) clearTimeout(barcodeTimeout)
+
+  // abaikan jika bukan karakter alfanumerik atau enter
+  if (e.key === 'Enter') {
+    const scannedCode = barcodeInput.value.trim()
+    if (scannedCode) {
+      fetchDataByBarcode(scannedCode)
+    }
+    barcodeInput.value = ''
+  } else if (/^[a-zA-Z0-9]$/.test(e.key)) {
+    barcodeInput.value += e.key
+  }
+
+  // reset jika tidak ada input 300ms
+  barcodeTimeout = setTimeout(() => {
+    barcodeInput.value = ''
+  }, 300)
+}
+
+const fetchDataByBarcode = async (code) => {
+  try {
+    const { data } = await axios.get(`/api/entrybarang/getDataByCode/${code}`)
+    if (data) {
+      datatableItems.value.push({
+        name: data.name,
+        quantity: 1,
+        price: data.price
+      })
+    } else {
+      alert('Data tidak ditemukan')
+    }
+  } catch (error) {
+    console.error(error)
+    alert('Gagal mengambil data barang')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleBarcodeInput)
+})
 </script>
 
 <style scoped>
