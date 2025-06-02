@@ -142,14 +142,33 @@ class AcaraMController extends Controller
         if (!$acara) {
             return response()->json(['message' => 'Data not found'], 404);
         }
-        $acara->delete();
+        $deleted = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->get();
         if(!$deleted->isEmpty()){
-             $deleted = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->delete();
+            $deleted = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->delete();
         }
 
+        $acara->delete();
         return response()->json([
             'message' => 'Data deleted',
             'code' => 200
+        ], 200);
+    }
+
+    public function exportData($id){
+        $acara = AcaraM::find($id);
+        if(!$acara){
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        $acaraDet = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->get();
+
+        return response()->json([
+            'message' => 'Data found',
+            'code' => 200,
+            'data' => [
+                'acara' => $acara,
+                'detail' => $acaraDet
+            ]
         ], 200);
     }
 }

@@ -9,4 +9,5 @@ Route::post('/addAcara', [AcaraMController::class, 'addAcara']);
 Route::put('/updateAcara/{id}', [AcaraMController::class, 'updateAcara']);
 Route::put('/updateStatusAcara/{id}', [AcaraMController::class, 'updateStatus']);
 Route::delete('/deleteAcara/{id}', [AcaraMController::class, 'destroy']);
+Route::get('/export/{id}', [AcaraMController::class, 'exportData']);
 

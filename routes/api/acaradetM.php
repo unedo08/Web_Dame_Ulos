@@ -5,6 +5,6 @@ use App\Http\Controllers\Api\AcaradetMController;
 
 Route::get('/', [AcaradetMController::class, 'index']);
 Route::get('/{id}', [AcaradetMController::class, 'show']);
-Route::get('/{acara_id}', [AcaradetMController::class, 'getByAcara']);
+Route::get('/getDataByAcara/{acara_id}', [AcaradetMController::class, 'getByAcara']);
 Route::post('/addDetAcara', [AcaradetMController::class, 'store']);
 Route::delete('/deleteDetAcara/{id}', [AcaradetMController::class, 'destroy']);
