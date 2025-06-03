@@ -69,31 +69,52 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useRuntimeConfig } from "#imports";
+import axios from "axios";
 
 const router = useRouter();
 const dropdownVisible = ref(false);
 const userEmail = ref("User");
+const url = ref("");
+
+onMounted(async () => {
+  const config = useRuntimeConfig();
+  userEmail.value = localStorage.getItem("user_email") || "User";
+  url.value = config.public.apiBase;
+});
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value;
 };
 
-// Function to handle item click
 const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
   console.log("item", item);
   if (item === "Logout") {
-    localStorage.removeItem("auth_token");
-    // localStorage.removeItem("user_email");
-    sessionStorage.clear();
-    console.log("sini", item);
-    await router.push("/");
+    console.log("sad", sessionStorage.getItem("auth_token"));
+    console.log("sad", sessionStorage.getItem("email"));
+    console.log("sad", sessionStorage.getItem("password"));
+    try {
+      await axios.get(
+        `${url.value}/api/user`,
+        {
+          email: sessionStorage.getItem("email"),
+          password: sessionStorage.getItem("password"),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("auth_token")}`,
+          },
+        }
+      );
+      await router.push("/");
+      sessionStorage.removeItem("auth_token");
+      sessionStorage.clear();
+    } catch (error) {
+      console.error("Error logout", error);
+    }
   }
 };
-
-onMounted(() => {
-  userEmail.value = localStorage.getItem("user_email") || "User";
-});
 </script>
 
 <style scoped>

@@ -56,7 +56,7 @@
 
               <button
                 class="text-yellow-500 hover:text-yellow-700"
-                @click="exportItem(acara)"
+                @click="exportItem(acara.acara_id)"
                 title="Export"
               >
                 <ArrowDownTrayIcon class="w-5 h-5" />
@@ -545,25 +545,59 @@ const submitEdit = async () => {
   }
 };
 
-const exportItem = (acara) => {
-  const data = [
-    {
-      "Nama Acara": acara.nama_acara,
-      "Jumlah Barang": acara.jenisbarang_jumlah,
-      "Modal Barang": acara.modal_barang,
-      "Harga Net": acara.harga_net,
-      "Harga Pricetag": acara.harga_pricetag,
-      Keterangan: acara.keterangan,
-      Status: acara.status,
-    },
-  ];
+const exportItem = async (id) => {
+  try {
+    const response = await axios.get(`${url.value}/api/acara/export/${id}`);
+    const acaraData = response.data.data.acara;
+    const detailData = response.data.data.detail;
 
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Data Acara");
+    const headers = [
+      "Nama Acara",
+      "Jumlah Barang",
+      "Modal",
+      "Harga Net",
+      "Price Tag",
+      "Keterangan",
+      "Status",
+      "ID Detail",
+      "ID Barang Entry",
+      "Created At",
+      "Updated At",
+    ];
 
-  const filename = `Export_Acara_${acara.nama_acara.replace(/\s+/g, "_")}.xlsx`;
-  XLSX.writeFile(workbook, filename);
+    const rows = detailData.map((item) => [
+      acaraData.acara_nama,
+      acaraData.acara_jumlahbarang,
+      acaraData.acara_modalbarang,
+      acaraData.acara_harganetbarang,
+      acaraData.acara_hargapricetagbarang,
+      acaraData.acara_keterangan,
+      acaraData.acara_status,
+      item.acaradet_id,
+      item.acaradet_barangentry_id,
+      item.created_at,
+      item.updated_at,
+    ]);
+
+    const data = [headers, ...rows];
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // 🔗 Merge Nama Acara (kolom A)
+    const mergeRange = {
+      s: { r: 1, c: 0 }, // start row 1 (0-indexed), col 0 (A)
+      e: { r: detailData.length, c: 0 }, // end row = total rows, same col
+    };
+    worksheet["!merges"] = [mergeRange];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Export Acara");
+
+    const filename = `Export_Acara_${acaraData.acara_nama.replace(/\s+/g, "_")}.xlsx`;
+    XLSX.writeFile(workbook, filename);
+  } catch (error) {
+    console.error("Gagal mengekspor data acara:", error);
+    alert("Gagal mengekspor data.");
+  }
 };
 
 const closePrintModal = () => {

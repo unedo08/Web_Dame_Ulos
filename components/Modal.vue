@@ -257,18 +257,21 @@ async function handleScan() {
 
   if (!found) {
     alert("Barang tidak ditemukan.");
+    barcode.value = null;
     barang.value = null;
   }
   
   try{
     const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
     if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
+      barcode.value = null;
       return;
     }
     barang.value = {...found}
     emit("scanned", { ...found });
   }catch(err){
     alert("Kode sudah digunakan, tidak bisa entry ulang");
+    barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:", err)
   }
 }
@@ -281,18 +284,21 @@ async function handleScanSize() {
   
   if (found) {
     alert("Barang tidak ditemukan.");
+    barcode.value = null;
     barang.value = null;
   }
 
   try{
     const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
     if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
+      barcode.value=null;
       return;
     }
     barang.value = {...found}
     emit("sizeSubmitted", { ...found });
   }catch(err){
     alert("Kode sudah digunakan, tidak bisa entry ulang");
+    barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:", err)
   }
 }
