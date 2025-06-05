@@ -65,7 +65,6 @@
             style="page-break-after: always"
           >
             <div style="display: flex; gap: 40px">
-              <!-- Kolom 1: Info Produk -->
               <div style="flex: 1">
                 <h1>{{item.barangentry_nama}}</h1>
                 <p class="text-xl font-semibold mb-4">Horas!</p>
@@ -136,7 +135,6 @@
                 </table>
               </div>
 
-              <!-- Kolom 2: Perawatan -->
               <div style="flex: 1">
                 <p class="font-semibold mb-2">
                   BAGAIMANA CARA PERAWATAN KAIN TENUN YANG BENAR?
@@ -249,55 +247,33 @@ const modalTitle = computed(() => {
   }
 });
 
-async function handleScan() {
-  const code = barcode.value.trim();
+function handleScan() {
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
 
-  if (!found) {
-    alert("Barang tidak ditemukan.");
-    barcode.value = null;
-    barang.value = null;
-  }
-  
-  try{
-    const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
-    if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
-      barcode.value = null;
-      return;
-    }
-    barang.value = {...found}
+  if (found) {
+    barang.value = { ...found };
     emit("scanned", { ...found });
-  }catch(err){
-    alert("Kode sudah digunakan, tidak bisa entry ulang");
+  } else {
+    alert("Barang tidak ditemukan.");
+    barang.value = null;
     barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:", err)
   }
 }
 
-async function handleScanSize() {
-  const code = barcode.value.trim();
+function handleScanSize() {
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
   );
-  
-  if (found) {
-    alert("Barang tidak ditemukan.");
-    barcode.value = null;
-    barang.value = null;
-  }
 
-  try{
-    const res = await axios.get(`${url.value}/api/entrybarang/checkBarangEntry/`+code);    
-    if (res.data.message === "Kode sudah digunakan, tidak bisa entry ulang") {
-      barcode.value=null;
-      return;
-    }
-    barang.value = {...found}
+  if (found) {
+    barang.value = { ...found };
     emit("sizeSubmitted", { ...found });
-  }catch(err){
-    alert("Kode sudah digunakan, tidak bisa entry ulang");
+  } else {
+    alert("Barang tidak ditemukan.");
+    barang.value = null;
     barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:", err)
   }

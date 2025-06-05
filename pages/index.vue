@@ -48,63 +48,60 @@
     </div>
 </template>
 
-<script lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useRuntimeConfig } from '#imports'
+
+const email = ref('')
+const password = ref('')
+const rememberMe = ref(false)
+const errorMessage = ref(null)
+const router = useRouter()
 const url = ref('')
+
 onMounted(() => {
-  const config = useRuntimeConfig();
-  url.value = config.public.apiBase;
-});
-export default {
-    name: 'LoginPage',
-    setup() {
-        const email = ref<string>('')
-        const password = ref<string>('')
-        const rememberMe = ref<boolean>(false)
-        const errorMessage = ref<string | null>(null)
-        const router = useRouter()
+  const config = useRuntimeConfig()
+  url.value = config.public.apiBase
+})
 
-        const handleLogin = async() => {
-            // Simulate a login process
-            errorMessage.value = null
-            try{
-                const response = await axios.post(`${url.value}/api/login`, {
-                    email : email.value,
-                    password : password.value
-                })
+const handleLogin = async () => {
+  errorMessage.value = null
+  try {
+    const response = await axios.post(`${url.value}/api/login`, {
+      email: email.value,
+      password: password.value,
+    })
 
-                const token = response.data.token
-                if(token){
-                    if(rememberMe.value){
-                        localStorage.setItem('auth_token', token)
-                    }else{
-                        sessionStorage.setItem('auth_token', token)
-                    }
+    const token = response.data.token
+    if (token) {
+      if (rememberMe.value) {
+        localStorage.setItem('auth_token', token)
+        localStorage.setItem('email', email.value)
+        localStorage.setItem('password', password.value)
 
-                    router.push('/beranda')
-                }else{
-                    errorMessage.value = 'Login Failed: token not found'
-                }
-            }catch(error: any){
-                if(error.response && error.response.data && error.response.data.message){
-                    errorMessage.value = error.response.data.message
-                }else{
-                    errorMessage.value = "Login Gagal. Silahkan coba lagi!"
-                }
-            }
-        }
+        sessionStorage.setItem('auth_token', token)
+        sessionStorage.setItem('email', email.value)
+        sessionStorage.setItem('password', password.value)
+        
+      } else {
+        sessionStorage.setItem('auth_token', token)
+        sessionStorage.setItem('email', email.value)
+        sessionStorage.setItem('password', password.value)
+      }
 
-        return {
-            email,
-            password,
-            rememberMe,
-            errorMessage,
-            handleLogin,
-        }
+      router.push('/beranda')
+    } else {
+      errorMessage.value = 'Login Failed: token not found'
     }
+  } catch (error) {
+    if (error.response?.data?.message) {
+      errorMessage.value = error.response.data.message
+    } else {
+      errorMessage.value = 'Login Gagal. Silahkan coba lagi!'
+    }
+  }
 }
 
 definePageMeta({

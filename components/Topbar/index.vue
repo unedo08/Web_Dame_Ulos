@@ -2,7 +2,6 @@
   <div class="topbar">
     <div class="topbar-content">
       <div class="text-right">
-        <!-- Clickable area for dropdown: avatar, name, and arrow -->
         <div class="user-info" @click="toggleDropdown">
           <img src="@/assets/image/avatar.png" alt="avatar" class="avatar" />
           <span class="username">{{ userEmail }}</span>
@@ -13,7 +12,6 @@
           />
         </div>
 
-        <!-- Dropdown menu -->
         <ul
           v-if="dropdownVisible"
           class="dropdown-menu dropdown-menu-end"
@@ -25,22 +23,6 @@
             z-index: 1000;
           "
         >
-          <!-- <li>
-            <a
-              class="dropdown-item"
-              href="#"
-              @click="onMenuItemClick('Profile')"
-              >Profile</a
-            >
-          </li>
-          <li>
-            <a
-              class="dropdown-item"
-              href="#"
-              @click="onMenuItemClick('Settings')"
-              >Settings</a
-            >
-          </li> -->
           <li>
             <a class="dropdown-item" href="#" @click="onMenuItemClick('Logout')"
               >Logout</a
@@ -89,7 +71,6 @@ const toggleDropdown = () => {
 
 const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
-  console.log("item", item);
   if (item === "Logout") {
     console.log("sad", sessionStorage.getItem("auth_token"));
     console.log("sad", sessionStorage.getItem("email"));

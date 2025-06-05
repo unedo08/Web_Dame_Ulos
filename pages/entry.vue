@@ -44,25 +44,36 @@
             <th>Modal</th>
             <th>Price Tag</th>
             <th>Harga Net</th>
+            <th>Jumlah</th>
             <th>Acara</th>
             <th>Ukuran Mandar</th>
             <th>Ukuran Ulos</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="barang in listBarang" :key="barang.kode_barang">
             <td>{{ formatTanggal(barang.created_at) }}</td>
-            <td>{{ barang.barangentry_temp_nama }}</td>
-            <td>{{ barang.barangentry_temp_warna }}</td>
-            <td>{{ barang.barangentry_temp_nama_penenun }}</td>
-            <td>{{ barang.barangentry_temp_nama_panirat }}</td>
-            <td>{{ barang.barangentry_temp_dryer }}</td>
-            <td>{{ barang.barangentry_temp_modal }}</td>
-            <td>{{ barang.barangentry_temp_price_tag }}</td>
-            <td>{{ barang.barangentry_temp_harga_net }}</td>
-            <td>{{ barang.barangentry_temp_acara }}</td>
-            <td>{{ barang.barangentry_temp_ukuran_mandar }}</td>
-            <td>{{ barang.barangentry_temp_ukuran_ulos }}</td>
+            <td>{{ barang.barangentry_nama }}</td>
+            <td>{{ barang.barangentry_warna }}</td>
+            <td>{{ barang.barangentry_nama_penenun }}</td>
+            <td>{{ barang.barangentry_nama_panirat }}</td>
+            <td>{{ barang.barangentry_dryer }}</td>
+            <td>{{ barang.barangentry_modal }}</td>
+            <td>{{ barang.barangentry_price_tag }}</td>
+            <td>{{ barang.barangentry_harga_net }}</td>
+            <td>{{ barang.barangentry_jumlah_barang }}</td>
+            <td>{{ barang.barangentry_acara }}</td>
+            <td>{{ barang.barangentry_ukuran_mandar }}</td>
+            <td>{{ barang.barangentry_ukuran_ulos }}</td>
+            <td>
+              <button
+                class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
+                @click="printPriceTag(barang.barangentry_code_id)"
+              >
+                Print Price Tag
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -98,7 +109,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Nama Ulos:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_nama"
+              v-model="selectedBarang.barangentry_nama"
               type="text"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
@@ -107,7 +118,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Warna Ulos:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_warna"
+              v-model="selectedBarang.barangentry_warna"
               type="text"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
@@ -116,7 +127,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Nama Penenun:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_nama_penenun"
+              v-model="selectedBarang.barangentry_nama_penenun"
               type="text"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
@@ -125,7 +136,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Nama Panirat:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_nama_panirat"
+              v-model="selectedBarang.barangentry_nama_panirat"
               type="text"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
@@ -134,7 +145,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Dyer:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_dryer"
+              v-model="selectedBarang.barangentry_dryer"
               type="text"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
@@ -143,8 +154,8 @@
           <div>
             <label class="block text-gray-700 mb-1">Modal:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_modal"
-              type="text"
+              v-model="selectedBarang.barangentry_modal"
+              type="number"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
             />
@@ -152,8 +163,8 @@
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_price_tag"
-              type="text"
+              v-model="selectedBarang.barangentry_price_tag"
+              type="number"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
             />
@@ -161,8 +172,17 @@
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
             <input
-              v-model="selectedBarang.barangentry_temp_harga_net"
-              type="text"
+              v-model="selectedBarang.barangentry_harga_net"
+              type="number"
+              class="w-full border rounded px-3 py-2"
+              placeholder="..."
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-1">Jumlah:</label>
+            <input
+              v-model="selectedBarang.barangentry_jumlah_barang"
+              type="number"
               class="w-full border rounded px-3 py-2"
               placeholder="..."
             />
@@ -171,7 +191,7 @@
 
         <div class="flex justify-start space-x-3 mt-6">
           <button
-            @click="showModalAdd = false"
+            @click="cancelTambahBarang"
             class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
           >
             Batal
@@ -233,7 +253,7 @@
         </div>
         <div class="flex justify-start space-x-3 mt-6">
           <button
-            @click="showModalAddSize = false"
+            @click="cancelSizeBarang"
             class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
           >
             Batal
@@ -247,6 +267,106 @@
         </div>
       </div>
     </div>
+
+    <!-- Print -->
+    <div
+      ref="printContent"
+      class="hidden print:block p-8 text-sm leading-relaxed"
+    >
+      <div
+        v-for="item in priceTagData"
+        :key="item.barangentry_id"
+        style="page-break-after: always"
+      >
+        <div style="display: flex; gap: 40px">
+          <div style="flex: 1">
+            <h1>{{ item.barangentry_nama }}</h1>
+            <p class="text-xl font-semibold mb-4">Horas!</p>
+            <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
+            <p>
+              Dengan membeli dan memiliki salah satu karya terbaik dari
+              <strong>Dame Ulos</strong>,
+            </p>
+            <p>
+              kamu telah ikut
+              <strong>Menjaga Kehidupan dan Tradisi Batak</strong>.
+            </p>
+
+            <p class="mt-4">Salam Hangat,</p>
+            <p><em>Artisan Dame Ulos</em></p>
+
+            <table
+              style="
+                margin-top: 20px;
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.9rem;
+              "
+            >
+              <tr>
+                <td style="padding: 4px 8px; font-weight: bold">
+                  Tahun Pembuatan
+                </td>
+                <td style="padding: 4px 8px">
+                  {{ new Date(item.created_at).getFullYear() }}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 8px; font-weight: bold">
+                  Ukuran Tenun
+                </td>
+                <td style="padding: 4px 8px">
+                  {{ item.barangentry_ukuran_ulos ?? "-" }} x
+                  {{ item.barangentry_ukuran_mandar ?? "-" }}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 8px; font-weight: bold">Warna</td>
+                <td style="padding: 4px 8px">
+                  {{ item.barangentry_warna }}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 8px; font-weight: bold">Maker</td>
+                <td style="padding: 4px 8px">Dame Ulos Collective</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 8px; padding-left: 1.5rem">
+                  <strong>a. Penenun:</strong>
+                </td>
+                <td style="padding: 4px 8px">
+                  {{ item.barangentry_nama_penenun }}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 8px; padding-left: 1.5rem">
+                  <strong>b. Dyer:</strong>
+                </td>
+                <td style="padding: 4px 8px">
+                  {{ item.barangentry_dryer }}
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="flex: 1">
+            <p class="font-semibold mb-2">
+              BAGAIMANA CARA PERAWATAN KAIN TENUN YANG BENAR?
+            </p>
+            <ol class="list-decimal list-inside">
+              <li>Ulos tidak bisa dicuci/direndam dengan detergen</li>
+              <li>
+                Setelah dipakai jangan dilipat, cukup digantung dan dianginkan
+              </li>
+              <li>Jika tidak digunakan lama, jemur kain selama 1 jam</li>
+              <li>Hindari tempat lembab dan penyimpanan dalam plastik</li>
+              <li>Khusus kain pewarna tekstil bisa di dry clean</li>
+            </ol>
+            <p class="mt-4">Selamat Pakai</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -254,22 +374,22 @@
 import { ref, onMounted } from "vue";
 import BaseModal from "../components/Modal.vue";
 import axios from "axios";
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from "#imports";
 
 const modalOpen = ref(false);
 const modalType = ref("desc");
 const showModalAdd = ref(false);
 const showModalAddSize = ref(false);
 const selectedBarang = ref({});
-const url = ref('')
-const isLoading = ref(false);
+const url = ref("");
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
+const priceTagData = ref([]);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
-  url.value = config.public.apiBase
+  url.value = config.public.apiBase;
   try {
     const response = await axios.get(`${url.value}/api/codebarang`);
     barangDatabase.value = response.data;
@@ -290,8 +410,9 @@ function formatTanggal(tanggal) {
 
 async function getListBarangTemp() {
   try {
-    const response = await axios.get(`${url.value}/api/entrybarangtemp/getDataTable`);
-    // console.log("asdsad", response);
+    const response = await axios.get(
+      `${url.value}/api/entrybarang`
+    );
 
     listBarang.value = response.data.data;
   } catch (error) {
@@ -311,22 +432,19 @@ function tambahBarang(barang) {
 async function submitBarang() {
   try {
     const payload = {
-      barangentry_temp_code_id: String(selectedBarang.value.code_id),
-      barangentry_temp_nama: selectedBarang.value.barangentry_temp_nama,
-      barangentry_temp_warna: selectedBarang.value.barangentry_temp_warna,
-      barangentry_temp_nama_penenun:
-        selectedBarang.value.barangentry_temp_nama_penenun,
-      barangentry_temp_nama_panirat:
-        selectedBarang.value.barangentry_temp_nama_panirat,
-      barangentry_temp_dryer: selectedBarang.value.barangentry_temp_dryer,
-      barangentry_temp_modal: selectedBarang.value.barangentry_temp_modal,
-      barangentry_temp_price_tag:
-        selectedBarang.value.barangentry_temp_price_tag,
-      barangentry_temp_harga_net:
-        selectedBarang.value.barangentry_temp_harga_net,
+      barangentry_code_id: String(selectedBarang.value.code_id),
+      barangentry_nama: selectedBarang.value.barangentry_nama,
+      barangentry_warna: selectedBarang.value.barangentry_warna,
+      barangentry_nama_penenun: selectedBarang.value.barangentry_nama_penenun,
+      barangentry_nama_panirat: selectedBarang.value.barangentry_nama_panirat,
+      barangentry_dryer: selectedBarang.value.barangentry_dryer,
+      barangentry_modal: selectedBarang.value.barangentry_modal,
+      barangentry_price_tag: selectedBarang.value.barangentry_price_tag,
+      barangentry_harga_net: selectedBarang.value.barangentry_harga_net,
+      barangentry_jumlah_barang: selectedBarang.value.barangentry_jumlah_barang,
     };
-
-    await axios.post(`${url.value}/api/entrybarangtemp/storeDescription`, payload);
+  
+    await axios.post(`${url.value}/api/entrybarang/storeDescription`, payload);
     await getListBarangTemp();
 
     selectedBarang.value = {};
@@ -337,36 +455,41 @@ async function submitBarang() {
   }
 }
 
-function handleSizeSubmitted(barang) {  
-  selectedBarang.value = {...barang};
+function cancelTambahBarang() {
+  selectedBarang.value == {};
+  showModalAdd.value = false;
+}
+
+function handleSizeSubmitted(barang) {
+  selectedBarang.value = { ...barang };
   showModalAddSize.value = true;
 }
 
 async function submitSizeBarang() {
   try {
     const payload = {
-      barangentry_temp_code_id: String(selectedBarang.value.code_id),
-      barangentry_temp_ukuran_mandar: selectedBarang.value.ukuran_mandar,
-      barangentry_temp_ukuran_ulos: selectedBarang.value.ukuran_ulos,
+      barangentry_code_id: String(selectedBarang.value.code_id),
+      barangentry_ukuran_mandar: selectedBarang.value.ukuran_mandar,
+      barangentry_ukuran_ulos: selectedBarang.value.ukuran_ulos,
     };
 
-    await axios.post(`${url.value}/api/entrybarangtemp/storeSize`, payload);
-    
+    await axios.post(`${url.value}/api/entrybarang/storeSize`, payload);
+
     const index = listBarang.value.findIndex(
-      (item) => item.barangentry_temp_code_id === selectedBarang.value.code_id
+      (item) => item.barangentry_code_id === selectedBarang.value.code_id
     );
 
     if (index !== -1) {
-      listBarang.value[index].barangentry_temp_ukuran_mandar =
-        payload.barangentry_temp_ukuran_mandar;
-      listBarang.value[index].barangentry_temp_ukuran_ulos =
-        payload.barangentry_temp_ukuran_ulos;
+      listBarang.value[index].barangentry_ukuran_mandar =
+        payload.barangentry_ukuran_mandar;
+      listBarang.value[index].barangentry_ukuran_ulos =
+        payload.barangentry_ukuran_ulos;
     } else {
       listBarang.value.push({
         no: listBarang.value.length + 1,
         ...selectedBarang.value,
-        barangentry_temp_ukuran_ulos: payload.barangentry_temp_ukuran_ulos,
-        barangentry_temp_ukuran_mandar: payload.barangentry_temp_ukuran_mandar,
+        barangentry_ukuran_ulos: payload.barangentry_ukuran_ulos,
+        barangentry_ukuran_mandar: payload.barangentry_ukuran_mandar,
       });
     }
 
@@ -377,16 +500,60 @@ async function submitSizeBarang() {
     console.error("Gagal menyimpan size:", error);
   }
 }
-</script>
-<style>
-.judul{
-  font-size: 40px;
+
+function cancelSizeBarang() {
+  selectedBarang.value == {};
+  showModalAddSize.value = false;
 }
 
+async function printPriceTag(id) {
+  // try {
+  const results = [];
+  try {
+    const responseCode = await axios.get(`${url.value}/api/codebarang/` + id);
+    const code = responseCode.data.code_nama;
+    const res = await axios.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + code
+    );
+    if (res.data) results.push(res.data);
+  } catch (err) {
+    console.error(`Gagal ambil data untuk ${code}`, err);
+  }
+  priceTagData.value = results;
+
+  nextTick(() => {
+    const content = printContent.value;
+    if (!content) return;
+
+    const printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Price Tag</title>
+          <style>
+            body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+            ol { padding-left: 1rem; }
+          </style>
+        </head>
+        <body>
+          ${content.innerHTML}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  });
+}
+</script>
+<style>
+.judul {
+  font-size: 40px;
+}
 </style>
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 .search-box {
   border: 1px solid #ccc;

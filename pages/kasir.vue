@@ -59,12 +59,31 @@
       <tbody>
         <tr v-for="(item, index) in datatableItems" :key="index">
           <td>{{ index + 1 }}</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.price }}</td>
+          <td>{{ item.barangentry_nama }}</td>
+          <td>
+            <input
+              type="number"
+              v-model.number="item.quantity"
+              class="w-16 border px-2 py-1"
+              min="1"
+            />
+            <!-- {{ item.quantity }} -->
+          </td>
+          <td>
+            <input
+              type="number"
+              v-model.number="item.barangentry_harga_net"
+              class="w-28 border rounded px-2 py-1"
+              min="0"
+            />
+            <!-- {{ item.barangentry_harga_net }} -->
+          </td>
         </tr>
       </tbody>
     </table>
+    <div class="mt-4 text-right font-semibold text-lg">
+      Subtotal: {{ formatRupiah(subtotal) }}
+    </div>
   </div>
 
   <ModalKasir
@@ -301,23 +320,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import ModalKasir from "../components/ModalKasir.vue";
 import axios from "axios";
+import { useRuntimeConfig } from "#imports";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
+const url = ref("");
 
 const openModalHold = ref(false);
 const openModalProcess = ref(false);
 const openModalPO = ref(false);
 const openModalOnline = ref(false);
 
-const barcodeInput = ref("")
-let barcodeTimeout = null
+const barcodeInput = ref("");
+let barcodeTimeout = null;
 
-const datatableItems = ref([]) // <-- ini untuk datatable
-// Hold modal state
+const datatableItems = ref([]);
+
+onMounted(() => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase;
+  window.addEventListener("keydown", handleBarcodeInput);
+});
+
+const subtotal = computed(() => {
+  return datatableItems.value.reduce((total, item) => {
+    const qty = item.quantity || 0;
+    const harga = parseFloat(item.barangentry_harga_net) || 0;
+    return total + (qty * harga);
+  }, 0);
+});
+
+function formatRupiah(number) {
+  return number.toLocaleString("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  });
+}
+
 const holdForm = ref({
   customerName: "",
   cartItems: "",
@@ -382,7 +425,7 @@ function checkoutPO() {
   openModalPO.value = false;
 }
 
-// Online modal state
+// Online modal
 const onlineForm = ref({
   accountName: "",
   platform: "",
@@ -413,46 +456,54 @@ function checkoutOnline() {
 }
 
 const handleBarcodeInput = (e) => {
-  if (barcodeTimeout) clearTimeout(barcodeTimeout)
+  if (barcodeTimeout) clearTimeout(barcodeTimeout);
 
-  // abaikan jika bukan karakter alfanumerik atau enter
-  if (e.key === 'Enter') {
-    const scannedCode = barcodeInput.value.trim()
+  if (e.key === "Enter") {
+    const scannedCode = barcodeInput.value.trim();
     if (scannedCode) {
-      fetchDataByBarcode(scannedCode)
+      fetchDataByBarcode(scannedCode);
     }
-    barcodeInput.value = ''
+    barcodeInput.value = "";
   } else if (/^[a-zA-Z0-9]$/.test(e.key)) {
-    barcodeInput.value += e.key
+    barcodeInput.value += e.key;
   }
-
-  // reset jika tidak ada input 300ms
   barcodeTimeout = setTimeout(() => {
-    barcodeInput.value = ''
-  }, 300)
-}
+    barcodeInput.value = "";
+  }, 300);
+};
 
 const fetchDataByBarcode = async (code) => {
   try {
-    const { data } = await axios.get(`/api/entrybarang/getDataByCode/${code}`)
-    if (data) {
-      datatableItems.value.push({
-        name: data.name,
-        quantity: 1,
-        price: data.price
-      })
+    const configURL = useRuntimeConfig();
+    const baseURL = configURL.public.apiBase;
+    const { data } = await axios.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
+
+    if (data && Array.isArray(data.data) && data.data.length > 0) {
+      const item = data.data[0];
+      const existingItem = datatableItems.value.find(
+        (i) => i.barangentry_nama === item.barangentry_nama
+      );
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        datatableItems.value.push({
+          barangentry_nama: item.barangentry_nama,
+          quantity: 1,
+          barangentry_harga_net: item.barangentry_harga_net,
+          isEditing: false
+        });
+      }
     } else {
-      alert('Data tidak ditemukan')
+      alert("Data tidak ditemukan");
     }
   } catch (error) {
-    console.error(error)
-    alert('Gagal mengambil data barang')
+    console.error(error);
+    alert("Gagal mengambil data barang");
   }
-}
+};
 
-onMounted(() => {
-  window.addEventListener('keydown', handleBarcodeInput)
-})
+
 </script>
 
 <style scoped>
