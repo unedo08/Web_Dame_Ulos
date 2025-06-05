@@ -72,9 +72,9 @@ const toggleDropdown = () => {
 const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
   if (item === "Logout") {
-    console.log("sad", sessionStorage.getItem("auth_token"));
-    console.log("sad", sessionStorage.getItem("email"));
-    console.log("sad", sessionStorage.getItem("password"));
+    // console.log("sad", sessionStorage.getItem("auth_token"));
+    // console.log("sad", sessionStorage.getItem("email"));
+    // console.log("sad", sessionStorage.getItem("password"));
     try {
       await axios.get(
         `${url.value}/api/user`,
