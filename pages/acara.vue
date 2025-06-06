@@ -613,7 +613,7 @@ const handlePrint = () => {
 
 <style scoped>
 * {
-  font-family: "Nunito", sans-serif;
+  font-family: "Inter", "Nunito";
 }
 
 .hide-col {

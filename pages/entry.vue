@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="judul text-xl font-semibold mb-4">Wait to Entry</div>
-    <div class="flex space-x-4 mb-6">
+    <div class="flex justify-end space-x-4 mb-6">
       <button
         class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
         @click="openModal('desc')"
@@ -68,7 +68,7 @@
             <td>{{ barang.barangentry_ukuran_ulos }}</td>
             <td>
               <button
-                class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
+                class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
                 @click="printPriceTag(barang.barangentry_code_id)"
               >
                 Print Price Tag
@@ -410,9 +410,7 @@ function formatTanggal(tanggal) {
 
 async function getListBarangTemp() {
   try {
-    const response = await axios.get(
-      `${url.value}/api/entrybarang`
-    );
+    const response = await axios.get(`${url.value}/api/entrybarang`);
 
     listBarang.value = response.data.data;
   } catch (error) {
@@ -443,7 +441,7 @@ async function submitBarang() {
       barangentry_harga_net: selectedBarang.value.barangentry_harga_net,
       barangentry_jumlah_barang: selectedBarang.value.barangentry_jumlah_barang,
     };
-  
+
     await axios.post(`${url.value}/api/entrybarang/storeDescription`, payload);
     await getListBarangTemp();
 
@@ -553,7 +551,7 @@ async function printPriceTag(id) {
 </style>
 <style scoped>
 * {
-  font-family: "Nunito", sans-serif;
+  font-family: "Inter", "Nunito";
 }
 .search-box {
   border: 1px solid #ccc;
@@ -587,6 +585,17 @@ async function printPriceTag(id) {
 }
 
 .btn-print:hover {
+  background-color: #7df67b;
+}
+
+.btn-print-click {
+  background-color: #12c90e;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-print-click:hover {
   background-color: #7df67b;
 }
 

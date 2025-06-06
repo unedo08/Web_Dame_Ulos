@@ -284,7 +284,7 @@ const closeModal = () => {
 };
 
 const submitProduct = async () => {
-  const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 0;
+  const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 1;
   const product = {
     no: barang.value.length + 1,
     jenisbarang_kode: newProduct.value.jenisbarang_kode,
@@ -303,13 +303,13 @@ const submitProduct = async () => {
         jenisbarang_kode: newProductData.jenisbarang_kode,
         jenisbarang_nama: newProductData.jenisbarang_nama,
         jenisbarang_tipe: newProductData.jenisbarang_tipe,
-        jenisbarang_jumlah: newProductData.jenisbarang_jumlah,
+        jenisbarang_jumlah: jumlah,
       });
       closeModal();
       newProduct.value = {
         jenisbarang_kode: "",
         jenisbarang_nama: "",
-        jenisbarang_jumlah: 0,
+        jenisbarang_jumlah: 1,
         jenisbarang_tipe: "tunggal",
       };
     }
@@ -450,7 +450,7 @@ const deleteProduct = async (id, nama_barang) => {
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Inter", "Nunito";
 }
 
 .search-box {

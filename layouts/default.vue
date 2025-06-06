@@ -34,6 +34,6 @@ definePageMeta({
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Inter", "Nunito";
 }
 </style>
