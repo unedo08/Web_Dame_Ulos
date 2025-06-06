@@ -551,7 +551,7 @@ async function printPriceTag(id) {
 </style>
 <style scoped>
 * {
-  font-family: "Inter", "Nunito";
+  font-family: 'Nunito', sans-serif;
 }
 .search-box {
   border: 1px solid #ccc;

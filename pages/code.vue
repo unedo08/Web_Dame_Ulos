@@ -450,7 +450,7 @@ const deleteProduct = async (id, nama_barang) => {
 
 <style scoped>
 * {
-  font-family: "Inter", "Nunito";
+  font-family: 'Nunito', sans-serif;
 }
 
 .search-box {
