@@ -54,6 +54,7 @@
           <th>Nama Item</th>
           <th>Jumlah</th>
           <th>Harga</th>
+          <th class="hidden">code</th>
         </tr>
       </thead>
       <tbody>
@@ -78,6 +79,7 @@
             />
             <!-- {{ item.barangentry_harga_net }} -->
           </td>
+          <td class="hidden">{{ item.code_nama }}</td>
         </tr>
       </tbody>
     </table>
@@ -349,7 +351,7 @@ const subtotal = computed(() => {
   return datatableItems.value.reduce((total, item) => {
     const qty = item.quantity || 0;
     const harga = parseFloat(item.barangentry_harga_net) || 0;
-    return total + (qty * harga);
+    return total + qty * harga;
   }, 0);
 });
 
@@ -392,17 +394,91 @@ const processForm = ref({
   notes: "",
 });
 
-function checkoutProcess() {
+async function checkoutProcess() {
   if (!processForm.value.paymentMethod) {
     alert("Pilih metode pembayaran");
     return;
   }
-  alert(
-    `Transaksi selesai dengan pembayaran ${processForm.value.paymentMethod}\nCatatan: ${processForm.value.notes}`
+
+  const jumlahBarang = datatableItems.value.reduce(
+    (total, item) => total + (item.quantity || 0),
+    0
   );
-  processForm.value.paymentMethod = "";
-  processForm.value.notes = "";
-  openModalProcess.value = false;
+
+  const payload = {
+    transaksi_nama_customer: searchQueryCustomer.value,
+    transaksi_nomor_telepon: searchQueryPhone.value,
+    transaksi_jumlah_barang: jumlahBarang,
+    transaksi_total_harga: subtotal.value,
+    transaksi_cara_bayar: processForm.value.paymentMethod,
+    transaksi_tipe: "offline",
+    transaksi_status: "pending",
+    transaksi_catatan: processForm.value.notes,
+  };
+
+  try {
+    const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+
+    const transaksi_id = data.data.transaksi_id;
+    console.log("asdasdsa", transaksi_id);
+
+    for (const item of datatableItems.value) {
+      try {
+        const { data: barangResponse } = await axios.get(
+          `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+        );
+
+        const barangData = barangResponse.data;
+        if (!barangData || !barangData.barangentry_id) {
+          console.warn(`Barang tidak ditemukan untuk kode: ${item.code_nama}`);
+          continue;
+        }
+
+        const detailPayload = {
+          transaksidetail_transaksi_id: transaksi_id,
+          transaksidetail_barang_id: barangData.barangentry_id,
+          transaksidetail_jumlah_barang: item.quantity,
+          transaksidetail_harga_barang: item.barangentry_harga_net,
+        };
+
+        await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      } catch (innerErr) {
+        console.error("Gagal melakukan transaksi", innerErr);
+      }
+    }
+
+    const { data: responsePrint } = await axios.get(
+      `${url.value}/api/transaksi/${transaksi_id}`
+    );
+
+    const transaksi = responsePrint.data;
+    const detailWithNames = await Promise.all(
+      transaksi.details.map(async (detail) => {
+        const barangRes = await axios.get(
+          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+        );
+        return {
+          ...detail,
+          barangentry_nama:
+            barangRes.data.data.barangentry_nama || "Tidak Diketahui",
+        };
+      })
+    );
+
+    printToNewTab(transaksi, detailWithNames);
+
+    processForm.value.paymentMethod = "";
+    processForm.value.notes = "";
+    searchQueryCustomer.value = "";
+    searchQueryPhone.value = "";
+    datatableItems.value = [];
+    openModalProcess.value = false;
+
+    // alert("Transaksi dan detail berhasil disimpan!");
+  } catch (err) {
+    console.error("Gagal menyimpan transaksi:", err);
+    // alert("Terjadi kesalahan saat menyimpan transaksi.");
+  }
 }
 
 // Pre-Order modal state
@@ -476,7 +552,9 @@ const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
     const baseURL = configURL.public.apiBase;
-    const { data } = await axios.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
+    const { data } = await axios.get(
+      `${baseURL}/api/entrybarang/getDataKasir/` + code
+    );
 
     if (data && Array.isArray(data.data) && data.data.length > 0) {
       const item = data.data[0];
@@ -491,7 +569,8 @@ const fetchDataByBarcode = async (code) => {
           barangentry_nama: item.barangentry_nama,
           quantity: 1,
           barangentry_harga_net: item.barangentry_harga_net,
-          isEditing: false
+          isEditing: false,
+          code_nama: code,
         });
       }
     } else {
@@ -503,12 +582,216 @@ const fetchDataByBarcode = async (code) => {
   }
 };
 
+function printToNewTab(data, items) {
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) {
+    alert("Pop-up blocker menghalangi membuka tab baru.");
+    return;
+  }
 
+  // Helper fungsi format Rupiah
+  const formatRupiah = (number) => {
+    if (!number) return "Rp0";
+    return number.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    });
+  };
+
+  // Helper fungsi format Tanggal
+  const formatTanggal = (dateStr) => {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    return date.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Print Transaksi</title>
+    <style>
+      /* Reset & base */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0; padding: 20px;
+        background: #fff;
+        color: #000;
+      }
+      .print-area {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .text-sm { font-size: 0.875rem; }
+      .text-base { font-size: 1rem; }
+      .w-24 { width: 96px; }
+      .h-auto { height: auto; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      table th, table td {
+        padding: 8px 6px;
+        border-bottom: 1px solid #ccc;
+      }
+      table th {
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #444;
+      }
+      table td {
+        vertical-align: top;
+      }
+      table td.text-left {
+        text-align: left;
+      }
+      .total-bayar {
+        text-align: right;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-top: 20px;
+      }
+      /* Print styles */
+      @media print {
+        body {
+          margin: 0; padding: 0;
+        }
+        .print-area {
+          box-shadow: none;
+          width: 100%;
+          max-width: none;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="print-area">
+
+      <div class="text-center mb-4">
+        <img src="/image/DameUlosLogo2.png" alt="Logo" class="w-24 h-auto mx-auto mb-2" />
+        <h2 class="font-bold text-base">Dame Ulos Tarutung</h2>
+      </div>
+
+      <h2 class="font-bold text-center mb-2">Struk Transaksi</h2>
+      <p class="text-center text-sm mb-4">Terima kasih telah berbelanja!</p>
+
+      <div class="mb-4 text-sm">
+        <p><strong>Nama Customer:</strong> ${
+          data.transaksi_nama_customer || "-"
+        }</p>
+        <p><strong>No Telepon:</strong> ${
+          data.transaksi_nomor_telepon || "-"
+        }</p>
+        <p><strong>Metode Pembayaran:</strong> ${
+          data.transaksi_cara_bayar || "-"
+        }</p>
+        <p><strong>Jumlah Barang:</strong> ${
+          data.transaksi_jumlah_barang ||
+          items.reduce((acc, i) => acc + i.transaksidetail_jumlah_barang, 0)
+        }</p>
+        <p><strong>Total:</strong> ${formatRupiah(
+          data.transaksi_total_harga ||
+            items.reduce(
+              (acc, i) =>
+                acc +
+                i.transaksidetail_jumlah_barang *
+                  i.transaksidetail_harga_barang,
+              0
+            )
+        )}</p>
+        <p><strong>Waktu:</strong> ${formatTanggal(data.created_at)}</p>
+      </div>
+
+      <div class="my-4">
+        <h3 class="font-semibold mb-2">Detail Barang:</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th class="text-left">Qty</th>
+              <th class="text-left">Harga</th>
+              <th class="text-left">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items
+              .map(
+                (item) => `
+              <tr>
+                <td>${item.barangentry_nama}</td>
+                <td class="text-left">${item.transaksidetail_jumlah_barang}</td>
+                <td class="text-left">${formatRupiah(
+                  item.transaksidetail_harga_barang
+                )}</td>
+                <td class="text-left">${formatRupiah(
+                  item.transaksidetail_jumlah_barang *
+                    item.transaksidetail_harga_barang
+                )}</td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-top: 20px;">
+  <div>Jumlah Barang: ${items.reduce(
+    (acc, i) => acc + i.transaksidetail_jumlah_barang,
+    0
+  )}</div>
+  <div>Subtotal: ${formatRupiah(
+    data.transaksi_total_harga ||
+      items.reduce(
+        (acc, i) =>
+          acc +
+          i.transaksidetail_jumlah_barang * i.transaksidetail_harga_barang,
+        0
+      )
+  )}</div>
+</div>
+
+    </div>
+
+    <script>
+      window.onload = function() {
+        window.print();
+      };
+    <\/script>
+  </body>
+  </html>
+  `;
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+}
 </script>
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .search-box {

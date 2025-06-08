@@ -250,7 +250,7 @@ const modalTitle = computed(() => {
 function handleScan() {
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
-  );
+  ); 
 
   if (found) {
     barang.value = { ...found };
@@ -259,7 +259,7 @@ function handleScan() {
     alert("Barang tidak ditemukan.");
     barang.value = null;
     barcode.value = null;
-    console.error("Gagal Memeriksa Kode Barang:", err)
+    console.error("Gagal Memeriksa Kode Barang:")
   }
 }
 
@@ -275,7 +275,7 @@ function handleScanSize() {
     alert("Barang tidak ditemukan.");
     barang.value = null;
     barcode.value = null;
-    console.error("Gagal Memeriksa Kode Barang:", err)
+    console.error("Gagal Memeriksa Kode Barang:")
   }
 }
 

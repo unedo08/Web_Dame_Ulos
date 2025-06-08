@@ -3,6 +3,19 @@
     <div class="judul text-xl font-semibold mb-4">Wait to Entry</div>
     <div class="flex justify-end space-x-4 mb-6">
       <button
+        v-if="isSearchActive"
+        @click="resetSearch"
+        class="mb-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+      >
+        Reset Pencarian
+      </button>
+      <button
+        class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[104px] h-[45px]"
+        @click="openSearchModal"
+      >
+        🔍 Search
+      </button>
+      <button
         class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
         @click="openModal('desc')"
       >
@@ -52,7 +65,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="barang in listBarang" :key="barang.kode_barang">
+          <tr
+            v-for="barang in isSearchActive ? filteredBarang : listBarang"
+            :key="barang.kode_barang"
+          >
             <td>{{ formatTanggal(barang.created_at) }}</td>
             <td>{{ barang.barangentry_nama }}</td>
             <td>{{ barang.barangentry_warna }}</td>
@@ -367,6 +383,37 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Search -->
+    <div
+      v-if="showModalSearch"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
+        <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
+        <input
+          v-model="searchCode"
+          @keyup.enter="handleSearch"
+          type="text"
+          class="w-full border rounded px-3 py-2"
+          placeholder="Scan atau ketik kode barang..."
+        />
+        <div class="flex justify-end space-x-3 mt-4">
+          <button
+            @click="closeSearchModal"
+            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          >
+            Batal
+          </button>
+          <button
+            @click="handleSearch"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Cari
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -386,6 +433,11 @@ const url = ref("");
 const barangDatabase = ref([]);
 const listBarang = ref([]);
 const priceTagData = ref([]);
+
+const showModalSearch = ref(false);
+const searchCode = ref("");
+const filteredBarang = ref([]);
+const isSearchActive = ref(false);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -543,7 +595,60 @@ async function printPriceTag(id) {
     printWindow.print();
   });
 }
+
+function openSearchModal() {
+  showModalSearch.value = true;
+  searchCode.value = "";
+}
+
+function closeSearchModal() {
+  showModalSearch.value = false;
+  searchCode.value = "";
+}
+
+async function handleSearch() {
+  const keyword = searchCode.value.trim();
+  if (!keyword) return;
+
+  try {
+    // Ambil code dari API
+    const response = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${keyword}`);
+    const code = response.data.data.barangentry_code_id;
+    console.log('asdsa', code);
+    
+    if (!code) {
+      alert("Kode tidak ditemukan dari server.");
+      return;
+    }
+
+    // Filter secara lokal di listBarang
+    filteredBarang.value = listBarang.value.filter(
+      (item) => String(item.barangentry_code_id).includes(String(code))
+    );
+    console.log('sadas', filteredBarang.value);
+    
+
+    isSearchActive.value = true;
+    showModalSearch.value = false;
+
+    if (filteredBarang.value.length === 0) {
+      alert("Barang tidak ditemukan di daftar.");
+    }
+
+  } catch (error) {
+    console.error("Gagal mencari data kode:", error);
+    alert("Terjadi kesalahan saat mencari kode.");
+  }
+}
+
+
+function resetSearch() {
+  isSearchActive.value = false;
+  filteredBarang.value = [];
+  searchCode.value = "";
+}
 </script>
+
 <style>
 .judul {
   font-size: 40px;
@@ -551,7 +656,7 @@ async function printPriceTag(id) {
 </style>
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 .search-box {
   border: 1px solid #ccc;
