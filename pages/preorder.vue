@@ -1,0 +1,123 @@
+<template>
+  <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-6">Tambah Pre-Order Transaksi</h2>
+
+    <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- KIRI -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">ID Barang *</label>
+          <input v-model="form.idBarang" type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nama Akun *</label>
+          <input v-model="form.namaAkun" type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Target Selesai *</label>
+          <input v-model="form.targetSelesai" type="date"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Uang Muka (DP) *</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+            <input v-model="form.dp" type="number"
+              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Ulos *</label>
+          <textarea v-model="form.deskripsiUlos" rows="3"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Gambar</label>
+          <div class="w-full border border-dashed border-gray-400 rounded-md p-4 text-center">
+            <input type="file" @change="handleFileUpload" class="mx-auto" />
+            <p class="text-xs text-gray-500 mt-2">Ukuran Maksimal: 5MB</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANAN -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nama Ulos *</label>
+          <input v-model="form.namaUlos" type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">No Telepon *</label>
+          <input v-model="form.noTelepon" type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Total Pembayaran *</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+            <input v-model="form.totalPembayaran" type="number"
+              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Sisa Pembayaran *</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+            <input v-model="form.sisaPembayaran" type="number"
+              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Catatan *</label>
+          <textarea v-model="form.catatan" rows="3"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+        </div>
+      </div>
+
+      <!-- Tombol -->
+      <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+        <button type="button"
+          class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition">Batal</button>
+        <button type="submit"
+          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition">Tambah</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script setup>
+const form = reactive({
+  idBarang: '',
+  namaAkun: '',
+  targetSelesai: '',
+  dp: '',
+  deskripsiUlos: '',
+  namaUlos: '',
+  noTelepon: '',
+  totalPembayaran: '',
+  sisaPembayaran: '',
+  catatan: '',
+  gambar: null
+})
+
+function handleFileUpload(event) {
+  form.gambar = event.target.files[0]
+}
+
+function submitForm() {
+  console.log('Form submitted:', form)
+  // Lakukan proses kirim ke backend di sini jika perlu
+}
+</script>

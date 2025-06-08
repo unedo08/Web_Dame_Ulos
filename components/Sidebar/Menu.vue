@@ -53,6 +53,7 @@ const items = ref([
     children: [
       { title: "Transaksi", path: "/kasir" },
       { title: "List Transaksi", path: "/listTransaksi" },
+      { title: "Pre-Order", path: "/preorder" },
     ],
   },
   {
