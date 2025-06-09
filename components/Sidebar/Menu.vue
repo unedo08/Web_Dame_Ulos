@@ -51,9 +51,10 @@ const items = ref([
     path: "/kasir",
     icon: CreditCardIcon,
     children: [
-      { title: "Transaksi", path: "/kasir" },
       { title: "List Transaksi", path: "/listTransaksi" },
+      { title: "Transaksi", path: "/kasir" },
       { title: "Pre-Order", path: "/preorder" },
+      { title: "Online Transaksi", path: "/kasirOnline" },
     ],
   },
   {
