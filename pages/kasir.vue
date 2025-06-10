@@ -31,18 +31,6 @@
       >
         Process Transaction
       </button>
-      <button
-        class="bg-green-500 text-white rounded-md hover:bg-green-600 w-[104px] h-[34px]"
-        @click="openModalOnline = true"
-      >
-        Online
-      </button>
-      <button
-        class="bg-green-500 text-white rounded-md hover:bg-green-600 w-[104px] h-[34px]"
-        @click="openModalPO = true"
-      >
-        Pre-Order
-      </button>
     </div>
   </div>
 
@@ -161,164 +149,6 @@
 
     <button @click="checkoutProcess" class="btn-green w-full">Checkout</button>
   </ModalKasir>
-
-  <!-- Modal Pre-Order -->
-  <ModalKasir v-if="openModalPO" @close="openModalPO = false" title="Pre-Order">
-    <label>Id Barang:</label>
-    <input
-      v-model="poForm.itemId"
-      class="input-field mb-2"
-      placeholder="Id barang"
-    />
-
-    <label>Nama Ulos:</label>
-    <input
-      v-model="poForm.ulosName"
-      class="input-field mb-2"
-      placeholder="Nama ulos"
-    />
-
-    <label>Nama Akun:</label>
-    <input
-      v-model="poForm.accountName"
-      class="input-field mb-2"
-      placeholder="Nama akun"
-    />
-
-    <label>No Telepon:</label>
-    <input
-      v-model="poForm.phone"
-      class="input-field mb-2"
-      placeholder="Nomor telepon"
-    />
-
-    <label>Total Pembayaran:</label>
-    <input
-      v-model.number="poForm.totalPayment"
-      type="number"
-      class="input-field mb-2"
-      placeholder="Total pembayaran"
-    />
-
-    <label>DP:</label>
-    <input
-      v-model.number="poForm.dp"
-      type="number"
-      class="input-field mb-2"
-      placeholder="DP"
-    />
-
-    <label>Sisa Pembayaran:</label>
-    <input
-      v-model.number="poForm.remainingPayment"
-      type="number"
-      class="input-field mb-2"
-      placeholder="Sisa pembayaran"
-    />
-
-    <label>Deskripsi Ulos:</label>
-    <textarea
-      v-model="poForm.description"
-      class="input-field mb-2"
-      placeholder="Deskripsi ulos"
-    ></textarea>
-
-    <label>Catatan:</label>
-    <textarea
-      v-model="poForm.notes"
-      class="input-field mb-2"
-      placeholder="Catatan"
-    ></textarea>
-
-    <label>Target Selesai:</label>
-    <input v-model="poForm.targetDate" type="date" class="input-field mb-4" />
-
-    <button @click="checkoutPO" class="btn-green w-full">Checkout</button>
-  </ModalKasir>
-
-  <!-- Modal Online -->
-  <ModalKasir
-    v-if="openModalOnline"
-    @close="openModalOnline = false"
-    title="Online Transaction"
-  >
-    <label>Nama Akun:</label>
-    <input
-      v-model="onlineForm.accountName"
-      class="input-field mb-2"
-      placeholder="Nama akun"
-    />
-
-    <label>Platform:</label>
-    <input
-      v-model="onlineForm.platform"
-      class="input-field mb-2"
-      placeholder="Platform"
-    />
-
-    <label>Harga Terjual:</label>
-    <input
-      v-model.number="onlineForm.soldPrice"
-      type="number"
-      class="input-field mb-2"
-      placeholder="Harga terjual"
-    />
-
-    <label>Nama Penerima:</label>
-    <input
-      v-model="onlineForm.receiverName"
-      class="input-field mb-2"
-      placeholder="Nama penerima"
-    />
-
-    <label>Alamat:</label>
-    <textarea
-      v-model="onlineForm.address"
-      class="input-field mb-2"
-      placeholder="Alamat"
-    ></textarea>
-
-    <label>No Telepon:</label>
-    <input
-      v-model="onlineForm.phone"
-      class="input-field mb-2"
-      placeholder="Nomor telepon"
-    />
-
-    <label>Pengiriman:</label>
-    <input
-      v-model="onlineForm.delivery"
-      class="input-field mb-2"
-      placeholder="Pengiriman"
-    />
-
-    <label>Jumlah Ongkos Kirim:</label>
-    <input
-      v-model.number="onlineForm.shippingCost"
-      type="number"
-      class="input-field mb-2"
-      placeholder="Jumlah ongkos kirim"
-    />
-
-    <label>Jenis Pembayaran:</label>
-    <select v-model="onlineForm.paymentMethod" class="input-field mb-2">
-      <option disabled value="">Pilih jenis pembayaran</option>
-      <option>Cash</option>
-      <option>Credit Card</option>
-      <option>Transfer Bank</option>
-      <option>OVO</option>
-      <option>Gopay</option>
-    </select>
-
-    <label>Catatan:</label>
-    <textarea
-      v-model="onlineForm.notes"
-      class="input-field mb-4"
-      placeholder="Catatan"
-    ></textarea>
-
-    <button @click="checkoutOnline" class="btn-green w-full">Checkout</button>
-  </ModalKasir>
 </template>
 
 <script setup>
@@ -326,6 +156,7 @@ import { ref, onMounted, computed } from "vue";
 import ModalKasir from "../components/ModalKasir.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
@@ -333,8 +164,6 @@ const url = ref("");
 
 const openModalHold = ref(false);
 const openModalProcess = ref(false);
-const openModalPO = ref(false);
-const openModalOnline = ref(false);
 
 const barcodeInput = ref("");
 let barcodeTimeout = null;
@@ -465,6 +294,13 @@ async function checkoutProcess() {
       })
     );
 
+    Swal.fire({
+      title: "Sukses!",
+      text: "Berhasil Melakukan Pembelian",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+
     printToNewTab(transaksi, detailWithNames);
 
     processForm.value.paymentMethod = "";
@@ -473,62 +309,9 @@ async function checkoutProcess() {
     searchQueryPhone.value = "";
     datatableItems.value = [];
     openModalProcess.value = false;
-
-    // alert("Transaksi dan detail berhasil disimpan!");
   } catch (err) {
     console.error("Gagal menyimpan transaksi:", err);
-    // alert("Terjadi kesalahan saat menyimpan transaksi.");
   }
-}
-
-// Pre-Order modal state
-const poForm = ref({
-  itemId: "",
-  ulosName: "",
-  accountName: "",
-  phone: "",
-  totalPayment: 0,
-  dp: 0,
-  remainingPayment: 0,
-  description: "",
-  notes: "",
-  targetDate: "",
-});
-
-function checkoutPO() {
-  alert(`Pre-order untuk ${poForm.value.ulosName} dicatat!`);
-  Object.keys(poForm.value).forEach((key) => (poForm.value[key] = ""));
-  openModalPO.value = false;
-}
-
-// Online modal
-const onlineForm = ref({
-  accountName: "",
-  platform: "",
-  soldPrice: 0,
-  receiverName: "",
-  address: "",
-  phone: "",
-  delivery: "",
-  shippingCost: 0,
-  paymentMethod: "",
-  notes: "",
-});
-
-function checkoutOnline() {
-  if (!onlineForm.value.paymentMethod) {
-    alert("Pilih jenis pembayaran");
-    return;
-  }
-  alert(
-    `Transaksi online untuk akun ${onlineForm.value.accountName} berhasil!`
-  );
-  Object.keys(onlineForm.value).forEach(
-    (key) =>
-      (onlineForm.value[key] =
-        key.includes("Cost") || key === "soldPrice" ? 0 : "")
-  );
-  openModalOnline.value = false;
 }
 
 const handleBarcodeInput = (e) => {

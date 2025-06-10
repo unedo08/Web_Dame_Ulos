@@ -1,16 +1,17 @@
 <template>
   <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold mb-6">Tambah Pre-Order Transaksi</h2>
+    <h2 class="text-2xl font-semibold mb-6">Tambah Online Transaksi</h2>
 
-    <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- KIRI -->
+    <form
+      class="grid grid-cols-1 md:grid-cols-2 gap-6"
+    >
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Kode Barang *</label
           >
           <input
-            ref="platformInput"
+            ref="kodeBarangInput"
             v-model="form.code_barang"
             @keyup.enter="handleKodeBarangEnter"
             type="text"
@@ -20,10 +21,11 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Akun *</label
+            >Platform *</label
           >
           <input
-            v-model="form.namaAkun"
+            ref="platformInput"
+            v-model="form.platform"
             :disabled="!form.code_barang"
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
@@ -32,13 +34,25 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Target Selesai *</label
+            >Nama Penerima *</label
           >
           <input
-            v-model="form.targetSelesai"
+            v-model="form.namaPenerima"
             :disabled="!form.code_barang"
-            type="date"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+            type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Pengiriman *</label
+          >
+          <input
+            v-model="form.pengiriman"
+            :disabled="!form.code_barang"
+            type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
         </div>
 
@@ -61,12 +75,39 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Uang Muka (DP) *</label
+            >Alamat *</label
+          >
+          <textarea
+            v-model="form.alamat"
+            :disabled="!form.code_barang"
+            rows="3"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Kolom Kanan -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Nama Akun *</label
+          >
+          <input
+            v-model="form.namaAkun"
+            :disabled="!form.code_barang"
+            type="text"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Harga Terjual *</label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
             <input
-              v-model="form.dp"
+              v-model="form.hargaTerjual"
               :disabled="!form.code_barang"
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
@@ -76,46 +117,7 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Deskripsi Ulos *</label
-          >
-          <textarea
-            v-model="form.deskripsiUlos"
-            :disabled="!form.code_barang"
-            rows="3"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          ></textarea>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Gambar</label
-          >
-          <div
-            class="w-full border border-dashed border-gray-400 rounded-md p-4 text-center"
-          >
-            <input type="file" @change="handleFileUpload" class="mx-auto" />
-            <p class="text-xs text-gray-500 mt-2">Ukuran Maksimal: 5MB</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- KANAN -->
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Ulos *</label
-          >
-          <input
-            v-model="form.namaUlos"
-            :disabled="!form.code_barang"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >No Telepon *</label
+            >Nama Telepon *</label
           >
           <input
             v-model="form.nomor_telepon"
@@ -127,27 +129,12 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Total Pembayaran *</label
+            >Biaya Pengiriman *</label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
             <input
-              v-model="form.totalPembayaran"
-              :disabled="!form.code_barang"
-              type="number"
-              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Sisa Pembayaran *</label
-          >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
-            <input
-              v-model="form.sisaPembayaran"
+              v-model="form.biayaPengiriman"
               :disabled="!form.code_barang"
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
@@ -180,7 +167,7 @@
           type="button"
           @click="submitForm"
           :disabled="!form.code_barang"
-          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition"
+          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
         >
           Tambah
         </button>
@@ -203,19 +190,19 @@ onMounted(() => {
   url.value = config.public.apiBase;
   kodeBarangInput.value?.focus();
 });
+
 const form = reactive({
   code_barang: "",
-  namaAkun: "",
-  targetSelesai: "",
-  dp: "",
-  deskripsiUlos: "",
-  namaUlos: "",
-  nomor_telepon: "",
-  totalPembayaran: "",
-  sisaPembayaran: "",
-  catatan: "",
+  platform: "",
+  namaPenerima: "",
+  pengiriman: "",
   metodePembayaran: "",
-  gambar: null,
+  alamat: "",
+  namaAkun: "",
+  hargaTerjual: "",
+  nomor_telepon: "",
+  biayaPengiriman: "",
+  catatan: "",
 });
 
 const platformInput = ref(null);
@@ -223,37 +210,25 @@ const platformInput = ref(null);
 function handleKodeBarangEnter() {
   platformInput.value?.focus();
 }
-function handleFileUpload(event) {
-  form.gambar = event.target.files[0];
-}
-
-function toDatetimeString(dateStr) {
-  const date = new Date(dateStr);
-  const pad = (n) => (n < 10 ? "0" + n : n);
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate()
-  )} 00:00:00`;
-}
 
 async function submitForm() {
   if (!form.code_barang) {
     return;
   }
-  
   const payloadTransaksi = {
-    transaksi_nama_customer: form.namaAkun,
+    transaksi_nama_customer: form.namaPenerima,
     transaksi_nomor_telepon: form.nomor_telepon,
     transaksi_jumlah_barang: 1,
-    transaksi_total_harga: form.totalPembayaran,
+    transaksi_total_harga: form.hargaTerjual,
     transaksi_cara_bayar: form.metodePembayaran,
-    transaksi_tipe: "Pre-Order",
+    transaksi_tipe: "Online",
     transaksi_status: "Pending",
     transaksi_catatan: form.catatan,
   };
 
   try {
     const responseData = await axios.get(
-      `${url.value}/api/entrybarang/getDataKasir/` + form.code_barang
+      `${url.value}/api/entrybarang/getDataKasir/`+form.code_barang
     );
     const dataEntry = responseData.data.data[0];
 
@@ -262,63 +237,41 @@ async function submitForm() {
       payloadTransaksi
     );
     const transaksi_id = transaksiData.data.data.transaksi_id;
-    try {
+    try{
       const payloadTransaksiDetail = {
         transaksidetail_transaksi_id: transaksi_id,
         transaksidetail_barang_id: dataEntry.barangentry_id,
         transaksidetail_jumlah_barang: 1,
         transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
       };
-
+      
       await axios.post(
         `${url.value}/api/transaksi-detail`,
         payloadTransaksiDetail
       );
-
-      const formData = new FormData();
-      formData.append("preOrderBarang_transaksi_id", transaksi_id);
-      formData.append("preOrderBarang_nama_barang", form.namaUlos);
-      formData.append("preOrderBarang_nama_akun", form.namaAkun);
-      formData.append("preOrderBarang_no_telepon", form.nomor_telepon);
-      formData.append(
-        "preOrderBarang_target_selesai",
-        toDatetimeString(form.targetSelesai)
-      );
-      formData.append("preOrderBarang_total_pembayaran", form.totalPembayaran);
-      formData.append("preOrderBarang_uang_muka", form.dp);
-      formData.append("preOrderBarang_sisa_pembayaran", form.sisaPembayaran);
-      formData.append("preOrderBarang_deskripsi_barang", form.deskripsiUlos);
-      formData.append("preOrderBarang_catatan", form.catatan);
-      formData.append("preOrderBarang_path_gambar", "test");
-
-      await axios.post(`${url.value}/api/pre-order-barang`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+  
+      const pengirimanPayload = {
+        pengirimanBarang_transaksi_id: transaksi_id,
+        pengirimanBarang_nama_penerima: form.namaPenerima,
+        pengirimanBarang_akun_penerima: form.namaAkun,
+        pengirimanBarang_no_telepon: form.nomor_telepon,
+        pengirimanBarang_harga_kirim_barang: form.biayaPengiriman,
+        pengirimanBarang_jenis_pengiriman_barang: form.pengiriman,
+        pengirimanBarang_alamat_pengiriman_barang: form.alamat,
+        pengirimanBarang_catatan: form.catatan,
+        pengirimanBarang_status: "Proses",
+      };
+  
+      await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
 
       Swal.fire({
         title: "Sukses!",
-        text: "Berhasil Melakukan Pre-Order",
+        text: "Berhasil Melakukan Online Transaksi",
         icon: "success",
         confirmButtonText: "OK",
       });
-
-      // const pengirimanPayload = {
-      //   pengirimanBarang_transaksi_id: transaksi_id,
-      //   pengirimanBarang_nama_penerima: form.namaAkun,
-      //   pengirimanBarang_akun_penerima: form.namaAkun,
-      //   pengirimanBarang_no_telepon: form.nomor_telepon,
-      //   pengirimanBarang_harga_kirim_barang: form.biayaPengiriman,
-      //   pengirimanBarang_jenis_pengiriman_barang: form.pengiriman,
-      //   pengirimanBarang_alamat_pengiriman_barang: form.alamat,
-      //   pengirimanBarang_catatan: form.catatan,
-      //   pengirimanBarang_status: "Proses",
-      // };
-
-      // await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
-    } catch (err) {
-      console.error("Error melakukan transaksi", err);
+    }catch(err){
+      console.error('Error melakukan transaksi', err)
     }
 
     form.namaPenerima = "";
