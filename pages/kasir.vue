@@ -21,7 +21,7 @@
     <div class="flex space-x-2 ml-4">
       <button
         class="bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-[104px] h-[34px]"
-        @click="openModalHold = true"
+        @click="handleHold"
       >
         Hold
       </button>
@@ -79,48 +79,35 @@
   <ModalKasir
     v-if="openModalHold"
     @close="openModalHold = false"
-    title="Hold Transaksi"
+    title="Daftar Hold Transaksi"
   >
-    <p class="mb-4">Menyimpan transaksi sebelum transaksi diselesaikan.</p>
-    <label>Nama Customer:</label>
-    <input
-      v-model="holdForm.customerName"
-      class="input-field mb-2"
-      placeholder="Masukkan nama customer"
-    />
-
-    <label>Keranjang (Barang):</label>
-    <textarea
-      v-model="holdForm.cartItems"
-      class="input-field mb-2"
-      placeholder="Daftar barang (pisahkan dengan koma)"
-    ></textarea>
-
-    <button @click="saveHold" class="btn-yellow w-full">
-      Simpan ke Waiting List
-    </button>
-
-    <hr class="my-4" />
-    <h3 class="font-semibold mb-2">Waiting List</h3>
-    <ul>
-      <li
-        v-for="(hold, index) in waitingList"
-        :key="index"
-        class="mb-2 cursor-pointer hover:underline"
-        @click="selectHold(index)"
+    <div v-if="waitingList.length === 0" class="text-gray-500">
+      Tidak ada transaksi hold saat ini.
+    </div>
+    <div v-else class="space-y-2">
+      <div
+        v-for="(item, index) in waitingList"
+        :key="item.transaksi_id"
+        class="p-3 border rounded-md bg-gray-100 flex justify-between items-center"
       >
-        {{ hold.customerName }}
-      </li>
-    </ul>
-
-    <div
-      v-if="selectedHold !== null"
-      class="mt-4 p-4 border rounded bg-gray-50"
-    >
-      <h4 class="font-semibold mb-2">
-        Detail Belanjaan {{ waitingList[selectedHold].customerName }}
-      </h4>
-      <p>Barang: {{ waitingList[selectedHold].cartItems }}</p>
+        <div>
+          <div class="font-semibold">
+            {{ item.transaksi_nama_customer || "Tanpa Nama" }}
+          </div>
+          <div class="text-sm text-gray-600">
+            Total: {{ formatRupiah(item.transaksi_total_harga) }}
+          </div>
+          <div class="text-sm text-gray-500">
+            Tanggal: {{ formatTanggalHold(item.created_at) }}
+          </div>
+        </div>
+        <button
+          @click="loadHoldTransaction(item.transaksi_id)"
+          class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+        >
+          Pilih
+        </button>
+      </div>
     </div>
   </ModalKasir>
 
@@ -192,30 +179,120 @@ function formatRupiah(number) {
   });
 }
 
-const holdForm = ref({
-  customerName: "",
-  cartItems: "",
-});
-const waitingList = ref([]);
-const selectedHold = ref(null);
-
-function saveHold() {
-  if (holdForm.value.customerName && holdForm.value.cartItems) {
-    waitingList.value.push({
-      customerName: holdForm.value.customerName,
-      cartItems: holdForm.value.cartItems,
+const formatTanggalHold = (dateStr) => {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    return date.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
-    holdForm.value.customerName = "";
-    holdForm.value.cartItems = "";
-    selectedHold.value = null;
-    alert("Transaksi disimpan ke waiting list");
-  } else {
-    alert("Isi nama customer dan keranjang barang dulu");
+  };
+
+const waitingList = ref([]);
+
+async function fetchHoldTransactions() {
+  try {
+    const response = await axios.get(`${url.value}/api/transaksi/status/hold`);
+    waitingList.value = response.data.data;
+  } catch (error) {
+    console.error("Gagal mengambil data hold:", error);
+    Swal.fire("Gagal", "Tidak bisa mengambil daftar transaksi hold", "error");
   }
 }
 
-function selectHold(index) {
-  selectedHold.value = index;
+async function loadHoldTransaction(id) {
+  try {
+    const { data } = await axios.get(`${url.value}/api/transaksi/${id}`);
+    const transaksi = data.data;
+
+    searchQueryCustomer.value = transaksi.transaksi_nama_customer;
+    searchQueryPhone.value = transaksi.transaksi_nomor_telepon;
+
+    const detailList = transaksi.details || [];
+
+    datatableItems.value = await Promise.all(detailList.map(async detail => {
+      const res = await axios.get(`${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
+      return {
+        barangentry_nama: res.data.data.barangentry_nama,
+        quantity: detail.transaksidetail_jumlah_barang,
+        barangentry_harga_net: detail.transaksidetail_harga_barang,
+        code_nama: res.data.data.code_nama
+      };
+    }));
+
+    openModalHold.value = false;
+  } catch (err) {
+    console.error("Gagal memuat transaksi hold:", err);
+    Swal.fire("Gagal", "Tidak bisa memuat transaksi hold", "error");
+  }
+}
+
+async function handleHold() {
+  if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
+    openModalHold.value = true
+    await fetchHoldTransactions();
+    return;
+  }
+
+  const jumlahBarang = datatableItems.value.reduce(
+    (total, item) => total + (item.quantity || 0),
+    0
+  );
+
+  const payload = {
+    transaksi_nama_customer: searchQueryCustomer.value,
+    transaksi_nomor_telepon: searchQueryPhone.value,
+    transaksi_jumlah_barang: jumlahBarang,
+    transaksi_total_harga: subtotal.value,
+    transaksi_cara_bayar: "Belum Dipilih",
+    transaksi_tipe: "offline",
+    transaksi_status: "hold",
+    transaksi_catatan: "Transaksi ditahan sementara",
+  };
+
+  try {
+    const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+    const transaksi_id = data.data.transaksi_id;
+
+    for (const item of datatableItems.value) {
+      const { data: barangResponse } = await axios.get(
+        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+      );
+
+      const barangData = barangResponse.data;
+      if (!barangData || !barangData.barangentry_id) continue;
+
+      const detailPayload = {
+        transaksidetail_transaksi_id: transaksi_id,
+        transaksidetail_barang_id: barangData.barangentry_id,
+        transaksidetail_jumlah_barang: item.quantity,
+        transaksidetail_harga_barang: item.barangentry_harga_net,
+      };
+
+      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+    }
+
+    Swal.fire({
+      title: "Disimpan",
+      text: "Transaksi berhasil ditambahkan ke hold.",
+      icon: "info",
+      confirmButtonText: "OK",
+    });
+
+    datatableItems.value = [];
+    searchQueryCustomer.value = "";
+    searchQueryPhone.value = "";
+  } catch (error) {
+    console.error("Gagal menahan transaksi:", error);
+    Swal.fire({
+      title: "Gagal",
+      text: "Tidak bisa menyimpan transaksi hold",
+      icon: "error",
+    });
+  }
 }
 
 const processForm = ref({
@@ -382,7 +459,6 @@ function printToNewTab(data, items) {
     });
   };
 
-  // Helper fungsi format Tanggal
   const formatTanggal = (dateStr) => {
     if (!dateStr) return "-";
     const date = new Date(dateStr);

@@ -240,43 +240,43 @@ async function submitForm() {
     return;
   }
   
-  const payloadTransaksi = {
-    transaksi_nama_customer: form.namaAkun,
-    transaksi_nomor_telepon: form.nomor_telepon,
-    transaksi_jumlah_barang: 1,
-    transaksi_total_harga: form.totalPembayaran,
-    transaksi_cara_bayar: form.metodePembayaran,
-    transaksi_tipe: "Pre-Order",
-    transaksi_status: "Pending",
-    transaksi_catatan: form.catatan,
-  };
+  // const payloadTransaksi = {
+  //   transaksi_nama_customer: form.namaAkun,
+  //   transaksi_nomor_telepon: form.nomor_telepon,
+  //   transaksi_jumlah_barang: 1,
+  //   transaksi_total_harga: form.totalPembayaran,
+  //   transaksi_cara_bayar: form.metodePembayaran,
+  //   transaksi_tipe: "Pre-Order",
+  //   transaksi_status: "Pending",
+  //   transaksi_catatan: form.catatan,
+  // };
 
   try {
-    const responseData = await axios.get(
-      `${url.value}/api/entrybarang/getDataKasir/` + form.code_barang
-    );
-    const dataEntry = responseData.data.data[0];
+    // const responseData = await axios.get(
+    //   `${url.value}/api/entrybarang/getDataKasir/` + form.code_barang
+    // );
+    // const dataEntry = responseData.data.data[0];
 
-    const transaksiData = await axios.post(
-      `${url.value}/api/transaksi`,
-      payloadTransaksi
-    );
-    const transaksi_id = transaksiData.data.data.transaksi_id;
-    try {
-      const payloadTransaksiDetail = {
-        transaksidetail_transaksi_id: transaksi_id,
-        transaksidetail_barang_id: dataEntry.barangentry_id,
-        transaksidetail_jumlah_barang: 1,
-        transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
-      };
+    // const transaksiData = await axios.post(
+    //   `${url.value}/api/transaksi`,
+    //   payloadTransaksi
+    // );
+    // const transaksi_id = transaksiData.data.data.transaksi_id;
+    // try {
+      // const payloadTransaksiDetail = {
+      //   transaksidetail_transaksi_id: transaksi_id,
+      //   transaksidetail_barang_id: dataEntry.barangentry_id,
+      //   transaksidetail_jumlah_barang: 1,
+      //   transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
+      // };
 
-      await axios.post(
-        `${url.value}/api/transaksi-detail`,
-        payloadTransaksiDetail
-      );
+      // await axios.post(
+      //   `${url.value}/api/transaksi-detail`,
+      //   payloadTransaksiDetail
+      // );
 
       const formData = new FormData();
-      formData.append("preOrderBarang_transaksi_id", transaksi_id);
+      formData.append("preOrderBarang_transaksi_id", "");
       formData.append("preOrderBarang_nama_barang", form.namaUlos);
       formData.append("preOrderBarang_nama_akun", form.namaAkun);
       formData.append("preOrderBarang_no_telepon", form.nomor_telepon);
@@ -317,9 +317,9 @@ async function submitForm() {
       // };
 
       // await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
-    } catch (err) {
-      console.error("Error melakukan transaksi", err);
-    }
+    // } catch (err) {
+    //   console.error("Error melakukan transaksi", err);
+    // }
 
     form.namaPenerima = "";
     form.nomor_telepon = "";
