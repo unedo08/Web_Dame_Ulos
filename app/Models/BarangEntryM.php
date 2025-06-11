@@ -10,10 +10,9 @@ class BarangEntryM extends Model
     use HasFactory;
     protected $table = 'barangentry_m';
     protected $primaryKey = 'barangentry_id';
-
     protected $fillable = [
-        'barangentry_nama',
         'barangentry_code_id',
+        'barangentry_nama',
         'barangentry_warna',
         'barangentry_nama_penenun',
         'barangentry_nama_panirat',
@@ -21,8 +20,13 @@ class BarangEntryM extends Model
         'barangentry_modal',
         'barangentry_price_tag',
         'barangentry_harga_net',
-        'barangentry_acara',
+        'barangentry_acara_id',
         'barangentry_ukuran_mandar',
         'barangentry_ukuran_ulos',
+        'barangentry_jumlah_barang',
     ];
+
+    public function code() {
+        return $this->belongsTo(Code::class, 'barangentry_code_id');
+    }
 }

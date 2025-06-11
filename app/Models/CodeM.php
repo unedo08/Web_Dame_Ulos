@@ -8,16 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class CodeM extends Model
 {
     use HasFactory;
-
-    // Tentukan nama tabel
     protected $table = 'code_m';
-
-    // Tentukan kolom yang bisa diisi (fillable)
-    protected $fillable = [
-        'code_nama',
-        'code_jenisbarang_id'
-    ];
-
-    // Tentukan primary key jika tidak menggunakan id (optional)
     protected $primaryKey = 'code_id';
+    protected $fillable = ['code_nama', 'code_jenisbarang_id'];
+
+    public function jenisBarang() {
+        return $this->belongsTo(JenisBarang::class, 'code_jenisbarang_id');
+    }
+
+    public function barangEntries() {
+        return $this->hasMany(BarangEntry::class, 'barangentry_code_id');
+    }
 }

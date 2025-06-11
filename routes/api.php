@@ -49,3 +49,19 @@ Route::prefix('acara')->group(function () {
 Route::prefix('acaradet')->group(function () {
     require __DIR__.'/api/acaradetM.php';  // Relative path
 });
+
+Route::prefix('transaksi')->group(function () {
+    require __DIR__.'/api/transaksiT.php';  // Relative path
+});
+
+Route::prefix('transaksi-detail')->group(function () {
+    require __DIR__.'/api/transaksiDetailT.php';  // Relative path
+});
+
+Route::prefix('pengiriman-barang')->group(function () {
+    require __DIR__.'/api/pengirimanBarangT.php';  // Relative path
+});
+
+Route::prefix('/pre-order-barang')->group(function () {
+    require __DIR__.'/api/preOrderBarangT.php';  // Relative path
+});

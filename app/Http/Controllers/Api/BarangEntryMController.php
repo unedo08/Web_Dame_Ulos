@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BarangEntryM;
 use App\Models\CodeM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BarangEntryMController extends Controller
 {
@@ -18,31 +19,125 @@ class BarangEntryMController extends Controller
             'data' => $data
         ], 200);
     }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
+    
+    public function storeDescription(Request $request){
+         $data = $request->validate([
             'barangentry_nama' => 'required|string',
-            'barangentry_code_id' => 'required|integer',
-            'barangentry_warna' => 'required|string',
+            'barangentry_code_id'  => 'required|string',
+            'barangentry_warna'  => 'required|string',
             'barangentry_nama_penenun' => 'required|string',
             'barangentry_nama_panirat' => 'required|string',
             'barangentry_dryer' => 'required|string',
             'barangentry_modal' => 'required|numeric',
             'barangentry_price_tag' => 'required|numeric',
             'barangentry_harga_net' => 'required|numeric',
-            'barangentry_acara' => 'required|string',
-            'barangentry_ukuran_mandar' => 'required|integer',
-            'barangentry_ukuran_ulos' => 'required|integer',
+            'barangentry_jumlah_barang' => 'required|numeric',
         ]);
 
-        $entry = BarangEntryM::create($data);
+        // Update if code_id exists, otherwise create new
+        $record = BarangEntryM::updateOrCreate(
+            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            $data
+        );
+
+        // Check for null ukuran
+        $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
 
         return response()->json([
-            'message' => 'Barang entry created successfully',
-            'code' => 201,
-            'data' => $entry
-        ], 201);
+            'code' => $hasNullUkuran ? '201' : '200',
+            'status' => $hasNullUkuran ? 'warning' : 'success',
+            'message' => $hasNullUkuran 
+                ? 'Created/updated, but ukuran fields are missing' 
+                : 'Created or updated successfully',
+            'data' => $record,
+        ], $record->wasRecentlyCreated ? 201 : 200);
+    }
+
+    public function storeSize(Request $request){
+        $data = $request->validate([
+            'barangentry_code_id'  => 'required|string',
+            'barangentry_ukuran_mandar' => 'nullable|integer',
+            'barangentry_ukuran_ulos' => 'nullable|integer',
+        ]);
+
+        // Update if code_id exists, otherwise create new
+        $record = BarangEntryM::updateOrCreate(
+            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            $data
+        );
+
+        // Check for null ukuran
+        $hasNullUkuran = is_null($record->barangentry_nama);
+
+        return response()->json([
+            'code' => $hasNullUkuran ? '201' : '200',
+            'status' => $hasNullUkuran ? 'warning' : 'success',
+            'message' => $hasNullUkuran 
+                ? 'Created/updated, but Nama is missing' 
+                : 'Created or updated successfully',
+            'data' => $record
+        ], $record->wasRecentlyCreated ? 201 : 200);
+    }
+
+    public function getDataPriceTag($codeNama)
+    {
+        $entries = BarangEntryM::whereHas('barangentry_code_id', function ($query) use ($codeNama) {
+            $query->where('code_nama', $codeNama);
+        })->with('barangentry_code_id')->get();
+
+        if ($entries->isEmpty()) {
+            return response()->json([
+                "code" => 404,
+                "message" => "No entries found for code_nama: {$codeNama}"
+            ], 404);
+        }
+
+        // Check for missing fields
+        $incomplete = $entries->filter(function ($entry) {
+            return is_null($entry->barangentry_nama) || is_null($entry->barangentry_ukuran_mandar);
+        });
+
+        if ($incomplete->isNotEmpty()) {
+            return response()->json([
+                "code" => 404,
+                "message" => "Please fill the data: 'barangentry_nama' or 'barangentry_ukuran_mandar' is missing."
+            ], 404);
+        }
+
+        return response()->json([
+            "code" => 200,
+            "data" => $entries
+        ]);
+    }
+
+    public function getDataKasir($codeNama)
+    {
+        $code = CodeM::where('code_nama', $codeNama)->first();
+        $entries = BarangEntryM::where('barangentry_code_id', $code->code_id)->get();
+        
+        if ($entries->isEmpty()) {
+            return response()->json([
+                "code" => 404,
+                "message" => "No entries found for code_nama: {$codeNama}"
+            ], 404);
+        }
+        
+        // Check for missing fields
+        $incomplete = $entries->filter(function ($entry) {
+            return is_null($entry->barangentry_nama) || is_null($entry->barangentry_ukuran_mandar);
+        });
+
+        if ($incomplete->isNotEmpty()) {
+            return response()->json([
+                "code" => 404,
+                "message" => "Please fill the data: 'barangentry_nama' or 'barangentry_ukuran_mandar' is missing."
+            ], 404);
+        }
+
+        return response()->json([
+            "code" => 200,
+            "data" => $entries
+        ]);
     }
 
     public function show($id)
