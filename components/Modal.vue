@@ -12,7 +12,7 @@
           <input
             ref="barcodeDesc"
             v-model="barcode"
-            @keyup.enter="handleScan"
+            @input="onBarcodeInput"
             class="w-full border rounded px-3 py-2"
             autofocus
           />
@@ -26,7 +26,7 @@
           <input
             ref="barcodeSize"
             v-model="barcode"
-            @keyup.enter="handleScanSize"
+            @input="onBarcodeInputSize"
             class="w-full border rounded px-3 py-2"
             autofocus
           />
@@ -194,36 +194,46 @@ const props = defineProps({
 });
 
 const barcodeDesc = ref(null);
-watch(
-  () => props.show,
-  (val) => {
-    if (val) {
-      nextTick(() => {
-        barcodeDesc.value?.focus();
-      });
-    } else {
-      barcode.value = "";
-      barang.value = null;
-      size.value = { mandar: "", ulos: "" };
-    }
+// watch(
+//   () => props.show,
+//   (val) => {
+//     if (val) {
+//       nextTick(() => {
+//         barcodeDesc.value?.focus();
+//       });
+//     } else {
+//       barcode.value = "";
+//       barang.value = null;
+//       size.value = { mandar: "", ulos: "" };
+//     }
+//   }
+// );
+watch(() => props.show, (val) => {
+  if (val && props.type === 'desc') {
+    setTimeout(() => {
+      barcodeDesc.value?.focus();
+    }, 300);
+  } else {
+    barcode.value = "";
+    barang.value = null;
+    size.value = { mandar: "", ulos: "" };
   }
-);
+});
+
 
 const barcodeSize = ref(null);
-watch(
-  () => props.show,
-  (val) => {
-    if (val) {
-      nextTick(() => {
-        barcodeSize.value?.focus();
-      });
-    } else {
-      barcode.value = "";
-      barang.value = null;
-      size.value = { mandar: "", ulos: "" };
-    }
+watch(() => props.show, (val) => {
+  if (val && props.type === 'size') {
+    setTimeout(() => {
+      barcodeSize.value?.focus();
+    }, 300);
+  } else {
+    barcode.value = "";
+    barang.value = null;
+    size.value = { mandar: "", ulos: "" };
   }
-);
+});
+
 
 const emit = defineEmits(["close", "scanned", "sizeSubmitted"]);
 
@@ -287,7 +297,6 @@ async function handleScanPriceTag() {
 
   if (scanned.length) {
     barcodeList.value = [...new Set(scanned)];
-    // emit("scanned", barcodeList.value);
   }
 
   barcodeInput.value = "";
@@ -343,35 +352,18 @@ async function printPriceTag() {
   });
 }
 
-watch(
-  () => props.show,
-  (val) => {
-    if (!val) {
-      barcode.value = "";
-      barang.value = null;
-      size.value = { mandar: "", ulos: "" };
-    }
-  }
-);
+let scanTimeout;
+let scanTimeoutSize;
+function onBarcodeInput(e) {
+  clearTimeout(scanTimeout);
+  scanTimeout = setTimeout(() => {
+    handleScan();
+  }, 300);
+}
+function onBarcodeInputSize(e) {
+  clearTimeout(scanTimeoutSize);
+  scanTimeoutSize = setTimeout(() => {
+    handleScanSize();
+  }, 300);
+}
 </script>
-
-<!-- <style>
-body {
-    font-family: sans-serif;
-    padding: 20px;
-    line-height: 1.6;
-}
-
-.print-layout {
-    display: flex;
-    gap: 40px;
-}
-
-.print-column {
-    flex: 1;
-}
-
-ol {
-    padding-left: 1rem;
-}
-</style> -->

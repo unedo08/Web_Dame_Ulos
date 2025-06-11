@@ -506,7 +506,7 @@ async function submitBarang() {
 }
 
 function cancelTambahBarang() {
-  selectedBarang.value == {};
+  selectedBarang.value = {};
   showModalAdd.value = false;
 }
 
@@ -553,6 +553,7 @@ async function submitSizeBarang() {
 
 function cancelSizeBarang() {
   selectedBarang.value == {};
+  
   showModalAddSize.value = false;
 }
 
