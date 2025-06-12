@@ -44,15 +44,6 @@
             rows="4"
             placeholder="Scan or enter barcodes, separated by commas"
           ></textarea>
-
-          <div class="mt-4">
-            <button
-              @click="printPriceTag"
-              class="bg-green-600 text-white px-4 py-2 rounded"
-            >
-              Print
-            </button>
-          </div>
         </div>
 
         <div
@@ -66,7 +57,7 @@
           >
             <div style="display: flex; gap: 40px">
               <div style="flex: 1">
-                <h1>{{item.barangentry_nama}}</h1>
+                <h1>{{ item.barangentry_nama }}</h1>
                 <p class="text-xl font-semibold mb-4">Horas!</p>
                 <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
                 <p>
@@ -158,6 +149,13 @@
 
       <div class="mt-6 flex justify-end space-x-3">
         <button
+          v-if="type === 'priceTag'"
+          @click="printPriceTag"
+          class="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Print
+        </button>
+        <button
           @click="$emit('close')"
           class="bg-gray-500 text-white px-4 py-2 rounded"
         >
@@ -178,10 +176,10 @@
 <script setup>
 import { ref, watch, computed, nextTick, onMounted } from "vue";
 import axios from "axios";
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from "#imports";
 
 const priceTagData = ref([]);
-const url = ref('')
+const url = ref("");
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -208,31 +206,36 @@ const barcodeDesc = ref(null);
 //     }
 //   }
 // );
-watch(() => props.show, (val) => {
-  if (val && props.type === 'desc') {
-    setTimeout(() => {
-      barcodeDesc.value?.focus();
-    }, 300);
-  } else {
-    barcode.value = "";
-    barang.value = null;
-    size.value = { mandar: "", ulos: "" };
+watch(
+  () => props.show,
+  (val) => {
+    if (val && props.type === "desc") {
+      setTimeout(() => {
+        barcodeDesc.value?.focus();
+      }, 300);
+    } else {
+      barcode.value = "";
+      barang.value = null;
+      size.value = { mandar: "", ulos: "" };
+    }
   }
-});
-
+);
 
 const barcodeSize = ref(null);
-watch(() => props.show, (val) => {
-  if (val && props.type === 'size') {
-    setTimeout(() => {
-      barcodeSize.value?.focus();
-    }, 300);
-  } else {
-    barcode.value = "";
-    barang.value = null;
-    size.value = { mandar: "", ulos: "" };
+watch(
+  () => props.show,
+  (val) => {
+    if (val && props.type === "size") {
+      setTimeout(() => {
+        barcodeSize.value?.focus();
+      }, 300);
+    } else {
+      barcode.value = "";
+      barang.value = null;
+      size.value = { mandar: "", ulos: "" };
+    }
   }
-});
+);
 
 const emit = defineEmits(["close", "scanned", "sizeSubmitted"]);
 
@@ -259,7 +262,7 @@ const modalTitle = computed(() => {
 function handleScan() {
   const found = props.barangDatabase.find(
     (b) => b.code_nama === barcode.value.trim()
-  ); 
+  );
 
   if (found) {
     barang.value = { ...found };
@@ -268,7 +271,7 @@ function handleScan() {
     alert("Barang tidak ditemukan.");
     barang.value = null;
     barcode.value = null;
-    console.error("Gagal Memeriksa Kode Barang:")
+    console.error("Gagal Memeriksa Kode Barang:");
   }
 }
 
@@ -284,7 +287,7 @@ function handleScanSize() {
     alert("Barang tidak ditemukan.");
     barang.value = null;
     barcode.value = null;
-    console.error("Gagal Memeriksa Kode Barang:")
+    console.error("Gagal Memeriksa Kode Barang:");
   }
 }
 
@@ -312,10 +315,12 @@ async function printPriceTag() {
       return;
     }
     barcodeList.value = [...new Set(scanned)];
-    const results= [];
+    const results = [];
     for (const code of barcodeList.value) {
       try {
-        const res = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${code}`);
+        const res = await axios.get(
+          `${url.value}/api/entrybarang/getDataByCode/${code}`
+        );
         if (res.data) results.push(res.data);
       } catch (err) {
         console.error(`Gagal ambil data untuk ${code}`, err);

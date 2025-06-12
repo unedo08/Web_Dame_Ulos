@@ -122,7 +122,7 @@ function toggleDropdown(index) {
           <NuxtLink
             v-if="!item.children"
             :to="item.path"
-            class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition"
+            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
           >
             <component :is="item.icon" class="w-5 h-5 text-white" />
             <span>{{ item.title }}</span>
@@ -132,7 +132,7 @@ function toggleDropdown(index) {
           <div v-else>
             <div
               @click="toggleDropdown(index)"
-              class="flex items-center justify-between hover:bg-gray-100 p-2 rounded transition cursor-pointer"
+              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer"
             >
               <div class="flex items-center gap-2">
                 <component :is="item.icon" class="w-5 h-5 text-white" />
@@ -149,7 +149,7 @@ function toggleDropdown(index) {
                 v-for="(child, idx) in item.children"
                 :key="idx"
                 :to="child.path"
-                class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition"
+                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
               >
                 <span>{{ child.title }}</span>
               </NuxtLink>

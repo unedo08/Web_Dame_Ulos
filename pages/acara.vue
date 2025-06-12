@@ -81,53 +81,58 @@
       class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-        <h3 class="text-xl font-semibold mb-4">Form Tambah Acara</h3>
+        <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
         <form @submit.prevent="submitAcara">
-          <h5 class="text-xl mb-2">Event Form</h5>
           <div class="mb-4">
             <label
               for="acara_nama"
               class="block text-sm font-medium text-gray-700"
-              >Nama Acara</label
+              >Nama Acara <span class="required">*</span></label
             >
             <input
               v-model="newProduct.acara_nama"
               type="text"
               id="acara_nama"
               class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
-              placeholder=" ..."
+              placeholder="Masukkan Nama Acara"
               required
             />
+            <p v-if="errors.acara_nama" class="text-red-500 text-sm mt-1">
+              {{ errors.acara_nama }}
+            </p>
           </div>
           <div class="mb-4">
             <label
               for="acara_keterangan"
               class="block text-sm font-medium text-gray-700"
-              >Keterangan</label
+              >Keterangan <span class="required">*</span></label
             >
-            <input
+            <textarea
               v-model="newProduct.acara_keterangan"
-              type="text"
               id="acara_keterangan"
-              class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm pl-3 w-[382px] h-[41px]"
-              placeholder=" ..."
+              rows="3"
+              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Masukkan keterangan acara"
               required
-            />
+            ></textarea>
+            <p v-if="errors.acara_keterangan" class="text-red-500 text-sm mt-1">
+              {{ errors.acara_keterangan }}
+            </p>
           </div>
 
           <div class="flex justify-end">
             <button
               type="button"
               @click="closeModal"
-              class="mr-4 text-gray-500"
+              class="mr-4 px-4 py-2 bg-gray-400 text-gray-800 rounded-md hover:bg-gray-600"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
-              Submit
+              Tambah
             </button>
           </div>
         </form>
@@ -228,7 +233,7 @@
                 <button
                   @click="removeFromTempBarang(barang.acaradet_id)"
                   class="text-red-500 hover:text-red-700"
-                > 
+                >
                   Delete
                 </button>
               </td>
@@ -256,7 +261,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, reactive } from "vue";
 import {
   PencilIcon,
   CheckCircleIcon,
@@ -266,6 +271,7 @@ import {
 import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const url = ref("");
 const acara = ref([]);
@@ -275,6 +281,7 @@ const editForm = ref({});
 const barcodeInput = ref("");
 const tempBarangList = ref([]);
 const listAcara = ref([]);
+const errors = reactive({});
 
 const newProduct = ref({
   acara_id: 0,
@@ -302,6 +309,15 @@ onMounted(async () => {
   }
   isModalPrintOpen.value = false;
 });
+
+function validate() {
+  errors.acara_nama = !newProduct.acara_nama ? "Nama Acara wajib diisi" : "";
+  errors.acara_keterangan = !newProduct.acara_keterangan
+    ? "Keterangan wajib diisi"
+    : "";
+
+  return Object.values(errors).every((err) => !err);
+}
 
 const formatRupiah = (harga) => {
   if (!harga) return "";
@@ -342,6 +358,16 @@ const closeModal = () => {
 };
 
 const submitAcara = async () => {
+  if (!validate()) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
   try {
     const response = await axios.post(`${url.value}/api/acara/addAcara`, {
       acara_nama: newProduct.value.acara_nama,
@@ -592,7 +618,10 @@ const exportItem = async (id) => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Export Acara");
 
-    const filename = `Export_Acara_${acaraData.acara_nama.replace(/\s+/g, "_")}.xlsx`;
+    const filename = `Export_Acara_${acaraData.acara_nama.replace(
+      /\s+/g,
+      "_"
+    )}.xlsx`;
     XLSX.writeFile(workbook, filename);
   } catch (error) {
     console.error("Gagal mengekspor data acara:", error);
@@ -613,7 +642,7 @@ const handlePrint = () => {
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .hide-col {
