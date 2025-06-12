@@ -2,13 +2,11 @@
   <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
     <h2 class="text-2xl font-semibold mb-6">Tambah Online Transaksi</h2>
 
-    <form
-      class="grid grid-cols-1 md:grid-cols-2 gap-6"
-    >
+    <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Kode Barang *</label
+            >Kode Barang <span class="required">*</span></label
           >
           <input
             ref="kodeBarangInput"
@@ -17,11 +15,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
           />
+          <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
+            {{ errors.code_barang }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Platform *</label
+            >Platform <span class="required">*</span></label
           >
           <input
             ref="platformInput"
@@ -30,11 +31,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
+            {{ errors.platform }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Penerima *</label
+            >Nama Penerima <span class="required">*</span></label
           >
           <input
             v-model="form.namaPenerima"
@@ -42,11 +46,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.namaPenerima" class="text-red-500 text-sm mt-1">
+            {{ errors.namaPenerima }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Pengiriman *</label
+            >Pengiriman <span class="required">*</span></label
           >
           <input
             v-model="form.pengiriman"
@@ -54,11 +61,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
+            {{ errors.pengiriman }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Metode Pembayaran *</label
+            >Metode Pembayaran <span class="required">*</span></label
           >
           <select
             v-model="form.metodePembayaran"
@@ -71,11 +81,13 @@
             <option>QRIS</option>
             <option>Virtual Account</option>
           </select>
+          <p v-if="errors.metodePembayaran" class="text-red-500 text-sm mt-1">
+            {{ errors.metodePembayaran }}
+          </p>
         </div>
-
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Alamat *</label
+            >Alamat <span class="required">*</span></label
           >
           <textarea
             v-model="form.alamat"
@@ -83,6 +95,9 @@
             rows="3"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           ></textarea>
+          <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
+            {{ errors.alamat }}
+          </p>
         </div>
       </div>
 
@@ -90,7 +105,7 @@
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Akun *</label
+            >Nama Akun <span class="required">*</span></label
           >
           <input
             v-model="form.namaAkun"
@@ -98,11 +113,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
+            {{ errors.namaAkun }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Harga Terjual *</label
+            >Harga Terjual <span class="required">*</span></label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
@@ -112,12 +130,15 @@
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
+            <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
+              {{ errors.hargaTerjual }}
+            </p>
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Telepon *</label
+            >Nama Telepon <span class="required">*</span></label
           >
           <input
             v-model="form.nomor_telepon"
@@ -125,11 +146,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
+            {{ errors.nomor_telepon }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Biaya Pengiriman *</label
+            >Biaya Pengiriman <span class="required">*</span></label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
@@ -139,12 +163,15 @@
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
+            <p v-if="errors.biayaPengiriman" class="text-red-500 text-sm mt-1">
+              {{ errors.biayaPengiriman }}
+            </p>
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Catatan *</label
+            >Catatan <span class="required">*</span></label
           >
           <textarea
             v-model="form.catatan"
@@ -152,6 +179,9 @@
             rows="3"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           ></textarea>
+          <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">
+            {{ errors.catatan }}
+          </p>
         </div>
       </div>
 
@@ -184,6 +214,8 @@ import Swal from "sweetalert2";
 
 const kodeBarangInput = ref(null);
 const url = ref("");
+const platformInput = ref(null);
+const errors = reactive({});
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -205,16 +237,41 @@ const form = reactive({
   catatan: "",
 });
 
-const platformInput = ref(null);
-
 function handleKodeBarangEnter() {
   platformInput.value?.focus();
 }
 
+function validate() {
+  errors.code_barang = !form.code_barang ? "Kode barang wajib diisi" : "";
+  errors.platform = !form.platform ? "Platform wajib diisi" : "";
+  errors.namaPenerima = !form.namaPenerima ? "Nama Penerima wajib diisi" : "";
+  errors.pengiriman = !form.pengiriman ? "Pengiriman wajib diisi" : "";
+  errors.metodePembayaran = !form.metodePembayaran
+    ? "Metode Pembayaran wajib diisi"
+    : "";
+  errors.alamat = !form.deskripsiUlos ? "Alamat wajib diisi" : "";
+  errors.namaAkun = !form.namaAkun ? "Nama Akun wajib diisi" : "";
+  errors.hargaTerjual = !form.hargaTerjual ? "Harga Terjual wajib diisi" : "";
+  errors.nomor_telepon = !form.nomor_telepon ? "Nomor Telepon wajib diisi" : "";
+  errors.biayaPengiriman = !form.biayaPengiriman
+    ? "Biaaya pembayaran wajib diisi"
+    : "";
+  errors.catatan = !form.catatan ? "Catatan wajib diisi" : "";
+
+  return Object.values(errors).every((err) => !err);
+}
+
 async function submitForm() {
-  if (!form.code_barang) {
+  if (!validate()) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
     return;
   }
+
   const payloadTransaksi = {
     transaksi_nama_customer: form.namaPenerima,
     transaksi_nomor_telepon: form.nomor_telepon,
@@ -228,7 +285,7 @@ async function submitForm() {
 
   try {
     const responseData = await axios.get(
-      `${url.value}/api/entrybarang/getDataKasir/`+form.code_barang
+      `${url.value}/api/entrybarang/getDataKasir/` + form.code_barang
     );
     const dataEntry = responseData.data.data[0];
 
@@ -237,19 +294,19 @@ async function submitForm() {
       payloadTransaksi
     );
     const transaksi_id = transaksiData.data.data.transaksi_id;
-    try{
+    try {
       const payloadTransaksiDetail = {
         transaksidetail_transaksi_id: transaksi_id,
         transaksidetail_barang_id: dataEntry.barangentry_id,
         transaksidetail_jumlah_barang: 1,
         transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
       };
-      
+
       await axios.post(
         `${url.value}/api/transaksi-detail`,
         payloadTransaksiDetail
       );
-  
+
       const pengirimanPayload = {
         pengirimanBarang_transaksi_id: transaksi_id,
         pengirimanBarang_nama_penerima: form.namaPenerima,
@@ -261,7 +318,7 @@ async function submitForm() {
         pengirimanBarang_catatan: form.catatan,
         pengirimanBarang_status: "Proses",
       };
-  
+
       await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
 
       Swal.fire({
@@ -270,10 +327,11 @@ async function submitForm() {
         icon: "success",
         confirmButtonText: "OK",
       });
-    }catch(err){
-      console.error('Error melakukan transaksi', err)
+    } catch (err) {
+      console.error("Error melakukan transaksi", err);
     }
 
+    form.code_barang = "";
     form.namaPenerima = "";
     form.nomor_telepon = "";
     form.platform = "";

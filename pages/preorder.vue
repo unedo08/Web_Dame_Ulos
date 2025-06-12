@@ -7,7 +7,7 @@
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Kode Barang *</label
+            >Kode Barang <span class="required">*</span></label
           >
           <input
             ref="platformInput"
@@ -16,11 +16,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
           />
+          <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
+            {{ errors.code_barang }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Akun *</label
+            >Nama Akun <span class="required">*</span></label
           >
           <input
             v-model="form.namaAkun"
@@ -28,11 +31,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
+            {{ errors.namaAkun }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Target Selesai *</label
+            >Target Selesai <span class="required">*</span></label
           >
           <input
             v-model="form.targetSelesai"
@@ -40,11 +46,14 @@
             type="date"
             class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.targetSelesai" class="text-red-500 text-sm mt-1">
+            {{ errors.targetSelesai }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Metode Pembayaran *</label
+            >Metode Pembayaran <span class="required">*</span></label
           >
           <select
             v-model="form.metodePembayaran"
@@ -57,11 +66,14 @@
             <option>QRIS</option>
             <option>Virtual Account</option>
           </select>
+          <p v-if="errors.metodePembayaran" class="text-red-500 text-sm mt-1">
+            {{ errors.metodePembayaran }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Uang Muka (DP) *</label
+            >Uang Muka (DP) <span class="required">*</span></label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
@@ -71,12 +83,15 @@
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
+            <p v-if="errors.dp" class="text-red-500 text-sm mt-1">
+              {{ errors.dp }}
+            </p>
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Deskripsi Ulos *</label
+            >Deskripsi Ulos <span class="required">*</span></label
           >
           <textarea
             v-model="form.deskripsiUlos"
@@ -84,6 +99,9 @@
             rows="3"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           ></textarea>
+          <p v-if="errors.deskripsiUlos" class="text-red-500 text-sm mt-1">
+            {{ errors.deskripsiUlos }}
+          </p>
         </div>
 
         <div>
@@ -103,7 +121,7 @@
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Nama Ulos *</label
+            >Nama Ulos <span class="required">*</span></label
           >
           <input
             v-model="form.namaUlos"
@@ -111,11 +129,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.namaUlos" class="text-red-500 text-sm mt-1">
+            {{ errors.namaUlos }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >No Telepon *</label
+            >No Telepon <span class="required">*</span></label
           >
           <input
             v-model="form.nomor_telepon"
@@ -123,11 +144,14 @@
             type="text"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
+          <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
+            {{ errors.nomor_telepon }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Total Pembayaran *</label
+            >Total Pembayaran <span class="required">*</span></label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
@@ -137,12 +161,15 @@
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
+            <p v-if="errors.totalPembayaran" class="text-red-500 text-sm mt-1">
+              {{ errors.totalPembayaran }}
+            </p>
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Sisa Pembayaran *</label
+            >Sisa Pembayaran <span class="required">*</span></label
           >
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
@@ -152,12 +179,15 @@
               type="number"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
+            <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">
+              {{ errors.sisaPembayaran }}
+            </p>
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Catatan *</label
+            >Catatan <span class="required">*</span></label
           >
           <textarea
             v-model="form.catatan"
@@ -165,6 +195,9 @@
             rows="3"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           ></textarea>
+          <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">
+            {{ errors.catatan }}
+          </p>
         </div>
       </div>
 
@@ -180,7 +213,7 @@
           type="button"
           @click="submitForm"
           :disabled="!form.code_barang"
-          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition"
+          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
         >
           Tambah
         </button>
@@ -197,12 +230,15 @@ import Swal from "sweetalert2";
 
 const kodeBarangInput = ref(null);
 const url = ref("");
+const platformInput = ref(null);
+const errors = reactive({});
 
 onMounted(() => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
   kodeBarangInput.value?.focus();
 });
+
 const form = reactive({
   code_barang: "",
   namaAkun: "",
@@ -217,8 +253,6 @@ const form = reactive({
   metodePembayaran: "",
   gambar: null,
 });
-
-const platformInput = ref(null);
 
 function handleKodeBarangEnter() {
   platformInput.value?.focus();
@@ -235,11 +269,43 @@ function toDatetimeString(dateStr) {
   )} 00:00:00`;
 }
 
+function validate() {
+  errors.code_barang = !form.code_barang ? "Kode barang wajib diisi" : "";
+  errors.namaAkun = !form.namaAkun ? "Nama akun wajib diisi" : "";
+  errors.targetSelesai = !form.targetSelesai
+    ? "Target selesai wajib diisi"
+    : "";
+  errors.metodePembayaran = !form.metodePembayaran
+    ? "Metode pembayaran wajib diisi"
+    : "";
+  errors.dp = !form.dp ? "Uang muka wajib diisi" : "";
+  errors.deskripsiUlos = !form.deskripsiUlos
+    ? "Deskripsi ulos wajib diisi"
+    : "";
+  errors.namaUlos = !form.namaUlos ? "Nama ulos wajib diisi" : "";
+  errors.nomor_telepon = !form.nomor_telepon ? "No telepon wajib diisi" : "";
+  errors.totalPembayaran = !form.totalPembayaran
+    ? "Total pembayaran wajib diisi"
+    : "";
+  errors.sisaPembayaran = !form.sisaPembayaran
+    ? "Sisa pembayaran wajib diisi"
+    : "";
+  errors.catatan = !form.catatan ? "Catatan wajib diisi" : "";
+
+  return Object.values(errors).every((err) => !err);
+}
+
 async function submitForm() {
-  if (!form.code_barang) {
+  if (!validate()) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
     return;
   }
-  
+
   // const payloadTransaksi = {
   //   transaksi_nama_customer: form.namaAkun,
   //   transaksi_nomor_telepon: form.nomor_telepon,
@@ -263,77 +329,84 @@ async function submitForm() {
     // );
     // const transaksi_id = transaksiData.data.data.transaksi_id;
     // try {
-      // const payloadTransaksiDetail = {
-      //   transaksidetail_transaksi_id: transaksi_id,
-      //   transaksidetail_barang_id: dataEntry.barangentry_id,
-      //   transaksidetail_jumlah_barang: 1,
-      //   transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
-      // };
+    // const payloadTransaksiDetail = {
+    //   transaksidetail_transaksi_id: transaksi_id,
+    //   transaksidetail_barang_id: dataEntry.barangentry_id,
+    //   transaksidetail_jumlah_barang: 1,
+    //   transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
+    // };
 
-      // await axios.post(
-      //   `${url.value}/api/transaksi-detail`,
-      //   payloadTransaksiDetail
-      // );
+    // await axios.post(
+    //   `${url.value}/api/transaksi-detail`,
+    //   payloadTransaksiDetail
+    // );
 
-      const formData = new FormData();
-      formData.append("preOrderBarang_transaksi_id", "");
-      formData.append("preOrderBarang_nama_barang", form.namaUlos);
-      formData.append("preOrderBarang_nama_akun", form.namaAkun);
-      formData.append("preOrderBarang_no_telepon", form.nomor_telepon);
-      formData.append(
-        "preOrderBarang_target_selesai",
-        toDatetimeString(form.targetSelesai)
-      );
-      formData.append("preOrderBarang_total_pembayaran", form.totalPembayaran);
-      formData.append("preOrderBarang_uang_muka", form.dp);
-      formData.append("preOrderBarang_sisa_pembayaran", form.sisaPembayaran);
-      formData.append("preOrderBarang_deskripsi_barang", form.deskripsiUlos);
-      formData.append("preOrderBarang_catatan", form.catatan);
-      formData.append("preOrderBarang_path_gambar", "test");
+    const formData = new FormData();
+    formData.append("preOrderBarang_transaksi_id", "");
+    formData.append("preOrderBarang_nama_barang", form.namaUlos);
+    formData.append("preOrderBarang_nama_akun", form.namaAkun);
+    formData.append("preOrderBarang_no_telepon", form.nomor_telepon);
+    formData.append(
+      "preOrderBarang_target_selesai",
+      toDatetimeString(form.targetSelesai)
+    );
+    formData.append("preOrderBarang_total_pembayaran", form.totalPembayaran);
+    formData.append("preOrderBarang_uang_muka", form.dp);
+    formData.append("preOrderBarang_sisa_pembayaran", form.sisaPembayaran);
+    formData.append("preOrderBarang_deskripsi_barang", form.deskripsiUlos);
+    formData.append("preOrderBarang_catatan", form.catatan);
+    formData.append("preOrderBarang_path_gambar", "test");
 
-      await axios.post(`${url.value}/api/pre-order-barang`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    await axios.post(`${url.value}/api/pre-order-barang`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      Swal.fire({
-        title: "Sukses!",
-        text: "Berhasil Melakukan Pre-Order",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+    Swal.fire({
+      title: "Sukses!",
+      text: "Berhasil Melakukan Pre-Order",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
 
-      // const pengirimanPayload = {
-      //   pengirimanBarang_transaksi_id: transaksi_id,
-      //   pengirimanBarang_nama_penerima: form.namaAkun,
-      //   pengirimanBarang_akun_penerima: form.namaAkun,
-      //   pengirimanBarang_no_telepon: form.nomor_telepon,
-      //   pengirimanBarang_harga_kirim_barang: form.biayaPengiriman,
-      //   pengirimanBarang_jenis_pengiriman_barang: form.pengiriman,
-      //   pengirimanBarang_alamat_pengiriman_barang: form.alamat,
-      //   pengirimanBarang_catatan: form.catatan,
-      //   pengirimanBarang_status: "Proses",
-      // };
+    // const pengirimanPayload = {
+    //   pengirimanBarang_transaksi_id: transaksi_id,
+    //   pengirimanBarang_nama_penerima: form.namaAkun,
+    //   pengirimanBarang_akun_penerima: form.namaAkun,
+    //   pengirimanBarang_no_telepon: form.nomor_telepon,
+    //   pengirimanBarang_harga_kirim_barang: form.biayaPengiriman,
+    //   pengirimanBarang_jenis_pengiriman_barang: form.pengiriman,
+    //   pengirimanBarang_alamat_pengiriman_barang: form.alamat,
+    //   pengirimanBarang_catatan: form.catatan,
+    //   pengirimanBarang_status: "Proses",
+    // };
 
-      // await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+    // await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
     // } catch (err) {
     //   console.error("Error melakukan transaksi", err);
     // }
-
-    form.namaPenerima = "";
+    form.code_barang = "";
+    form.namaAkun = "";
+    form.targetSelesai = "";
+    form.dp = "";
+    form.deskripsiUlos = "";
+    form.namaUlos = "";
     form.nomor_telepon = "";
-    form.platform = "";
-    form.pengiriman = "";
-    form.metodePembayaran = "";
-    form.alamat = "";
-    form.namaAkun = "";
-    form.hargaTerjual = "";
-    form.namaAkun = "";
-    form.biayaPengiriman = "";
+    form.totalPembayaran = "";
+    form.sisaPembayaran = "";
     form.catatan = "";
+    form.alamat = "";
+    form.metodePembayaran = "";
+    form.gambar = null;
   } catch (err) {
     console.error("Error", err);
   }
 }
 </script>
+
+<style>
+.required {
+  color: red;
+}
+</style>

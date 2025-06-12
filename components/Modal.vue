@@ -234,7 +234,6 @@ watch(() => props.show, (val) => {
   }
 });
 
-
 const emit = defineEmits(["close", "scanned", "sizeSubmitted"]);
 
 const barcode = ref("");
