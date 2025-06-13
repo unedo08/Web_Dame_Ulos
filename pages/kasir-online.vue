@@ -122,12 +122,17 @@
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Harga Terjual <span class="required">*</span></label
           >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+          <div class="flex">
+            <div
+              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+            >
+              Rp
+            </div>
             <input
-              v-model="form.hargaTerjual"
+              :value="formattedHargaTerjual"
+              @input="onInputHargaTerjual"
               :disabled="!form.code_barang"
-              type="number"
+              type="text"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
             <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
@@ -143,7 +148,7 @@
           <input
             v-model="form.nomor_telepon"
             :disabled="!form.code_barang"
-            type="text"
+            type="number"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
           <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
@@ -155,12 +160,17 @@
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Biaya Pengiriman <span class="required">*</span></label
           >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+          <div class="flex">
+            <div
+              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+            >
+              Rp
+            </div>
             <input
-              v-model="form.biayaPengiriman"
+              :value="formattedBiayaPengiriman"
+              @input="onInputBiayaPengiriman"
               :disabled="!form.code_barang"
-              type="number"
+              type="text"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
             <p v-if="errors.biayaPengiriman" class="text-red-500 text-sm mt-1">
@@ -241,6 +251,35 @@ function handleKodeBarangEnter() {
   platformInput.value?.focus();
 }
 
+function formatRupiah(value) {
+  if (!value) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""));
+  return number.toLocaleString("id-ID");
+}
+
+function parseRupiah(value) {
+  if (!value) return "";
+  return value.toString().replace(/\D/g, "");
+}
+
+const formattedHargaTerjual = computed(() => {
+  return form.hargaTerjual ? formatRupiah(form.hargaTerjual) : "";
+});
+
+function onInputHargaTerjual(e) {
+  const raw = parseRupiah(e.target.value);
+  form.hargaTerjual = raw;
+}
+
+const formattedBiayaPengiriman = computed(() => {
+  return form.biayaPengiriman ? formatRupiah(form.biayaPengiriman) : "";
+});
+
+function onInputBiayaPengiriman(e) {
+  const raw = parseRupiah(e.target.value);
+  form.biayaPengiriman = raw;
+}
+
 function validate() {
   errors.code_barang = !form.code_barang ? "Kode barang wajib diisi" : "";
   errors.platform = !form.platform ? "Platform wajib diisi" : "";
@@ -268,6 +307,8 @@ async function submitForm() {
       text: "Silakan lengkapi semua field wajib.",
       icon: "error",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
     });
     return;
   }
@@ -326,6 +367,8 @@ async function submitForm() {
         text: "Berhasil Melakukan Online Transaksi",
         icon: "success",
         confirmButtonText: "OK",
+        timer: 3000,
+        timerProgressBar: true,
       });
     } catch (err) {
       console.error("Error melakukan transaksi", err);
@@ -348,3 +391,10 @@ async function submitForm() {
   }
 }
 </script>
+
+<style scoped>
+* {
+  font-family: "Nunito";
+  font-weight: 700;
+}
+</style>

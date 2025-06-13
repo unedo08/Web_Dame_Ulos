@@ -20,7 +20,7 @@
 
     <div class="flex space-x-2 ml-4">
       <button
-        class="bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-[104px] h-[34px]"
+        class="bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-[120px] h-[48px]"
         @click="handleHold"
       >
         Hold
@@ -72,7 +72,7 @@
       </tbody>
     </table>
     <div class="mt-4 text-right font-semibold text-lg">
-      Subtotal: {{ formatRupiah(subtotal) }}
+      Subtotal: Rp. {{ formatRupiahSubtotal(subtotal) }}
     </div>
   </div>
 
@@ -134,7 +134,18 @@
       placeholder="Catatan tambahan"
     ></textarea>
 
-    <button @click="checkoutProcess" class="btn-green w-full">Checkout</button>
+    <button
+      @click="checkoutProcess"
+      class="btn-green w-full"
+      :disabled="isLoading"
+    >
+      <span
+        v-if="isLoading"
+        class="loader-border ease-linear rounded-full border-2 border-t-2 h-5 w-5"
+      ></span>
+      <span v-if="isLoading">Mohon tunggu sebentar...</span>
+      <span v-else>Checkout</span>
+    </button>
   </ModalKasir>
 </template>
 
@@ -156,6 +167,7 @@ const barcodeInput = ref("");
 let barcodeTimeout = null;
 
 const datatableItems = ref([]);
+const isLoading = ref(false);
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -179,17 +191,28 @@ function formatRupiah(number) {
   });
 }
 
+function formatRupiahSubtotal(value) {
+  if (!value) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""));
+  return number.toLocaleString("id-ID");
+}
+
+function parseRupiah(value) {
+  if (!value) return "";
+  return value.toString().replace(/\D/g, "");
+}
+
 const formatTanggalHold = (dateStr) => {
-    if (!dateStr) return "-";
-    const date = new Date(dateStr);
-    return date.toLocaleString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return date.toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const waitingList = ref([]);
 
@@ -213,15 +236,19 @@ async function loadHoldTransaction(id) {
 
     const detailList = transaksi.details || [];
 
-    datatableItems.value = await Promise.all(detailList.map(async detail => {
-      const res = await axios.get(`${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
-      return {
-        barangentry_nama: res.data.data.barangentry_nama,
-        quantity: detail.transaksidetail_jumlah_barang,
-        barangentry_harga_net: detail.transaksidetail_harga_barang,
-        code_nama: res.data.data.code_nama
-      };
-    }));
+    datatableItems.value = await Promise.all(
+      detailList.map(async (detail) => {
+        const res = await axios.get(
+          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+        );
+        return {
+          barangentry_nama: res.data.data.barangentry_nama,
+          quantity: detail.transaksidetail_jumlah_barang,
+          barangentry_harga_net: detail.transaksidetail_harga_barang,
+          code_nama: res.data.data.code_nama,
+        };
+      })
+    );
 
     openModalHold.value = false;
   } catch (err) {
@@ -232,7 +259,7 @@ async function loadHoldTransaction(id) {
 
 async function handleHold() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
-    openModalHold.value = true
+    openModalHold.value = true;
     await fetchHoldTransactions();
     return;
   }
@@ -246,7 +273,7 @@ async function handleHold() {
     transaksi_nama_customer: searchQueryCustomer.value,
     transaksi_nomor_telepon: searchQueryPhone.value,
     transaksi_jumlah_barang: jumlahBarang,
-    transaksi_total_harga: subtotal.value,
+    transaksi_total_harga: parseRupiah(subtotal.value),
     transaksi_cara_bayar: "Belum Dipilih",
     transaksi_tipe: "offline",
     transaksi_status: "hold",
@@ -280,6 +307,8 @@ async function handleHold() {
       text: "Transaksi berhasil ditambahkan ke hold.",
       icon: "info",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
     });
 
     datatableItems.value = [];
@@ -291,6 +320,8 @@ async function handleHold() {
       title: "Gagal",
       text: "Tidak bisa menyimpan transaksi hold",
       icon: "error",
+      timer: 3000,
+      timerProgressBar: true,
     });
   }
 }
@@ -306,6 +337,8 @@ async function checkoutProcess() {
     return;
   }
 
+  isLoading.value = true;
+
   const jumlahBarang = datatableItems.value.reduce(
     (total, item) => total + (item.quantity || 0),
     0
@@ -315,7 +348,7 @@ async function checkoutProcess() {
     transaksi_nama_customer: searchQueryCustomer.value,
     transaksi_nomor_telepon: searchQueryPhone.value,
     transaksi_jumlah_barang: jumlahBarang,
-    transaksi_total_harga: subtotal.value,
+    transaksi_total_harga: parseRupiah(subtotal.value),
     transaksi_cara_bayar: processForm.value.paymentMethod,
     transaksi_tipe: "offline",
     transaksi_status: "pending",
@@ -324,9 +357,7 @@ async function checkoutProcess() {
 
   try {
     const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
-
     const transaksi_id = data.data.transaksi_id;
-    console.log("asdasdsa", transaksi_id);
 
     for (const item of datatableItems.value) {
       try {
@@ -344,7 +375,7 @@ async function checkoutProcess() {
           transaksidetail_transaksi_id: transaksi_id,
           transaksidetail_barang_id: barangData.barangentry_id,
           transaksidetail_jumlah_barang: item.quantity,
-          transaksidetail_harga_barang: item.barangentry_harga_net,
+          transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
         };
 
         await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
@@ -376,6 +407,8 @@ async function checkoutProcess() {
       text: "Berhasil Melakukan Pembelian",
       icon: "success",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
     });
 
     printToNewTab(transaksi, detailWithNames);
@@ -388,6 +421,8 @@ async function checkoutProcess() {
     openModalProcess.value = false;
   } catch (err) {
     console.error("Gagal menyimpan transaksi:", err);
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -448,16 +483,6 @@ function printToNewTab(data, items) {
     alert("Pop-up blocker menghalangi membuka tab baru.");
     return;
   }
-
-  // Helper fungsi format Rupiah
-  const formatRupiah = (number) => {
-    if (!number) return "Rp0";
-    return number.toLocaleString("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    });
-  };
 
   const formatTanggal = (dateStr) => {
     if (!dateStr) return "-";
@@ -524,6 +549,9 @@ function printToNewTab(data, items) {
       table td.text-left {
         text-align: left;
       }
+      .table tbody tr:last-child td {
+        border-bottom: 2px solid #000;
+      }
       .total-bayar {
         text-align: right;
         font-weight: 700;
@@ -570,15 +598,8 @@ function printToNewTab(data, items) {
           data.transaksi_jumlah_barang ||
           items.reduce((acc, i) => acc + i.transaksidetail_jumlah_barang, 0)
         }</p>
-        <p><strong>Total:</strong> ${formatRupiah(
-          data.transaksi_total_harga ||
-            items.reduce(
-              (acc, i) =>
-                acc +
-                i.transaksidetail_jumlah_barang *
-                  i.transaksidetail_harga_barang,
-              0
-            )
+        <p><strong>Total:</strong> Rp. ${formatRupiahSubtotal(
+          parseFloat(data.transaksi_total_harga)
         )}</p>
         <p><strong>Waktu:</strong> ${formatTanggal(data.created_at)}</p>
       </div>
@@ -621,14 +642,8 @@ function printToNewTab(data, items) {
     (acc, i) => acc + i.transaksidetail_jumlah_barang,
     0
   )}</div>
-  <div>Subtotal: ${formatRupiah(
-    data.transaksi_total_harga ||
-      items.reduce(
-        (acc, i) =>
-          acc +
-          i.transaksidetail_jumlah_barang * i.transaksidetail_harga_barang,
-        0
-      )
+  <div>Subtotal: Rp. ${formatRupiahSubtotal(
+    parseFloat(data.transaksi_total_harga)
   )}</div>
 </div>
 
@@ -725,5 +740,15 @@ function printToNewTab(data, items) {
 
 .btn-green:hover {
   background-color: #166534;
+}
+
+.loader-border {
+  border-top-color: #fff;
+  animation: spinner 0.6s linear infinite;
+}
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

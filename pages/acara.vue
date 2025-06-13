@@ -2,15 +2,13 @@
   <div>
     <div class="judul text-xl font-semibold mb-4">Acara</div>
 
-    <div class="flex items-center justify-between pt-2">
-      <div>
+    <div class="flex-end items-center justify-between pt-2">
         <button
           class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[140px] h-[38px]"
           @click="openModal"
         >
           + Tambah Acara
         </button>
-      </div>
     </div>
 
     <!-- Product Table -->
@@ -364,6 +362,8 @@ const submitAcara = async () => {
       text: "Silakan lengkapi semua field wajib.",
       icon: "error",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true
     });
     return;
   }

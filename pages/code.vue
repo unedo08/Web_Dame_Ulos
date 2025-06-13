@@ -23,10 +23,23 @@
 
     <!-- Product Table -->
     <div>
+      <div class="pt-2">
+        <label for="perPage" class="mr-2">Tampilkan:</label>
+        <select
+          id="perPage"
+          v-model="itemsPerPage"
+          class="border px-2 py-1 rounded"
+        >
+          <option :value="5">5</option>
+          <option :value="10">10</option>
+          <option :value="20">20</option>
+          <option :value="50">50</option>
+        </select>
+      </div>
       <table class="datatable">
         <thead>
           <tr>
-            <th>#</th>
+            <th>No. </th>
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>Jumlah Barang</th>
@@ -35,8 +48,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="barang in listBarang" :key="barang.jenisbarang_id">
-            <td>{{ barang.no }}</td>
+          <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id">
+            <td>{{ index + 1 }}</td>
             <td>{{ barang.jenisbarang_kode }}</td>
             <td>{{ barang.jenisbarang_nama }}</td>
             <td>{{ barang.jenisbarang_jumlah }}</td>
@@ -46,21 +59,6 @@
                 class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
                 @click="openModelPrint(barang)"
               >
-                <!-- Icon Print -->
-                <!-- <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6 9V2h12v7M6 18h12v4H6v-4zm0 0v-6h12v6H6z"
-                  />
-                </svg> -->
                 Print
               </button>
               <button
@@ -69,27 +67,41 @@
                   deleteProduct(barang.jenisbarang_id, barang.jenisbarang_nama)
                 "
               >
-                <!-- Icon Delete (Trash) -->
-                <!-- <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-3h4m-4 0a1 1 0 00-1 1v1h6V5a1 1 0 00-1-1m-4 0h4"
-                  />
-                </svg> -->
                 Delete
               </button>
             </td>
           </tr>
         </tbody>
       </table>
+      <div class="flex justify-end mt-4 space-x-2">
+        <button
+          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          Sebelumnya
+        </button>
+
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="currentPage = page"
+          :class="[
+            'px-3 py-1 rounded',
+            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+          ]"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          Selanjutnya
+        </button>
+      </div>
     </div>
 
     <!-- Modal Dialog -->
@@ -218,7 +230,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from "#imports";
 
 // State
 const searchQuery = ref("");
@@ -234,19 +246,23 @@ const isModalOpen = ref(false);
 const isModalPrintOpen = ref(false);
 const selectedProduct = ref(null);
 const printJumlah = ref(1);
-const url = ref('')
+const url = ref("");
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 
 const fetchData = async () => {
   try {
     const response = await axios.get(`${url.value}/api/jenisbarang`);
     const fetchedData = response.data;
+    console.log('zxx', fetchedData);
+    
     barang.value = fetchedData.map((item, index) => ({
-      no: index + 1,
       jenisbarang_id: item.jenisbarang_id,
       jenisbarang_kode: item.jenisbarang_kode,
       jenisbarang_nama: item.jenisbarang_nama,
       jenisbarang_jumlah: item.jenisbarang_jumlah,
       jenisbarang_tipe: item.jenisbarang_tipe,
+      created_at: item.created_at
     }));
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -255,23 +271,36 @@ const fetchData = async () => {
 
 onMounted(() => {
   const config = useRuntimeConfig();
-  url.value = config.public.apiBase
+  url.value = config.public.apiBase;
   fetchData();
   isModalPrintOpen.value = false;
 });
 
 // List with Search
 const listBarang = computed(() => {
-  if (!searchQuery.value) return barang.value;
-  return barang.value.filter(
-    (item) =>
-      item.jenisbarang_kode
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase()) ||
-      item.jenisbarang_nama
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase())
+  const sorted = [...barang.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  if (!searchQuery.value) return sorted;
+  const q = searchQuery.value.toLowerCase();
+  return sorted.filter((item) => {
+    return (
+      item.jenisbarang_nama?.toLowerCase().includes(q) ||
+      item.jenisbarang_kode?.toLowerCase().includes(q) 
+    );
+  }
   );
+});
+
+const pagination = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return listBarang.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(listBarang.value.length / itemsPerPage.value);
 });
 
 // Modal Add
@@ -446,11 +475,20 @@ const deleteProduct = async (id, nama_barang) => {
     }
   }
 };
+
+watch(searchQuery, () => {
+  currentPage.value = 1;
+});
+
+watch(currentPage, (val) => {
+  if (val < 1) currentPage.value = 1;
+  if (val > totalPages.value) currentPage.value = totalPages.value;
+});
 </script>
 
 <style scoped>
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .search-box {

@@ -50,37 +50,21 @@
             {{ errors.targetSelesai }}
           </p>
         </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Metode Pembayaran <span class="required">*</span></label
-          >
-          <select
-            v-model="form.metodePembayaran"
-            :disabled="!form.code_barang"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          >
-            <option disabled value="">Pilih metode pembayaran</option>
-            <option>Transfer Bank</option>
-            <option>COD</option>
-            <option>QRIS</option>
-            <option>Virtual Account</option>
-          </select>
-          <p v-if="errors.metodePembayaran" class="text-red-500 text-sm mt-1">
-            {{ errors.metodePembayaran }}
-          </p>
-        </div>
-
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Uang Muka (DP) <span class="required">*</span></label
           >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+          <div class="flex">
+            <div
+              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+            >
+              Rp
+            </div>
             <input
-              v-model="form.dp"
+              :value="formattedUangMuka"
+              @input="onInputUangMuka"
               :disabled="!form.code_barang"
-              type="number"
+              type="text"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
             <p v-if="errors.dp" class="text-red-500 text-sm mt-1">
@@ -109,10 +93,10 @@
             >Gambar</label
           >
           <div
-            class="w-full border border-dashed border-gray-400 rounded-md p-4 text-center"
+            class="w-full border border-dashed border-gray-400 rounded-md p-4 flex flex-col items-start"
           >
-            <input type="file" @change="handleFileUpload" class="mx-auto" />
-            <p class="text-xs text-gray-500 mt-2">Ukuran Maksimal: 5MB</p>
+            <input type="file" @change="handleFileUpload" />
+            <p class="text-xs text-gray-500 mt-1">Ukuran Maksimal: 5MB</p>
           </div>
         </div>
       </div>
@@ -141,7 +125,7 @@
           <input
             v-model="form.nomor_telepon"
             :disabled="!form.code_barang"
-            type="text"
+            type="number"
             class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
           />
           <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
@@ -150,33 +134,43 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Total Pembayaran <span class="required">*</span></label
-          >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Total Pembayaran <span class="required">*</span>
+          </label>
+          <div class="flex">
+            <div
+              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+            >
+              Rp
+            </div>
             <input
-              v-model="form.totalPembayaran"
+              :value="formattedTotalPembayaran"
+              @input="onInputTotalPembayaran"
               :disabled="!form.code_barang"
-              type="number"
-              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+              type="text"
+              class="w-full border-t border-b border-r border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
-            <p v-if="errors.totalPembayaran" class="text-red-500 text-sm mt-1">
-              {{ errors.totalPembayaran }}
-            </p>
           </div>
+          <p v-if="errors.totalPembayaran" class="text-red-500 text-sm mt-1">
+            {{ errors.totalPembayaran }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Sisa Pembayaran <span class="required">*</span></label
           >
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+          <div class="flex">
+            <div
+              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+            >
+              Rp
+            </div>
             <input
-              v-model="form.sisaPembayaran"
+              :value="formattedSisaPembayaran"
+              @input="onInputSisaPembayaran"
               :disabled="!form.code_barang"
-              type="number"
+              type="text"
               class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
             <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">
@@ -184,7 +178,6 @@
             </p>
           </div>
         </div>
-
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Catatan <span class="required">*</span></label
@@ -250,7 +243,6 @@ const form = reactive({
   totalPembayaran: "",
   sisaPembayaran: "",
   catatan: "",
-  metodePembayaran: "",
   gambar: null,
 });
 
@@ -259,6 +251,44 @@ function handleKodeBarangEnter() {
 }
 function handleFileUpload(event) {
   form.gambar = event.target.files[0];
+}
+
+function formatRupiah(value) {
+  if (!value) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""));
+  return number.toLocaleString("id-ID");
+}
+
+function parseRupiah(value) {
+  if (!value) return "";
+  return value.toString().replace(/\D/g, "");
+}
+
+const formattedUangMuka = computed(() => {
+  return form.dp ? formatRupiah(form.dp) : "";
+});
+
+function onInputUangMuka(e) {
+  const raw = parseRupiah(e.target.value);
+  form.dp = raw;
+}
+
+const formattedTotalPembayaran = computed(() => {
+  return form.totalPembayaran ? formatRupiah(form.totalPembayaran) : "";
+});
+
+function onInputTotalPembayaran(e) {
+  const raw = parseRupiah(e.target.value);
+  form.totalPembayaran = raw;
+}
+
+const formattedSisaPembayaran = computed(() => {
+  return form.sisaPembayaran ? formatRupiah(form.sisaPembayaran) : "";
+});
+
+function onInputSisaPembayaran(e) {
+  const raw = parseRupiah(e.target.value);
+  form.sisaPembayaran = raw;
 }
 
 function toDatetimeString(dateStr) {
@@ -274,9 +304,6 @@ function validate() {
   errors.namaAkun = !form.namaAkun ? "Nama akun wajib diisi" : "";
   errors.targetSelesai = !form.targetSelesai
     ? "Target selesai wajib diisi"
-    : "";
-  errors.metodePembayaran = !form.metodePembayaran
-    ? "Metode pembayaran wajib diisi"
     : "";
   errors.dp = !form.dp ? "Uang muka wajib diisi" : "";
   errors.deskripsiUlos = !form.deskripsiUlos
@@ -302,6 +329,8 @@ async function submitForm() {
       text: "Silakan lengkapi semua field wajib.",
       icon: "error",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
     });
     return;
   }
@@ -368,6 +397,8 @@ async function submitForm() {
       text: "Berhasil Melakukan Pre-Order",
       icon: "success",
       confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
     });
 
     // const pengirimanPayload = {
@@ -397,7 +428,6 @@ async function submitForm() {
     form.sisaPembayaran = "";
     form.catatan = "";
     form.alamat = "";
-    form.metodePembayaran = "";
     form.gambar = null;
   } catch (err) {
     console.error("Error", err);
@@ -408,5 +438,11 @@ async function submitForm() {
 <style>
 .required {
   color: red;
+}
+</style>
+<style scoped>
+* {
+  font-family: "Nunito";
+  font-weight: 700;
 }
 </style>
