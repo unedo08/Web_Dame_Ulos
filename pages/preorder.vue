@@ -442,7 +442,7 @@ async function submitForm() {
 </style>
 <style scoped>
 * {
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
   font-weight: 700;
 }
 </style>
