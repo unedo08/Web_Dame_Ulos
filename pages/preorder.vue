@@ -6,7 +6,7 @@
       <!-- KIRI -->
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Kode Barang <span class="required">*</span></label
           >
           <input
@@ -22,7 +22,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Nama Akun <span class="required">*</span></label
           >
           <input
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Target Selesai <span class="required">*</span></label
           >
           <input
@@ -51,7 +51,7 @@
           </p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Uang Muka (DP) <span class="required">*</span></label
           >
           <div class="flex">
@@ -74,7 +74,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Deskripsi Ulos <span class="required">*</span></label
           >
           <textarea
@@ -89,7 +89,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Gambar</label
           >
           <div
@@ -104,7 +104,7 @@
       <!-- KANAN -->
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Nama Ulos <span class="required">*</span></label
           >
           <input
@@ -119,7 +119,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >No Telepon <span class="required">*</span></label
           >
           <input
@@ -134,7 +134,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
             Total Pembayaran <span class="required">*</span>
           </label>
           <div class="flex">
@@ -157,7 +157,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Sisa Pembayaran <span class="required">*</span></label
           >
           <div class="flex">
@@ -179,7 +179,7 @@
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Catatan <span class="required">*</span></label
           >
           <textarea
@@ -443,6 +443,8 @@ async function submitForm() {
 <style scoped>
 * {
   font-family: "Nunito", sans-serif;
+}
+.judul-label{
   font-weight: 700;
 }
 </style>

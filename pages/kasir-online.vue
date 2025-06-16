@@ -5,7 +5,7 @@
     <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Kode Barang <span class="required">*</span></label
           >
           <input
@@ -21,7 +21,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Platform <span class="required">*</span></label
           >
           <input
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Nama Penerima <span class="required">*</span></label
           >
           <input
@@ -52,7 +52,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Pengiriman <span class="required">*</span></label
           >
           <input
@@ -67,7 +67,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Metode Pembayaran <span class="required">*</span></label
           >
           <select
@@ -86,7 +86,7 @@
           </p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Alamat <span class="required">*</span></label
           >
           <textarea
@@ -104,7 +104,7 @@
       <!-- Kolom Kanan -->
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Nama Akun <span class="required">*</span></label
           >
           <input
@@ -119,7 +119,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Harga Terjual <span class="required">*</span></label
           >
           <div class="flex">
@@ -142,7 +142,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Nama Telepon <span class="required">*</span></label
           >
           <input
@@ -157,7 +157,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Biaya Pengiriman <span class="required">*</span></label
           >
           <div class="flex">
@@ -180,7 +180,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
             >Catatan <span class="required">*</span></label
           >
           <textarea
@@ -394,7 +394,9 @@ async function submitForm() {
 
 <style scoped>
 * {
-  font-family: "Nunito", ;
+  font-family: "Nunito", sans-serif;
+}
+.judul-label{
   font-weight: 700;
 }
 </style>
