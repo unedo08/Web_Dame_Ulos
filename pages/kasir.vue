@@ -395,6 +395,17 @@ const processForm = ref({
 });
 
 async function checkoutProcess() {
+  if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
+    Swal.fire({
+      title: "Gagal",
+      text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
+      icon: "error",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    return;
+  }
+  
   if (!processForm.value.paymentMethod) {
     alert("Pilih metode pembayaran");
     return;
