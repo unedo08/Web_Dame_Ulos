@@ -106,7 +106,7 @@ function toggleDropdown(index) {
 </script>
 
 <template>
-  <aside class="w-56 min-h-screen">
+  <aside class="w-56 min-h-screen fixed top-0 text-white overflow-y-auto z-50">
     <header
       class="flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer"
     >
@@ -125,7 +125,7 @@ function toggleDropdown(index) {
             class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
           >
             <component :is="item.icon" class="w-5 h-5 text-white" />
-            <span>{{ item.title }}</span>
+            <span class="truncate">{{ item.title }}</span>
           </NuxtLink>
 
           <!-- Jika punya submenu (dropdown) -->
@@ -136,7 +136,7 @@ function toggleDropdown(index) {
             >
               <div class="flex items-center gap-2">
                 <component :is="item.icon" class="w-5 h-5 text-white" />
-                <span>{{ item.title }}</span>
+                <span class="truncate">{{ item.title }}</span>
               </div>
               <!-- Dropdown Icon -->
               <component
@@ -151,7 +151,7 @@ function toggleDropdown(index) {
                 :to="child.path"
                 class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
               >
-                <span>{{ child.title }}</span>
+                <span class="truncate">{{ child.title }}</span>
               </NuxtLink>
             </div>
           </div>

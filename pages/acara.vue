@@ -2,7 +2,7 @@
   <div>
     <div class="judul text-xl font-semibold mb-4">Acara</div>
 
-    <div class="flex-end items-center justify-between pt-2">
+    <div class="flex items-center justify-end pt-2">
         <button
           class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[140px] h-[38px]"
           @click="openModal"
@@ -309,8 +309,8 @@ onMounted(async () => {
 });
 
 function validate() {
-  errors.acara_nama = !newProduct.acara_nama ? "Nama Acara wajib diisi" : "";
-  errors.acara_keterangan = !newProduct.acara_keterangan
+  errors.acara_nama = !newProduct.value.acara_nama ? "Nama Acara wajib diisi" : "";
+  errors.acara_keterangan = !newProduct.value.acara_keterangan
     ? "Keterangan wajib diisi"
     : "";
 

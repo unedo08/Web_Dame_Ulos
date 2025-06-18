@@ -2,7 +2,6 @@
   <div class="judul text-xl font-semibold mb-4">Menu Kasir</div>
 
   <div class="flex items-start justify-between pt-2">
-    <!-- Input Section -->
     <div class="flex flex-col flex-1 space-y-2">
       <input
         class="search-box p-2 border rounded-md"
@@ -19,6 +18,17 @@
     </div>
 
     <div class="flex space-x-2 ml-4">
+      <button
+        class="bg-gray-600 text-white rounded-md hover:bg-gray-700 w-[120px] h-[48px]"
+        @click="
+          () => {
+            openModalHold = true;
+            fetchHoldTransactions();
+          }
+        "
+      >
+        Daftar Hold
+      </button>
       <button
         class="bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-[120px] h-[48px]"
         @click="handleHold"
@@ -76,7 +86,7 @@
     </div>
   </div>
 
-  <ModalKasir
+  <!-- <ModalKasir
     v-if="openModalHold"
     @close="openModalHold = false"
     title="Daftar Hold Transaksi"
@@ -109,7 +119,55 @@
         </button>
       </div>
     </div>
-  </ModalKasir>
+  </ModalKasir> -->
+
+  <Transition name="slide">
+    <div
+      v-if="openModalHold"
+      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform"
+    >
+      <div class="flex justify-between items-center p-4 border-b">
+        <h2 class="text-lg font-semibold">Daftar Hold Transaksi</h2>
+        <button
+          @click="openModalHold = false"
+          class="text-gray-600 hover:text-red-500 text-xl font-bold"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="p-4">
+        <div v-if="waitingList.length === 0" class="text-gray-500">
+          Tidak ada transaksi hold saat ini.
+        </div>
+        <div v-else class="space-y-2">
+          <div
+            v-for="(item, index) in waitingList"
+            :key="item.transaksi_id"
+            class="p-3 border rounded-md bg-gray-100 flex justify-between items-center"
+          >
+            <div>
+              <div class="font-semibold">
+                {{ item.transaksi_nama_customer || "Tanpa Nama" }}
+              </div>
+              <div class="text-sm text-gray-600">
+                Total: {{ formatRupiah(item.transaksi_total_harga) }}
+              </div>
+              <div class="text-sm text-gray-500">
+                Tanggal: {{ formatTanggalHold(item.created_at) }}
+              </div>
+            </div>
+            <button
+              @click="loadHoldTransaction(item.transaksi_id)"
+              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            >
+              Pilih
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
 
   <!-- Modal Process -->
   <ModalKasir
@@ -259,8 +317,13 @@ async function loadHoldTransaction(id) {
 
 async function handleHold() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
-    openModalHold.value = true;
-    await fetchHoldTransactions();
+    Swal.fire({
+      title: "Gagal",
+      text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
+      icon: "error",
+      timer: 3000,
+      timerProgressBar: true,
+    });
     return;
   }
 
@@ -750,5 +813,16 @@ function printToNewTab(data, items) {
   to {
     transform: rotate(360deg);
   }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+.slide-enter-from {
+  transform: translateX(100%);
+}
+.slide-leave-to {
+  transform: translateX(100%);
 }
 </style>

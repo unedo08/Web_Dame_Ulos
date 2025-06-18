@@ -180,6 +180,13 @@ import { useRuntimeConfig } from "#imports";
 
 const priceTagData = ref([]);
 const url = ref("");
+const barcode = ref("");
+const barcodeInput = ref("");
+const barcodeList = ref([]);
+const barang = ref(null);
+const printContent = ref(null);
+let scanTimeout;
+let scanTimeoutSize;
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -192,20 +199,6 @@ const props = defineProps({
 });
 
 const barcodeDesc = ref(null);
-// watch(
-//   () => props.show,
-//   (val) => {
-//     if (val) {
-//       nextTick(() => {
-//         barcodeDesc.value?.focus();
-//       });
-//     } else {
-//       barcode.value = "";
-//       barang.value = null;
-//       size.value = { mandar: "", ulos: "" };
-//     }
-//   }
-// );
 watch(
   () => props.show,
   (val) => {
@@ -238,12 +231,6 @@ watch(
 );
 
 const emit = defineEmits(["close", "scanned", "sizeSubmitted"]);
-
-const barcode = ref("");
-const barcodeInput = ref("");
-const barcodeList = ref([]);
-const barang = ref(null);
-const printContent = ref(null);
 const size = ref({ mandar: "", ulos: "" });
 
 const modalTitle = computed(() => {
@@ -356,18 +343,16 @@ async function printPriceTag() {
   });
 }
 
-let scanTimeout;
-let scanTimeoutSize;
 function onBarcodeInput(e) {
   clearTimeout(scanTimeout);
   scanTimeout = setTimeout(() => {
     handleScan();
-  }, 300);
+  }, 10000);
 }
 function onBarcodeInputSize(e) {
   clearTimeout(scanTimeoutSize);
   scanTimeoutSize = setTimeout(() => {
     handleScanSize();
-  }, 300);
+  }, 10000);
 }
 </script>

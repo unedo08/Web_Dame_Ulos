@@ -1,218 +1,251 @@
 <template>
-  <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold mb-6">Tambah Online Transaksi</h2>
-
-    <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-4">
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Kode Barang <span class="required">*</span></label
-          >
-          <input
-            ref="kodeBarangInput"
-            v-model="form.code_barang"
-            @keyup.enter="handleKodeBarangEnter"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-          />
-          <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
-            {{ errors.code_barang }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Platform <span class="required">*</span></label
-          >
-          <input
-            ref="platformInput"
-            v-model="form.platform"
-            :disabled="!form.code_barang"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-          <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
-            {{ errors.platform }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Nama Penerima <span class="required">*</span></label
-          >
-          <input
-            v-model="form.namaPenerima"
-            :disabled="!form.code_barang"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-          <p v-if="errors.namaPenerima" class="text-red-500 text-sm mt-1">
-            {{ errors.namaPenerima }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Pengiriman <span class="required">*</span></label
-          >
-          <input
-            v-model="form.pengiriman"
-            :disabled="!form.code_barang"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-          <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
-            {{ errors.pengiriman }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Metode Pembayaran <span class="required">*</span></label
-          >
-          <select
-            v-model="form.metodePembayaran"
-            :disabled="!form.code_barang"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          >
-            <option disabled value="">Pilih metode pembayaran</option>
-            <option>Transfer Bank</option>
-            <option>COD</option>
-            <option>QRIS</option>
-            <option>Virtual Account</option>
-          </select>
-          <p v-if="errors.metodePembayaran" class="text-red-500 text-sm mt-1">
-            {{ errors.metodePembayaran }}
-          </p>
-        </div>
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Alamat <span class="required">*</span></label
-          >
-          <textarea
-            v-model="form.alamat"
-            :disabled="!form.code_barang"
-            rows="3"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          ></textarea>
-          <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
-            {{ errors.alamat }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Kolom Kanan -->
-      <div class="space-y-4">
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Nama Akun <span class="required">*</span></label
-          >
-          <input
-            v-model="form.namaAkun"
-            :disabled="!form.code_barang"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-          <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
-            {{ errors.namaAkun }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Harga Terjual <span class="required">*</span></label
-          >
-          <div class="flex">
-            <div
-              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
-            >
-              Rp
+  <div class="min-h-screen bg-white">
+    <div class="py-4 px-4">
+      <h1 class="text-2xl font-semibold mb-2">Kasir</h1>
+    </div>
+    <div class="bg-[#F0F0F0] py-5">
+      <h2 class="text-xl font-semibold mb-5 px-4">Tambah Online Transaksi</h2>
+      <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Kode Barang <span class="required">*</span></label
+              >
+              <input
+                ref="kodeBarangInput"
+                v-model="form.code_barang"
+                @keyup.enter="handleKodeBarangEnter"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
+                placeholder="Masukkan Kode Barang"
+              />
+              <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
+                {{ errors.code_barang }}
+              </p>
             </div>
-            <input
-              :value="formattedHargaTerjual"
-              @input="onInputHargaTerjual"
-              :disabled="!form.code_barang"
-              type="text"
-              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-            />
-            <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
-              {{ errors.hargaTerjual }}
-            </p>
-          </div>
-        </div>
 
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Nama Telepon <span class="required">*</span></label
-          >
-          <input
-            v-model="form.nomor_telepon"
-            :disabled="!form.code_barang"
-            type="number"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          />
-          <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
-            {{ errors.nomor_telepon }}
-          </p>
-        </div>
-
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Biaya Pengiriman <span class="required">*</span></label
-          >
-          <div class="flex">
-            <div
-              class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
-            >
-              Rp
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Platform <span class="required">*</span></label
+              >
+              <input
+                ref="platformInput"
+                v-model="form.platform"
+                :disabled="!form.code_barang"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Nama Platform"
+              />
+              <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
+                {{ errors.platform }}
+              </p>
             </div>
-            <input
-              :value="formattedBiayaPengiriman"
-              @input="onInputBiayaPengiriman"
-              :disabled="!form.code_barang"
-              type="text"
-              class="w-full border border-gray-300 rounded-md px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-            />
-            <p v-if="errors.biayaPengiriman" class="text-red-500 text-sm mt-1">
-              {{ errors.biayaPengiriman }}
-            </p>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Nama Penerima <span class="required">*</span></label
+              >
+              <input
+                v-model="form.namaPenerima"
+                :disabled="!form.code_barang"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Nama Penerima"
+              />
+              <p v-if="errors.namaPenerima" class="text-red-500 text-sm mt-1">
+                {{ errors.namaPenerima }}
+              </p>
+            </div>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Pengiriman <span class="required">*</span></label
+              >
+              <input
+                v-model="form.pengiriman"
+                :disabled="!form.code_barang"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Pengiriman"
+              />
+              <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
+                {{ errors.pengiriman }}
+              </p>
+            </div>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Metode Pembayaran <span class="required">*</span></label
+              >
+              <select
+                v-model="form.metodePembayaran"
+                :disabled="!form.code_barang"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+              >
+                <option disabled value="">Pilih metode pembayaran</option>
+                <option>Transfer Bank</option>
+                <option>COD</option>
+                <option>QRIS</option>
+                <option>Virtual Account</option>
+              </select>
+              <p
+                v-if="errors.metodePembayaran"
+                class="text-red-500 text-sm mt-1"
+              >
+                {{ errors.metodePembayaran }}
+              </p>
+            </div>
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Alamat <span class="required">*</span></label
+              >
+              <textarea
+                v-model="form.alamat"
+                :disabled="!form.code_barang"
+                rows="3"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Alamat"
+              ></textarea>
+              <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
+                {{ errors.alamat }}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <label class="judul-label block text-sm font-medium text-gray-700 mb-1"
-            >Catatan <span class="required">*</span></label
-          >
-          <textarea
-            v-model="form.catatan"
-            :disabled="!form.code_barang"
-            rows="3"
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-          ></textarea>
-          <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">
-            {{ errors.catatan }}
-          </p>
-        </div>
-      </div>
+          <!-- Kolom Kanan -->
+          <div class="space-y-4">
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Nama Akun <span class="required">*</span></label
+              >
+              <input
+                v-model="form.namaAkun"
+                :disabled="!form.code_barang"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Nama Akun"
+              />
+              <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
+                {{ errors.namaAkun }}
+              </p>
+            </div>
 
-      <!-- Tombol -->
-      <div class="md:col-span-2 flex justify-end gap-4 mt-8">
-        <button
-          type="button"
-          class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
-        >
-          Batal
-        </button>
-        <button
-          type="button"
-          @click="submitForm"
-          :disabled="!form.code_barang"
-          class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
-        >
-          Tambah
-        </button>
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Harga Terjual <span class="required">*</span></label
+              >
+              <div class="flex">
+                <div
+                  class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+                >
+                  Rp
+                </div>
+                <input
+                  :value="formattedHargaTerjual"
+                  @input="onInputHargaTerjual"
+                  :disabled="!form.code_barang"
+                  type="text"
+                  class="w-full border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  placeholder="Masukkan Harga Terjual"
+                />
+                <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
+                  {{ errors.hargaTerjual }}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Nama Telepon <span class="required">*</span></label
+              >
+              <input
+                v-model="form.nomor_telepon"
+                :disabled="!form.code_barang"
+                type="text"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Nomor Telepon"
+              />
+              <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
+                {{ errors.nomor_telepon }}
+              </p>
+            </div>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Biaya Pengiriman <span class="required">*</span></label
+              >
+              <div class="flex">
+                <div
+                  class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
+                >
+                  Rp
+                </div>
+                <input
+                  :value="formattedBiayaPengiriman"
+                  @input="onInputBiayaPengiriman"
+                  :disabled="!form.code_barang"
+                  type="text"
+                  class="w-full border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  placeholder="Masukkan Biaya Pengiriman"
+                />
+                <p
+                  v-if="errors.biayaPengiriman"
+                  class="text-red-500 text-sm mt-1"
+                >
+                  {{ errors.biayaPengiriman }}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="judul-label block text-sm font-medium text-gray-700 mb-1"
+                >Catatan <span class="required">*</span></label
+              >
+              <textarea
+                v-model="form.catatan"
+                :disabled="!form.code_barang"
+                rows="3"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                placeholder="Masukkan Catatan"
+              ></textarea>
+              <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">
+                {{ errors.catatan }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Tombol -->
+          <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+            <button
+              type="button"
+              class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              @click="submitForm"
+              :disabled="!form.code_barang"
+              class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
+            >
+              Tambah
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -396,7 +429,22 @@ async function submitForm() {
 * {
   font-family: "Nunito", sans-serif;
 }
-.judul-label{
+
+.judul-label {
   font-weight: 700;
+}
+
+input,
+textarea,
+select {
+  border-color: #e4e6fc !important;
+  background-color: #fdfdff !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #e4e6fc !important;
+  box-shadow: 0 0 0 2px rgba(228, 230, 252, 0.5);
 }
 </style>

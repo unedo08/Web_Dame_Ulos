@@ -21,25 +21,11 @@
       </div>
     </div>
 
-    <!-- Product Table -->
     <div>
-      <div class="pt-2">
-        <label for="perPage" class="mr-2">Tampilkan:</label>
-        <select
-          id="perPage"
-          v-model="itemsPerPage"
-          class="border px-2 py-1 rounded"
-        >
-          <option :value="5">5</option>
-          <option :value="10">10</option>
-          <option :value="20">20</option>
-          <option :value="50">50</option>
-        </select>
-      </div>
       <table class="datatable">
         <thead>
           <tr>
-            <th>No. </th>
+            <th>No.</th>
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>Jumlah Barang</th>
@@ -48,7 +34,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id">
+          <tr
+            v-for="(barang, index) in pagination"
+            :key="barang.jenisbarang_id"
+          >
             <td>{{ index + 1 }}</td>
             <td>{{ barang.jenisbarang_kode }}</td>
             <td>{{ barang.jenisbarang_nama }}</td>
@@ -73,34 +62,53 @@
           </tr>
         </tbody>
       </table>
-      <div class="flex justify-end mt-4 space-x-2">
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
-          Sebelumnya
-        </button>
 
-        <button
-          v-for="page in totalPages"
-          :key="page"
-          @click="currentPage = page"
-          :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-          ]"
-        >
-          {{ page }}
-        </button>
+      <div class="flex justify-between items-center mt-4">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select
+            id="perPage"
+            v-model="itemsPerPage"
+            class="border px-2 py-1 rounded"
+          >
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
 
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
-          Selanjutnya
-        </button>
+        <div class="flex items-center space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            v-for="(page, index) in paginatedPages"
+            :key="index"
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="[
+              'px-3 py-1 rounded',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Selanjutnya
+          </button>
+        </div>
       </div>
     </div>
 
@@ -254,15 +262,15 @@ const fetchData = async () => {
   try {
     const response = await axios.get(`${url.value}/api/jenisbarang`);
     const fetchedData = response.data;
-    console.log('zxx', fetchedData);
-    
+    console.log("zxx", fetchedData);
+
     barang.value = fetchedData.map((item, index) => ({
       jenisbarang_id: item.jenisbarang_id,
       jenisbarang_kode: item.jenisbarang_kode,
       jenisbarang_nama: item.jenisbarang_nama,
       jenisbarang_jumlah: item.jenisbarang_jumlah,
       jenisbarang_tipe: item.jenisbarang_tipe,
-      created_at: item.created_at
+      created_at: item.created_at,
     }));
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -287,10 +295,9 @@ const listBarang = computed(() => {
   return sorted.filter((item) => {
     return (
       item.jenisbarang_nama?.toLowerCase().includes(q) ||
-      item.jenisbarang_kode?.toLowerCase().includes(q) 
+      item.jenisbarang_kode?.toLowerCase().includes(q)
     );
-  }
-  );
+  });
 });
 
 const pagination = computed(() => {
@@ -475,6 +482,28 @@ const deleteProduct = async (id, nama_barang) => {
     }
   }
 };
+
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    }
+  }
+
+  return pages;
+});
 
 watch(searchQuery, () => {
   currentPage.value = 1;

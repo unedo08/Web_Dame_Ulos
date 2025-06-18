@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div calss="max-w-screen-xl mx-auto px-4">
     <div class="judul text-xl font-semibold mb-4">Wait to Entry</div>
-    <div class="flex justify-end space-x-4 mb-6">
+    <div class="flex flex-wrap justify-end gap-4 mb-6">
       <button
         v-if="isSearchActive"
         @click="resetSearch"
@@ -44,8 +44,8 @@
       @sizeSubmitted="handleSizeSubmitted"
     />
 
-    <div>
-      <table class="datatable">
+    <div class="overflow-x-auto">
+      <table class="min-w-full datatable">
         <thead>
           <tr>
             <th>Tanggal</th>
@@ -99,7 +99,7 @@
       v-if="showModalAdd"
       class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
     >
-      <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
+      <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg">
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
         </h2>
@@ -553,7 +553,6 @@ async function submitSizeBarang() {
 
 function cancelSizeBarang() {
   selectedBarang.value == {};
-  
   showModalAddSize.value = false;
 }
 
@@ -612,7 +611,6 @@ async function handleSearch() {
   if (!keyword) return;
 
   try {
-    // Ambil code dari API
     const response = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${keyword}`);
     const code = response.data.data.barangentry_code_id;
     console.log('asdsa', code);
@@ -622,7 +620,6 @@ async function handleSearch() {
       return;
     }
 
-    // Filter secara lokal di listBarang
     filteredBarang.value = listBarang.value.filter(
       (item) => String(item.barangentry_code_id).includes(String(code))
     );
@@ -635,13 +632,11 @@ async function handleSearch() {
     if (filteredBarang.value.length === 0) {
       alert("Barang tidak ditemukan di daftar.");
     }
-
   } catch (error) {
     console.error("Gagal mencari data kode:", error);
     alert("Terjadi kesalahan saat mencari kode.");
   }
 }
-
 
 function resetSearch() {
   isSearchActive.value = false;

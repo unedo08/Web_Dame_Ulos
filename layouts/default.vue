@@ -18,7 +18,6 @@
 </template>
 
 <script>
-// import { definePageMeta } from '/nuxt/dist/pages/runtime';
 import Topbar from '../components/Topbar/index.vue'; 
 
 export default {
