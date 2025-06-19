@@ -58,7 +58,7 @@
             <th>Price Tag</th>
             <th>Harga Net</th>
             <th>Jumlah</th>
-            <th>Acara</th>
+            <!-- <th>Acara</th> -->
             <th>Ukuran Mandar</th>
             <th>Ukuran Ulos</th>
             <th>Aksi</th>
@@ -75,11 +75,11 @@
             <td>{{ barang.barangentry_nama_penenun }}</td>
             <td>{{ barang.barangentry_nama_panirat }}</td>
             <td>{{ barang.barangentry_dryer }}</td>
-            <td>{{ barang.barangentry_modal }}</td>
-            <td>{{ barang.barangentry_price_tag }}</td>
-            <td>{{ barang.barangentry_harga_net }}</td>
+            <td>{{ formatRupiah(barang.barangentry_modal) }}</td>
+            <td>{{ formatRupiah(barang.barangentry_price_tag) }}</td>
+            <td>{{ formatRupiah(barang.barangentry_harga_net) }}</td>
             <td>{{ barang.barangentry_jumlah_barang }}</td>
-            <td>{{ barang.barangentry_acara }}</td>
+            <!-- <td>{{ barang.barangentry_acara }}</td> -->
             <td>{{ barang.barangentry_ukuran_mandar }}</td>
             <td>{{ barang.barangentry_ukuran_ulos }}</td>
             <td>
@@ -538,6 +538,11 @@ function openModal(type) {
 function tambahBarang(barang) {
   selectedBarang.value = { ...barang };
   showModalAdd.value = true;
+}
+
+function formatRupiah(value) {
+  const number = parseInt(value);
+  return 'Rp. ' + number.toLocaleString('id-ID');
 }
 
 async function submitBarang() {
