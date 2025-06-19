@@ -72,16 +72,9 @@ const toggleDropdown = () => {
 const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
   if (item === "Logout") {
-    // console.log("sad", sessionStorage.getItem("auth_token"));
-    // console.log("sad", sessionStorage.getItem("email"));
-    // console.log("sad", sessionStorage.getItem("password"));
     try {
-      await axios.get(
-        `${url.value}/api/user`,
-        {
-          email: sessionStorage.getItem("email"),
-          password: sessionStorage.getItem("password"),
-        },
+      await axios.post(
+        `${url.value}/api/logout`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("auth_token")}`,
