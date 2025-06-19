@@ -262,7 +262,6 @@ const fetchData = async () => {
   try {
     const response = await axios.get(`${url.value}/api/jenisbarang`);
     const fetchedData = response.data;
-    console.log("zxx", fetchedData);
 
     barang.value = fetchedData.map((item, index) => ({
       jenisbarang_id: item.jenisbarang_id,

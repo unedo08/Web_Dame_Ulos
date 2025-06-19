@@ -66,7 +66,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="barang in isSearchActive ? filteredBarang : listBarang"
+            v-for="barang in isSearchActive ? filteredBarang : pagination"
             :key="barang.kode_barang"
           >
             <td>{{ formatTanggal(barang.created_at) }}</td>
@@ -93,6 +93,54 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="flex justify-between items-center mt-4">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select
+            id="perPage"
+            v-model="itemsPerPage"
+            class="border px-2 py-1 rounded"
+          >
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            v-for="(page, index) in paginatedPages"
+            :key="index"
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="[
+              'px-3 py-1 rounded',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -438,6 +486,8 @@ const showModalSearch = ref(false);
 const searchCode = ref("");
 const filteredBarang = ref([]);
 const isSearchActive = ref(false);
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -469,6 +519,17 @@ async function getListBarangTemp() {
     console.error("Gagal Memuat Data Barang: ", error);
   }
 }
+
+const pagination = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return listBarang.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(listBarang.value.length / itemsPerPage.value);
+});
+
 function openModal(type) {
   modalType.value = type;
   modalOpen.value = true;
@@ -611,20 +672,21 @@ async function handleSearch() {
   if (!keyword) return;
 
   try {
-    const response = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${keyword}`);
+    const response = await axios.get(
+      `${url.value}/api/entrybarang/getDataByCode/${keyword}`
+    );
     const code = response.data.data.barangentry_code_id;
-    console.log('asdsa', code);
-    
+    console.log("asdsa", code);
+
     if (!code) {
       alert("Kode tidak ditemukan dari server.");
       return;
     }
 
-    filteredBarang.value = listBarang.value.filter(
-      (item) => String(item.barangentry_code_id).includes(String(code))
+    filteredBarang.value = listBarang.value.filter((item) =>
+      String(item.barangentry_code_id).includes(String(code))
     );
-    console.log('sadas', filteredBarang.value);
-    
+    console.log("sadas", filteredBarang.value);
 
     isSearchActive.value = true;
     showModalSearch.value = false;
@@ -643,6 +705,28 @@ function resetSearch() {
   filteredBarang.value = [];
   searchCode.value = "";
 }
+
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    }
+  }
+
+  return pages;
+});
 </script>
 
 <style>

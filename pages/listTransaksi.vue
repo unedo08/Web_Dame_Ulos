@@ -8,23 +8,11 @@
       placeholder="Cari transaksi
       ..."
     />
-    <div>
-      <label for="perPage" class="mr-2">Tampilkan:</label>
-      <select
-        id="perPage"
-        v-model="itemsPerPage"
-        class="border px-2 py-1 rounded"
-      >
-        <option :value="5">5</option>
-        <option :value="10">10</option>
-        <option :value="20">20</option>
-        <option :value="50">50</option>
-      </select>
-    </div>
+
     <table class="datatable">
       <thead>
         <tr>
-          <th>No. </th>
+          <th>No.</th>
           <th>Nama Customer</th>
           <th>No. Telepon</th>
           <th>Jumlah Barang</th>
@@ -66,34 +54,52 @@
         </tr>
       </tbody>
     </table>
-    <div class="flex justify-end mt-4 space-x-2">
-      <button
-        class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-        :disabled="currentPage === 1"
-        @click="currentPage--"
-      >
-        Prev
-      </button>
+    <div class="flex justify-between items-center mt-4">
+      <div class="flex items-center space-x-2">
+        <label for="perPage">Tampilkan:</label>
+        <select
+          id="perPage"
+          v-model="itemsPerPage"
+          class="border px-2 py-1 rounded"
+        >
+          <option :value="5">5</option>
+          <option :value="10">10</option>
+          <option :value="20">20</option>
+          <option :value="50">50</option>
+        </select>
+      </div>
 
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="currentPage = page"
-        :class="[
-          'px-3 py-1 rounded',
-          currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-        ]"
-      >
-        {{ page }}
-      </button>
+      <div class="flex items-center space-x-2">
+        <button
+          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          Sebelumnya
+        </button>
 
-      <button
-        class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-        :disabled="currentPage === totalPages"
-        @click="currentPage++"
-      >
-        Next
-      </button>
+        <button
+          v-for="(page, index) in paginatedPages"
+          :key="index"
+          @click="typeof page === 'number' && (currentPage = page)"
+          :class="[
+            'px-3 py-1 rounded',
+            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+            page === '...' ? 'cursor-default' : 'cursor-pointer',
+          ]"
+          :disabled="page === '...'"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          Selanjutnya
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -186,30 +192,27 @@ const deleteTransaksi = async (id) => {
   }
 };
 
-// async function printStruk(id) {
-//   try {
-//     const { data: responsePrint } = await axios.get(
-//       `${url.value}/api/transaksi/${id}`
-//     );
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
 
-//     const transaksi = responsePrint.data;
-//     const detailWithNames = await Promise.all(
-//       transaksi.details.map(async (detail) => {
-//         const barangRes = await axios.get(
-//           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
-//         );
-//         return {
-//           ...detail,
-//           barangentry_nama:
-//             barangRes.data.data.barangentry_nama || "Tidak Diketahui",
-//         };
-//       })
-//     );
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    }
+  }
 
-//   } catch (err) {
-//     console.error("Error mengambil data transaksi", err);
-//   }
-// }
+  return pages;
+});
 
 function printStruk(id) {
   const printWindow = window.open(`/print/${id}`, "_blank");
