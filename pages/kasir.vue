@@ -86,41 +86,6 @@
     </div>
   </div>
 
-  <!-- <ModalKasir
-    v-if="openModalHold"
-    @close="openModalHold = false"
-    title="Daftar Hold Transaksi"
-  >
-    <div v-if="waitingList.length === 0" class="text-gray-500">
-      Tidak ada transaksi hold saat ini.
-    </div>
-    <div v-else class="space-y-2">
-      <div
-        v-for="(item, index) in waitingList"
-        :key="item.transaksi_id"
-        class="p-3 border rounded-md bg-gray-100 flex justify-between items-center"
-      >
-        <div>
-          <div class="font-semibold">
-            {{ item.transaksi_nama_customer || "Tanpa Nama" }}
-          </div>
-          <div class="text-sm text-gray-600">
-            Total: {{ formatRupiah(item.transaksi_total_harga) }}
-          </div>
-          <div class="text-sm text-gray-500">
-            Tanggal: {{ formatTanggalHold(item.created_at) }}
-          </div>
-        </div>
-        <button
-          @click="loadHoldTransaction(item.transaksi_id)"
-          class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-        >
-          Pilih
-        </button>
-      </div>
-    </div>
-  </ModalKasir> -->
-
   <Transition name="slide">
     <div
       v-if="openModalHold"
@@ -137,12 +102,18 @@
       </div>
 
       <div class="p-4">
-        <div v-if="waitingList.length === 0" class="text-gray-500">
+        <input
+          v-model="searchHold"
+          type="text"
+          placeholder="Cari nama customer..."
+          class="w-full border px-3 py-2 rounded mb-4"
+        />
+        <div v-if="filteredList.length === 0" class="text-gray-500">
           Tidak ada transaksi hold saat ini.
         </div>
         <div v-else class="space-y-2">
           <div
-            v-for="(item, index) in waitingList"
+            v-for="(item, index) in paginatedList"
             :key="item.transaksi_id"
             class="p-3 border rounded-md bg-gray-100 flex justify-between items-center"
           >
@@ -164,6 +135,37 @@
               Pilih
             </button>
           </div>
+        </div>
+        <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
+          <button
+            @click="currentPage--"
+            :disabled="currentPage === 1"
+            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          >
+            &laquo;
+          </button>
+
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="currentPage = page"
+            :class="[
+              'px-3 py-1 rounded border',
+              page === currentPage
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200',
+            ]"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            @click="currentPage++"
+            :disabled="currentPage === totalPages"
+            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          >
+            &raquo;
+          </button>
         </div>
       </div>
     </div>
@@ -194,7 +196,12 @@
 
     <button
       @click="checkoutProcess"
-      class="btn-green w-full"
+      class="w-full text-white px-4 py-2 rounded-md transition font-semibold"
+      :class="
+        isLoading
+          ? 'bg-gray-400 cursor-not-allowed'
+          : 'bg-green-600 hover:bg-green-700'
+      "
       :disabled="isLoading"
     >
       <span
@@ -216,6 +223,9 @@ import Swal from "sweetalert2";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
+const searchHold = ref("");
+const currentPage = ref(1);
+const itemsPerPage = 5;
 const url = ref("");
 
 const openModalHold = ref(false);
@@ -299,11 +309,15 @@ async function loadHoldTransaction(id) {
         const res = await axios.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
+
+        const resCode = await axios.get(
+          `${url.value}/api/codebarang/` + res.data.data.barangentry_code_id
+        );
         return {
           barangentry_nama: res.data.data.barangentry_nama,
           quantity: detail.transaksidetail_jumlah_barang,
           barangentry_harga_net: detail.transaksidetail_harga_barang,
-          code_nama: res.data.data.code_nama,
+          code_nama: resCode.data.code_nama,
         };
       })
     );
@@ -314,6 +328,24 @@ async function loadHoldTransaction(id) {
     Swal.fire("Gagal", "Tidak bisa memuat transaksi hold", "error");
   }
 }
+
+const filteredList = computed(() =>
+  waitingList.value.filter((item) =>
+    (item.transaksi_nama_customer || "Tanpa Nama")
+      .toLowerCase()
+      .includes(searchHold.value.toLowerCase())
+  )
+);
+
+const paginatedList = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredList.value.slice(start, end);
+});
+
+const totalPages = computed(() =>
+  Math.ceil(filteredList.value.length / itemsPerPage)
+);
 
 async function handleHold() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
@@ -405,7 +437,7 @@ async function checkoutProcess() {
     });
     return;
   }
-  
+
   if (!processForm.value.paymentMethod) {
     alert("Pilih metode pembayaran");
     return;
@@ -735,6 +767,10 @@ function printToNewTab(data, items) {
   printWindow.document.write(htmlContent);
   printWindow.document.close();
 }
+
+watch(searchHold, () => {
+  currentPage.value = 1
+})
 </script>
 
 <style scoped>

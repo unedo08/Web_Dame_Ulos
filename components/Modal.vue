@@ -347,12 +347,12 @@ function onBarcodeInput(e) {
   clearTimeout(scanTimeout);
   scanTimeout = setTimeout(() => {
     handleScan();
-  }, 10000);
+  }, 2000);
 }
 function onBarcodeInputSize(e) {
   clearTimeout(scanTimeoutSize);
   scanTimeoutSize = setTimeout(() => {
     handleScanSize();
-  }, 10000);
+  }, 2000);
 }
 </script>

@@ -185,13 +185,13 @@
             <button
               type="button"
               @click="closeModal"
-              class="mr-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-white rounded-md hover:bg-[#D8D8D8]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              class="px-4 py-2 bg-bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]"
             >
               Save
             </button>

@@ -91,7 +91,7 @@
               v-model="newProduct.acara_nama"
               type="text"
               id="acara_nama"
-              class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
+              class="mt-1 block w-full border border-gray-300 pl-3 border-gray bg-[#FDFDFF] rounded-md shadow-sm w-[382px] h-[41px]"
               placeholder="Masukkan Nama Acara"
               required
             />
@@ -109,7 +109,7 @@
               v-model="newProduct.acara_keterangan"
               id="acara_keterangan"
               rows="3"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-[#FDFDFF]"
               placeholder="Masukkan keterangan acara"
               required
             ></textarea>
@@ -122,13 +122,13 @@
             <button
               type="button"
               @click="closeModal"
-              class="mr-4 px-4 py-2 bg-gray-400 text-gray-800 rounded-md hover:bg-gray-600"
+              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-gray-800 rounded-md hover:bg-[#D8D8D8]"
             >
               Batal
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#1C9DBD]"
             >
               Tambah
             </button>

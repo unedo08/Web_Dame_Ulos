@@ -42,7 +42,7 @@
           <td>{{ pengiriman.pengirimanBarang_status }}</td>
           <td>{{ pengiriman.pengirimanBarang_catatan }}</td>
           <td>{{ formatDate(pengiriman.created_at) }}</td>
-          <td class="flex space-x-2">
+          <td>
             <button
               class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
               @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"

@@ -4,8 +4,8 @@
       <h1 class="text-2xl font-semibold mb-2">Kasir</h1>
     </div>
     <div class="bg-[#F0F0F0] py-5">
-      <h2 class="text-xl font-semibold mb-5 px-4">Tambah Online Transaksi</h2>
-      <div class="max-w-6xl mx-auto p-8 bg-white rounded-lg shadow-md">
+      <h2 class="text-l font-semibold mb-5 px-4">Tambah Online Transaksi</h2>
+      <div class="max-w-6xl ml-4 md:ml-8 p-8 bg-white rounded-lg shadow-md">
         <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-4">
             <div>
@@ -101,6 +101,7 @@
                 {{ errors.metodePembayaran }}
               </p>
             </div>
+
             <div>
               <label
                 class="judul-label block text-sm font-medium text-gray-700 mb-1"
@@ -154,7 +155,7 @@
                   @input="onInputHargaTerjual"
                   :disabled="!form.code_barang"
                   type="text"
-                  class="w-full border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                   placeholder="Masukkan Harga Terjual"
                 />
                 <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
@@ -196,7 +197,7 @@
                   @input="onInputBiayaPengiriman"
                   :disabled="!form.code_barang"
                   type="text"
-                  class="w-full border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                   placeholder="Masukkan Biaya Pengiriman"
                 />
                 <p
@@ -207,6 +208,11 @@
                 </p>
               </div>
             </div>
+
+          <div class="invisible">
+            <label class="block text-sm font-medium">Placeholder</label>
+            <input type="text" class="w-full border px-4 py-2 rounded-md" disabled />
+          </div>
 
             <div>
               <label
@@ -321,7 +327,7 @@ function validate() {
   errors.metodePembayaran = !form.metodePembayaran
     ? "Metode Pembayaran wajib diisi"
     : "";
-  errors.alamat = !form.deskripsiUlos ? "Alamat wajib diisi" : "";
+  errors.alamat = !form.alamat ? "Alamat wajib diisi" : "";
   errors.namaAkun = !form.namaAkun ? "Nama Akun wajib diisi" : "";
   errors.hargaTerjual = !form.hargaTerjual ? "Harga Terjual wajib diisi" : "";
   errors.nomor_telepon = !form.nomor_telepon ? "Nomor Telepon wajib diisi" : "";
@@ -446,5 +452,13 @@ textarea:focus,
 select:focus {
   border-color: #e4e6fc !important;
   box-shadow: 0 0 0 2px rgba(228, 230, 252, 0.5);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  border-color: #e5e7eb !important;
 }
 </style>

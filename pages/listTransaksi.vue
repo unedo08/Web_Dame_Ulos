@@ -37,19 +37,21 @@
           <td>{{ trx.transaksi_status }}</td>
           <td>{{ trx.transaksi_catatan }}</td>
           <td>{{ formatDate(trx.created_at) }}</td>
-          <td class="flex space-x-2">
-            <button
-              class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
+          <td class="align-middle">
+            <div class="flex items-center space-x-2">
+              <button
+              class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
               @click="printStruk(trx.transaksi_id)"
             >
               Print
             </button>
             <button
-              class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
+              class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
               @click="deleteTransaksi(trx.transaksi_id)"
             >
               Delete
             </button>
+            </div>
           </td>
         </tr>
       </tbody>

@@ -315,7 +315,7 @@
             />
           </div>
         </div>
-        <div class="flex justify-start space-x-3 mt-6">
+        <div class="flex justify-end space-x-3 mt-6">
           <button
             @click="cancelSizeBarang"
             class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -339,12 +339,12 @@
     >
       <div
         v-for="item in priceTagData"
-        :key="item.barangentry_id"
+        :key="item.data.barangentry_id"
         style="page-break-after: always"
       >
         <div style="display: flex; gap: 40px">
           <div style="flex: 1">
-            <h1>{{ item.barangentry_nama }}</h1>
+            <h1>{{ item.data.barangentry_nama }}</h1>
             <p class="text-xl font-semibold mb-4">Horas!</p>
             <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
             <p>
@@ -372,7 +372,7 @@
                   Tahun Pembuatan
                 </td>
                 <td style="padding: 4px 8px">
-                  {{ new Date(item.created_at).getFullYear() }}
+                  {{ new Date(item.data.created_at).getFullYear() }}
                 </td>
               </tr>
               <tr>
@@ -380,14 +380,14 @@
                   Ukuran Tenun
                 </td>
                 <td style="padding: 4px 8px">
-                  {{ item.barangentry_ukuran_ulos ?? "-" }} x
-                  {{ item.barangentry_ukuran_mandar ?? "-" }}
+                  {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
+                  {{ item.data.barangentry_ukuran_mandar ?? "-" }}
                 </td>
               </tr>
               <tr>
                 <td style="padding: 4px 8px; font-weight: bold">Warna</td>
                 <td style="padding: 4px 8px">
-                  {{ item.barangentry_warna }}
+                  {{ item.data.barangentry_warna }}
                 </td>
               </tr>
               <tr>
@@ -399,7 +399,7 @@
                   <strong>a. Penenun:</strong>
                 </td>
                 <td style="padding: 4px 8px">
-                  {{ item.barangentry_nama_penenun }}
+                  {{ item.data.barangentry_nama_penenun }}
                 </td>
               </tr>
               <tr>
@@ -407,7 +407,7 @@
                   <strong>b. Dyer:</strong>
                 </td>
                 <td style="padding: 4px 8px">
-                  {{ item.barangentry_dryer }}
+                  {{ item.data.barangentry_dryer }}
                 </td>
               </tr>
             </table>
@@ -466,7 +466,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import BaseModal from "../components/Modal.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
@@ -488,6 +488,7 @@ const filteredBarang = ref([]);
 const isSearchActive = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const printContent = ref(null);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -542,7 +543,7 @@ function tambahBarang(barang) {
 
 function formatRupiah(value) {
   const number = parseInt(value);
-  return 'Rp. ' + number.toLocaleString('id-ID');
+  return "Rp. " + number.toLocaleString("id-ID");
 }
 
 async function submitBarang() {
@@ -632,16 +633,14 @@ async function printPriceTag(id) {
       `${url.value}/api/entrybarang/getDataByCode/` + code
     );
     if (res.data) results.push(res.data);
-  } catch (err) {
-    console.error(`Gagal ambil data untuk ${code}`, err);
-  }
-  priceTagData.value = results;
 
-  nextTick(() => {
+    priceTagData.value = results;
+
+    await nextTick();
     const content = printContent.value;
     if (!content) return;
-
-    const printWindow = window.open("", "", "width=800,height=600");
+    
+    const printWindow = window.open('', '', 'width=800,height=600') 
     printWindow.document.write(`
       <html>
         <head>
@@ -649,6 +648,12 @@ async function printPriceTag(id) {
           <style>
             body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
             ol { padding-left: 1rem; }
+            table { width: 100%; border-collapse: collapse; }
+            td { padding: 4px 8px; }
+            @media print {
+              body { margin: 0; }
+              div { page-break-inside: avoid; }
+            }
           </style>
         </head>
         <body>
@@ -659,7 +664,9 @@ async function printPriceTag(id) {
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
-  });
+  } catch (err) {
+    console.error(`Gagal ambil data untuk`, err);
+  }
 }
 
 function openSearchModal() {
