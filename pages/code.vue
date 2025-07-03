@@ -191,7 +191,7 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]"
+              class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]"
             >
               Save
             </button>
@@ -446,7 +446,7 @@ const handlePrint = async () => {
                 JsBarcode("#barcode-" + i, barcodes[i].code_nama, {
                   format: "CODE128",
                   lineColor: "#000",
-                  width: 2,
+                  width: 2.5,
                   height: 60,
                   displayValue: false
                 });

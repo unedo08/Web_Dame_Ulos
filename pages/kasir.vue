@@ -53,6 +53,7 @@
           <th>Jumlah</th>
           <th>Harga</th>
           <th class="hidden">code</th>
+          <th>Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -78,6 +79,14 @@
             <!-- {{ item.barangentry_harga_net }} -->
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
+          <td>
+            <button
+              @click="removeItem(index)"
+              class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-sm"
+            >
+              Hapus
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -128,12 +137,26 @@
                 Tanggal: {{ formatTanggalHold(item.created_at) }}
               </div>
             </div>
-            <button
+            <!-- <button
               @click="loadHoldTransaction(item.transaksi_id)"
               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
             >
               Pilih
-            </button>
+            </button> -->
+            <div class="flex space-x-2">
+              <button
+                @click="loadHoldTransaction(item.transaksi_id)"
+                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              >
+                Pilih
+              </button>
+              <button
+                @click="deleteHoldTransaction(item.transaksi_id)"
+                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Hapus
+              </button>
+            </div>
           </div>
         </div>
         <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
@@ -236,6 +259,7 @@ let barcodeTimeout = null;
 
 const datatableItems = ref([]);
 const isLoading = ref(false);
+const currentTransaksiId = ref(null);
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -243,13 +267,13 @@ onMounted(() => {
   window.addEventListener("keydown", handleBarcodeInput);
 });
 
-const subtotal = computed(() => {
-  return datatableItems.value.reduce((total, item) => {
-    const qty = item.quantity || 0;
-    const harga = parseFloat(item.barangentry_harga_net) || 0;
+const subtotal = computed(() =>
+  datatableItems.value.reduce((total, item) => {
+    const qty = Number(item.quantity) || 0;
+    const harga = Number(item.barangentry_harga_net) || 0;
     return total + qty * harga;
-  }, 0);
-});
+  }, 0)
+);
 
 function formatRupiah(number) {
   return number.toLocaleString("id-ID", {
@@ -301,7 +325,7 @@ async function loadHoldTransaction(id) {
 
     searchQueryCustomer.value = transaksi.transaksi_nama_customer;
     searchQueryPhone.value = transaksi.transaksi_nomor_telepon;
-
+    currentTransaksiId.value = transaksi.transaksi_id;
     const detailList = transaksi.details || [];
 
     datatableItems.value = await Promise.all(
@@ -330,11 +354,13 @@ async function loadHoldTransaction(id) {
 }
 
 const filteredList = computed(() =>
-  waitingList.value.filter((item) =>
-    (item.transaksi_nama_customer || "Tanpa Nama")
-      .toLowerCase()
-      .includes(searchHold.value.toLowerCase())
-  )
+  waitingList.value
+    .filter((item) =>
+      (item.transaksi_nama_customer || "Tanpa Nama")
+        .toLowerCase()
+        .includes(searchHold.value.toLowerCase())
+    )
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 );
 
 const paginatedList = computed(() => {
@@ -346,6 +372,30 @@ const paginatedList = computed(() => {
 const totalPages = computed(() =>
   Math.ceil(filteredList.value.length / itemsPerPage)
 );
+
+async function deleteHoldTransaction(id) {
+  const konfirmasi = await Swal.fire({
+    title: "Yakin?",
+    text: "Transaksi ini akan dihapus dari daftar hold!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#aaa",
+    confirmButtonText: "Ya, hapus",
+    cancelButtonText: "Batal",
+  });
+
+  if (konfirmasi.isConfirmed) {
+    try {
+      await axios.delete(`${url.value}/api/transaksi/${id}`);
+      await fetchHoldTransactions();
+      Swal.fire("Berhasil", "Transaksi hold berhasil dihapus.", "success");
+    } catch (err) {
+      console.error("Gagal hapus transaksi hold:", err);
+      Swal.fire("Gagal", "Tidak bisa menghapus transaksi hold", "error");
+    }
+  }
+}
 
 async function handleHold() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
@@ -548,6 +598,51 @@ const handleBarcodeInput = (e) => {
     barcodeInput.value = "";
   }, 300);
 };
+
+function removeItem(index) {
+  const itemCount = datatableItems.value.length;
+  Swal.fire({
+    title: itemCount === 1 ? "Hapus Transaksi?" : "Hapus Item?",
+    text:
+      itemCount === 1
+        ? "Item terakhir akan dihapus. Transaksi ini juga akan dihapus."
+        : "Item ini akan dihapus dari daftar.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#aaa",
+    confirmButtonText: itemCount === 1 ? "Ya, hapus transaksi" : "Ya, hapus",
+    cancelButtonText: "Batal",
+  }).then(async (result) => {
+    if (!result.isConfirmed) return;
+
+    if (itemCount === 1) {
+      if (currentTransaksiId.value) {
+        try {
+          await axios.delete(
+            `${url.value}/api/transaksi/${currentTransaksiId.value}`
+          );
+          Swal.fire("Terhapus", "Transaksi berhasil dihapus.", "success");
+        } catch (err) {
+          console.error("Gagal menghapus transaksi:", err);
+          Swal.fire("Gagal", "Gagal menghapus transaksi.", "error");
+        }
+      }
+      currentTransaksiId.value = null;
+      datatableItems.value = [];
+      searchQueryCustomer.value = "";
+      searchQueryPhone.value = "";
+    } else {
+      datatableItems.value.splice(index, 1);
+      Swal.fire({
+        title: "Item Dihapus",
+        icon: "success",
+        timer: 1200,
+        showConfirmButton: false,
+      });
+    }
+  });
+}
 
 const fetchDataByBarcode = async (code) => {
   try {
@@ -769,8 +864,8 @@ function printToNewTab(data, items) {
 }
 
 watch(searchHold, () => {
-  currentPage.value = 1
-})
+  currentPage.value = 1;
+});
 </script>
 
 <style scoped>
