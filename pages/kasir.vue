@@ -84,7 +84,7 @@
               @click="removeItem(index)"
               class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-sm"
             >
-              Hapus
+              <XMarkIcon class="w-5 h-5" />
             </button>
           </td>
         </tr>
@@ -124,9 +124,15 @@
           <div
             v-for="(item, index) in paginatedList"
             :key="item.transaksi_id"
-            class="p-3 border rounded-md bg-gray-100 flex justify-between items-center"
+            class="relative p-3 border rounded-md bg-gray-100 flex justify-between items-center"
           >
-            <div>
+            <button
+              @click="deleteHoldTransaction(item.transaksi_id)"
+              class="absolute top-2 right-2 text-red-500 hover:text-red-600"
+            >
+              <XMarkIcon class="w-5 h-5" />
+            </button>
+            <div class="pr-8">
               <div class="font-semibold">
                 {{ item.transaksi_nama_customer || "Tanpa Nama" }}
               </div>
@@ -137,25 +143,19 @@
                 Tanggal: {{ formatTanggalHold(item.created_at) }}
               </div>
             </div>
-            <!-- <button
-              @click="loadHoldTransaction(item.transaksi_id)"
-              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-            >
-              Pilih
-            </button> -->
-            <div class="flex space-x-2">
+            <div class="flex space-x-2 mt-3">
               <button
                 @click="loadHoldTransaction(item.transaksi_id)"
                 class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
               >
                 Pilih
               </button>
-              <button
+              <!-- <button
                 @click="deleteHoldTransaction(item.transaksi_id)"
                 class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
               >
                 Hapus
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -243,6 +243,7 @@ import ModalKasir from "../components/ModalKasir.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");

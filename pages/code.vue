@@ -239,6 +239,7 @@
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
 // State
 const searchQuery = ref("");
@@ -462,7 +463,7 @@ const handlePrint = async () => {
     closePrintModal();
   } catch (error) {
     console.error("Gagal update jumlah code barang:", error);
-    alert("Gagal melakukan update jumlah barcode. Coba lagi.");
+    Swal.fire("Gagal", "Gagal melakukan update jumlah barcode. Coba lagi", "error");
   }
 };
 

@@ -487,7 +487,7 @@ const addToTempBarang = async () => {
     const barang = response.data.data;
 
     if (!barang || !barang.barangentry_id) {
-      alert("Barang tidak ditemukan");
+      Swal.fire("Gagal", "Barang tidak ditemukan", "error");
       return;
     }
 
@@ -510,7 +510,7 @@ const addToTempBarang = async () => {
 
     barcodeInput.value = "";
   } catch (error) {
-    alert("Barcode tidak ditemukan");
+    Swal.fire("Gagal", "Barcode tidak ditemukan", "error");
     barcodeInput.value = "";
     console.error("Data tidak ditemukan: ", error);
   }
@@ -567,7 +567,7 @@ const submitEdit = async () => {
     closeEditModal();
   } catch (error) {
     console.error("Gagal mengupdate acara:", error);
-    alert("Gagal menyimpan perubahan.");
+    Swal.fire("Gagal", "Gagal menyimpan perubahan.", "error");
   }
 };
 
@@ -625,7 +625,7 @@ const exportItem = async (id) => {
     XLSX.writeFile(workbook, filename);
   } catch (error) {
     console.error("Gagal mengekspor data acara:", error);
-    alert("Gagal mengekspor data.");
+    Swal.fire("Gagal", "Gagal mengekspor data.", "error");
   }
 };
 
