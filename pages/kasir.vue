@@ -18,8 +18,20 @@
     </div>
 
     <div class="flex space-x-2 ml-4">
+    <button
+        class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
+        @click="openModalProcess = true"
+      >
+        Live
+      </button>
       <button
-        class="bg-gray-600 text-white rounded-md hover:bg-gray-700 w-[120px] h-[48px]"
+        class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
+        @click="openModalProcess = true"
+      >
+        Pre-Order
+      </button>
+      <button
+        class="bg-[#FACC15] text-white rounded-md hover:bg-[#F4C405] w-[132.97px] h-[34px]"
         @click="
           () => {
             openModalHold = true;
@@ -27,19 +39,19 @@
           }
         "
       >
-        Daftar Hold
+        Pending List
       </button>
       <button
-        class="bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-[120px] h-[48px]"
+        class="bg-[#404040] text-white rounded-md hover:bg-[#363535] w-[104px] h-[34px]"
         @click="handleHold"
       >
         Hold
       </button>
       <button
-        class="bg-red-500 text-white rounded-md hover:bg-red-600 w-[120px] h-[48px]"
+        class="bg-[#22C55E] text-white rounded-md hover:bg-[#21B156] w-[104px] h-[34px]"
         @click="openModalProcess = true"
       >
-        Process Transaction
+        Checkout
       </button>
     </div>
   </div>
@@ -82,9 +94,9 @@
           <td>
             <button
               @click="removeItem(index)"
-              class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-sm"
+              class="text-red-500 px-2 py-1 rounded hover:text-red-600 text-sm"
             >
-              <XMarkIcon class="w-5 h-5" />
+              <TrashIcon class="w-5 h-5" />
             </button>
           </td>
         </tr>
@@ -101,7 +113,7 @@
       class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform"
     >
       <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Daftar Hold Transaksi</h2>
+        <h2 class="text-lg font-semibold">Pending List</h2>
         <button
           @click="openModalHold = false"
           class="text-gray-600 hover:text-red-500 text-xl font-bold"
@@ -125,13 +137,8 @@
             v-for="(item, index) in paginatedList"
             :key="item.transaksi_id"
             class="relative p-3 border rounded-md bg-gray-100 flex justify-between items-center"
+            @click="loadHoldTransaction(item.transaksi_id)"
           >
-            <button
-              @click="deleteHoldTransaction(item.transaksi_id)"
-              class="absolute top-2 right-2 text-red-500 hover:text-red-600"
-            >
-              <XMarkIcon class="w-5 h-5" />
-            </button>
             <div class="pr-8">
               <div class="font-semibold">
                 {{ item.transaksi_nama_customer || "Tanpa Nama" }}
@@ -140,22 +147,16 @@
                 Total: {{ formatRupiah(item.transaksi_total_harga) }}
               </div>
               <div class="text-sm text-gray-500">
-                Tanggal: {{ formatTanggalHold(item.created_at) }}
+                {{ formatTanggalHold(item.created_at) }}
               </div>
             </div>
             <div class="flex space-x-2 mt-3">
               <button
-                @click="loadHoldTransaction(item.transaksi_id)"
-                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              >
-                Pilih
-              </button>
-              <!-- <button
                 @click="deleteHoldTransaction(item.transaksi_id)"
-                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                class="text-red-500 px-3 py-1 rounded hover:text-red-600"
               >
-                Hapus
-              </button> -->
+                <TrashIcon class="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -243,7 +244,7 @@ import ModalKasir from "../components/ModalKasir.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/outline";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
