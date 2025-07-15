@@ -18,15 +18,15 @@
     </div>
 
     <div class="flex space-x-2 ml-4">
-    <button
+      <button
         class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
-        @click="openModalProcess = true"
+        @click="openModalLive = true"
       >
         Live
       </button>
       <button
         class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
-        @click="openModalProcess = true"
+        @click="openModalPreOrder = true"
       >
         Pre-Order
       </button>
@@ -236,6 +236,12 @@
       <span v-else>Checkout</span>
     </button>
   </ModalKasir>
+
+  <!-- Modal Live -->
+  <ModalLive :visible="openModalLive" @close="openModalLive = false" />
+
+  <!-- Modal PreOrder -->
+  <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
 </template>
 
 <script setup>
@@ -245,6 +251,8 @@ import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/vue/24/outline";
+import ModalLive from '../components/ModalLive.vue';
+import ModalPreOrder from '../components/ModalPreOrder.vue';
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
@@ -255,6 +263,8 @@ const url = ref("");
 
 const openModalHold = ref(false);
 const openModalProcess = ref(false);
+const openModalLive = ref(false);
+const openModalPreOrder = ref(false);
 
 const barcodeInput = ref("");
 let barcodeTimeout = null;
