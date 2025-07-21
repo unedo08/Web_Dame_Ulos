@@ -57,22 +57,22 @@
   </div>
 
   <div>
-    <table class="datatable">
-      <thead>
+    <table class="datatable w-full border border-gray-300 rounded-md overflow-hidden">
+      <thead class="bg-blue-100">
         <tr>
-          <th>No</th>
-          <th>Nama Item</th>
-          <th>Jumlah</th>
-          <th>Harga</th>
-          <th class="hidden">code</th>
-          <th>Aksi</th>
+          <th class="px-4 py-2 text-left border-b">No</th>
+          <th class="px-4 py-2 text-left border-b">Nama Item</th>
+          <th class="px-4 py-2 text-left border-b">Jumlah</th>
+          <th class="px-4 py-2 text-left border-b">Harga</th>
+          <th class="hidden px-4 py-2 text-left border-b">code</th>
+          <th class="px-4 py-2 text-left border-b">Aksi</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in datatableItems" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>{{ item.barangentry_nama }}</td>
-          <td>
+        <tr v-for="(item, index) in datatableItems" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50' ">
+          <td class="px-4 py-2 border-b">{{ index + 1 }}</td>
+          <td class="px-4 py-2 border-b">{{ item.barangentry_nama }}</td>
+          <td class="px-4 py-2 border-b">
             <input
               type="number"
               v-model.number="item.quantity"
@@ -81,7 +81,7 @@
             />
             <!-- {{ item.quantity }} -->
           </td>
-          <td>
+          <td class="px-4 py-2 border-b">
             <input
               type="number"
               v-model.number="item.barangentry_harga_net"
@@ -91,7 +91,7 @@
             <!-- {{ item.barangentry_harga_net }} -->
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
-          <td>
+          <td class="px-4 py-2 border-b">
             <button
               @click="removeItem(index)"
               class="text-red-500 px-2 py-1 rounded hover:text-red-600 text-sm"

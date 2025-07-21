@@ -202,32 +202,32 @@
           </button>
         </div>
 
-        <!-- Tabel Barang Sementara -->
-        <table class="datatable w-full mb-4">
-          <thead>
+        <table class="datatable w-full mb-4 border border-gray-300 rounded-md overflow-hidden">
+          <thead class="bg-blue-100">
             <tr>
-              <th>Kode Barang</th>
-              <th>Status</th>
-              <th class="hide-col">Acara ID</th>
-              <th class="hide-col">Barang Entry ID</th>
-              <th class="hide-col">Harga Modal</th>
-              <th class="hide-col">Harga Net</th>
-              <th class="hide-col">Harga Price tag</th>
-              <th class="hide-col">Status</th>
-              <th>Aksi</th>
+              <th class="px-4 py-2 text-left border-b">Kode Barang</th>
+              <th class="px-4 py-2 text-left border-b">Status</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Acara ID</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Barang Entry ID</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Harga Modal</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Harga Net</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Harga Price tag</th>
+              <th class="hide-col px-4 py-2 text-left border-b">Status</th>
+              <th class="px-4 py-2 text-left border-b">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(barang, index) in tempBarangList" :key="index">
-              <td>{{ barang.code }}</td>
-              <td></td>
-              <td class="hide-col">{{ barang.acara_id }}</td>
-              <td class="hide-col">{{ barang.barangentry_id }}</td>
-              <td class="hide-col">{{ barang.acara_modalbarang }}</td>
-              <td class="hide-col">{{ barang.acara_harganetbarang }}</td>
-              <td class="hide-col">{{ barang.acara_hargapricetagbarang }}</td>
-              <td class="hide-col">{{ barang.acara_status }}</td>
-              <td>
+            <tr v-for="(barang, index) in tempBarangList" :key="index" :class="index % 2 === 0 ? 
+            'bg-white' : 'bg-gray-50'">
+              <td class="px-4 py-2 border-b">{{ barang.code }}</td>
+              <td class="px-4 py-2 border-b"></td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.acara_id }}</td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.barangentry_id }}</td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.acara_modalbarang }}</td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.acara_harganetbarang }}</td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.acara_hargapricetagbarang }}</td>
+              <td class="hide-col px-4 py-2 border-b">{{ barang.acara_status }}</td>
+              <td class="px-4 py-2 border-b">
                 <button
                   @click="removeFromTempBarang(barang.acaradet_id)"
                   class="text-red-500 hover:text-red-700"

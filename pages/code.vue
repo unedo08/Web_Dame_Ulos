@@ -22,42 +22,50 @@
     </div>
 
     <div>
-      <table class="datatable">
-        <thead>
+      <table
+        class="datatable w-full border border-gray-300 rounded-md overflow-hidden"
+      >
+        <thead class="bg-blue-100">
           <tr>
-            <th>No.</th>
-            <th>Kode Barang</th>
-            <th>Nama Barang</th>
-            <th>Jumlah Barang</th>
-            <th>Tipe Barang</th>
-            <th>Aksi</th>
+            <th class="px-4 py-2 text-left border-b">No.</th>
+            <th class="px-4 py-2 text-left border-b">Kode Barang</th>
+            <th class="px-4 py-2 text-left border-b">Nama Barang</th>
+            <th class="px-4 py-2 text-left border-b">Jumlah Barang</th>
+            <th class="px-4 py-2 text-left border-b">Tipe Barang</th>
+            <th class="px-4 py-2 text-left border-b">Aksi</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(barang, index) in pagination"
             :key="barang.jenisbarang_id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
           >
-            <td>{{ index + 1 }}</td>
-            <td>{{ barang.jenisbarang_kode }}</td>
-            <td>{{ barang.jenisbarang_nama }}</td>
-            <td>{{ barang.jenisbarang_jumlah }}</td>
-            <td>{{ barang.jenisbarang_tipe }}</td>
-            <td class="flex space-x-2">
-              <button
-                class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-                @click="openModelPrint(barang)"
-              >
-                Print
-              </button>
-              <button
-                class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
-                @click="
-                  deleteProduct(barang.jenisbarang_id, barang.jenisbarang_nama)
-                "
-              >
-                Delete
-              </button>
+            <td class="px-4 py-2 border-b">{{ index + 1 }}</td>
+            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_kode }}</td>
+            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_nama }}</td>
+            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_jumlah }}</td>
+            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_tipe }}</td>
+            <td class="px-4 py-2 border-b">
+              <div class="flex space-x-2">
+                <button
+                  class="flex items-center gap-1 px-3 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-sm"
+                  @click="openModelPrint(barang)"
+                >
+                  Print
+                </button>
+                <button
+                  class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-sm"
+                  @click="
+                    deleteProduct(
+                      barang.jenisbarang_id,
+                      barang.jenisbarang_nama
+                    )
+                  "
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -152,7 +160,7 @@
             />
           </div>
 
-          <div class="mb-4">
+          <!-- <div class="mb-4">
             <div class="flex items-center space-x-4 mt-2">
               <div class="flex items-center">
                 <input
@@ -179,7 +187,7 @@
                 >
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="flex justify-end">
             <button
@@ -248,7 +256,7 @@ const newProduct = ref({
   jenisbarang_nama: "",
   jenisbarang_kode: "",
   jenisbarang_jumlah: 0,
-  jenisbarang_tipe: "tunggal",
+  // jenisbarang_tipe: "tunggal",
 });
 
 const isModalOpen = ref(false);
@@ -320,13 +328,13 @@ const closeModal = () => {
 };
 
 const submitProduct = async () => {
-  const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 1;
+  // const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 1;
   const product = {
     no: barang.value.length + 1,
     jenisbarang_kode: newProduct.value.jenisbarang_kode,
     jenisbarang_nama: newProduct.value.jenisbarang_nama,
     jenisbarang_tipe: newProduct.value.jenisbarang_tipe,
-    jenisbarang_jumlah: jumlah,
+    jenisbarang_jumlah: 1,
   };
   try {
     // Send POST request to the API
@@ -339,14 +347,14 @@ const submitProduct = async () => {
         jenisbarang_kode: newProductData.jenisbarang_kode,
         jenisbarang_nama: newProductData.jenisbarang_nama,
         jenisbarang_tipe: newProductData.jenisbarang_tipe,
-        jenisbarang_jumlah: jumlah,
+        jenisbarang_jumlah: 1,
       });
       closeModal();
       newProduct.value = {
         jenisbarang_kode: "",
         jenisbarang_nama: "",
         jenisbarang_jumlah: 1,
-        jenisbarang_tipe: "tunggal",
+        // jenisbarang_tipe: "tunggal",
       };
     }
   } catch (error) {
@@ -359,13 +367,13 @@ const openModelPrint = (product) => {
   selectedProduct.value = { ...product };
   const tipe = product.jenisbarang_tipe;
 
-  if (tipe === "tunggal") {
-    printJumlah.value = 1;
-    handlePrint();
-  } else {
-    printJumlah.value = product.jenisbarang_jumlah;
-    isModalPrintOpen.value = true;
-  }
+  // if (tipe === "tunggal") {
+  //   printJumlah.value = 1;
+  //   handlePrint();
+  // } else {
+  printJumlah.value = product.jenisbarang_jumlah;
+  isModalPrintOpen.value = true;
+  // }
 };
 
 const closePrintModal = () => {
@@ -379,7 +387,7 @@ const handlePrint = async () => {
   const jenisbarang_id = selectedProduct.value.jenisbarang_id;
   const tipeBarang = selectedProduct.value.jenisbarang_tipe;
 
-  const jumlah = tipeBarang === "majemuk" ? printJumlah.value : 1;
+  const jumlah = !empty(printJumlah.value) ? printJumlah.value : 1;
   try {
     let barcodeData = [];
     // if (tipeBarang === "majemuk") {
@@ -463,7 +471,11 @@ const handlePrint = async () => {
     closePrintModal();
   } catch (error) {
     console.error("Gagal update jumlah code barang:", error);
-    Swal.fire("Gagal", "Gagal melakukan update jumlah barcode. Coba lagi", "error");
+    Swal.fire(
+      "Gagal",
+      "Gagal melakukan update jumlah barcode. Coba lagi",
+      "error"
+    );
   }
 };
 
