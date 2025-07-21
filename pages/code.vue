@@ -31,7 +31,7 @@
             <th class="px-4 py-2 text-left border-b">Kode Barang</th>
             <th class="px-4 py-2 text-left border-b">Nama Barang</th>
             <th class="px-4 py-2 text-left border-b">Jumlah Barang</th>
-            <th class="px-4 py-2 text-left border-b">Tipe Barang</th>
+            <!-- <th class="px-4 py-2 text-left border-b">Tipe Barang</th> -->
             <th class="px-4 py-2 text-left border-b">Aksi</th>
           </tr>
         </thead>
@@ -45,7 +45,7 @@
             <td class="px-4 py-2 border-b">{{ barang.jenisbarang_kode }}</td>
             <td class="px-4 py-2 border-b">{{ barang.jenisbarang_nama }}</td>
             <td class="px-4 py-2 border-b">{{ barang.jenisbarang_jumlah }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_tipe }}</td>
+            <!-- <td class="px-4 py-2 border-b">{{ barang.jenisbarang_tipe }}</td> -->
             <td class="px-4 py-2 border-b">
               <div class="flex space-x-2">
                 <button
@@ -256,7 +256,7 @@ const newProduct = ref({
   jenisbarang_nama: "",
   jenisbarang_kode: "",
   jenisbarang_jumlah: 0,
-  // jenisbarang_tipe: "tunggal",
+  // jenisbarang_tipe: "",
 });
 
 const isModalOpen = ref(false);
@@ -277,7 +277,7 @@ const fetchData = async () => {
       jenisbarang_kode: item.jenisbarang_kode,
       jenisbarang_nama: item.jenisbarang_nama,
       jenisbarang_jumlah: item.jenisbarang_jumlah,
-      jenisbarang_tipe: item.jenisbarang_tipe,
+      // jenisbarang_tipe: item.jenisbarang_tipe,
       created_at: item.created_at,
     }));
   } catch (error) {
@@ -333,8 +333,8 @@ const submitProduct = async () => {
     no: barang.value.length + 1,
     jenisbarang_kode: newProduct.value.jenisbarang_kode,
     jenisbarang_nama: newProduct.value.jenisbarang_nama,
-    jenisbarang_tipe: newProduct.value.jenisbarang_tipe,
-    jenisbarang_jumlah: 1,
+    // jenisbarang_tipe: newProduct.value.jenisbarang_tipe,
+    jenisbarang_jumlah: 0,
   };
   try {
     // Send POST request to the API
@@ -346,26 +346,41 @@ const submitProduct = async () => {
         jenisbarang_id: newProductData.jenisbarang_id,
         jenisbarang_kode: newProductData.jenisbarang_kode,
         jenisbarang_nama: newProductData.jenisbarang_nama,
-        jenisbarang_tipe: newProductData.jenisbarang_tipe,
-        jenisbarang_jumlah: 1,
+        // jenisbarang_tipe: newProductData.jenisbarang_tipe,
+        jenisbarang_jumlah: 0,
       });
       closeModal();
+      await fetchData();
+
       newProduct.value = {
         jenisbarang_kode: "",
         jenisbarang_nama: "",
-        jenisbarang_jumlah: 1,
-        // jenisbarang_tipe: "tunggal",
+        jenisbarang_jumlah: 0,
+        // jenisbarang_tipe: "",
       };
+      await Swal.fire({
+        title: 'Berhasil!',
+        text: 'Produk berhasil ditambahkan.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
     }
   } catch (error) {
     console.error("Error adding product:", error);
+    Swal.fire({
+      title: 'Gagal!',
+      text: 'Terjadi kesalahan saat menambahkan produk.',
+      icon: 'error',
+    });
+
   }
 };
 
 // Modal Print
 const openModelPrint = (product) => {
   selectedProduct.value = { ...product };
-  const tipe = product.jenisbarang_tipe;
+  // const tipe = product.jenisbarang_tipe;
 
   // if (tipe === "tunggal") {
   //   printJumlah.value = 1;
@@ -385,7 +400,7 @@ const closePrintModal = () => {
 const handlePrint = async () => {
   const kodeBarang = selectedProduct.value.jenisbarang_kode;
   const jenisbarang_id = selectedProduct.value.jenisbarang_id;
-  const tipeBarang = selectedProduct.value.jenisbarang_tipe;
+  // const tipeBarang = selectedProduct.value.jenisbarang_tipe;
 
   const jumlah = !empty(printJumlah.value) ? printJumlah.value : 1;
   try {
@@ -480,17 +495,40 @@ const handlePrint = async () => {
 };
 
 const deleteProduct = async (id, nama_barang) => {
-  if (confirm(`Anda yakin ingin menghapus "${nama_barang}" ini?`)) {
+  const result = await Swal.fire({
+    title: 'Konfirmasi Hapus',
+    text: `Anda yakin ingin menghapus "${nama_barang}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
     try {
-      const response = await axios.delete(`${url.value}/api/jenisbarang/` + id);
+      const response = await axios.delete(`${url.value}/api/jenisbarang/${id}`);
 
       if (response.status === 200) {
         barang.value = barang.value.filter(
           (item) => item.jenisbarang_id !== id
         );
+
+        await Swal.fire({
+          title: 'Berhasil!',
+          text: `"${nama_barang}" telah dihapus.`,
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        });
       }
     } catch (error) {
       console.error("Error deleting product:", error);
+      Swal.fire({
+        title: 'Gagal',
+        text: 'Terjadi kesalahan saat menghapus data.',
+        icon: 'error',
+      });
     }
   }
 };

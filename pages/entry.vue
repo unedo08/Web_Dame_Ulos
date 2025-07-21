@@ -61,7 +61,7 @@
             <!-- <th class="px-4 py-2 text-left border-b">Acara</th> -->
             <th class="px-4 py-2 text-left border-b">Ukuran Mandar</th>
             <th class="px-4 py-2 text-left border-b">Ukuran Ulos</th>
-            <th class="px-4 py-2 text-left border-b">Aksi</th>
+            <!-- <th class="px-4 py-2 text-left border-b">Aksi</th> -->
           </tr>
         </thead>
         <tbody>
@@ -83,14 +83,14 @@
             <!-- <td class="px-4 py-2 border-b">{{ barang.barangentry_acara }}</td> -->
             <td class="px-4 py-2 border-b">{{ barang.barangentry_ukuran_mandar }}</td>
             <td class="px-4 py-2 border-b">{{ barang.barangentry_ukuran_ulos }}</td>
-            <td class="px-4 py-2 border-b">
+            <!-- <td class="px-4 py-2 border-b">
               <button
                 class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
                 @click="printPriceTag(barang.barangentry_code_id)"
               >
                 Print Price Tag
               </button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>

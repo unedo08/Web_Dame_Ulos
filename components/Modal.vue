@@ -57,7 +57,8 @@
           >
             <div style="display: flex; gap: 40px">
               <div style="flex: 1">
-                <h1>{{ item.barangentry_nama }}</h1>
+              <!-- <pre>{{ item }}</pre> -->
+                <h1>{{ item.data.barangentry_nama }}</h1>
                 <p class="text-xl font-semibold mb-4">Horas!</p>
                 <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
                 <p>
@@ -85,7 +86,7 @@
                       Tahun Pembuatan
                     </td>
                     <td style="padding: 4px 8px">
-                      {{ new Date(item.created_at).getFullYear() }}
+                      {{ new Date(item.data.created_at).getFullYear() }}
                     </td>
                   </tr>
                   <tr>
@@ -93,14 +94,14 @@
                       Ukuran Tenun
                     </td>
                     <td style="padding: 4px 8px">
-                      {{ item.barangentry_ukuran_ulos ?? "-" }} x
-                      {{ item.barangentry_ukuran_mandar ?? "-" }}
+                      {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
+                      {{ item.data.barangentry_ukuran_mandar ?? "-" }}
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 8px; font-weight: bold">Warna</td>
                     <td style="padding: 4px 8px">
-                      {{ item.barangentry_warna }}
+                      {{ item.data.barangentry_warna }}
                     </td>
                   </tr>
                   <tr>
@@ -112,15 +113,23 @@
                       <strong>a. Penenun:</strong>
                     </td>
                     <td style="padding: 4px 8px">
-                      {{ item.barangentry_nama_penenun }}
+                      {{ item.data.barangentry_nama_penenun }}
                     </td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 8px; padding-left: 1.5rem">
-                      <strong>b. Dyer:</strong>
+                      <strong>b. Panirat:</strong>
                     </td>
                     <td style="padding: 4px 8px">
-                      {{ item.barangentry_dryer }}
+                      {{ item.data.barangentry_nama_panirat }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 4px 8px; padding-left: 1.5rem">
+                      <strong>c. Dyer:</strong>
+                    </td>
+                    <td style="padding: 4px 8px">
+                      {{ item.data.barangentry_dryer }}
                     </td>
                   </tr>
                 </table>
