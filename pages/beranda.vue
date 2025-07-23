@@ -1,14 +1,24 @@
 <template>
   <div class="beranda">
     <div class="judul text-lg font-semibold mb-4">Beranda</div>
-
-    <div class="card">
-      <div class="card-icon">
-        <CubeIcon class="w-8 h-8 text-blue-600" />
+    <div class="flex flex-wrap gap-6">
+      <div class="card">
+        <div class="card-icon">
+          <CubeIcon class="w-8 h-8 text-blue-600" />
+        </div>
+        <div class="card-content">
+          <div class="card-title">Total Barang Masuk</div>
+          <div class="card-value">{{ totalBarang }}</div>
+        </div>
       </div>
-      <div class="card-content">
-        <div class="card-title">Total Barang Masuk</div>
-        <div class="card-value">{{ totalBarang }}</div>
+      
+      <div class="card">
+        <div class="card-icon">
+          <PieChart v-if="dataPerMonth" :dataPerMonth="dataPerMonth" />
+        </div>
+        <div class="card-content">
+          <div class="card-title">Pie Chart Jumlah Barang per Bulan</div>
+        </div>
       </div>
     </div>
   </div>
@@ -19,9 +29,11 @@ import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { useRuntimeConfig } from '#imports'
 import { CubeIcon } from '@heroicons/vue/24/solid'
-
+import PieChart from "~/components/PieChart.vue";
+import dayjs from "dayjs";
 const totalBarang = ref(0)
 const url = ref('')
+const dataPerMonth = ref(null);
 
 onMounted(async () => {
   const config = useRuntimeConfig()
@@ -31,6 +43,18 @@ onMounted(async () => {
     const data = response.data
 
     totalBarang.value = data.length
+
+    const responseStatistik = await axios.get(`${url.value}/api/codebarang`);
+    const dataStatisktik = responseStatistik.data;
+
+    const monthlyCounts = {};
+
+    dataStatisktik.forEach((item) => {
+      const month = dayjs(item.created_at).format("MMMM YYYY");
+      monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
+    });
+
+    dataPerMonth.value = monthlyCounts;
   } catch (error) {
     console.error('Gagal mengambil data:', error)
   }
