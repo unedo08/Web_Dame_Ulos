@@ -45,23 +45,23 @@
     />
 
     <div class="overflow-x-auto">
-      <table class="min-w-full datatable w-full border border-gray-300 rounded-md overflow-hidden">
+      <table class="min-w-full datatable w-full rounded-md overflow-hidden">
         <thead class="bg-blue-100">
           <tr>
-            <th class="px-4 py-2 text-left border-b">Tanggal</th>
-            <th class="px-4 py-2 text-left border-b">Nama Ulos</th>
-            <th class="px-4 py-2 text-left border-b">Warna Ulos</th>
-            <th class="px-4 py-2 text-left border-b">Nama Penenun</th>
-            <th class="px-4 py-2 text-left border-b">Nama Panirat</th>
-            <th class="px-4 py-2 text-left border-b">Dyer</th>
-            <th class="px-4 py-2 text-left border-b">Modal</th>
-            <th class="px-4 py-2 text-left border-b">Price Tag</th>
-            <th class="px-4 py-2 text-left border-b">Harga Net</th>
-            <th class="px-4 py-2 text-left border-b">Jumlah</th>
-            <!-- <th class="px-4 py-2 text-left border-b">Acara</th> -->
-            <th class="px-4 py-2 text-left border-b">Ukuran Mandar</th>
-            <th class="px-4 py-2 text-left border-b">Ukuran Ulos</th>
-            <!-- <th class="px-4 py-2 text-left border-b">Aksi</th> -->
+            <th class="px-4 py-2 text-left">Tanggal</th>
+            <th class="px-4 py-2 text-left">Nama Ulos</th>
+            <th class="px-4 py-2 text-left">Warna Ulos</th>
+            <th class="px-4 py-2 text-left">Nama Penenun</th>
+            <th class="px-4 py-2 text-left">Nama Panirat</th>
+            <th class="px-4 py-2 text-left">Dyer</th>
+            <th class="px-4 py-2 text-left">Modal</th>
+            <th class="px-4 py-2 text-left">Price Tag</th>
+            <th class="px-4 py-2 text-left">Harga Net</th>
+            <th class="px-4 py-2 text-left">Jumlah</th>
+            <!-- <th class="px-4 py-2 text-left">Acara</th> -->
+            <th class="px-4 py-2 text-left">Ukuran Mandar</th>
+            <th class="px-4 py-2 text-left">Ukuran Ulos</th>
+            <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
           </tr>
         </thead>
         <tbody>
@@ -70,20 +70,20 @@
             :key="barang.kode_barang"
             class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
           >
-            <td class="px-4 py-2 border-b">{{ formatTanggal(barang.created_at) }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_nama }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_warna }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_nama_penenun }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_nama_panirat }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_dryer }}</td>
-            <td class="px-4 py-2 border-b">{{ formatRupiah(barang.barangentry_modal) }}</td>
-            <td class="px-4 py-2 border-b">{{ formatRupiah(barang.barangentry_price_tag) }}</td>
-            <td class="px-4 py-2 border-b">{{ formatRupiah(barang.barangentry_harga_net) }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_jumlah_barang }}</td>
-            <!-- <td class="px-4 py-2 border-b">{{ barang.barangentry_acara }}</td> -->
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_ukuran_mandar }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.barangentry_ukuran_ulos }}</td>
-            <!-- <td class="px-4 py-2 border-b">
+            <td class="px-4 py-2">{{ formatTanggal(barang.created_at) }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_dryer }}</td>
+            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_modal) }}</td>
+            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_price_tag) }}</td>
+            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_harga_net) }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_jumlah_barang }}</td>
+            <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
+            <td class="px-4 py-2">{{ barang.barangentry_ukuran_mandar }}</td>
+            <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+            <!-- <td class="px-4 py-2">
               <button
                 class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
                 @click="printPriceTag(barang.barangentry_code_id)"
@@ -744,7 +744,7 @@ const paginatedPages = computed(() => {
 
 <style>
 .judul {
-  font-size: 40px;
+  font-size: 20px;
 }
 </style>
 <style scoped>
@@ -767,8 +767,9 @@ const paginatedPages = computed(() => {
 .datatable th,
 .datatable td {
   padding: 10px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   text-align: left;
+  font-size: 12px;
 }
 
 .datatable th {

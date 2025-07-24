@@ -23,16 +23,16 @@
 
     <div>
       <table
-        class="datatable w-full border border-gray-300 rounded-md overflow-hidden"
+        class="datatable w-full rounded-md overflow-hidden"
       >
         <thead class="bg-blue-100">
           <tr>
-            <th class="px-4 py-2 text-left border-b">No.</th>
-            <th class="px-4 py-2 text-left border-b">Kode Barang</th>
-            <th class="px-4 py-2 text-left border-b">Nama Barang</th>
-            <th class="px-4 py-2 text-left border-b">Jumlah Barang</th>
-            <!-- <th class="px-4 py-2 text-left border-b">Tipe Barang</th> -->
-            <th class="px-4 py-2 text-left border-b">Aksi</th>
+            <th class="px-4 py-2 text-left">No.</th>
+            <th class="px-4 py-2 text-left">Kode Barang</th>
+            <th class="px-4 py-2 text-left">Nama Barang</th>
+            <th class="px-4 py-2 text-left">Jumlah Barang</th>
+            <!-- <th class="px-4 py-2 text-left">Tipe Barang</th> -->
+            <th class="px-4 py-2 text-left">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -41,21 +41,21 @@
             :key="barang.jenisbarang_id"
             :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
           >
-            <td class="px-4 py-2 border-b">{{ index + 1 }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_kode }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_nama }}</td>
-            <td class="px-4 py-2 border-b">{{ barang.jenisbarang_jumlah }}</td>
-            <!-- <td class="px-4 py-2 border-b">{{ barang.jenisbarang_tipe }}</td> -->
-            <td class="px-4 py-2 border-b">
+            <td class="px-4 py-2">{{ index + 1 }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
+            <!-- <td class="px-4 py-2">{{ barang.jenisbarang_tipe }}</td> -->
+            <td class="px-4 py-2">
               <div class="flex space-x-2">
                 <button
-                  class="flex items-center gap-1 px-3 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-sm"
+                  class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-s"
                   @click="openModelPrint(barang)"
                 >
                   Print
                 </button>
                 <button
-                  class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-sm"
+                  class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-s"
                   @click="
                     deleteProduct(
                       barang.jenisbarang_id,
@@ -586,8 +586,9 @@ watch(currentPage, (val) => {
 .datatable th,
 .datatable td {
   padding: 10px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   text-align: left;
+  font-size: 12px;
 }
 
 .datatable th {
