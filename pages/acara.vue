@@ -4,7 +4,7 @@
 
     <div class="flex items-center justify-end pt-2">
         <button
-          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[140px] h-[38px]"
+          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
           @click="openModal"
         >
           + Tambah Acara
@@ -679,6 +679,7 @@ const handlePrint = () => {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .btn-add:hover {

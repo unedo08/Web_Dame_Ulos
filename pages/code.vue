@@ -13,7 +13,7 @@
 
       <div>
         <button
-          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[34px]"
+          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
           @click="openModal"
         >
           + Tambah
@@ -71,13 +71,13 @@
         </tbody>
       </table>
 
-      <div class="flex justify-between items-center mt-4">
+      <div class="flex justify-between items-center mt-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
           <select
             id="perPage"
             v-model="itemsPerPage"
-            class="border px-2 py-1 rounded"
+            class="border px-2 py-1 rounded text-xs"
           >
             <option :value="5">5</option>
             <option :value="10">10</option>
@@ -88,7 +88,7 @@
 
         <div class="flex items-center space-x-2">
           <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
             :disabled="currentPage === 1"
             @click="currentPage--"
           >
@@ -100,7 +100,7 @@
             :key="index"
             @click="typeof page === 'number' && (currentPage = page)"
             :class="[
-              'px-3 py-1 rounded',
+              'px-3 py-1 rounded text-xs',
               currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
               page === '...' ? 'cursor-default' : 'cursor-pointer',
             ]"
@@ -110,7 +110,7 @@
           </button>
 
           <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
             :disabled="currentPage === totalPages"
             @click="currentPage++"
           >
@@ -574,7 +574,8 @@ watch(currentPage, (val) => {
   border: 1px solid #ccc;
   padding: 10px;
   width: 385px;
-  height: 34px;
+  height: 25px;
+  font-size: 12px;
 }
 
 .datatable {
@@ -600,6 +601,7 @@ watch(currentPage, (val) => {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .btn-add:hover {

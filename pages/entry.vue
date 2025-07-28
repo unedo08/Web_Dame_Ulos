@@ -1,89 +1,118 @@
 <template>
-  <div calss="max-w-screen-xl mx-auto px-4">
-    <div class="judul text-xl font-semibold mb-4">Wait to Entry</div>
-    <div class="flex flex-wrap justify-end gap-4 mb-6">
+  <div>
+    <div class="flex space-x-4 mb-4">
       <button
-        v-if="isSearchActive"
-        @click="resetSearch"
-        class="mb-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        @click="activeTab = 'wait'"
+        :class="[
+          'btn-tab px-4 py-2 rounded font-medium text-xs',
+          activeTab === 'wait'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-800',
+        ]"
       >
-        Reset Pencarian
+        Wait to Entry
       </button>
       <button
-        class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[104px] h-[45px]"
-        @click="openSearchModal"
+        @click="activeTab = 'ready'"
+        :class="[
+          'btn-tab px-4 py-2 rounded font-medium text-xs',
+          activeTab === 'ready'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-800',
+        ]"
       >
-        🔍 Search
-      </button>
-      <button
-        class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
-        @click="openModal('desc')"
-      >
-        + Desc
-      </button>
-      <button
-        class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[104px] h-[45px]"
-        @click="openModal('size')"
-      >
-        + Size
-      </button>
-      <button
-        class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
-        @click="openModal('priceTag')"
-      >
-        Print Price Tag
+        Ready to Stok
       </button>
     </div>
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> -->
+    <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'wait'">
+      <div class="judul text-xs font-semibold mb-2">Wait to Entry</div>
+      <div class="flex flex-wrap justify-end gap-4">
+        <button
+          v-if="isSearchActive"
+          @click="resetSearch"
+          class="mb-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 btn-s"
+        >
+          Reset Pencarian
+        </button>
+        <button
+          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+          @click="openSearchModal"
+        >
+          🔍 Search
+        </button>
+        <button
+          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+          @click="openModal('desc')"
+        >
+          + Desc
+        </button>
+        <button
+          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+          @click="openModal('size')"
+        >
+          + Size
+        </button>
+        <button
+          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+          @click="openModal('priceTag')"
+        >
+          Print Price Tag
+        </button>
+      </div>
 
-    <BaseModal
-      :show="modalOpen"
-      :type="modalType"
-      :barang-database="barangDatabase"
-      @close="modalOpen = false"
-      @scanned="tambahBarang"
-      @sizeSubmitted="handleSizeSubmitted"
-    />
-
-    <div class="overflow-x-auto">
-      <table class="min-w-full datatable w-full rounded-md overflow-hidden">
-        <thead class="bg-blue-100">
-          <tr>
-            <th class="px-4 py-2 text-left">Tanggal</th>
-            <th class="px-4 py-2 text-left">Nama Ulos</th>
-            <th class="px-4 py-2 text-left">Warna Ulos</th>
-            <th class="px-4 py-2 text-left">Nama Penenun</th>
-            <th class="px-4 py-2 text-left">Nama Panirat</th>
-            <th class="px-4 py-2 text-left">Dyer</th>
-            <th class="px-4 py-2 text-left">Modal</th>
-            <th class="px-4 py-2 text-left">Price Tag</th>
-            <th class="px-4 py-2 text-left">Harga Net</th>
-            <th class="px-4 py-2 text-left">Jumlah</th>
-            <!-- <th class="px-4 py-2 text-left">Acara</th> -->
-            <th class="px-4 py-2 text-left">Ukuran Mandar</th>
-            <th class="px-4 py-2 text-left">Ukuran Ulos</th>
-            <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="barang in isSearchActive ? filteredBarang : pagination"
-            :key="barang.kode_barang"
-            class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
-          >
-            <td class="px-4 py-2">{{ formatTanggal(barang.created_at) }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_dryer }}</td>
-            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_modal) }}</td>
-            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_price_tag) }}</td>
-            <td class="px-4 py-2">{{ formatRupiah(barang.barangentry_harga_net) }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_jumlah_barang }}</td>
-            <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
-            <td class="px-4 py-2">{{ barang.barangentry_ukuran_mandar }}</td>
-            <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
-            <!-- <td class="px-4 py-2">
+      <div class="overflow-x-auto">
+        <table class="min-w-full datatable w-full rounded-md overflow-hidden">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Nama Ulos</th>
+              <th class="px-4 py-2 text-left">Warna Ulos</th>
+              <th class="px-4 py-2 text-left">Nama Penenun</th>
+              <th class="px-4 py-2 text-left">Nama Panirat</th>
+              <th class="px-4 py-2 text-left">Dyer</th>
+              <th class="px-4 py-2 text-left">Modal</th>
+              <th class="px-4 py-2 text-left">Price Tag</th>
+              <th class="px-4 py-2 text-left">Harga Net</th>
+              <th class="px-4 py-2 text-left">Jumlah</th>
+              <!-- <th class="px-4 py-2 text-left">Acara</th> -->
+              <th class="px-4 py-2 text-left">Ukuran Mandar</th>
+              <th class="px-4 py-2 text-left">Ukuran Ulos</th>
+              <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="barang in isSearchActive ? filteredBarang : pagination"
+              :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
+            >
+              <td class="px-4 py-2">
+                {{ formatTanggal(barang.created_at) }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_dryer }}</td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_modal) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_price_tag) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_harga_net) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ barang.barangentry_jumlah_barang }}
+              </td>
+              <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
+              <td class="px-4 py-2">
+                {{ barang.barangentry_ukuran_mandar }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+              <!-- <td class="px-4 py-2">
               <button
                 class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
                 @click="printPriceTag(barang.barangentry_code_id)"
@@ -91,55 +120,204 @@
                 Print Price Tag
               </button>
             </td> -->
-          </tr>
-        </tbody>
-      </table>
+            </tr>
+          </tbody>
+        </table>
 
-      <div class="flex justify-between items-center mt-4">
-        <div class="flex items-center space-x-2">
-          <label for="perPage">Tampilkan:</label>
-          <select
-            id="perPage"
-            v-model="itemsPerPage"
-            class="border px-2 py-1 rounded"
-          >
-            <option :value="5">5</option>
-            <option :value="10">10</option>
-            <option :value="20">20</option>
-            <option :value="50">50</option>
-          </select>
+        <div class="flex justify-between items-center mt-4 text-xs">
+          <div class="flex items-center space-x-2">
+            <label for="perPage">Tampilkan:</label>
+            <select
+              id="perPage"
+              v-model="itemsPerPage"
+              class="border px-2 py-1 rounded text-xs"
+            >
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option :value="50">50</option>
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === 1"
+              @click="currentPage--"
+            >
+              Sebelumnya
+            </button>
+
+            <button
+              v-for="(page, index) in paginatedPages"
+              :key="index"
+              @click="typeof page === 'number' && (currentPage = page)"
+              :class="[
+                'px-3 py-1 rounded text-xs',
+                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+                page === '...' ? 'cursor-default' : 'cursor-pointer',
+              ]"
+              :disabled="page === '...'"
+            >
+              {{ page }}
+            </button>
+
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+            >
+              Selanjutnya
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'ready'">
+      <div class="judul text-xs font-semibold mb-2">Ready to Stock</div>
+      <div class="flex flex-wrap justify-end gap-4">
+        <button
+          v-if="isSearchActive"
+          @click="resetSearch"
+          class="mb-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 btn-s"
+        >
+          Reset Pencarian
+        </button>
+        <button
+          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+          @click="openSearchModal"
+        >
+          🔍 Search
+        </button>
+        <!-- <button
+          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+          @click="openModal('desc')"
+        >
+          + Desc
+        </button>
+        <button
+          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+          @click="openModal('size')"
+        >
+          + Size
+        </button> -->
+        <button
+          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+          @click="openModal('priceTag')"
+        >
+          Print Price Tag
+        </button>
+      </div>
 
-        <div class="flex items-center space-x-2">
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
-            Sebelumnya
-          </button>
+      <div class="overflow-x-auto">
+        <table class="min-w-full datatable w-full rounded-md overflow-hidden">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Nama Ulos</th>
+              <th class="px-4 py-2 text-left">Warna Ulos</th>
+              <th class="px-4 py-2 text-left">Nama Penenun</th>
+              <th class="px-4 py-2 text-left">Nama Panirat</th>
+              <th class="px-4 py-2 text-left">Dyer</th>
+              <th class="px-4 py-2 text-left">Modal</th>
+              <th class="px-4 py-2 text-left">Price Tag</th>
+              <th class="px-4 py-2 text-left">Harga Net</th>
+              <th class="px-4 py-2 text-left">Jumlah</th>
+              <!-- <th class="px-4 py-2 text-left">Acara</th> -->
+              <th class="px-4 py-2 text-left">Ukuran Mandar</th>
+              <th class="px-4 py-2 text-left">Ukuran Ulos</th>
+              <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="barang in isSearchActive ? filteredBarang : pagination"
+              :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
+            >
+              <td class="px-4 py-2">
+                {{ formatTanggal(barang.created_at) }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_dryer }}</td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_modal) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_price_tag) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_harga_net) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ barang.barangentry_jumlah_barang }}
+              </td>
+              <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
+              <td class="px-4 py-2">
+                {{ barang.barangentry_ukuran_mandar }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+              <!-- <td class="px-4 py-2">
+              <button
+                class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
+                @click="printPriceTag(barang.barangentry_code_id)"
+              >
+                Print Price Tag
+              </button>
+            </td> -->
+            </tr>
+          </tbody>
+        </table>
 
-          <button
-            v-for="(page, index) in paginatedPages"
-            :key="index"
-            @click="typeof page === 'number' && (currentPage = page)"
-            :class="[
-              'px-3 py-1 rounded',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]"
-            :disabled="page === '...'"
-          >
-            {{ page }}
-          </button>
+        <div class="flex justify-between items-center mt-4 text-xs">
+          <div class="flex items-center space-x-2">
+            <label for="perPage">Tampilkan:</label>
+            <select
+              id="perPage"
+              v-model="itemsPerPage"
+              class="border px-2 py-1 rounded text-xs"
+            >
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option :value="50">50</option>
+            </select>
+          </div>
 
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
-            Selanjutnya
-          </button>
+          <div class="flex items-center space-x-2">
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === 1"
+              @click="currentPage--"
+            >
+              Sebelumnya
+            </button>
+
+            <button
+              v-for="(page, index) in paginatedPages"
+              :key="index"
+              @click="typeof page === 'number' && (currentPage = page)"
+              :class="[
+                'px-3 py-1 rounded text-xs',
+                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+                page === '...' ? 'cursor-default' : 'cursor-pointer',
+              ]"
+              :disabled="page === '...'"
+            >
+              {{ page }}
+            </button>
+
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+            >
+              Selanjutnya
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -270,6 +448,15 @@
         </div>
       </div>
     </div>
+
+    <BaseModal
+      :show="modalOpen"
+      :type="modalType"
+      :barang-database="barangDatabase"
+      @close="modalOpen = false"
+      @scanned="tambahBarang"
+      @sizeSubmitted="handleSizeSubmitted"
+    />
 
     <!-- Modal Add Size  -->
     <div
@@ -463,6 +650,8 @@
         </div>
       </div>
     </div>
+
+    <!-- </div> -->
   </div>
 </template>
 
@@ -490,6 +679,7 @@ const isSearchActive = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const printContent = ref(null);
+const activeTab = ref("wait");
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -640,8 +830,8 @@ async function printPriceTag(id) {
     await nextTick();
     const content = printContent.value;
     if (!content) return;
-    
-    const printWindow = window.open('', '', 'width=800,height=600') 
+
+    const printWindow = window.open("", "", "width=800,height=600");
     printWindow.document.write(`
       <html>
         <head>
@@ -776,11 +966,16 @@ const paginatedPages = computed(() => {
   background-color: #f4f4f4;
 }
 
+button {
+  transition: background-color 0.2s ease;
+}
+
 .btn-print {
   background-color: #12c90e;
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .btn-print:hover {
@@ -803,10 +998,17 @@ const paginatedPages = computed(() => {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .btn-add:hover {
   background-color: #665eed;
+}
+
+.btn-tab{
+  font-size: 12px;
+  height: 30px;
+  width: 110px;
 }
 
 /* Modal styles */
