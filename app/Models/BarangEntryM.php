@@ -24,6 +24,7 @@ class BarangEntryM extends Model
         'barangentry_ukuran_mandar',
         'barangentry_ukuran_ulos',
         'barangentry_jumlah_barang',
+        'barangentry_status'
     ];
 
     public function code() {

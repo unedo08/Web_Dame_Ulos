@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BarangEntryMController;
 
+Route::post('/{id}/updateStok', [BarangEntryMController::class, 'updateStok']);
+Route::get('/getDataReady', [BarangEntryMController::class, 'getAllDataBarangReady']);
+Route::get('/getDataWaitForEntry', [BarangEntryMController::class, 'getAllDataBarangWaitToEntry']);
 Route::get('/getDataPriceTag/{code_nama}', [BarangEntryMController::class, 'getDataPriceTag']);
 Route::get('/getDataKasir/{code_nama}', [BarangEntryMController::class, 'getDataKasir']);
 Route::post('/storeDescription', [BarangEntryMController::class, 'storeDescription']);

@@ -43,6 +43,13 @@ class BarangEntryMController extends Controller
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
 
+        if(!$hasNullUkuran){
+            $record = BarangEntryM::updateOrCreate(
+                ['barangentry_code_id' => $data['barangentry_code_id']],
+                ['status' => 'READY']
+            );
+        }
+
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
@@ -68,6 +75,13 @@ class BarangEntryMController extends Controller
 
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_nama);
+
+        if(!$hasNullUkuran){
+            $record = BarangEntryM::updateOrCreate(
+                ['barangentry_code_id' => $data['barangentry_code_id']],
+                ['status' => 'READY']
+            );
+        }
 
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
@@ -113,7 +127,9 @@ class BarangEntryMController extends Controller
     public function getDataKasir($codeNama)
     {
         $code = CodeM::where('code_nama', $codeNama)->first();
-        $entries = BarangEntryM::where('barangentry_code_id', $code->code_id)->get();
+        $entries = BarangEntryM::where('barangentry_code_id', $code->code_id)
+                       ->where('barangentry_status', 'READY')
+                       ->get();
         
         if ($entries->isEmpty()) {
             return response()->json([
@@ -279,4 +295,51 @@ class BarangEntryMController extends Controller
             'total' => $jumlah
         ]);
     }
+
+    public function getAllDataBarangWaitToEntry()
+    {
+        $data = BarangEntryM::where('barangentry_status', 'NOT_READY')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data with status "NOT_READY"',
+            'data' => $data
+        ]);
+    }
+
+    public function getAllDataBarangReady()
+    {
+        $data = BarangEntryM::where('barangentry_status', 'READY')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data with status "READY"',
+            'data' => $data
+        ]);
+    }
+
+    public function updateStok(Request $request, $id)
+    {
+        $request->validate([
+            'jumlah_barang' => 'required|numeric',
+        ]);
+
+        $entry = BarangEntryM::find($id);
+        if (!$entry || $entry->barangentry_status == "NOT_READY") {
+            return response()->json([
+                'message' => 'Data not found',
+                'code' => 404
+            ], 404);
+        }
+
+        $entry->barangentry_jumlah_barang += $request->input('jumlah_barang');
+        $entry->save();
+
+        return response()->json([
+            'message' => 'Jumlah Barang is Updated',
+            'code' => 200,
+            'data' => $entry
+        ], 200);
+    }
+
 }

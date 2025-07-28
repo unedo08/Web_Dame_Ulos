@@ -33,9 +33,7 @@ class CodeMController extends Controller
         ]);
 
         $item = JenisBarangM::find($validated['code_jenisbarang_id']);
-        $jumlahBarang = $item->jenisbarang_tipe === "tunggal"
-            ? $item->jenisbarang_jumlah
-            : $validated['jumlah_barang'];
+        $jumlahBarang = $validated['jumlah_barang'];
 
         $createdCodes = [];
 
@@ -48,11 +46,9 @@ class CodeMController extends Controller
             $createdCodes[] = $codeM;
         }
 
-        // Update jumlah jika tipe bukan tunggal
-        if ($item->jenisbarang_tipe !== "tunggal") {
-            $jumlahBarang = $jumlahBarang + $item->jenisbarang_jumlah;
-            $item->update(['jenisbarang_jumlah' => $jumlahBarang]);
-        }
+        $jumlahBarang = $jumlahBarang + $item->jenisbarang_jumlah;
+        $item->update(['jenisbarang_jumlah' => $jumlahBarang]);
+        
 
         return response()->json([
             'message' => 'Codes generated successfully',
