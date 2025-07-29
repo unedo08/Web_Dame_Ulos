@@ -22,9 +22,7 @@
     </div>
 
     <div>
-      <table
-        class="datatable w-full rounded-md overflow-hidden"
-      >
+      <table class="datatable w-full rounded-md overflow-hidden">
         <thead class="bg-blue-100">
           <tr>
             <th class="px-4 py-2 text-left">No.</th>
@@ -199,9 +197,10 @@
             </button>
             <button
               type="submit"
+              :disabled="isSubmitting"
               class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]"
             >
-              Save
+              {{ isSubmitting ? "Saving..." : "Save" }}
             </button>
           </div>
         </form>
@@ -266,6 +265,7 @@ const printJumlah = ref(1);
 const url = ref("");
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const isSubmitting = ref(false);
 
 const fetchData = async () => {
   try {
@@ -329,6 +329,9 @@ const closeModal = () => {
 
 const submitProduct = async () => {
   // const jumlah = newProduct.value.jenisbarang_tipe === "tunggal" ? 1 : 1;
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+
   const product = {
     no: barang.value.length + 1,
     jenisbarang_kode: newProduct.value.jenisbarang_kode,
@@ -359,9 +362,9 @@ const submitProduct = async () => {
         // jenisbarang_tipe: "",
       };
       await Swal.fire({
-        title: 'Berhasil!',
-        text: 'Produk berhasil ditambahkan.',
-        icon: 'success',
+        title: "Berhasil!",
+        text: "Produk berhasil ditambahkan.",
+        icon: "success",
         timer: 1500,
         showConfirmButton: false,
       });
@@ -369,11 +372,12 @@ const submitProduct = async () => {
   } catch (error) {
     console.error("Error adding product:", error);
     Swal.fire({
-      title: 'Gagal!',
-      text: 'Terjadi kesalahan saat menambahkan produk.',
-      icon: 'error',
+      title: "Gagal!",
+      text: "Terjadi kesalahan saat menambahkan produk.",
+      icon: "error",
     });
-
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
@@ -402,7 +406,7 @@ const handlePrint = async () => {
   const jenisbarang_id = selectedProduct.value.jenisbarang_id;
   // const tipeBarang = selectedProduct.value.jenisbarang_tipe;
 
-  const jumlah = !empty(printJumlah.value) ? printJumlah.value : 1;
+  const jumlah = printJumlah.value !== null ? printJumlah.value : 1;
   try {
     let barcodeData = [];
     // if (tipeBarang === "majemuk") {
@@ -484,6 +488,7 @@ const handlePrint = async () => {
 
     win.document.close();
     closePrintModal();
+    await fetchData();
   } catch (error) {
     console.error("Gagal update jumlah code barang:", error);
     Swal.fire(
@@ -496,12 +501,12 @@ const handlePrint = async () => {
 
 const deleteProduct = async (id, nama_barang) => {
   const result = await Swal.fire({
-    title: 'Konfirmasi Hapus',
+    title: "Konfirmasi Hapus",
     text: `Anda yakin ingin menghapus "${nama_barang}"?`,
-    icon: 'warning',
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonText: 'Ya, Hapus!',
-    cancelButtonText: 'Batal',
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
     reverseButtons: true,
   });
 
@@ -515,9 +520,9 @@ const deleteProduct = async (id, nama_barang) => {
         );
 
         await Swal.fire({
-          title: 'Berhasil!',
+          title: "Berhasil!",
           text: `"${nama_barang}" telah dihapus.`,
-          icon: 'success',
+          icon: "success",
           timer: 1500,
           showConfirmButton: false,
         });
@@ -525,9 +530,9 @@ const deleteProduct = async (id, nama_barang) => {
     } catch (error) {
       console.error("Error deleting product:", error);
       Swal.fire({
-        title: 'Gagal',
-        text: 'Terjadi kesalahan saat menghapus data.',
-        icon: 'error',
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menghapus data.",
+        icon: "error",
       });
     }
   }

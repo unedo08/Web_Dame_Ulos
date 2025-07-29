@@ -1,41 +1,51 @@
 <template>
   <div>
-    <div class="judul text-xl font-semibold mb-4">Acara</div>
+    <div class="judul text-xl font-semibold mb-2">Acara</div>
 
-    <div class="flex items-center justify-end pt-2">
-        <button
-          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
-          @click="openModal"
-        >
-          + Tambah Acara
-        </button>
+    <div class="flex items-center justify-end">
+      <button
+        class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
+        @click="openModal"
+      >
+        + Tambah Acara
+      </button>
     </div>
 
     <!-- Product Table -->
     <div>
-      <table class="datatable">
-        <thead>
+      <table class="datatable w-full rounded-md overflow-hidde">
+        <thead class="bg-blue-100">
           <tr>
-            <th>Nama Acara</th>
-            <th>Jumlah Barang</th>
-            <th>Modal Barang</th>
-            <th>Harga Net</th>
-            <th>Harga Price Tag</th>
-            <th>Keterangan</th>
-            <th>Status</th>
-            <th>Aksi</th>
+            <th class="px-4 py-2 text-left">Nama Acara</th>
+            <th class="px-4 py-2 text-left">Jumlah Barang</th>
+            <th class="px-4 py-2 text-left">Modal Barang</th>
+            <th class="px-4 py-2 text-left">Harga Net</th>
+            <th class="px-4 py-2 text-left">Harga Price Tag</th>
+            <th class="px-4 py-2 text-left">Keterangan</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="acara in listAcara" :key="acara.acara_id">
-            <td>{{ acara.acara_nama }}</td>
-            <td>{{ acara.acara_jumlahbarang }}</td>
-            <td>{{ formatRupiah(acara.acara_modalbarang) }}</td>
-            <td>{{ formatRupiah(acara.acara_harganetbarang) }}</td>
-            <td>{{ formatRupiah(acara.acara_hargapricetagbarang) }}</td>
-            <td>{{ acara.acara_keterangan }}</td>
-            <td>{{ acara.acara_status }}</td>
-            <td class="space-x-2">
+          <tr
+            v-for="acara in pagination"
+            :key="acara.acara_id"
+            class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
+          >
+            <td class="px-4 py-2">{{ acara.acara_nama }}</td>
+            <td class="px-4 py-2">{{ acara.acara_jumlahbarang }}</td>
+            <td class="px-4 py-2">
+              {{ formatRupiah(acara.acara_modalbarang) }}
+            </td>
+            <td class="px-4 py-2">
+              {{ formatRupiah(acara.acara_harganetbarang) }}
+            </td>
+            <td class="px-4 py-2">
+              {{ formatRupiah(acara.acara_hargapricetagbarang) }}
+            </td>
+            <td class="px-4 py-2">{{ acara.acara_keterangan }}</td>
+            <td class="px-4 py-2">{{ acara.acara_status }}</td>
+            <td class="space-x-2 px-4 py-2">
               <button
                 class="text-blue-500 hover:text-blue-700"
                 @click="editItem(acara)"
@@ -71,6 +81,54 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select
+            id="perPage"
+            v-model="itemsPerPage"
+            class="border px-2 py-1 rounded text-xs"
+          >
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            v-for="(page, index) in paginatedPages"
+            :key="index"
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Modal Dialog -->
@@ -217,15 +275,22 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(barang, index) in tempBarangList" :key="index" :class="index % 2 === 0 ? 
-            'bg-white' : 'bg-gray-50'">
+            <tr
+              v-for="(barang, index) in tempBarangList"
+              :key="index"
+              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+            >
               <td class="px-4 py-2">{{ barang.code }}</td>
               <td class="px-4 py-2"></td>
               <td class="hide-col px-4 py-2">{{ barang.acara_id }}</td>
               <td class="hide-col px-4 py-2">{{ barang.barangentry_id }}</td>
               <td class="hide-col px-4 py-2">{{ barang.acara_modalbarang }}</td>
-              <td class="hide-col px-4 py-2">{{ barang.acara_harganetbarang }}</td>
-              <td class="hide-col px-4 py-2">{{ barang.acara_hargapricetagbarang }}</td>
+              <td class="hide-col px-4 py-2">
+                {{ barang.acara_harganetbarang }}
+              </td>
+              <td class="hide-col px-4 py-2">
+                {{ barang.acara_hargapricetagbarang }}
+              </td>
               <td class="hide-col px-4 py-2">{{ barang.acara_status }}</td>
               <td class="px-4 py-2">
                 <button
@@ -280,6 +345,8 @@ const barcodeInput = ref("");
 const tempBarangList = ref([]);
 const listAcara = ref([]);
 const errors = reactive({});
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 
 const newProduct = ref({
   acara_id: 0,
@@ -308,8 +375,20 @@ onMounted(async () => {
   isModalPrintOpen.value = false;
 });
 
+const pagination = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return listAcara.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(listAcara.value.length / itemsPerPage.value);
+});
+
 function validate() {
-  errors.acara_nama = !newProduct.value.acara_nama ? "Nama Acara wajib diisi" : "";
+  errors.acara_nama = !newProduct.value.acara_nama
+    ? "Nama Acara wajib diisi"
+    : "";
   errors.acara_keterangan = !newProduct.value.acara_keterangan
     ? "Keterangan wajib diisi"
     : "";
@@ -334,6 +413,33 @@ async function getListAcara() {
     console.error("Gagal memuat data acara:", error);
   }
 }
+
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    }
+  }
+
+  return pages;
+});
+
+watch(currentPage, (val) => {
+  if (val < 1) currentPage.value = 1;
+  if (val > totalPages.value) currentPage.value = totalPages.value;
+});
 
 watch(
   acara,
@@ -363,7 +469,7 @@ const submitAcara = async () => {
       icon: "error",
       confirmButtonText: "OK",
       timer: 3000,
-      timerProgressBar: true
+      timerProgressBar: true,
     });
     return;
   }

@@ -4,7 +4,7 @@
     class="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center"
   >
     <div
-      class="bg-white rounded-lg shadow-xl max-w-4xl  overflow-y-auto p-6 relative"
+      class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative"
     >
       <h2 class="text-xl font-semibold mb-4">Tambah Pre-Order Transaksi</h2>
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">

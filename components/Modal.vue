@@ -263,6 +263,7 @@ function handleScan() {
   if (found) {
     barang.value = { ...found };
     emit("scanned", { ...found });
+    emit('close')
   } else {
     alert("Barang tidak ditemukan.");
     barang.value = null;

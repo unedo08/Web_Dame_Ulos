@@ -1,32 +1,36 @@
 <template>
   <div>
-    <div class="flex space-x-4 mb-4">
+    <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
+    <div class="flex space-x-6">
       <button
         @click="activeTab = 'wait'"
-        :class="[
-          'btn-tab px-4 py-2 rounded font-medium text-xs',
-          activeTab === 'wait'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-800',
-        ]"
+        class="pb-1 text-sm relative"
+        :class="activeTab === 'wait' ? 'text-black' : 'text-gray-500'"
       >
-        Wait to Entry
+        Awaiting Stock
+        <span
+          v-if="activeTab === 'wait'"
+          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 90%"
+        ></span>
       </button>
+
       <button
         @click="activeTab = 'ready'"
-        :class="[
-          'btn-tab px-4 py-2 rounded font-medium text-xs',
-          activeTab === 'ready'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-800',
-        ]"
+        class="pb-1 text-sm relative"
+        :class="activeTab === 'ready' ? 'text-black' : 'text-gray-500'"
       >
-        Ready to Stok
+        Ready Stock
+        <span
+          v-if="activeTab === 'ready'"
+          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 90%"
+        ></span>
       </button>
     </div>
     <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> -->
     <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'wait'">
-      <div class="judul text-xs font-semibold mb-2">Wait to Entry</div>
+      <!-- <div class="judul text-xs font-semibold mb-2">Wait to Entry</div> -->
       <div class="flex flex-wrap justify-end gap-4">
         <button
           v-if="isSearchActive"
@@ -75,7 +79,7 @@
               <th class="px-4 py-2 text-left">Price Tag</th>
               <th class="px-4 py-2 text-left">Harga Net</th>
               <th class="px-4 py-2 text-left">Jumlah</th>
-              <!-- <th class="px-4 py-2 text-left">Acara</th> -->
+              <th class="px-4 py-2 text-left">Acara</th>
               <th class="px-4 py-2 text-left">Ukuran Mandar</th>
               <th class="px-4 py-2 text-left">Ukuran Ulos</th>
               <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
@@ -107,19 +111,11 @@
               <td class="px-4 py-2">
                 {{ barang.barangentry_jumlah_barang }}
               </td>
-              <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
+              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
               <td class="px-4 py-2">
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
-              <!-- <td class="px-4 py-2">
-              <button
-                class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
-                @click="printPriceTag(barang.barangentry_code_id)"
-              >
-                Print Price Tag
-              </button>
-            </td> -->
             </tr>
           </tbody>
         </table>
@@ -174,7 +170,7 @@
       </div>
     </div>
     <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'ready'">
-      <div class="judul text-xs font-semibold mb-2">Ready to Stock</div>
+      <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex flex-wrap justify-end gap-4">
         <button
           v-if="isSearchActive"
@@ -223,10 +219,10 @@
               <th class="px-4 py-2 text-left">Price Tag</th>
               <th class="px-4 py-2 text-left">Harga Net</th>
               <th class="px-4 py-2 text-left">Jumlah</th>
-              <!-- <th class="px-4 py-2 text-left">Acara</th> -->
+              <th class="px-4 py-2 text-left">Acara</th>
               <th class="px-4 py-2 text-left">Ukuran Mandar</th>
               <th class="px-4 py-2 text-left">Ukuran Ulos</th>
-              <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
+              <th class="px-4 py-2 text-left">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -255,19 +251,36 @@
               <td class="px-4 py-2">
                 {{ barang.barangentry_jumlah_barang }}
               </td>
-              <!-- <td class="px-4 py-2">{{ barang.barangentry_acara }}</td> -->
+              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
               <td class="px-4 py-2">
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
-              <!-- <td class="px-4 py-2">
-              <button
-                class="btn-print-click bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[125px] h-[45px]"
-                @click="printPriceTag(barang.barangentry_code_id)"
-              >
-                Print Price Tag
-              </button>
-            </td> -->
+              <td class="px-4 py-2">
+                <div class="flex space-x-3">
+                  <button
+                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
+                    @click="openModalEditStock(barang.barangentry_id)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
+                    @click="tambahStock(barang.barangentry_id)"
+                  >
+                    + Stock
+                  </button>
+                  <button
+                    class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                    @click="deleteBarang(barang.barangentry_id)"
+                  >
+                    <!-- wait to entry api/entrybarang/getDataWaitForEntry -->
+                    <!-- update stok api/entrybarang/6/updateStok -->
+                    <!-- ready to stok api/entrybarang/getDataReady -->
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -651,6 +664,41 @@
       </div>
     </div>
 
+    <!-- Modal Edit Stock -->
+    <div
+      v-if="showModalEditStock"
+      class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded-md w-80 shadow-md">
+        <h2 class="text-lg font-semibold mb-4">Edit Stock</h2>
+
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >Jumlah</label
+        >
+        <input
+          v-model="editJumlah"
+          type="number"
+          class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="Masukkan jumlah"
+        />
+
+        <div class="flex justify-end mt-6 space-x-2">
+          <button
+            class="px-4 py-2 bg-gray-300 text-sm rounded hover:bg-gray-400"
+            @click="showModalEditStock = false"
+          >
+            Batal
+          </button>
+          <button
+            class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+            @click="editStockSubmit"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- </div> -->
   </div>
 </template>
@@ -660,6 +708,7 @@ import { ref, onMounted, nextTick } from "vue";
 import BaseModal from "../components/Modal.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
 const modalOpen = ref(false);
 const modalType = ref("desc");
@@ -667,6 +716,10 @@ const showModalAdd = ref(false);
 const showModalAddSize = ref(false);
 const selectedBarang = ref({});
 const url = ref("");
+const showModalEditStock = ref(false);
+const editJumlah = ref(0);
+
+const showModalAddStock = ref(false);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -704,7 +757,8 @@ function formatTanggal(tanggal) {
 
 async function getListBarangTemp() {
   try {
-    const response = await axios.get(`${url.value}/api/entrybarang`);
+    const endpoint = activeTab.value === 'wait' ? '/api/entrybarang/getDataWaitForEntry' : "/api/entrybarang/getDataReady";
+    const response = await axios.get(`${url.value}${endpoint}`);
 
     listBarang.value = response.data.data;
   } catch (error) {
@@ -814,51 +868,51 @@ function cancelSizeBarang() {
   showModalAddSize.value = false;
 }
 
-async function printPriceTag(id) {
-  // try {
-  const results = [];
-  try {
-    const responseCode = await axios.get(`${url.value}/api/codebarang/` + id);
-    const code = responseCode.data.code_nama;
-    const res = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + code
-    );
-    if (res.data) results.push(res.data);
+// async function printPriceTag(id) {
+//   // try {
+//   const results = [];
+//   try {
+//     const responseCode = await axios.get(`${url.value}/api/codebarang/` + id);
+//     const code = responseCode.data.code_nama;
+//     const res = await axios.get(
+//       `${url.value}/api/entrybarang/getDataByCode/` + code
+//     );
+//     if (res.data) results.push(res.data);
 
-    priceTagData.value = results;
+//     priceTagData.value = results;
 
-    await nextTick();
-    const content = printContent.value;
-    if (!content) return;
+//     await nextTick();
+//     const content = printContent.value;
+//     if (!content) return;
 
-    const printWindow = window.open("", "", "width=800,height=600");
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Price Tag</title>
-          <style>
-            body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-            ol { padding-left: 1rem; }
-            table { width: 100%; border-collapse: collapse; }
-            td { padding: 4px 8px; }
-            @media print {
-              body { margin: 0; }
-              div { page-break-inside: avoid; }
-            }
-          </style>
-        </head>
-        <body>
-          ${content.innerHTML}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-  } catch (err) {
-    console.error(`Gagal ambil data untuk`, err);
-  }
-}
+//     const printWindow = window.open("", "", "width=800,height=600");
+//     printWindow.document.write(`
+//       <html>
+//         <head>
+//           <title>Price Tag</title>
+//           <style>
+//             body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+//             ol { padding-left: 1rem; }
+//             table { width: 100%; border-collapse: collapse; }
+//             td { padding: 4px 8px; }
+//             @media print {
+//               body { margin: 0; }
+//               div { page-break-inside: avoid; }
+//             }
+//           </style>
+//         </head>
+//         <body>
+//           ${content.innerHTML}
+//         </body>
+//       </html>
+//     `);
+//     printWindow.document.close();
+//     printWindow.focus();
+//     printWindow.print();
+//   } catch (err) {
+//     console.error(`Gagal ambil data untuk`, err);
+//   }
+// }
 
 function openSearchModal() {
   showModalSearch.value = true;
@@ -909,6 +963,78 @@ function resetSearch() {
   searchCode.value = "";
 }
 
+const openModalEditStock = (barang) => {
+  selectedBarang.value = barang;
+  editJumlah.value = barang.jumlah || 0;
+  showModalEditStock.value = true;
+};
+
+const editStockSubmit = async () => {
+  if (!selectedBarang.value) return;
+
+  try {
+    const responseEdit = await axios.post(
+      `${url.value}/api/entrybarang/${selectedBarang.value}/updateStok`
+    , {jumlah_barang: editJumlah.value});
+    
+    if (responseEdit.data.code == 200) {
+      showModalEditStock.value = false
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Stock Berhasil di update.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+    await getListBarangTemp();
+  } catch (error) {
+    console.error("error", error);
+    Swal.fire({
+      title: "Gagal!",
+      text: "Terjadi kesalahan saat update stock.",
+      icon: "error",
+      timer: 1500
+    });
+  }
+};
+
+const deleteBarang = async (id) => {
+  const result = await Swal.fire({
+    title: "Konfirmasi Hapus",
+    text: `Anda yakin ingin menghapus barang ini?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const response = await axios.post(`${url.value}/api/entrybarang/${id}/deleteBarangEntry`, {status: 'DELETED'});
+
+      if (response.data.code === 200) {
+        Swal.fire({
+          title: "Berhasil!",
+          text: `Barang telah dihapus.`,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+      await getListBarangTemp();
+    } catch (error) {
+      console.error("error:", error);
+      Swal.fire({
+        title: 'Gagal',
+        text: 'Terjadi kesalahan saat menghapus barang ini.',
+        icon: 'error',
+      });
+    }
+  }
+};
+
 const paginatedPages = computed(() => {
   const total = totalPages.value;
   const current = currentPage.value;
@@ -930,6 +1056,11 @@ const paginatedPages = computed(() => {
 
   return pages;
 });
+
+watch(activeTab, () => {
+  getListBarangTemp();
+});
+
 </script>
 
 <style>
@@ -1005,7 +1136,7 @@ button {
   background-color: #665eed;
 }
 
-.btn-tab{
+.btn-tab {
   font-size: 12px;
   height: 30px;
   width: 110px;

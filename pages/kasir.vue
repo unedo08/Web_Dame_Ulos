@@ -122,7 +122,7 @@
         </button>
       </div>
 
-      <div class="p-4">
+      <div class="transition-slide p-4">
         <input
           v-model="searchHold"
           type="text"
@@ -143,10 +143,10 @@
               <div class="font-semibold">
                 {{ item.transaksi_nama_customer || "Tanpa Nama" }}
               </div>
-              <div class="text-sm text-gray-600">
-                Total: {{ formatRupiah(item.transaksi_total_harga) }}
+              <div class="text-xs text-gray-600">
+                Total: {{ formatRupiah(Number(item.transaksi_total_harga)) }}
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-xs text-gray-500">
                 {{ formatTanggalHold(item.created_at) }}
               </div>
             </div>
@@ -258,7 +258,7 @@ const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
 const searchHold = ref("");
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const url = ref("");
 
 const openModalHold = ref(false);
@@ -490,6 +490,7 @@ const processForm = ref({
 
 async function checkoutProcess() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
+    openModalProcess.value = false;
     Swal.fire({
       title: "Gagal",
       text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
@@ -963,6 +964,10 @@ watch(searchHold, () => {
 .loader-border {
   border-top-color: #fff;
   animation: spinner 0.6s linear infinite;
+}
+
+.transition-slide{
+  font-size: 12px;
 }
 @keyframes spinner {
   to {
