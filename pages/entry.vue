@@ -185,18 +185,6 @@
         >
           🔍 Search
         </button>
-        <!-- <button
-          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-          @click="openModal('desc')"
-        >
-          + Desc
-        </button>
-        <button
-          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-          @click="openModal('size')"
-        >
-          + Size
-        </button> -->
         <button
           class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
           @click="openModal('priceTag')"
@@ -259,12 +247,14 @@
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
                   <button
+                    v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
                     @click="openModalEditStock(barang.barangentry_id)"
                   >
                     Edit
                   </button>
                   <button
+                    v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
                     @click="tambahStock(barang.barangentry_id)"
                   >
@@ -418,7 +408,13 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
-            <div class="flex">
+            <input
+              v-model="selectedBarang.barangentry_price_tag"
+              type="number"
+              class="w-full border rounded px-3 py-2"
+              placeholder="..."
+            />
+            <!-- <div class="flex">
               <div
                 class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
               >
@@ -431,11 +427,17 @@
                 class="w-full border px-3 py-2"
                 placeholder="Masukkan Harga Price Tag"
               />
-            </div>
+            </div> -->
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
-            <div class="flex">
+            <input
+              v-model="selectedBarang.barangentry_harga_net"
+              type="number"
+              class="w-full border rounded px-3 py-2"
+              placeholder="..."
+            />
+            <!-- <div class="flex">
               <div
                 class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
               >
@@ -448,7 +450,7 @@
                 class="w-full border px-3 py-2"
                 placeholder="Masukkan Harga Terjual"
               />
-            </div>
+            </div> -->
           </div>
 
           <div>
