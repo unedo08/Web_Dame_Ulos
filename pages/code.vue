@@ -409,10 +409,6 @@ const handlePrint = async () => {
   const jumlah = printJumlah.value !== null ? printJumlah.value : 1;
   try {
     let barcodeData = [];
-    // if (tipeBarang === "majemuk") {
-    // console.log("sadsada", jumlah);
-    // console.log("sadsada", jenisbarang_id);
-
     const response = await axios.post(`${url.value}/api/codebarang`, {
       jumlah_barang: jumlah,
       code_jenisbarang_id: jenisbarang_id,

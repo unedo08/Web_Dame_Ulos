@@ -55,9 +55,8 @@
             :key="item.barangentry_id"
             style="page-break-after: always"
           >
-            <div style="display: flex; gap: 40px">
+            <div style="display: flex; gap: 10px">
               <div style="flex: 1">
-              <!-- <pre>{{ item }}</pre> -->
                 <h1>{{ item.data.barangentry_nama }}</h1>
                 <p class="text-xl font-semibold mb-4">Horas!</p>
                 <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
@@ -75,60 +74,60 @@
 
                 <table
                   style="
-                    margin-top: 20px;
+                    margin-top: 10px;
                     width: 100%;
                     border-collapse: collapse;
                     font-size: 0.9rem;
                   "
                 >
                   <tr>
-                    <td style="padding: 4px 8px; font-weight: bold">
+                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">
                       Tahun Pembuatan
                     </td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ new Date(item.data.created_at).getFullYear() }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; font-weight: bold">
+                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">
                       Ukuran Tenun
                     </td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
                       {{ item.data.barangentry_ukuran_mandar ?? "-" }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; font-weight: bold">Warna</td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">Warna</td>
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ item.data.barangentry_warna }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; font-weight: bold">Maker</td>
-                    <td style="padding: 4px 8px">Dame Ulos Collective</td>
+                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">Maker</td>
+                    <td style="padding: 2px 6px;font-size: 12px;">Dame Ulos Collective</td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; padding-left: 1.5rem">
-                      <strong>a. Penenun:</strong>
+                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                      a. Penenun:
                     </td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ item.data.barangentry_nama_penenun }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; padding-left: 1.5rem">
-                      <strong>b. Panirat:</strong>
+                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                      b. Panirat:
                     </td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ item.data.barangentry_nama_panirat }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 4px 8px; padding-left: 1.5rem">
-                      <strong>c. Dyer:</strong>
+                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                      c. Dyer:
                     </td>
-                    <td style="padding: 4px 8px">
+                    <td style="padding: 2px 6px;font-size: 12px;">
                       {{ item.data.barangentry_dryer }}
                     </td>
                   </tr>
@@ -136,7 +135,7 @@
               </div>
 
               <div style="flex: 1">
-                <p class="font-semibold mb-2">
+                <p class="font-bold mb-2" style="text-align: center;font-weight:600;">
                   BAGAIMANA CARA PERAWATAN KAIN TENUN YANG BENAR?
                 </p>
                 <ol class="list-decimal list-inside">
@@ -263,7 +262,7 @@ function handleScan() {
   if (found) {
     barang.value = { ...found };
     emit("scanned", { ...found });
-    emit('close')
+    emit("close");
   } else {
     alert("Barang tidak ditemukan.");
     barang.value = null;
@@ -338,8 +337,35 @@ async function printPriceTag() {
         <head>
           <title>Price Tag</title>
           <style>
-            body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-            ol { padding-left: 1rem; }
+            body {
+              font-family: Nunito;
+              padding: 20px;
+              font-size: 12px;
+              line-height: 1.2;
+            }
+
+            p, td, li, h2, h3 {
+              margin: 0;
+              line-height: 1.2;
+            }
+
+            table {
+              font-size: 12px;
+            }
+
+            ol {
+              padding-left: 1rem;
+              line-height: 1.2;
+            }
+
+            h1 {
+              font-size: 20px;
+              margin-bottom: 4px;
+            }
+
+            .text-xl {
+              font-size: 12px;
+            }
           </style>
         </head>
         <body>

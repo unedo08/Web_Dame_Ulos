@@ -418,22 +418,39 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
-            <input
-              v-model="selectedBarang.barangentry_price_tag"
-              type="number"
-              class="w-full border rounded px-3 py-2"
-              placeholder="..."
-            />
+            <div class="flex">
+              <div
+                class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
+              >
+                Rp
+              </div>
+              <input
+                :value="formattedPriceTag"
+                @input="onInputPriceTag"
+                type="text"
+                class="w-full border px-3 py-2"
+                placeholder="Masukkan Harga Price Tag"
+              />
+            </div>
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
-            <input
-              v-model="selectedBarang.barangentry_harga_net"
-              type="number"
-              class="w-full border rounded px-3 py-2"
-              placeholder="..."
-            />
+            <div class="flex">
+              <div
+                class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
+              >
+                Rp
+              </div>
+              <input
+                :value="formattedHargaNet"
+                @input="onInputHargaNet"
+                type="text"
+                class="w-full border px-3 py-2"
+                placeholder="Masukkan Harga Terjual"
+              />
+            </div>
           </div>
+
           <div>
             <label class="block text-gray-700 mb-1">Jumlah:</label>
             <input
@@ -757,7 +774,10 @@ function formatTanggal(tanggal) {
 
 async function getListBarangTemp() {
   try {
-    const endpoint = activeTab.value === 'wait' ? '/api/entrybarang/getDataWaitForEntry' : "/api/entrybarang/getDataReady";
+    const endpoint =
+      activeTab.value === "wait"
+        ? "/api/entrybarang/getDataWaitForEntry"
+        : "/api/entrybarang/getDataReady";
     const response = await axios.get(`${url.value}${endpoint}`);
 
     listBarang.value = response.data.data;
@@ -791,6 +811,39 @@ function formatRupiah(value) {
   return "Rp. " + number.toLocaleString("id-ID");
 }
 
+function formatRupiah2(value) {
+  if (!value) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""));
+  if (isNaN(number)) return "";
+  return number.toLocaleString("id-ID");
+}
+
+function parseRupiah(value) {
+  return value ? value.toString().replace(/\D/g, "") : "";
+}
+
+function onInputHargaNet(e) {
+  const raw = parseRupiah(e.target.value);
+  selectedBarang.barangentry_harga_net = raw;
+
+  e.target.value = formatRupiah2(raw);
+}
+
+const formattedHargaNet = computed(() => {
+  return formatRupiah2(selectedBarang.barangentry_harga_net);
+});
+
+function onInputPriceTag(e) {
+  const raw = parseRupiah(e.target.value);
+  selectedBarang.barangentry_price_tag = raw;
+  e.target.value = formatRupiah2(raw);
+}
+
+const formattedPriceTag = computed(() => {
+  return formatRupiah2(selectedBarang.barangentry_price_tag);
+});
+
+
 async function submitBarang() {
   try {
     const payload = {
@@ -801,8 +854,8 @@ async function submitBarang() {
       barangentry_nama_panirat: selectedBarang.value.barangentry_nama_panirat,
       barangentry_dryer: selectedBarang.value.barangentry_dryer,
       barangentry_modal: selectedBarang.value.barangentry_modal,
-      barangentry_price_tag: selectedBarang.value.barangentry_price_tag,
-      barangentry_harga_net: selectedBarang.value.barangentry_harga_net,
+      barangentry_price_tag: Number(selectedBarang.value.barangentry_price_tag),
+      barangentry_harga_net: Number(selectedBarang.value.barangentry_harga_net),
       barangentry_jumlah_barang: selectedBarang.value.barangentry_jumlah_barang,
     };
 
@@ -868,52 +921,6 @@ function cancelSizeBarang() {
   showModalAddSize.value = false;
 }
 
-// async function printPriceTag(id) {
-//   // try {
-//   const results = [];
-//   try {
-//     const responseCode = await axios.get(`${url.value}/api/codebarang/` + id);
-//     const code = responseCode.data.code_nama;
-//     const res = await axios.get(
-//       `${url.value}/api/entrybarang/getDataByCode/` + code
-//     );
-//     if (res.data) results.push(res.data);
-
-//     priceTagData.value = results;
-
-//     await nextTick();
-//     const content = printContent.value;
-//     if (!content) return;
-
-//     const printWindow = window.open("", "", "width=800,height=600");
-//     printWindow.document.write(`
-//       <html>
-//         <head>
-//           <title>Price Tag</title>
-//           <style>
-//             body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-//             ol { padding-left: 1rem; }
-//             table { width: 100%; border-collapse: collapse; }
-//             td { padding: 4px 8px; }
-//             @media print {
-//               body { margin: 0; }
-//               div { page-break-inside: avoid; }
-//             }
-//           </style>
-//         </head>
-//         <body>
-//           ${content.innerHTML}
-//         </body>
-//       </html>
-//     `);
-//     printWindow.document.close();
-//     printWindow.focus();
-//     printWindow.print();
-//   } catch (err) {
-//     console.error(`Gagal ambil data untuk`, err);
-//   }
-// }
-
 function openSearchModal() {
   showModalSearch.value = true;
   searchCode.value = "";
@@ -974,11 +981,12 @@ const editStockSubmit = async () => {
 
   try {
     const responseEdit = await axios.post(
-      `${url.value}/api/entrybarang/${selectedBarang.value}/updateStok`
-    , {jumlah_barang: editJumlah.value});
-    
+      `${url.value}/api/entrybarang/${selectedBarang.value}/updateStok`,
+      { jumlah_barang: editJumlah.value }
+    );
+
     if (responseEdit.data.code == 200) {
-      showModalEditStock.value = false
+      showModalEditStock.value = false;
       Swal.fire({
         title: "Berhasil!",
         text: "Stock Berhasil di update.",
@@ -994,7 +1002,7 @@ const editStockSubmit = async () => {
       title: "Gagal!",
       text: "Terjadi kesalahan saat update stock.",
       icon: "error",
-      timer: 1500
+      timer: 1500,
     });
   }
 };
@@ -1012,7 +1020,10 @@ const deleteBarang = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const response = await axios.post(`${url.value}/api/entrybarang/${id}/deleteBarangEntry`, {status: 'DELETED'});
+      const response = await axios.post(
+        `${url.value}/api/entrybarang/${id}/deleteBarangEntry`,
+        { status: "DELETED" }
+      );
 
       if (response.data.code === 200) {
         Swal.fire({
@@ -1027,9 +1038,9 @@ const deleteBarang = async (id) => {
     } catch (error) {
       console.error("error:", error);
       Swal.fire({
-        title: 'Gagal',
-        text: 'Terjadi kesalahan saat menghapus barang ini.',
-        icon: 'error',
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menghapus barang ini.",
+        icon: "error",
       });
     }
   }
@@ -1060,7 +1071,6 @@ const paginatedPages = computed(() => {
 watch(activeTab, () => {
   getListBarangTemp();
 });
-
 </script>
 
 <style>
