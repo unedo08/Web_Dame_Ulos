@@ -81,53 +81,104 @@
                   "
                 >
                   <tr>
-                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
                       Tahun Pembuatan
                     </td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ new Date(item.data.created_at).getFullYear() }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
                       Ukuran Tenun
                     </td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
                       {{ item.data.barangentry_ukuran_mandar ?? "-" }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">Warna</td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
+                      Warna
+                    </td>
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ item.data.barangentry_warna }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; font-weight: bold;font-size: 12px;">Maker</td>
-                    <td style="padding: 2px 6px;font-size: 12px;">Dame Ulos Collective</td>
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
+                      Maker
+                    </td>
+                    <td style="padding: 2px 6px; font-size: 12px">
+                      Dame Ulos Collective
+                    </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        padding-left: 1.5rem;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
                       a. Penenun:
                     </td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ item.data.barangentry_nama_penenun }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        padding-left: 1.5rem;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
                       b. Panirat:
                     </td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ item.data.barangentry_nama_panirat }}
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 2px 6px; padding-left: 1.5rem;font-weight: bold;font-size: 12px;">
+                    <td
+                      style="
+                        padding: 2px 6px;
+                        padding-left: 1.5rem;
+                        font-weight: bold;
+                        font-size: 12px;
+                      "
+                    >
                       c. Dyer:
                     </td>
-                    <td style="padding: 2px 6px;font-size: 12px;">
+                    <td style="padding: 2px 6px; font-size: 12px">
                       {{ item.data.barangentry_dryer }}
                     </td>
                   </tr>
@@ -135,7 +186,10 @@
               </div>
 
               <div style="flex: 1">
-                <p class="font-bold mb-2" style="text-align: center;font-weight:600;">
+                <p
+                  class="font-bold mb-2"
+                  style="text-align: center; font-weight: 600"
+                >
                   BAGAIMANA CARA PERAWATAN KAIN TENUN YANG BENAR?
                 </p>
                 <ol class="list-decimal list-inside">
@@ -185,6 +239,7 @@
 import { ref, watch, computed, nextTick, onMounted } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
 const priceTagData = ref([]);
 const url = ref("");
@@ -264,7 +319,13 @@ function handleScan() {
     emit("scanned", { ...found });
     emit("close");
   } else {
-    alert("Barang tidak ditemukan.");
+    Swal.fire({
+      icon: "error",
+      title: "Barang Tidak Ditemukan",
+      text: "Kode barang tidak cocok dengan database.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
     barang.value = null;
     barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:");
@@ -280,7 +341,13 @@ function handleScanSize() {
     barang.value = { ...found };
     emit("sizeSubmitted", { ...found });
   } else {
-    alert("Barang tidak ditemukan.");
+    Swal.fire({
+      icon: "error",
+      title: "Barang Tidak Ditemukan",
+      text: "Kode barang tidak cocok dengan database.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
     barang.value = null;
     barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:");

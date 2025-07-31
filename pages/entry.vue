@@ -774,6 +774,35 @@ function formatTanggal(tanggal) {
   }).format(date);
 }
 
+function formatRupiah2(value) {
+  const number = parseInt(value?.toString().replace(/\D/g, '') || '')
+  if (isNaN(number)) return ''
+  return number.toLocaleString('id-ID')
+}
+
+function parseRupiah(value) {
+  return value?.toString().replace(/\D/g, '') || ''
+}
+
+// Saat input price tag
+function onInputPriceTag(e) {
+  const raw = parseRupiah2(e.target.value)
+  selectedBarang.value.barangentry_price_tag = raw
+}
+
+function onInputHargaNet(e) {
+  const raw = parseRupiah2(e.target.value)
+  selectedBarang.value.barangentry_harga_net = raw
+}
+
+const formattedPriceTag = computed(() =>
+  formatRupiah(selectedBarang.value.barangentry_price_tag)
+)
+const formattedHargaNet = computed(() =>
+  formatRupiah(selectedBarang.value.barangentry_harga_net)
+)
+
+
 async function getListBarangTemp() {
   try {
     const endpoint =
@@ -812,39 +841,6 @@ function formatRupiah(value) {
   const number = parseInt(value);
   return "Rp. " + number.toLocaleString("id-ID");
 }
-
-function formatRupiah2(value) {
-  if (!value) return "";
-  const number = parseInt(value.toString().replace(/\D/g, ""));
-  if (isNaN(number)) return "";
-  return number.toLocaleString("id-ID");
-}
-
-function parseRupiah(value) {
-  return value ? value.toString().replace(/\D/g, "") : "";
-}
-
-function onInputHargaNet(e) {
-  const raw = parseRupiah(e.target.value);
-  selectedBarang.barangentry_harga_net = raw;
-
-  e.target.value = formatRupiah2(raw);
-}
-
-const formattedHargaNet = computed(() => {
-  return formatRupiah2(selectedBarang.barangentry_harga_net);
-});
-
-function onInputPriceTag(e) {
-  const raw = parseRupiah(e.target.value);
-  selectedBarang.barangentry_price_tag = raw;
-  e.target.value = formatRupiah2(raw);
-}
-
-const formattedPriceTag = computed(() => {
-  return formatRupiah2(selectedBarang.barangentry_price_tag);
-});
-
 
 async function submitBarang() {
   try {
@@ -945,7 +941,11 @@ async function handleSearch() {
     console.log("asdsa", code);
 
     if (!code) {
-      alert("Kode tidak ditemukan dari server.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Kode tidak ditemukan',
+        text: 'Kode tidak ditemukan dari server.',
+      });
       return;
     }
 
@@ -958,11 +958,19 @@ async function handleSearch() {
     showModalSearch.value = false;
 
     if (filteredBarang.value.length === 0) {
-      alert("Barang tidak ditemukan di daftar.");
+      Swal.fire({
+        icon: 'info',
+        title: 'Barang tidak ditemukan',
+        text: 'Barang tidak ditemukan di daftar.',
+      });
     }
   } catch (error) {
     console.error("Gagal mencari data kode:", error);
-    alert("Terjadi kesalahan saat mencari kode.");
+    Swal.fire({
+      icon: 'error',
+      title: 'Terjadi kesalahan',
+      text: 'Terjadi kesalahan saat mencari kode.',
+    });
   }
 }
 
