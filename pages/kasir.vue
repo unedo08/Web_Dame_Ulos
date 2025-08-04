@@ -144,7 +144,7 @@
           <div
             v-for="(item, index) in paginatedList"
             :key="item.transaksi_id"
-            class="relative p-3 border rounded-md bg-gray-100 flex justify-between items-center"
+            class="relative p-3 border rounded-md bg-[#F7F7F7] flex justify-between items-center"
             @click="loadHoldTransaction(item.transaksi_id)"
           >
             <div class="pr-8">
@@ -317,13 +317,14 @@ function parseRupiah(value) {
 const formatTanggalHold = (dateStr) => {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  return date.toLocaleString("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const optionsTanggal = { day: '2-digit', month: 'long', year: 'numeric' };
+  const tanggal = date.toLocaleDateString('id-ID', optionsTanggal);
+
+  const jam = String(date.getHours()).padStart(2, '0');
+  const menit = String(date.getMinutes()).padStart(2, '0');
+  const waktu = `${jam}.${menit}`;
+
+  return `${tanggal} • ${waktu} WIB`;
 };
 
 const waitingList = ref([]);
