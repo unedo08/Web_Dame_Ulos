@@ -57,7 +57,7 @@
                   @click="
                     deleteProduct(
                       barang.jenisbarang_id,
-                      barang.jenisbarang_nama
+                      barang.jenisbarang_kode
                     )
                   "
                 >
@@ -495,10 +495,10 @@ const handlePrint = async () => {
   }
 };
 
-const deleteProduct = async (id, nama_barang) => {
+const deleteProduct = async (id, kode_barang) => {
   const result = await Swal.fire({
     title: "Konfirmasi Hapus",
-    text: `Anda yakin ingin menghapus "${nama_barang}"?`,
+    text: `Anda yakin ingin menghapus "${kode_barang}"?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Ya, Hapus!",
@@ -517,7 +517,7 @@ const deleteProduct = async (id, nama_barang) => {
 
         await Swal.fire({
           title: "Berhasil!",
-          text: `"${nama_barang}" telah dihapus.`,
+          text: `"${kode_barang}" telah dihapus.`,
           icon: "success",
           timer: 1500,
           showConfirmButton: false,

@@ -28,14 +28,13 @@
         ></span>
       </button>
     </div>
-    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> -->
-    <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'wait'">
+    <div class="mx-auto" v-show="activeTab === 'wait'">
       <!-- <div class="judul text-xs font-semibold mb-2">Wait to Entry</div> -->
       <div class="flex flex-wrap justify-end gap-4">
         <button
           v-if="isSearchActive"
           @click="resetSearch"
-          class="mb-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 btn-s"
+          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
         >
           Reset Pencarian
         </button>
@@ -65,8 +64,8 @@
         </button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full datatable w-full rounded-md overflow-hidden">
+      <div class="overflow-x-auto w-full">
+        <table class="datatable w-full rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
@@ -169,13 +168,13 @@
         </div>
       </div>
     </div>
-    <div class="max-w-screen-xl mx-auto" v-show="activeTab === 'ready'">
+    <div class="mx-auto" v-show="activeTab === 'ready'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex flex-wrap justify-end gap-4">
         <button
           v-if="isSearchActive"
           @click="resetSearch"
-          class="mb-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 btn-s"
+          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
         >
           Reset Pencarian
         </button>
@@ -193,8 +192,8 @@
         </button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full datatable w-full rounded-md overflow-hidden">
+      <div class="overflow-x-auto w-full">
+        <table class="datatable w-full rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
@@ -348,7 +347,7 @@
             <input
               v-model="selectedBarang.code_nama"
               type="text"
-              class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
               :readonly="true"
             />
           </div>
@@ -357,7 +356,7 @@
             <input
               v-model="selectedBarang.barangentry_nama"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -366,7 +365,7 @@
             <input
               v-model="selectedBarang.barangentry_warna"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -375,7 +374,7 @@
             <input
               v-model="selectedBarang.barangentry_nama_penenun"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -384,7 +383,7 @@
             <input
               v-model="selectedBarang.barangentry_nama_panirat"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -393,7 +392,7 @@
             <input
               v-model="selectedBarang.barangentry_dryer"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -402,7 +401,7 @@
             <input
               v-model="selectedBarang.barangentry_modal"
               type="number"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -411,7 +410,7 @@
             <input
               v-model="selectedBarang.barangentry_price_tag"
               type="number"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
             <!-- <div class="flex">
@@ -434,7 +433,7 @@
             <input
               v-model="selectedBarang.barangentry_harga_net"
               type="number"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
             <!-- <div class="flex">
@@ -458,7 +457,7 @@
             <input
               v-model="selectedBarang.barangentry_jumlah_barang"
               type="number"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -503,7 +502,7 @@
             <input
               v-model="selectedBarang.code_id"
               type="text"
-              class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
               :readonly="true"
             />
           </div>
@@ -512,7 +511,7 @@
             <input
               v-model="selectedBarang.kode_barang"
               type="text"
-              class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
               :readonly="true"
             />
           </div>
@@ -521,7 +520,7 @@
             <input
               v-model="selectedBarang.ukuran_ulos"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -530,7 +529,7 @@
             <input
               v-model="selectedBarang.ukuran_mandar"
               type="text"
-              class="w-full border rounded px-3 py-2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
           </div>
@@ -1142,6 +1141,12 @@ button {
 
 .btn-print-click:hover {
   background-color: #7df67b;
+}
+
+.btn-reset-pencarian{
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .btn-add {

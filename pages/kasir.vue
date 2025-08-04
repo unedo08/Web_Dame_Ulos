@@ -73,22 +73,30 @@
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">{{ item.barangentry_nama }}</td>
           <td class="px-4 py-2">
+          <template v-if="item.quantity > 1">
             <input
               type="number"
               v-model.number="item.quantity"
               class="w-16 border px-2 py-1"
               min="1"
             />
-            <!-- {{ item.quantity }} -->
+          </template>
+          <template v-else>
+            {{ item.quantity }}
+          </template>
           </td>
           <td class="px-4 py-2">
+          <template v-if="item.quantity > 1">
             <input
               type="number"
               v-model.number="item.barangentry_harga_net"
               class="w-28 border rounded px-2 py-1"
               min="0"
             />
-            <!-- {{ item.barangentry_harga_net }} -->
+          </template>
+          <template v-else>
+            {{ item.barangentry_harga_net }}
+          </template>
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="px-4 py-2">
