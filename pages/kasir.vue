@@ -719,161 +719,168 @@ function printToNewTab(data, items) {
     });
   };
 
+  const formatRupiah = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(value || 0);
+  };
+
   const htmlContent = `
   <!DOCTYPE html>
   <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>Print Transaksi</title>
+    <title>Invoice Transaksi</title>
     <style>
-      /* Reset & base */
       body {
         font-family: Arial, sans-serif;
-        margin: 0; padding: 20px;
+        margin: 0; padding: 40px;
         background: #fff;
         color: #000;
       }
+
       .print-area {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
+        max-width: 800px;
+        margin: auto;
         box-sizing: border-box;
       }
-      .text-center {
-        text-align: center;
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
       }
-      .mb-2 { margin-bottom: 0.5rem; }
-      .mb-4 { margin-bottom: 1rem; }
-      .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
-      .font-bold { font-weight: 700; }
-      .font-semibold { font-weight: 600; }
-      .text-sm { font-size: 0.875rem; }
-      .text-base { font-size: 1rem; }
-      .w-24 { width: 96px; }
-      .h-auto { height: auto; }
-      .mx-auto { margin-left: auto; margin-right: auto; }
-      .table {
+
+      .logo {
+        width: 100px;
+      }
+
+      .company-details {
+        flex: 1;
+        margin-left: 20px;
+      }
+
+      .company-details h2 {
+        margin: 0;
+        color: #750000;
+      }
+
+      .invoice-label {
+        background-color: #750000;
+        color: #fff;
+        padding: 8px 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .info p {
+        margin: 4px 0;
+        font-size: 14px;
+      }
+
+      table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.9rem;
-      }
-      table th, table td {
-        padding: 8px 6px;
-        border-bottom: 1px solid #ccc;
-      }
-      table th {
-        text-align: left;
-        font-weight: 600;
-        border-bottom: 2px solid #444;
-      }
-      table td {
-        vertical-align: top;
-      }
-      table td.text-left {
-        text-align: left;
-      }
-      .table tbody tr:last-child td {
-        border-bottom: 2px solid #000;
-      }
-      .total-bayar {
-        text-align: right;
-        font-weight: 700;
-        font-size: 1.1rem;
         margin-top: 20px;
+        font-size: 14px;
       }
-      /* Print styles */
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f3f3f3;
+        font-weight: bold;
+      }
+
+      .total {
+        text-align: right;
+        font-weight: bold;
+        padding-top: 10px;
+        font-size: 16px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 13px;
+        color: #555;
+      }
+
       @media print {
-        body {
-          margin: 0; padding: 0;
-        }
-        .print-area {
-          box-shadow: none;
-          width: 100%;
-          max-width: none;
-          margin: 0;
-          padding: 0;
-        }
+        body { margin: 0; padding: 0; }
       }
     </style>
   </head>
   <body>
     <div class="print-area">
-
-      <div class="text-center mb-4">
-        <img src="/image/DameUlosLogo2.png" alt="Logo" class="w-24 h-auto mx-auto mb-2" />
-        <h2 class="font-bold text-base">Dame Ulos Tarutung</h2>
+      <div class="header">
+        <img src="/image/DameUlosLogo2.png" alt="Logo" class="logo" />
+        <div class="company-details">
+          <h2>DAME ULOS</h2>
+          <p>Ulos dan Mandar Tarutung</p>
+          <p>Jl. Gereja Dame, Lumban Matio, Hutatoruan I, Tarutung</p>
+          <p>📧: dameulos47@gmail.com | 📞: 081262804500</p>
+        </div>
+        <div class="invoice-label">INVOICE</div>
       </div>
 
-      <h2 class="font-bold text-center mb-2">Struk Transaksi</h2>
-      <p class="text-center text-sm mb-4">Terima kasih telah berbelanja!</p>
-
-      <div class="mb-4 text-sm">
-        <p><strong>Nama Customer:</strong> ${
-          data.transaksi_nama_customer || "-"
-        }</p>
-        <p><strong>No Telepon:</strong> ${
-          data.transaksi_nomor_telepon || "-"
-        }</p>
-        <p><strong>Metode Pembayaran:</strong> ${
-          data.transaksi_cara_bayar || "-"
-        }</p>
-        <p><strong>Jumlah Barang:</strong> ${
-          data.transaksi_jumlah_barang ||
-          items.reduce((acc, i) => acc + i.transaksidetail_jumlah_barang, 0)
-        }</p>
-        <p><strong>Total:</strong> Rp. ${formatRupiahSubtotal(
-          parseFloat(data.transaksi_total_harga)
-        )}</p>
-        <p><strong>Waktu:</strong> ${formatTanggal(data.created_at)}</p>
+      <div class="info">
+        <p><strong>Nama Customer :</strong> ${data.transaksi_nama_customer || "-"}</p>
+        <p><strong>No Telepon :</strong> ${data.transaksi_nomor_telepon || "-"}</p>
+        <p><strong>Tanggal Pemesanan :</strong> ${formatTanggal(data.created_at)}</p>
+        <p><strong>Metode Pembayaran :</strong> ${data.transaksi_cara_bayar || "-"}</p>
       </div>
 
-      <div class="my-4">
-        <h3 class="font-semibold mb-2">Detail Barang:</h3>
-        <table class="table">
-          <thead>
+      <h3 style="margin-top: 30px;">Rincian Pembelian</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Harga</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items
+            .map(
+              (item, index) => `
             <tr>
-              <th>Nama</th>
-              <th class="text-left">Qty</th>
-              <th class="text-left">Harga</th>
-              <th class="text-left">Total</th>
+              <td>${index + 1}</td>
+              <td>${item.barang_kode || "-"}</td>
+              <td>${item.barangentry_nama || "-"}</td>
+              <td>${item.transaksidetail_jumlah_barang} pcs</td>
+              <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
+              <td>${formatRupiah(item.transaksidetail_jumlah_barang * item.transaksidetail_harga_barang)}</td>
             </tr>
-          </thead>
-          <tbody>
-            ${items
-              .map(
-                (item) => `
-              <tr>
-                <td>${item.barangentry_nama}</td>
-                <td class="text-left">${item.transaksidetail_jumlah_barang}</td>
-                <td class="text-left">${formatRupiah(
-                  item.transaksidetail_harga_barang
-                )}</td>
-                <td class="text-left">${formatRupiah(
-                  item.transaksidetail_jumlah_barang *
-                    item.transaksidetail_harga_barang
-                )}</td>
-              </tr>
-            `
-              )
-              .join("")}
-          </tbody>
-        </table>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+
+      <div class="total">Total : ${formatRupiah(data.transaksi_total_harga)}</div>
+
+      <div class="footer">
+        <p>Terima kasih telah menjadi bagian dari pelanggan kami.</p>
+        <p>Selamat menggunakan produk Anda!</p>
       </div>
-
-      <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-top: 20px;">
-  <div>Jumlah Barang: ${items.reduce(
-    (acc, i) => acc + i.transaksidetail_jumlah_barang,
-    0
-  )}</div>
-  <div>Subtotal: Rp. ${formatRupiahSubtotal(
-    parseFloat(data.transaksi_total_harga)
-  )}</div>
-</div>
-
     </div>
 
     <script>
-      window.onload = function() {
+      window.onload = function () {
         window.print();
       };
     <\/script>
