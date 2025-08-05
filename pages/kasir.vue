@@ -69,34 +69,38 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in datatableItems" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50' ">
+        <tr
+          v-for="(item, index) in datatableItems"
+          :key="index"
+          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+        >
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">{{ item.barangentry_nama }}</td>
           <td class="px-4 py-2">
-          <template v-if="item.quantity > 1">
-            <input
-              type="number"
-              v-model.number="item.quantity"
-              class="w-16 border px-2 py-1"
-              min="1"
-            />
-          </template>
-          <template v-else>
-            {{ item.quantity }}
-          </template>
+            <template v-if="item.quantity > 1">
+              <input
+                type="number"
+                v-model.number="item.quantity"
+                class="w-16 border px-2 py-1"
+                min="1"
+              />
+            </template>
+            <template v-else>
+              {{ item.quantity }}
+            </template>
           </td>
           <td class="px-4 py-2">
-          <template v-if="item.quantity > 1">
-            <input
-              type="number"
-              v-model.number="item.barangentry_harga_net"
-              class="w-28 border rounded px-2 py-1"
-              min="0"
-            />
-          </template>
-          <template v-else>
-            {{ item.barangentry_harga_net }}
-          </template>
+            <template v-if="item.quantity > 1">
+              <input
+                type="text"
+                :value="formatRupiahInput(Number(item.barangentry_harga_net))"
+                @input="updateHargaNet($event, item)"
+                class="w-28 border rounded px-2 py-1 text-right"
+              />
+            </template>
+            <template v-else>
+              {{ formatRupiahInput(item.barangentry_harga_net) }}
+            </template>
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="px-4 py-2">
@@ -249,7 +253,10 @@
   <ModalLive :visible="openModalLive" @close="openModalLive = false" />
 
   <!-- Modal PreOrder -->
-  <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
+  <ModalPreOrder
+    :visible="openModalPreOrder"
+    @close="openModalPreOrder = false"
+  />
 </template>
 
 <script setup>
@@ -259,8 +266,8 @@ import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import { TrashIcon } from "@heroicons/vue/24/outline";
-import ModalLive from '../components/ModalLive.vue';
-import ModalPreOrder from '../components/ModalPreOrder.vue';
+import ModalLive from "../components/ModalLive.vue";
+import ModalPreOrder from "../components/ModalPreOrder.vue";
 
 const searchQueryCustomer = ref("");
 const searchQueryPhone = ref("");
@@ -317,11 +324,11 @@ function parseRupiah(value) {
 const formatTanggalHold = (dateStr) => {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  const optionsTanggal = { day: '2-digit', month: 'long', year: 'numeric' };
-  const tanggal = date.toLocaleDateString('id-ID', optionsTanggal);
+  const optionsTanggal = { day: "2-digit", month: "long", year: "numeric" };
+  const tanggal = date.toLocaleDateString("id-ID", optionsTanggal);
 
-  const jam = String(date.getHours()).padStart(2, '0');
-  const menit = String(date.getMinutes()).padStart(2, '0');
+  const jam = String(date.getHours()).padStart(2, "0");
+  const menit = String(date.getMinutes()).padStart(2, "0");
   const waktu = `${jam}.${menit}`;
 
   return `${tanggal} • ${waktu} WIB`;
@@ -572,10 +579,14 @@ async function checkoutProcess() {
         const barangRes = await axios.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
+        const kodeBarang = await axios.get(`${url.value}/api/codebarang/`+barangRes.data.data.barangentry_code_id)
+        console.log('z',kodeBarang.data.code_nama);
+        
         return {
           ...detail,
           barangentry_nama:
             barangRes.data.data.barangentry_nama || "Tidak Diketahui",
+          barangentry_code: kodeBarang.data.code_nama,
         };
       })
     );
@@ -666,6 +677,16 @@ function removeItem(index) {
   });
 }
 
+function formatRupiahInput(angka) {
+  if (angka === null || angka === undefined) return '';
+  return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function updateHargaNet(event, item) {
+  const value = event.target.value.replace(/[^\d]/g, '');
+  item.barangentry_harga_net = parseInt(value) || 0;
+}
+
 const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
@@ -685,7 +706,7 @@ const fetchDataByBarcode = async (code) => {
       } else {
         datatableItems.value.push({
           barangentry_nama: item.barangentry_nama,
-          quantity: 1,
+          quantity: item.barangentry_jumlah_barang,
           barangentry_harga_net: item.barangentry_harga_net,
           isEditing: false,
           code_nama: code,
@@ -835,10 +856,18 @@ function printToNewTab(data, items) {
       </div>
 
       <div class="info">
-        <p><strong>Nama Customer :</strong> ${data.transaksi_nama_customer || "-"}</p>
-        <p><strong>No Telepon :</strong> ${data.transaksi_nomor_telepon || "-"}</p>
-        <p><strong>Tanggal Pemesanan :</strong> ${formatTanggal(data.created_at)}</p>
-        <p><strong>Metode Pembayaran :</strong> ${data.transaksi_cara_bayar || "-"}</p>
+        <p><strong>Nama Customer :</strong> ${
+          data.transaksi_nama_customer || "-"
+        }</p>
+        <p><strong>No Telepon :</strong> ${
+          data.transaksi_nomor_telepon || "-"
+        }</p>
+        <p><strong>Tanggal Pemesanan :</strong> ${formatTanggal(
+          data.created_at
+        )}</p>
+        <p><strong>Metode Pembayaran :</strong> ${
+          data.transaksi_cara_bayar || "-"
+        }</p>
       </div>
 
       <h3 style="margin-top: 30px;">Rincian Pembelian</h3>
@@ -859,11 +888,14 @@ function printToNewTab(data, items) {
               (item, index) => `
             <tr>
               <td>${index + 1}</td>
-              <td>${item.barang_kode || "-"}</td>
+              <td>${item.barangentry_code || "-"}</td>
               <td>${item.barangentry_nama || "-"}</td>
               <td>${item.transaksidetail_jumlah_barang} pcs</td>
               <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
-              <td>${formatRupiah(item.transaksidetail_jumlah_barang * item.transaksidetail_harga_barang)}</td>
+              <td>${formatRupiah(
+                item.transaksidetail_jumlah_barang *
+                  item.transaksidetail_harga_barang
+              )}</td>
             </tr>
           `
             )
@@ -871,7 +903,9 @@ function printToNewTab(data, items) {
         </tbody>
       </table>
 
-      <div class="total">Total : ${formatRupiah(data.transaksi_total_harga)}</div>
+      <div class="total">Total : ${formatRupiah(
+        data.transaksi_total_harga
+      )}</div>
 
       <div class="footer">
         <p>Terima kasih telah menjadi bagian dari pelanggan kami.</p>
@@ -982,7 +1016,7 @@ watch(searchHold, () => {
   animation: spinner 0.6s linear infinite;
 }
 
-.transition-slide{
+.transition-slide {
   font-size: 12px;
 }
 @keyframes spinner {

@@ -398,58 +398,45 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Modal:</label>
-            <input
+            <!-- <input
               v-model="selectedBarang.barangentry_modal"
               type="number"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
-            />
+            /> -->
+            <input
+                type="text"
+                :value="formatRupiah2(selectedBarang.barangentry_modal)"
+                @input="updateModal($event.target.value)"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan harga"
+              />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
             <input
-              v-model="selectedBarang.barangentry_price_tag"
-              type="number"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
+              type="text"
+              :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
+              @input="updatePriceTag($event.target.value)"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Masukkan harga"
             />
-            <!-- <div class="flex">
-              <div
-                class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
-              >
-                Rp
-              </div>
-              <input
-                :value="formattedPriceTag"
-                @input="onInputPriceTag"
-                type="text"
-                class="w-full border px-3 py-2"
-                placeholder="Masukkan Harga Price Tag"
-              />
-            </div> -->
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
-            <input
+            <!-- <input
               v-model="selectedBarang.barangentry_harga_net"
               type="number"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
+            /> -->
+            <input
+              type="text"
+              :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
+              @input="updateHargaNet($event.target.value)"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Masukkan harga"
             />
-            <!-- <div class="flex">
-              <div
-                class="bg-gray-100 border rounded-l-md px-3 flex items-center text-sm"
-              >
-                Rp
-              </div>
-              <input
-                :value="formattedHargaNet"
-                @input="onInputHargaNet"
-                type="text"
-                class="w-full border px-3 py-2"
-                placeholder="Masukkan Harga Terjual"
-              />
-            </div> -->
           </div>
 
           <div>
@@ -773,34 +760,26 @@ function formatTanggal(tanggal) {
   }).format(date);
 }
 
-function formatRupiah2(value) {
-  const number = parseInt(value?.toString().replace(/\D/g, '') || '')
-  if (isNaN(number)) return ''
+const formatRupiah2 = (value) => {
+  if (!value && value !== 0) return ''
+  const number = parseInt(value.toString().replace(/\D/g, ''), 10)
   return number.toLocaleString('id-ID')
 }
 
-function parseRupiah(value) {
-  return value?.toString().replace(/\D/g, '') || ''
+const updatePriceTag = (val) => {
+  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
+  selectedBarang.value.barangentry_price_tag = numericValue
 }
 
-// Saat input price tag
-function onInputPriceTag(e) {
-  const raw = parseRupiah2(e.target.value)
-  selectedBarang.value.barangentry_price_tag = raw
+const updateModal = (val) => {
+  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
+  selectedBarang.value.barangentry_modal = numericValue
 }
 
-function onInputHargaNet(e) {
-  const raw = parseRupiah2(e.target.value)
-  selectedBarang.value.barangentry_harga_net = raw
+const updateHargaNet = (val) => {
+  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
+  selectedBarang.value.barangentry_harga_net = numericValue
 }
-
-const formattedPriceTag = computed(() =>
-  formatRupiah(selectedBarang.value.barangentry_price_tag)
-)
-const formattedHargaNet = computed(() =>
-  formatRupiah(selectedBarang.value.barangentry_harga_net)
-)
-
 
 async function getListBarangTemp() {
   try {
@@ -941,9 +920,9 @@ async function handleSearch() {
 
     if (!code) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Kode tidak ditemukan',
-        text: 'Kode tidak ditemukan dari server.',
+        icon: "warning",
+        title: "Kode tidak ditemukan",
+        text: "Kode tidak ditemukan dari server.",
       });
       return;
     }
@@ -958,17 +937,17 @@ async function handleSearch() {
 
     if (filteredBarang.value.length === 0) {
       Swal.fire({
-        icon: 'info',
-        title: 'Barang tidak ditemukan',
-        text: 'Barang tidak ditemukan di daftar.',
+        icon: "info",
+        title: "Barang tidak ditemukan",
+        text: "Barang tidak ditemukan di daftar.",
       });
     }
   } catch (error) {
     console.error("Gagal mencari data kode:", error);
     Swal.fire({
-      icon: 'error',
-      title: 'Terjadi kesalahan',
-      text: 'Terjadi kesalahan saat mencari kode.',
+      icon: "error",
+      title: "Terjadi kesalahan",
+      text: "Terjadi kesalahan saat mencari kode.",
     });
   }
 }
@@ -1143,7 +1122,7 @@ button {
   background-color: #7df67b;
 }
 
-.btn-reset-pencarian{
+.btn-reset-pencarian {
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
