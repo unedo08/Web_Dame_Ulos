@@ -248,14 +248,14 @@
                   <button
                     v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
-                    @click="openModalEditStock(barang.barangentry_id)"
+                    @click="openModalEditBarang(barang.barangentry_id)"
                   >
                     Edit
                   </button>
                   <button
                     v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
-                    @click="tambahStock(barang.barangentry_id)"
+                    @click="openModalTambahStock(barang.barangentry_id)"
                   >
                     + Stock
                   </button>
@@ -405,12 +405,12 @@
               placeholder="..."
             /> -->
             <input
-                type="text"
-                :value="formatRupiah2(selectedBarang.barangentry_modal)"
-                @input="updateModal($event.target.value)"
-                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                placeholder="Masukkan harga"
-              />
+              type="text"
+              :value="formatRupiah2(selectedBarang.barangentry_modal)"
+              @input="updateModal($event.target.value)"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Masukkan harga"
+            />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
@@ -675,10 +675,10 @@
       class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50"
     >
       <div class="bg-white p-6 rounded-md w-80 shadow-md">
-        <h2 class="text-lg font-semibold mb-4">Edit Stock</h2>
+        <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
 
         <label class="block text-sm font-medium text-gray-700 mb-1"
-          >Jumlah</label
+          >Jumlah <span style="color: red">*</span></label
         >
         <input
           v-model="editJumlah"
@@ -703,6 +703,12 @@
         </div>
       </div>
     </div>
+    <EditBarangReady
+      :show="showEditModal"
+      :id="selectedId"
+      @close="showEditModal = false"
+      @saved="loadData"
+    />
 
     <!-- </div> -->
   </div>
@@ -711,6 +717,7 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import BaseModal from "../components/Modal.vue";
+import EditBarangReady from '../components/ModalEditBarang.vue'
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -722,9 +729,10 @@ const showModalAddSize = ref(false);
 const selectedBarang = ref({});
 const url = ref("");
 const showModalEditStock = ref(false);
-const editJumlah = ref(0);
+const editJumlah = ref(1);
 
-const showModalAddStock = ref(false);
+const showEditModal = ref(false)
+const selectedId = ref(null)
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -760,26 +768,39 @@ function formatTanggal(tanggal) {
   }).format(date);
 }
 
-const formatRupiah2 = (value) => {
-  if (!value && value !== 0) return ''
-  const number = parseInt(value.toString().replace(/\D/g, ''), 10)
-  return number.toLocaleString('id-ID')
+const openModalEditBarang = (id) => {
+  selectedId.value = id
+  showEditModal.value = true
 }
+
+const loadData = async () => {
+  try {
+    await getListBarangTemp();
+  } catch (err) {
+    console.error("Gagal me-reload data:", err);
+  }
+};
+
+const formatRupiah2 = (value) => {
+  if (!value && value !== 0) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""), 10);
+  return number.toLocaleString("id-ID");
+};
 
 const updatePriceTag = (val) => {
-  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
-  selectedBarang.value.barangentry_price_tag = numericValue
-}
+  const numericValue = parseInt(val.replace(/\D/g, ""), 10) || 0;
+  selectedBarang.value.barangentry_price_tag = numericValue;
+};
 
 const updateModal = (val) => {
-  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
-  selectedBarang.value.barangentry_modal = numericValue
-}
+  const numericValue = parseInt(val.replace(/\D/g, ""), 10) || 0;
+  selectedBarang.value.barangentry_modal = numericValue;
+};
 
 const updateHargaNet = (val) => {
-  const numericValue = parseInt(val.replace(/\D/g, ''), 10) || 0
-  selectedBarang.value.barangentry_harga_net = numericValue
-}
+  const numericValue = parseInt(val.replace(/\D/g, ""), 10) || 0;
+  selectedBarang.value.barangentry_harga_net = numericValue;
+};
 
 async function getListBarangTemp() {
   try {
@@ -958,7 +979,7 @@ function resetSearch() {
   searchCode.value = "";
 }
 
-const openModalEditStock = (barang) => {
+const openModalTambahStock = (barang) => {
   selectedBarang.value = barang;
   editJumlah.value = barang.jumlah || 0;
   showModalEditStock.value = true;
@@ -1054,6 +1075,12 @@ const paginatedPages = computed(() => {
   }
 
   return pages;
+});
+
+watch(editJumlah, (val) => {
+  if (val < 1 || !val) {
+    editJumlah.value = 1;
+  }
 });
 
 watch(activeTab, () => {

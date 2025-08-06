@@ -1,0 +1,122 @@
+<template>
+  <div
+    v-if="show"
+    class="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center"
+  >
+    <div class="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Detail Transaksi</h2>
+        <button
+          @click="$emit('close')"
+          class="text-gray-500 hover:text-red-500 text-xl"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div v-if="loading" class="text-center py-6">Memuat data...</div>
+      <div v-else>
+        <table class="w-full text-sm border">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="p-2 border">#</th>
+              <th class="p-2 border">Kode Barang</th>
+              <th class="p-2 border">Nama Barang</th>
+              <th class="p-2 border">Jumlah</th>
+              <th class="p-2 border">Harga</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) in detailBarang"
+              :key="item.transaksidetail_id"
+              class="text-center"
+            >
+              <td class="p-2 border">{{ index + 1 }}</td>
+              <td class="p-2 border">{{ item.kode_barang }}</td>
+              <td class="p-2 border">{{ item.nama_barang }}</td>
+              <td class="p-2 border">
+                {{ item.transaksidetail_jumlah_barang }} pcs
+              </td>
+              <td class="p-2 border">
+                Rp {{ formatNumber(item.transaksidetail_harga_barang) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watchEffect } from "vue";
+import axios from "axios";
+import { useRuntimeConfig } from "#imports";
+
+const props = defineProps({
+  show: Boolean,
+  id: [Number, String],
+});
+
+const emit = defineEmits(["close"]);
+
+const detailBarang = ref([]);
+const loading = ref(false);
+const url = useRuntimeConfig().public.apiBase;
+
+const fetchDetail = async () => {
+  if (!props.id) return;
+
+  loading.value = true;
+  detailBarang.value = [];
+
+  try {
+    const res = await axios.get(`${url}/api/pengiriman-barang/${props.id}`);
+    const transaksi_id = res.data.data.pengirimanBarang_transaksi_id;
+
+    const transaksi = await axios.get(`${url}/api/transaksi/${transaksi_id}`);
+    const detailTransaksi = transaksi.data.data.details;
+
+    const detailPromises = detailTransaksi.map((detail) =>
+      axios.get(`${url}/api/transaksi-detail/${detail.transaksidetail_id}`)
+    );
+    const detailResults = await Promise.all(detailPromises);
+
+    const entryBarangPromises = detailResults.map((res) =>
+      axios.get(
+        `${url}/api/entrybarang/${res.data.data.transaksidetail_barang_id}`
+      )
+    );
+    const entryBarangResults = await Promise.all(entryBarangPromises);
+
+    const codeBarangPromises = entryBarangResults.map((res) =>
+      axios.get(`${url}/api/codebarang/${res.data.data.barangentry_code_id}`)
+    );
+    const codeBarangResults = await Promise.all(codeBarangPromises);
+
+    detailBarang.value = detailResults.map((res, i) => {
+      return {
+        ...res.data.data,
+        kode_barang: codeBarangResults[i].data.code_nama,
+        nama_barang: entryBarangResults[i].data.data.barangentry_nama
+      };
+    });
+  } catch (error) {
+    console.error("Gagal mengambil detail transaksi:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const formatNumber = (value) => {
+  if (!value) return "0";
+  return Number(value).toLocaleString("id-ID");
+};
+
+watchEffect(() => {
+  if (props.show && props.id) {
+    fetchDetail();
+  }
+});
+</script>
