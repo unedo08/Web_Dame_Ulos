@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
   >
     <div class="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
@@ -16,14 +16,14 @@
 
       <div v-if="loading" class="text-center py-6">Memuat data...</div>
       <div v-else>
-        <table class="w-full text-sm border">
+        <table class="datatable w-full text-sm">
           <thead>
             <tr class="bg-gray-100">
-              <th class="p-2 border">#</th>
-              <th class="p-2 border">Kode Barang</th>
-              <th class="p-2 border">Nama Barang</th>
-              <th class="p-2 border">Jumlah</th>
-              <th class="p-2 border">Harga</th>
+              <th class="p-2">#</th>
+              <th class="p-2">Kode Barang</th>
+              <th class="p-2">Nama Barang</th>
+              <th class="p-2">Jumlah</th>
+              <th class="p-2">Harga</th>
             </tr>
           </thead>
           <tbody>
@@ -32,13 +32,13 @@
               :key="item.transaksidetail_id"
               class="text-center"
             >
-              <td class="p-2 border">{{ index + 1 }}</td>
-              <td class="p-2 border">{{ item.kode_barang }}</td>
-              <td class="p-2 border">{{ item.nama_barang }}</td>
-              <td class="p-2 border">
+              <td class="p-2">{{ index + 1 }}</td>
+              <td class="p-2">{{ item.kode_barang }}</td>
+              <td class="p-2">{{ item.nama_barang }}</td>
+              <td class="p-2">
                 {{ item.transaksidetail_jumlah_barang }} pcs
               </td>
-              <td class="p-2 border">
+              <td class="p-2">
                 Rp {{ formatNumber(item.transaksidetail_harga_barang) }}
               </td>
             </tr>
@@ -48,6 +48,30 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.datatable th,
+.datatable td {
+  padding: 10px;
+  /* border: 1px solid #ddd; */
+  text-align: left;
+  font-size: 12px;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
+}
+
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+</style>
 
 <script setup>
 import { ref, watchEffect } from "vue";
@@ -72,10 +96,9 @@ const fetchDetail = async () => {
   detailBarang.value = [];
 
   try {
-    const res = await axios.get(`${url}/api/pengiriman-barang/${props.id}`);
-    const transaksi_id = res.data.data.pengirimanBarang_transaksi_id;
+    console.log('asdsa', props.id);
 
-    const transaksi = await axios.get(`${url}/api/transaksi/${transaksi_id}`);
+    const transaksi = await axios.get(`${url}/api/transaksi/${props.id}`);
     const detailTransaksi = transaksi.data.data.details;
 
     const detailPromises = detailTransaksi.map((detail) =>

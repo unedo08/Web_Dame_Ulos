@@ -22,7 +22,7 @@
         class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
         @click="openModalLive = true"
       >
-        Live
+        Online
       </button>
       <button
         class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
@@ -125,7 +125,7 @@
       class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform"
     >
       <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Pending List</h2>
+        <h2 class="text-md font-semibold">Pending List</h2>
         <button
           @click="openModalHold = false"
           class="text-gray-600 hover:text-red-500 text-xl font-bold"
@@ -139,7 +139,7 @@
           v-model="searchHold"
           type="text"
           placeholder="Cari nama customer..."
-          class="w-full border px-3 py-2 rounded mb-4"
+          class="w-full border border-gray-300 px-3 py-2 rounded mb-4"
         />
         <div v-if="filteredList.length === 0" class="text-gray-500">
           Tidak ada transaksi hold saat ini.
@@ -148,7 +148,7 @@
           <div
             v-for="(item, index) in paginatedList"
             :key="item.transaksi_id"
-            class="relative p-3 border rounded-md bg-[#F7F7F7] flex justify-between items-center"
+            class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
             @click="loadHoldTransaction(item.transaksi_id)"
           >
             <div class="pr-8">
@@ -757,7 +757,8 @@ function printToNewTab(data, items) {
     <style>
       body {
         font-family: Arial, sans-serif;
-        margin: 0; padding: 40px;
+        margin: 0;
+        padding: 40px;
         background: #fff;
         color: #000;
       }
@@ -769,65 +770,73 @@ function printToNewTab(data, items) {
       }
 
       .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 2px solid #000;
-        padding-bottom: 10px;
+        text-align: center;
         margin-bottom: 20px;
       }
 
       .logo {
-        width: 100px;
+        width: 100%;
+        max-width: 800px;
       }
 
-      .company-details {
-        flex: 1;
-        margin-left: 20px;
-      }
-
-      .company-details h2 {
-        margin: 0;
-        color: #750000;
-      }
-
-      .invoice-label {
-        background-color: #750000;
-        color: #fff;
-        padding: 8px 16px;
-        font-weight: bold;
-        border-radius: 5px;
-        font-size: 16px;
-      }
-
-      .info p {
-        margin: 4px 0;
+      .info {
+        margin-top: 10px;
         font-size: 14px;
+      }
+
+      .info-row {
+        display: flex;
+        margin-bottom: 4px;
+      }
+
+      .info-label {
+        width: 180px;
+        font-weight: normal;
+      }
+
+      .info-separator {
+        width: 10px;
+      }
+
+      .info-value {
+        font-weight: bold;
+        flex: 1;
+      }
+
+      h3 {
+        margin-top: 30px;
+        font-size: 15px;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
         font-size: 14px;
+        margin-top: 12px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      thead {
+        background-color: #f9f9f9;
+        font-weight: bold;
       }
 
       th, td {
-        border: 1px solid #ccc;
         padding: 8px;
         text-align: left;
       }
 
-      th {
-        background-color: #f3f3f3;
-        font-weight: bold;
+      tbody tr:not(:last-child) {
+        border-bottom: 1px dashed #ccc;
       }
 
-      .total {
-        text-align: right;
+      .total-row td {
         font-weight: bold;
-        padding-top: 10px;
-        font-size: 16px;
+        text-align: right;
+        padding-top: 12px;
+        border-top: 1px solid #ddd;
       }
 
       .footer {
@@ -838,39 +847,43 @@ function printToNewTab(data, items) {
       }
 
       @media print {
-        body { margin: 0; padding: 0; }
+        body {
+          margin: 0;
+          padding: 0;
+        }
       }
     </style>
   </head>
   <body>
     <div class="print-area">
       <div class="header">
-        <img src="/image/DameUlosLogo2.png" alt="Logo" class="logo" />
-        <div class="company-details">
-          <h2>DAME ULOS</h2>
-          <p>Ulos dan Mandar Tarutung</p>
-          <p>Jl. Gereja Dame, Lumban Matio, Hutatoruan I, Tarutung</p>
-          <p>📧: dameulos47@gmail.com | 📞: 081262804500</p>
-        </div>
-        <div class="invoice-label">INVOICE</div>
+        <img src="/image/DameUlosHeaderPrint.jpg" alt="Logo" class="logo" />
       </div>
 
       <div class="info">
-        <p><strong>Nama Customer :</strong> ${
-          data.transaksi_nama_customer || "-"
-        }</p>
-        <p><strong>No Telepon :</strong> ${
-          data.transaksi_nomor_telepon || "-"
-        }</p>
-        <p><strong>Tanggal Pemesanan :</strong> ${formatTanggal(
-          data.created_at
-        )}</p>
-        <p><strong>Metode Pembayaran :</strong> ${
-          data.transaksi_cara_bayar || "-"
-        }</p>
+        <div class="info-row">
+          <div class="info-label">Nama Customer</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_nama_customer || "-"}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">No Telepon</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_nomor_telepon || "-"}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tanggal Pemesanan</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${formatTanggal(data.created_at)}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Metode Pembayaran</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_cara_bayar || "-"}</div>
+        </div>
       </div>
 
-      <h3 style="margin-top: 30px;">Rincian Pembelian</h3>
+      <h3>Rincian Pembelian</h3>
       <table>
         <thead>
           <tr>
@@ -886,26 +899,26 @@ function printToNewTab(data, items) {
           ${items
             .map(
               (item, index) => `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${item.barangentry_code || "-"}</td>
-              <td>${item.barangentry_nama || "-"}</td>
-              <td>${item.transaksidetail_jumlah_barang} pcs</td>
-              <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
-              <td>${formatRupiah(
-                item.transaksidetail_jumlah_barang *
-                  item.transaksidetail_harga_barang
-              )}</td>
-            </tr>
-          `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.barangentry_code || "-"}</td>
+                  <td>${item.barangentry_nama || "-"}</td>
+                  <td>${item.transaksidetail_jumlah_barang} pcs</td>
+                  <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
+                  <td>${formatRupiah(
+                    item.transaksidetail_jumlah_barang *
+                      item.transaksidetail_harga_barang
+                  )}</td>
+                </tr>
+              `
             )
             .join("")}
+          <tr class="total-row">
+            <td colspan="5">Total :</td>
+            <td>${formatRupiah(data.transaksi_total_harga)}</td>
+          </tr>
         </tbody>
       </table>
-
-      <div class="total">Total : ${formatRupiah(
-        data.transaksi_total_harga
-      )}</div>
 
       <div class="footer">
         <p>Terima kasih telah menjadi bagian dari pelanggan kami.</p>

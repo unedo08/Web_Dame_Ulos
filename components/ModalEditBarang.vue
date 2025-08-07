@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center">
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
@@ -192,5 +192,8 @@ watch(() => props.show, (newVal) => {
 .form-control:focus {
   border-color: #06b6d4;
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
+}
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
   >
     <div
       class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative"
@@ -518,5 +518,9 @@ select:disabled {
   background-color: #f3f4f6 !important;
   color: #6b7280 !important;
   border-color: #e5e7eb !important;
+}
+
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>

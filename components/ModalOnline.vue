@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 backdrop-blur-sm bg-white/30 z-40 flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
   >
     <div
       class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-50"
@@ -191,3 +191,9 @@ function submitForm() {
   emit('submit-online', {...form});
 }
 </script>
+
+<style scoped>
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+</style>

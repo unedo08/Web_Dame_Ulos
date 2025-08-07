@@ -672,7 +672,7 @@
     <!-- Modal Edit Stock -->
     <div
       v-if="showModalEditStock"
-      class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50"
+      class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
     >
       <div class="bg-white p-6 rounded-md w-80 shadow-md">
         <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
