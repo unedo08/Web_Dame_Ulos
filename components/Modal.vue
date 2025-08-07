@@ -53,12 +53,25 @@
           <div
             v-for="item in priceTagData"
             :key="item.barangentry_id"
-            style="page-break-after: always"
+            style="
+              page-break-after: always;
+              font-family: Arial, sans-serif;
+              color: #541b1a;
+              border: 1px solid #ccc;
+              padding: 24px;
+              max-width: 800px;
+              margin: auto;
+            "
           >
-            <div style="display: flex; gap: 10px">
+            <div style="display: flex; gap: 40px">
+              <!-- KIRI -->
               <div style="flex: 1">
-                <h1>{{ item.data.barangentry_nama }}</h1>
-                <p class="text-xl font-semibold mb-4">Horas!</p>
+                <h2
+                  style="font-weight: bold; font-size: 16px; margin-bottom: 6px"
+                >
+                  {{ item.data.barangentry_nama }}
+                </h2>
+                <p style="font-weight: bold; margin-bottom: 8px">Horas!</p>
                 <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
                 <p>
                   Dengan membeli dan memiliki salah satu karya terbaik dari
@@ -69,140 +82,97 @@
                   <strong>Menjaga Kehidupan dan Tradisi Batak</strong>.
                 </p>
 
-                <p class="mt-4">Salam Hangat,</p>
+                <p style="margin-top: 16px">Salam Hangat,</p>
                 <p><em>Artisan Dame Ulos</em></p>
 
-                <table
-                  style="
-                    margin-top: 10px;
-                    width: 100%;
-                    border-collapse: collapse;
-                    font-size: 0.9rem;
-                  "
-                >
+                <table style="margin-top: 16px; width: 100%; font-size: 12px; color:#541b1a">
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      Tahun Pembuatan
-                    </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      {{ new Date(item.data.created_at).getFullYear() }}
-                    </td>
+                    <td style="font-weight: bold;">Tahun Pembuatan</td>
+                    <td>{{ new Date(item.data.created_at).getFullYear() }}</td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      Ukuran Tenun
-                    </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
+                    <td style="font-weight: bold">Ukuran Tenun</td>
+                    <td>
                       {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                      {{ item.data.barangentry_ukuran_mandar ?? "-" }}
+                      {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
                     </td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      Warna
-                    </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      {{ item.data.barangentry_warna }}
-                    </td>
+                    <td style="font-weight: bold">Warna</td>
+                    <td>{{ item.data.barangentry_warna }}</td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      Maker
-                    </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      Dame Ulos Collective
-                    </td>
+                    <td style="font-weight: bold">Maker</td>
+                    <td>Dame Ulos Collective</td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        padding-left: 1.5rem;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      a. Penenun:
+                    <td style="padding-left: 12px; font-weight: bold">
+                      a. Penenun
                     </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      {{ item.data.barangentry_nama_penenun }}
-                    </td>
+                    <td>{{ item.data.barangentry_nama_penenun }}</td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        padding-left: 1.5rem;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      b. Panirat:
+                    <td style="padding-left: 12px; font-weight: bold">
+                      b. Panirat
                     </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      {{ item.data.barangentry_nama_panirat }}
-                    </td>
+                    <td>{{ item.data.barangentry_nama_panirat }}</td>
                   </tr>
                   <tr>
-                    <td
-                      style="
-                        padding: 2px 6px;
-                        padding-left: 1.5rem;
-                        font-weight: bold;
-                        font-size: 12px;
-                      "
-                    >
-                      c. Dyer:
+                    <td style="padding-left: 12px; font-weight: bold">
+                      c. Dyer
                     </td>
-                    <td style="padding: 2px 6px; font-size: 12px">
-                      {{ item.data.barangentry_dryer }}
-                    </td>
+                    <td>{{ item.data.barangentry_dryer }}</td>
                   </tr>
                 </table>
+                <p style="margin-top: 16px; font-weight: bold; font-size: 18px">
+                  {{
+                    new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(item.data.barangentry_price_tag)
+                  }}
+                </p>
               </div>
 
-              <div style="flex: 1">
+              <!-- KANAN -->
+              <div style="flex: 1; font-size: 12px">
                 <p
-                  class="font-bold mb-2"
-                  style="text-align: center; font-weight: 600"
+                  style="
+                    font-weight: bold;
+                    text-align: center;
+                    margin-bottom: 10px;
+                  "
                 >
-                  BAGAIMANA CARA PERAWATAN KAIN TENUN YANG BENAR?
+                  BAGAIMANA CARA PERAWATAN <br />
+                  KAIN TENUN YANG BENAR?
                 </p>
-                <ol class="list-decimal list-inside">
+                <ol
+                  style="
+                    list-style: decimal;
+                    padding-left: 16px;
+                    line-height: 1.6;
+                  "
+                >
                   <li>Ulos tidak bisa dicuci/direndam dengan detergen</li>
                   <li>
                     Setelah dipakai jangan dilipat, cukup digantung dan
                     dianginkan
                   </li>
-                  <li>Jika tidak digunakan lama, jemur kain selama 1 jam</li>
-                  <li>Hindari tempat lembab dan penyimpanan dalam plastik</li>
-                  <li>Khusus kain pewarna tekstil bisa di dry clean</li>
+                  <li>
+                    Jika tidak digunakan dalam waktu lama, jemur selama 1 jam
+                  </li>
+                  <li>Hindari menyimpan di tempat lembab dan dalam plastik</li>
+                  <li>Khusus kain dengan pewarna tekstil dapat di dry clean</li>
                 </ol>
-                <p class="mt-4">Selamat Pakai</p>
+                <p
+                  style="
+                    margin-top: 20px;
+                    font-family: 'Lucida Handwriting', cursive;
+                  "
+                >
+                  Selamat Pakai
+                </p>
               </div>
             </div>
           </div>
