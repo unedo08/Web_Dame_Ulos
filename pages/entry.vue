@@ -573,49 +573,51 @@
                 font-size: 0.9rem;
               "
             >
-              <tr>
-                <td style="padding: 4px 8px; font-weight: bold">
-                  Tahun Pembuatan
-                </td>
-                <td style="padding: 4px 8px">
-                  {{ new Date(item.data.created_at).getFullYear() }}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 4px 8px; font-weight: bold">
-                  Ukuran Tenun
-                </td>
-                <td style="padding: 4px 8px">
-                  {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                  {{ item.data.barangentry_ukuran_mandar ?? "-" }}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 4px 8px; font-weight: bold">Warna</td>
-                <td style="padding: 4px 8px">
-                  {{ item.data.barangentry_warna }}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 4px 8px; font-weight: bold">Maker</td>
-                <td style="padding: 4px 8px">Dame Ulos Collective</td>
-              </tr>
-              <tr>
-                <td style="padding: 4px 8px; padding-left: 1.5rem">
-                  <strong>a. Penenun:</strong>
-                </td>
-                <td style="padding: 4px 8px">
-                  {{ item.data.barangentry_nama_penenun }}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 4px 8px; padding-left: 1.5rem">
-                  <strong>b. Dyer:</strong>
-                </td>
-                <td style="padding: 4px 8px">
-                  {{ item.data.barangentry_dryer }}
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td style="padding: 4px 8px; font-weight: bold">
+                    Tahun Pembuatan
+                  </td>
+                  <td style="padding: 4px 8px">
+                    {{ new Date(item.data.created_at).getFullYear() }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 8px; font-weight: bold">
+                    Ukuran Tenun
+                  </td>
+                  <td style="padding: 4px 8px">
+                    {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
+                    {{ item.data.barangentry_ukuran_mandar ?? "-" }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 8px; font-weight: bold">Warna</td>
+                  <td style="padding: 4px 8px">
+                    {{ item.data.barangentry_warna }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 8px; font-weight: bold">Maker</td>
+                  <td style="padding: 4px 8px">Dame Ulos Collective</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 8px; padding-left: 1.5rem">
+                    <strong>a. Penenun:</strong>
+                  </td>
+                  <td style="padding: 4px 8px">
+                    {{ item.data.barangentry_nama_penenun }}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 8px; padding-left: 1.5rem">
+                    <strong>b. Dyer:</strong>
+                  </td>
+                  <td style="padding: 4px 8px">
+                    {{ item.data.barangentry_dryer }}
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
@@ -881,8 +883,8 @@ async function submitSizeBarang() {
   try {
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
-      barangentry_ukuran_mandar: selectedBarang.value.ukuran_mandar,
-      barangentry_ukuran_ulos: selectedBarang.value.ukuran_ulos,
+      barangentry_ukuran_mandar: String(selectedBarang.value.ukuran_mandar),
+      barangentry_ukuran_ulos: String(selectedBarang.value.ukuran_ulos),
     };
 
     await axios.post(`${url.value}/api/entrybarang/storeSize`, payload);
