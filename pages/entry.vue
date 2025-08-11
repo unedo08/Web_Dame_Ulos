@@ -11,7 +11,7 @@
         <span
           v-if="activeTab === 'wait'"
           class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 90%"
+          style="width: 100%"
         ></span>
       </button>
 
@@ -24,7 +24,20 @@
         <span
           v-if="activeTab === 'ready'"
           class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 90%"
+          style="width: 100%"
+        ></span>
+      </button>
+
+      <button
+        @click="activeTab = 'po'"
+        class="pb-1 text-sm relative"
+        :class="activeTab === 'po' ? 'text-black' : 'text-gray-500'"
+      >
+        List Pre-Order
+        <span
+          v-if="activeTab === 'po'"
+          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 100%"
         ></span>
       </button>
     </div>
@@ -169,6 +182,162 @@
       </div>
     </div>
     <div class="mx-auto" v-show="activeTab === 'ready'">
+      <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
+      <div class="flex flex-wrap justify-end gap-4">
+        <button
+          v-if="isSearchActive"
+          @click="resetSearch"
+          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
+        >
+          Reset Pencarian
+        </button>
+        <button
+          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+          @click="openSearchModal"
+        >
+          🔍 Search
+        </button>
+        <button
+          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+          @click="openModal('priceTag')"
+        >
+          Print Price Tag
+        </button>
+      </div>
+
+      <div class="overflow-x-auto w-full">
+        <table class="datatable w-full rounded-md overflow-hidden text-sm">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Nama Ulos</th>
+              <th class="px-4 py-2 text-left">Warna Ulos</th>
+              <th class="px-4 py-2 text-left">Nama Penenun</th>
+              <th class="px-4 py-2 text-left">Nama Panirat</th>
+              <th class="px-4 py-2 text-left">Dyer</th>
+              <th class="px-4 py-2 text-left">Modal</th>
+              <th class="px-4 py-2 text-left">Price Tag</th>
+              <th class="px-4 py-2 text-left">Harga Net</th>
+              <th class="px-4 py-2 text-left">Jumlah</th>
+              <th class="px-4 py-2 text-left">Acara</th>
+              <th class="px-4 py-2 text-left">Ukuran Mandar</th>
+              <th class="px-4 py-2 text-left">Ukuran Ulos</th>
+              <th class="px-4 py-2 text-left">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="barang in isSearchActive ? filteredBarang : pagination"
+              :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
+            >
+              <td class="px-4 py-2">
+                {{ formatTanggal(barang.created_at) }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
+              <td class="px-4 py-2">{{ barang.barangentry_dryer }}</td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_modal) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_price_tag) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(barang.barangentry_harga_net) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ barang.barangentry_jumlah_barang }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
+              <td class="px-4 py-2">
+                {{ barang.barangentry_ukuran_mandar }}
+              </td>
+              <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+              <td class="px-4 py-2">
+                <div class="flex space-x-3">
+                  <button
+                    v-if="barang.barangentry_jumlah_barang > 1"
+                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
+                    @click="openModalEditBarang(barang.barangentry_id)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    v-if="barang.barangentry_jumlah_barang > 1"
+                    class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
+                    @click="openModalTambahStock(barang.barangentry_id)"
+                  >
+                    + Stock
+                  </button>
+                  <button
+                    class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                    @click="deleteBarang(barang.barangentry_id)"
+                  >
+                    <!-- wait to entry api/entrybarang/getDataWaitForEntry -->
+                    <!-- update stok api/entrybarang/6/updateStok -->
+                    <!-- ready to stok api/entrybarang/getDataReady -->
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-between items-center mt-4 text-xs">
+          <div class="flex items-center space-x-2">
+            <label for="perPage">Tampilkan:</label>
+            <select
+              id="perPage"
+              v-model="itemsPerPage"
+              class="border px-2 py-1 rounded text-xs"
+            >
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option :value="50">50</option>
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === 1"
+              @click="currentPage--"
+            >
+              Sebelumnya
+            </button>
+
+            <button
+              v-for="(page, index) in paginatedPages"
+              :key="index"
+              @click="typeof page === 'number' && (currentPage = page)"
+              :class="[
+                'px-3 py-1 rounded text-xs',
+                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+                page === '...' ? 'cursor-default' : 'cursor-pointer',
+              ]"
+              :disabled="page === '...'"
+            >
+              {{ page }}
+            </button>
+
+            <button
+              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+            >
+              Selanjutnya
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto" v-show="activeTab === 'po'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex flex-wrap justify-end gap-4">
         <button
@@ -804,10 +973,18 @@ const updateHargaNet = (val) => {
 
 async function getListBarangTemp() {
   try {
-    const endpoint =
-      activeTab.value === "wait"
-        ? "/api/entrybarang/getDataWaitForEntry"
-        : "/api/entrybarang/getDataReady";
+    let endpoint = ''
+    if(activeTab.value === "wait"){
+      endpoint = "/api/entrybarang/getDataWaitForEntry"
+    }else if(activeTab.value === "ready"){
+      endpoint = "/api/entrybarang/getDataReady"
+    }else{
+      endpoint = "/api/entrybarang/getDataReady"
+    }
+    // const endpoint =
+    //   activeTab.value === "wait"
+    //     ? "/api/entrybarang/getDataWaitForEntry"
+    //     : "/api/entrybarang/getDataReady";
     const response = await axios.get(`${url.value}${endpoint}`);
 
     listBarang.value = response.data.data;
