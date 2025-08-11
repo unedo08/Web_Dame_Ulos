@@ -86,43 +86,46 @@
                 <p><em>Artisan Dame Ulos</em></p>
 
                 <table style="margin-top: 16px; width: 100%; font-size: 12px; color:#541b1a">
-                  <tr>
-                    <td style="font-weight: bold;">Tahun Pembuatan</td>
-                    <td>{{ new Date(item.data.created_at).getFullYear() }}</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: bold">Ukuran Tenun</td>
-                    <td>
-                      {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                      {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: bold">Warna</td>
-                    <td>{{ item.data.barangentry_warna }}</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: bold">Maker</td>
-                    <td>Dame Ulos Collective</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left: 12px; font-weight: bold">
-                      a. Penenun
-                    </td>
-                    <td>{{ item.data.barangentry_nama_penenun }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left: 12px; font-weight: bold">
-                      b. Panirat
-                    </td>
-                    <td>{{ item.data.barangentry_nama_panirat }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left: 12px; font-weight: bold">
-                      c. Dyer
-                    </td>
-                    <td>{{ item.data.barangentry_dryer }}</td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: bold;">Tahun Pembuatan</td>
+                      <td>{{ new Date(item.data.created_at).getFullYear() }}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold">Ukuran Tenun</td>
+                      <td>
+                        {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
+                        {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold">Warna</td>
+                      <td>{{ item.data.barangentry_warna }}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold">Maker</td>
+                      <td>Dame Ulos Collective</td>
+                    </tr>
+                    <tr>
+                      <td style="padding-left: 12px; font-weight: bold">
+                        a. Penenun
+                      </td>
+                      <td>{{ item.data.barangentry_nama_penenun }}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding-left: 12px; font-weight: bold">
+                        b. Panirat
+                      </td>
+                      <td>{{ item.data.barangentry_nama_panirat }}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding-left: 12px; font-weight: bold">
+                        c. Dyer
+                      </td>
+                      <td>{{ item.data.barangentry_dryer }}</td>
+                    </tr>
+                  </tbody>
+                  
                 </table>
                 <p style="margin-top: 16px; font-weight: bold; font-size: 18px">
                   {{

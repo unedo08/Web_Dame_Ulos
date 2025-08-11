@@ -390,7 +390,7 @@ const openModelPrint = (product) => {
   //   printJumlah.value = 1;
   //   handlePrint();
   // } else {
-  printJumlah.value = product.jenisbarang_jumlah;
+  printJumlah.value = 1;//product.jenisbarang_jumlah;
   isModalPrintOpen.value = true;
   // }
 };
