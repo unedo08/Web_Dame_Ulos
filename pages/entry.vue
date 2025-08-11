@@ -43,8 +43,18 @@
     </div>
     <div class="mx-auto" v-show="activeTab === 'wait'">
       <!-- <div class="judul text-xs font-semibold mb-2">Wait to Entry</div> -->
-      <div class="flex flex-wrap justify-end gap-4">
-        <button
+      <div class="flex items-center justify-between pt-2">
+        <div class="flex-1">
+          <input
+            class="search-box p-2 border rounded-md"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search barang..."
+          />
+        </div>
+        <div class="flex flex-wrap justify-end gap-4">
+          <br />
+          <!-- <button
           v-if="isSearchActive"
           @click="resetSearch"
           class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
@@ -56,25 +66,26 @@
           @click="openSearchModal"
         >
           🔍 Search
-        </button>
-        <button
-          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-          @click="openModal('desc')"
-        >
-          + Desc
-        </button>
-        <button
-          class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-          @click="openModal('size')"
-        >
-          + Size
-        </button>
-        <button
-          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-          @click="openModal('priceTag')"
-        >
-          Print Price Tag
-        </button>
+        </button> -->
+          <button
+            class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+            @click="openModal('desc')"
+          >
+            + Desc
+          </button>
+          <button
+            class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+            @click="openModal('size')"
+          >
+            + Size
+          </button>
+          <button
+            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+            @click="openModal('priceTag')"
+          >
+            Print Price Tag
+          </button>
+        </div>
       </div>
 
       <div class="overflow-x-auto w-full">
@@ -183,26 +194,29 @@
     </div>
     <div class="mx-auto" v-show="activeTab === 'ready'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
-      <div class="flex flex-wrap justify-end gap-4">
-        <button
-          v-if="isSearchActive"
-          @click="resetSearch"
-          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
-        >
-          Reset Pencarian
-        </button>
-        <button
-          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
-          @click="openSearchModal"
-        >
-          🔍 Search
-        </button>
-        <button
-          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-          @click="openModal('priceTag')"
-        >
-          Print Price Tag
-        </button>
+      <div class="flex items-center justify-between pt-2">
+        <div class="flex-1">
+          <input
+            class="search-box p-2 border rounded-md"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search barang..."
+          />
+        </div>
+        <div class="flex flex-wrap justify-end gap-4">
+          <button
+            class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+            @click="openSearchModal"
+          >
+            🔍 Search
+          </button>
+          <button
+            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+            @click="openModal('priceTag')"
+          >
+            Print Price Tag
+          </button>
+        </div>
       </div>
 
       <div class="overflow-x-auto w-full">
@@ -339,26 +353,23 @@
 
     <div class="mx-auto" v-show="activeTab === 'po'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
-      <div class="flex flex-wrap justify-end gap-4">
-        <button
-          v-if="isSearchActive"
-          @click="resetSearch"
-          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
-        >
-          Reset Pencarian
-        </button>
-        <button
-          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
-          @click="openSearchModal"
-        >
-          🔍 Search
-        </button>
-        <button
-          class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-          @click="openModal('priceTag')"
-        >
-          Print Price Tag
-        </button>
+      <div class="flex items-center justify-between pt-2">
+        <div class="flex-1">
+          <input
+            class="search-box p-2 border rounded-md"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search barang..."
+          />
+        </div>
+        <div class="flex flex-wrap justify-end gap-4">
+          <button
+            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+            @click="openModal('priceTag')"
+          >
+            Print Price Tag
+          </button>
+        </div>
       </div>
 
       <div class="overflow-x-auto w-full">
@@ -888,7 +899,7 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import BaseModal from "../components/Modal.vue";
-import EditBarangReady from '../components/ModalEditBarang.vue'
+import EditBarangReady from "../components/ModalEditBarang.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -902,8 +913,8 @@ const url = ref("");
 const showModalEditStock = ref(false);
 const editJumlah = ref(1);
 
-const showEditModal = ref(false)
-const selectedId = ref(null)
+const showEditModal = ref(false);
+const selectedId = ref(null);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -917,6 +928,7 @@ const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const printContent = ref(null);
 const activeTab = ref("wait");
+const searchQuery = ref("");
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -940,9 +952,9 @@ function formatTanggal(tanggal) {
 }
 
 const openModalEditBarang = (id) => {
-  selectedId.value = id
-  showEditModal.value = true
-}
+  selectedId.value = id;
+  showEditModal.value = true;
+};
 
 const loadData = async () => {
   try {
@@ -975,13 +987,13 @@ const updateHargaNet = (val) => {
 
 async function getListBarangTemp() {
   try {
-    let endpoint = ''
-    if(activeTab.value === "wait"){
-      endpoint = "/api/entrybarang/getDataWaitForEntry"
-    }else if(activeTab.value === "ready"){
-      endpoint = "/api/entrybarang/getDataReady"
-    }else{
-      endpoint = "/api/entrybarang/getDataReady"
+    let endpoint = "";
+    if (activeTab.value === "wait") {
+      endpoint = "/api/entrybarang/getDataWaitForEntry";
+    } else if (activeTab.value === "ready") {
+      endpoint = "/api/entrybarang/getDataReady";
+    } else {
+      endpoint = "/api/entrybarang/getDataReady";
     }
     // const endpoint =
     //   activeTab.value === "wait"
@@ -995,10 +1007,22 @@ async function getListBarangTemp() {
   }
 }
 
+const searchFilterData = computed(() => {
+  if (!searchQuery.value) return listBarang.value;
+
+  const q = searchQuery.value.toLowerCase();
+  return listBarang.value.filter((barang) => {
+    return (
+      barang.barangentry_nama?.toLowerCase().includes(q) ||
+      barang.barangentry_warna?.toLowerCase().includes(q)
+    );
+  });
+});
+
 const pagination = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return listBarang.value.slice(start, end);
+  return searchFilterData.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
@@ -1280,7 +1304,8 @@ watch(activeTab, () => {
   border: 1px solid #ccc;
   padding: 10px;
   width: 385px;
-  height: 34px;
+  height: 30px;
+  font-size: 12px;
 }
 
 .datatable {
