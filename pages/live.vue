@@ -142,9 +142,9 @@
             <td>
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
-                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
+                @click="editTranscationLive(pengiriman.pengirimanBarang_id)"
               >
-                Delete
+                Edit
               </button>
             </td>
           </tr>

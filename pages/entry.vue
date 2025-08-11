@@ -290,9 +290,6 @@
                     class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)"
                   >
-                    <!-- wait to entry api/entrybarang/getDataWaitForEntry -->
-                    <!-- update stok api/entrybarang/6/updateStok -->
-                    <!-- ready to stok api/entrybarang/getDataReady -->
                     Delete
                   </button>
                 </div>
@@ -443,9 +440,6 @@
                     class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)"
                   >
-                    <!-- wait to entry api/entrybarang/getDataWaitForEntry -->
-                    <!-- update stok api/entrybarang/6/updateStok -->
-                    <!-- ready to stok api/entrybarang/getDataReady -->
                     Delete
                   </button>
                 </div>
@@ -578,12 +572,6 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Modal:</label>
-            <!-- <input
-              v-model="selectedBarang.barangentry_modal"
-              type="number"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            /> -->
             <input
               type="text"
               :value="formatRupiah2(selectedBarang.barangentry_modal)"
@@ -604,12 +592,6 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
-            <!-- <input
-              v-model="selectedBarang.barangentry_harga_net"
-              type="number"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            /> -->
             <input
               type="text"
               :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
@@ -995,10 +977,6 @@ async function getListBarangTemp() {
     } else {
       endpoint = "/api/entrybarang/getDataReady";
     }
-    // const endpoint =
-    //   activeTab.value === "wait"
-    //     ? "/api/entrybarang/getDataWaitForEntry"
-    //     : "/api/entrybarang/getDataReady";
     const response = await axios.get(`${url.value}${endpoint}`);
 
     listBarang.value = response.data.data;
@@ -1174,12 +1152,6 @@ async function handleSearch() {
       text: "Terjadi kesalahan saat mencari kode.",
     });
   }
-}
-
-function resetSearch() {
-  isSearchActive.value = false;
-  filteredBarang.value = [];
-  searchCode.value = "";
 }
 
 const openModalTambahStock = (barang) => {
@@ -1377,7 +1349,6 @@ button {
   width: 110px;
 }
 
-/* Modal styles */
 .fixed {
   position: fixed;
 }

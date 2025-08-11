@@ -110,17 +110,14 @@ const form = ref({
   ukuran_mandar: '',
 });
 
-// Format angka ke string dengan titik
 const formatNumber = (value) => {
   return Number(value || 0).toLocaleString('id-ID');
 };
 
-// Parsing dari input ke number
 const parseNumber = (val) => {
   return Number(String(val).replace(/\./g, '')) || 0;
 };
 
-// Field terformat
 const formattedModal = ref('');
 const formattedPriceTag = ref('');
 const formattedHargaNet = ref('');
