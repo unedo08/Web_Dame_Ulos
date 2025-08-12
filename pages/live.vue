@@ -388,6 +388,8 @@ const fetchDataPengiriman = async () => {
   try {
     const res = await axios.get(`${url.value}/api/pengiriman-barang`);
     pengirimanData.value = res.data.data;
+    console.log('sss', pengirimanData.value);
+    
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
   }
@@ -403,10 +405,13 @@ const resetForm = () => {
 };
 
 const listpengirimanData = computed(() => {
-  if (!searchQuery.value) return pengirimanData.value;
+  const sorted = [...pengirimanData.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+  if (!searchQuery.value) return sorted;
 
   const q = searchQuery.value.toLowerCase();
-  return pengirimanData.value.filter((pengiriman) => {
+  return sorted.filter((pengiriman) => {
     return (
       pengiriman.pengirimanBarang_nama_penerima?.toLowerCase().includes(q) ||
       pengiriman.pengirimanBarang_akun_penerima?.toLowerCase().includes(q) ||
