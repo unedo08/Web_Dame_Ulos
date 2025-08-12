@@ -387,9 +387,7 @@ onMounted(() => {
 const fetchDataPengiriman = async () => {
   try {
     const res = await axios.get(`${url.value}/api/pengiriman-barang`);
-    pengirimanData.value = res.data.data;
-    console.log('sss', pengirimanData.value);
-    
+    pengirimanData.value = res.data.data;    
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
   }
