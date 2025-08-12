@@ -36,7 +36,7 @@
             v-model="searchQuery"
             type="text"
             class="search-box p-2 rounded-md"
-            placeholder="Cari Pengiriman Barang..."
+            placeholder="Cari data live..."
           />
         </div>
         <div>
@@ -66,7 +66,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(pengiriman, index) in listpengirimanData"
+            v-for="(pengiriman, index) in pagination"
             :key="pengiriman.pengirimanBarang_id"
           >
             <td>{{ index + 1 }}</td>
@@ -94,6 +94,53 @@
           </tr>
         </tbody>
       </table>
+      <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select
+            id="perPage"
+            v-model="itemsPerPage"
+            class="border px-2 py-1 rounded text-xs"
+          >
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            v-for="(page, index) in paginatedPages"
+            :key="index"
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="mx-auto" v-show="activeTab === 'transaction'">
@@ -102,13 +149,13 @@
         v-model="searchQuery"
         type="text"
         class="search-box mb-4"
-        placeholder="Cari Pengiriman Barang..."
+        placeholder="Cari data live..."
       />
       <table class="datatable">
         <thead>
           <tr>
             <th>No</th>
-            <th>Nama Penerimsssa</th>
+            <th>Nama Penerima</th>
             <th>Nama Akun</th>
             <th>Nomor Telepon</th>
             <th>Harga Kirim Barang</th>
@@ -122,7 +169,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(pengiriman, index) in listpengirimanData"
+            v-for="(pengiriman, index) in pagination"
             :key="pengiriman.pengirimanBarang_id"
           >
             <td>{{ index + 1 }}</td>
@@ -150,6 +197,53 @@
           </tr>
         </tbody>
       </table>
+      <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select
+            id="perPage"
+            v-model="itemsPerPage"
+            class="border px-2 py-1 rounded text-xs"
+          >
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            v-for="(page, index) in paginatedPages"
+            :key="index"
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -274,6 +368,8 @@ const searchQuery = ref("");
 const activeTab = ref("order");
 const isModalOpenAddOrder = ref(false);
 const isSubmitting = ref(false);
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 
 const form = ref({
   barang: "",
@@ -324,6 +420,16 @@ const listpengirimanData = computed(() => {
       pengiriman.pengirimanBarang_status?.toLowerCase().includes(q)
     );
   });
+});
+
+const pagination = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return listpengirimanData.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
 });
 
 const formatCurrency = (value) => {
@@ -384,6 +490,37 @@ const deletepengirimanData = async (id) => {
     }
   }
 };
+
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    }
+  }
+
+  return pages;
+});
+
+watch(searchQuery, () => {
+  currentPage.value = 1;
+});
+
+watch(currentPage, (val) => {
+  if (val < 1) currentPage.value = 1;
+  if (val > totalPages.value) currentPage.value = totalPages.value;
+});
 
 watch(activeTab, () => {
   fetchDataPengiriman();
