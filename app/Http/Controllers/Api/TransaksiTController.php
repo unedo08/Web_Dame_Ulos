@@ -29,21 +29,25 @@ class TransaksiTController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'transaksi_id' => 'nullable|string',
             'transaksi_nama_customer' => 'required|string|max:255',
             'transaksi_nomor_telepon' => 'required|string|max:20',
             'transaksi_jumlah_barang' => 'required|integer|min:1',
             'transaksi_total_harga' => 'required|numeric|min:0',
-            'transaksi_cara_bayar' => 'string',
-            'transaksi_tipe' => 'string',
-            'transaksi_status' => 'string',
-            'transaksi_catatan' => 'string'
+            'transaksi_cara_bayar' => 'nullable|string',
+            'transaksi_tipe' => 'nullable|string',
+            'transaksi_status' => 'nullable|string',
+            'transaksi_catatan' => 'nullable|string'
         ]);
 
-        $transaksi = TransaksiT::create($validated);
+        $record = TransaksiT::updateOrCreate(
+            ['transaksi_id' => $validated['transaksi_id'] ?? null], 
+            $validated
+        );
 
         return response()->json([
             'message' => 'Transaksi berhasil disimpan.',
-            'data' => $transaksi
+            'data' => $record
         ], 201);
     }
 

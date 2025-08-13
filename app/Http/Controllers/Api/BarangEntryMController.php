@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BarangEntryM;
+use App\Models\BarangEntryTempM;
 use App\Models\CodeM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -46,7 +47,7 @@ class BarangEntryMController extends Controller
         if(!$hasNullUkuran){
             $record = BarangEntryM::updateOrCreate(
                 ['barangentry_code_id' => $data['barangentry_code_id']],
-                ['status' => 'READY']
+                ['barangentry_status' => 'READY']
             );
         }
 
@@ -63,8 +64,8 @@ class BarangEntryMController extends Controller
     public function storeSize(Request $request){
         $data = $request->validate([
             'barangentry_code_id'  => 'required|string',
-            'barangentry_ukuran_mandar' => 'nullable|integer',
-            'barangentry_ukuran_ulos' => 'nullable|integer',
+            'barangentry_ukuran_mandar' => 'nullable|string',
+            'barangentry_ukuran_ulos' => 'nullable|string',
         ]);
 
         // Update if code_id exists, otherwise create new
@@ -79,7 +80,7 @@ class BarangEntryMController extends Controller
         if(!$hasNullUkuran){
             $record = BarangEntryM::updateOrCreate(
                 ['barangentry_code_id' => $data['barangentry_code_id']],
-                ['status' => 'READY']
+                ['barangentry_status' => 'READY']
             );
         }
 
@@ -318,6 +319,17 @@ class BarangEntryMController extends Controller
         ]);
     }
 
+    public function getAllDataBarangPO()
+    {
+        $data = BarangEntryM::where('barangentry_status', 'PREORDER')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data with status "PREORDER"',
+            'data' => $data
+        ]);
+    }
+
     public function updateStok(Request $request, $id)
     {
         $request->validate([
@@ -339,6 +351,42 @@ class BarangEntryMController extends Controller
             'message' => 'Jumlah Barang is Updated',
             'code' => 200,
             'data' => $entry
+        ], 200);
+    }
+    
+    public function deleteBarangEntry(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        // Find the original record
+        $entry = BarangEntryM::findOrFail($id);
+
+        // Create a new temp record with the same data but with 'barangentry_temp_' prefix
+        BarangEntryTempM::create([
+            'barangentry_temp_code_id'        => $entry->barangentry_code_id,
+            'barangentry_temp_nama'           => $entry->barangentry_nama,
+            'barangentry_temp_warna'          => $entry->barangentry_warna,
+            'barangentry_temp_nama_penenun'   => $entry->barangentry_nama_penenun,
+            'barangentry_temp_nama_panirat'   => $entry->barangentry_nama_panirat,
+            'barangentry_temp_dryer'          => $entry->barangentry_dryer,
+            'barangentry_temp_modal'          => $entry->barangentry_modal,
+            'barangentry_temp_price_tag'      => $entry->barangentry_price_tag,
+            'barangentry_temp_harga_net'      => $entry->barangentry_harga_net,
+            'barangentry_temp_acara_id'       => $entry->barangentry_acara_id,
+            'barangentry_temp_ukuran_mandar'  => $entry->barangentry_ukuran_mandar,
+            'barangentry_temp_ukuran_ulos'    => $entry->barangentry_ukuran_ulos,
+            'barangentry_temp_jumlah_barang'  => $entry->barangentry_jumlah_barang,
+            'barangentry_temp_status'         => $request->input('status'),
+        ]);
+
+        // Delete original record
+        $entry->delete();
+
+        return response()->json([
+            'message' => 'Deleted Successfully',
+            'code'    => 200
         ], 200);
     }
 

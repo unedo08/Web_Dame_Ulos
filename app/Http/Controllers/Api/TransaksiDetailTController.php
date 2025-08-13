@@ -29,6 +29,7 @@ class TransaksiDetailTController extends Controller
     {
         // Validate the request parameters
         $validatedData = $request->validate([
+            'transaksidetail_id' => 'nullable|string',
             'transaksidetail_transaksi_id' => 'required|integer|exists:transaksi_t,transaksi_id',
             'transaksidetail_barang_id' => 'required|integer|exists:barangentry_m,barangentry_id',
             'transaksidetail_jumlah_barang' => 'required|integer|min:1',
@@ -36,7 +37,10 @@ class TransaksiDetailTController extends Controller
         ]);
 
         // Create the transaction detail using validated data
-        $detail = TransaksiDetailT::create($validatedData);
+        $detail = TransaksiDetailT::updateOrCreate(
+            ['transaksidetail_id' => $validatedData['transaksidetail_id'] ?? null], 
+            $validatedData
+        );
 
         return response()->json([
             'message' => 'Transaction detail created successfully.',
