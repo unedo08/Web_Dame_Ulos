@@ -975,7 +975,7 @@ async function getListBarangTemp() {
     } else if (activeTab.value === "ready") {
       endpoint = "/api/entrybarang/getDataReady";
     } else {
-      endpoint = "/api/entrybarang/getDataReady";
+      endpoint = "/api/entrybarang/getDataPO";
     }
     const response = await axios.get(`${url.value}${endpoint}`);
 

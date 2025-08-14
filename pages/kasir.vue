@@ -65,6 +65,7 @@
           <th class="px-4 py-2 text-left">Jumlah</th>
           <th class="px-4 py-2 text-left">Harga</th>
           <th class="hidden px-4 py-2 text-left">code</th>
+          <th class="hidden px-4 py-2 text-left">trx_id</th>
           <th class="px-4 py-2 text-left">Aksi</th>
         </tr>
       </thead>
@@ -103,6 +104,7 @@
             </template>
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
+          <td class="hidden">{{ item.transaksi_id }}</td>
           <td class="px-4 py-2">
             <button
               @click="removeItem(index)"
@@ -370,6 +372,7 @@ async function loadHoldTransaction(id) {
           quantity: detail.transaksidetail_jumlah_barang,
           barangentry_harga_net: detail.transaksidetail_harga_barang,
           code_nama: resCode.data.code_nama,
+          transaksi_id: id
         };
       })
     );
@@ -436,13 +439,14 @@ async function handleHold() {
     });
     return;
   }
-
+  
   const jumlahBarang = datatableItems.value.reduce(
     (total, item) => total + (item.quantity || 0),
     0
   );
 
   const payload = {
+    transaksi_id: datatableItems.value[0].transaksi_id ? String(datatableItems.value[0].transaksi_id) : "",
     transaksi_nama_customer: searchQueryCustomer.value,
     transaksi_nomor_telepon: searchQueryPhone.value,
     transaksi_jumlah_barang: jumlahBarang,
