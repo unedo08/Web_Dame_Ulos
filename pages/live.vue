@@ -65,7 +65,7 @@
             <tr
               v-for="(pengiriman, index) in items"
               :key="pengiriman.pengirimanBarang_id"
-              :class="[index % 2 === 0 ? 'bg-white' : 'bg-gray-50', index === items.length - 1 ? 'border-b-2 border-gray-100' : '' ]"
+              :class="[index % 2 === 0 ? 'bg-white' : 'bg-gray-50', index === items.length - 1 ? 'border-b-2 border-gray-200' : '' ]"
             >
               <!-- <td>{{ index + 1 }}</td> -->
               <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
