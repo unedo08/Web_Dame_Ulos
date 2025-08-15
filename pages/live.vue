@@ -61,7 +61,7 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="(items, akun) in groupedData" :key="akun">
+          <template v-for="(items, akun) in filteredGroupedData" :key="akun">
             <tr
               v-for="(pengiriman, index) in items"
               :key="pengiriman.pengirimanBarang_id"
@@ -558,6 +558,30 @@ const groupedData = computed(() => {
   return groups;
 });
 
+const filteredGroupedData = computed(() => {
+  if (!searchQuery.value) return groupedData.value;
+
+  let result = {};
+
+  for (let akun in groupedData.value) {
+    const filteredItems = groupedData.value[akun].filter(item => {
+      const namaBarang = barangMap[item.live_order_barang_id] || "";
+      const platform = capitalizeFirst(item.live_order_platform);
+      return (
+        akun.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        namaBarang.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        platform.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    });
+
+    if (filteredItems.length > 0) {
+      result[akun] = filteredItems;
+    }
+  }
+
+  return result;
+});
+
 const totalHargaPerAkun = computed(() => {
   const totalMap = {};
   pengirimanData.value.forEach((item) => {
@@ -692,16 +716,8 @@ const listpengirimanData = computed(() => {
   const q = searchQuery.value.toLowerCase();
   return sorted.filter((pengiriman) => {
     return (
-      pengiriman.pengirimanBarang_nama_penerima?.toLowerCase().includes(q) ||
-      pengiriman.pengirimanBarang_akun_penerima?.toLowerCase().includes(q) ||
-      pengiriman.pengirimanBarang_no_telepon?.toLowerCase().includes(q) ||
-      pengiriman.pengirimanBarang_jenis_pengiriman_barang
-        ?.toLowerCase()
-        .includes(q) ||
-      pengiriman.pengirimanBarang_alamat_pengiriman_barang
-        ?.toLowerCase()
-        .includes(q) ||
-      pengiriman.pengirimanBarang_status?.toLowerCase().includes(q)
+      pengiriman.live_order_nama_akun?.toLowerCase().includes(q) ||
+      pengiriman.live_order_platform?.toLowerCase().includes(q)
     );
   });
 });
