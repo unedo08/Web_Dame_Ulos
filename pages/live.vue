@@ -48,50 +48,61 @@
           </button>
         </div>
       </div>
-      <table class="datatable">
-        <thead>
+      <table class="datatable w-full rounded-md overflow-hidden">
+        <thead class="bg-blue-100">
           <tr>
-            <th>No</th>
-            <th>Nama Penerima</th>
-            <th>Nama Akun</th>
-            <th>Nomor Telepon</th>
-            <th>Harga Kirim Barang</th>
-            <th>Jenis Pengiriman Barang</th>
-            <th>Alamat</th>
-            <th>Status</th>
-            <th>Catatan</th>
-            <th>Tanggal</th>
-            <th>Aksi</th>
+            <!-- <th>No</th> -->
+            <th class="px-4 py-2 text-left">Nama Akun</th>
+            <th class="px-4 py-2 text-left">Nama Barang</th>
+            <th class="px-4 py-2 text-left">Nama Platform</th>
+            <th class="px-4 py-2 text-left">Harga Terjual</th>
+            <th class="px-4 py-2 text-left">Total Harga Terjual (Akun)</th>
+            <th class="px-4 py-2 text-left">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(pengiriman, index) in pagination"
-            :key="pengiriman.pengirimanBarang_id"
-          >
-            <td>{{ index + 1 }}</td>
-            <td>{{ pengiriman.pengirimanBarang_nama_penerima }}</td>
-            <td>{{ pengiriman.pengirimanBarang_akun_penerima }}</td>
-            <td>{{ pengiriman.pengirimanBarang_no_telepon }}</td>
-            <td>
-              {{
-                formatCurrency(pengiriman.pengirimanBarang_harga_kirim_barang)
-              }}
-            </td>
-            <td>{{ pengiriman.pengirimanBarang_jenis_pengiriman_barang }}</td>
-            <td>{{ pengiriman.pengirimanBarang_alamat_pengiriman_barang }}</td>
-            <td>{{ pengiriman.pengirimanBarang_status }}</td>
-            <td>{{ pengiriman.pengirimanBarang_catatan }}</td>
-            <td>{{ formatDate(pengiriman.created_at) }}</td>
-            <td>
-              <button
-                class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
-                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
+          <template v-for="(items, akun) in groupedData" :key="akun">
+            <tr
+              v-for="(pengiriman, index) in items"
+              :key="pengiriman.pengirimanBarang_id"
+              :class="[index % 2 === 0 ? 'bg-white' : 'bg-gray-50', index === items.length - 1 ? 'border-b-2 border-gray-100' : '' ]"
+            >
+              <!-- <td>{{ index + 1 }}</td> -->
+              <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
+                {{ akun }}
+              </td>
+
+              <td class="px-4 py-2">
+                {{ barangMap[pengiriman.live_order_barang_id] || "" }}
+              </td>
+              <td class="px-4 py-2">
+                {{ capitalizeFirst(pengiriman.live_order_platform) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatCurrency(pengiriman.live_order_harga_terjual) }}
+              </td>
+
+              <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
+                {{ formatCurrency(totalHargaPerAkun[akun]) }}
+              </td>
+              <td class="px-4 py-2">
+                <div class="flex space-x-2">
+                  <button
+                    class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
+                    @click="editOrderLive(pengiriman.live_order_id)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
+                    @click="deleteOrder(pengiriman.live_order_id)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
       <div class="flex justify-between items-center mt-4 text-xs">
@@ -188,7 +199,7 @@
             <td>{{ formatDate(pengiriman.created_at) }}</td>
             <td>
               <button
-                class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
+                class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
                 @click="editTranscationLive(pengiriman.pengirimanBarang_id)"
               >
                 Edit
@@ -352,6 +363,113 @@
       </form>
     </div>
   </div>
+
+  <!-- Modal Edit Order -->
+  <div
+    v-if="isModalOpenEditOrder"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+  >
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Edit Transaksi Live</h3>
+      <form @submit.prevent="submitLiveEditOrder">
+        <div class="mb-4">
+          <label
+            for="barang"
+            class="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Barang<span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="barang"
+            v-model="form.barang"
+            placeholder="Masukkan nama acara"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="namaAkun"
+            class="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Nama Akun<span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="namaAkun"
+            v-model="form.namaAkun"
+            placeholder="Masukkan nama akun"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="platform"
+            class="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Platform<span class="text-red-500">*</span>
+          </label>
+          <select
+            id="platform"
+            v-model="form.platform"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            required
+          >
+            <option value="" disabled>Pilih Platform</option>
+            <option value="tiktok">TikTok</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="shopee">Shopee</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label
+            for="hargaTotal"
+            class="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Harga Total<span class="text-red-500">*</span>
+          </label>
+          <div class="flex">
+            <span
+              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
+            >
+              Rp
+            </span>
+            <input
+              type="text"
+              id="hargaTotal"
+              :value="formattedHarga"
+              @input="updateHarga($event.target.value)"
+              placeholder="Masukkan harga"
+              class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+          <button
+            type="button"
+            @click="closeModalEditOrder"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            :disabled="isSubmittingEdit"
+            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]"
+          >
+            {{ isSubmittingEdit ? "Menyimpan..." : "Simpan" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -367,11 +485,20 @@ const pengirimanData = ref([]);
 const searchQuery = ref("");
 const activeTab = ref("order");
 const isModalOpenAddOrder = ref(false);
+const isModalOpenEditOrder = ref(false);
 const isSubmitting = ref(false);
+const isSubmittingEdit = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const barangMap = ref({});
+// get live order api/live-barang (oke)
+// get live order by id api/live-barang/show-live/1 (oke)
+// post order /api/live-barang/store-live
+// put update api/live-barang/update-live/1 (oke)
+// delete api/live-barang/delete-live/1 (oke)
 
 const form = ref({
+  id: null,
   barang: "",
   namaAkun: "",
   platform: "",
@@ -384,13 +511,167 @@ onMounted(() => {
   fetchDataPengiriman();
 });
 
+const capitalizeFirst = (str) => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const fetchBarangNames = async (data) => {
+  try {
+    const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
+    const requests = ids.map((id) =>
+      axios.get(`${url.value}/api/entrybarang/${id}`)
+    );
+    const responses = await Promise.all(requests);
+    responses.forEach((res, i) => {
+      barangMap.value[ids[i]] = res.data.data.barangentry_nama;
+    });
+  } catch (error) {
+    console.error("Gagal fetch nama barang:", error);
+  }
+};
+
 const fetchDataPengiriman = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/pengiriman-barang`);
-    pengirimanData.value = res.data.data;    
+    let endpoint = "";
+    if (activeTab.value === "order") {
+      endpoint = "/api/live-barang";
+    } else {
+      endpoint = "api/live-barang";
+    }
+    const res = await axios.get(`${url.value}${endpoint}`);
+    pengirimanData.value = res.data.data;
+    await fetchBarangNames(pengirimanData.value);
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
   }
+};
+
+const groupedData = computed(() => {
+  const groups = {};
+  pengirimanData.value.forEach((item) => {
+    if (!groups[item.live_order_nama_akun]) {
+      groups[item.live_order_nama_akun] = [];
+    }
+    groups[item.live_order_nama_akun].push(item);
+  });
+  return groups;
+});
+
+const totalHargaPerAkun = computed(() => {
+  const totalMap = {};
+  pengirimanData.value.forEach((item) => {
+    if (!totalMap[item.live_order_nama_akun]) {
+      totalMap[item.live_order_nama_akun] = 0;
+    }
+    totalMap[item.live_order_nama_akun] += Number(
+      item.live_order_harga_terjual
+    );
+  });
+  return totalMap;
+});
+
+const submitLiveOrder = async () => {
+  isSubmitting.value = true;
+  try {
+    const namaBarang = await axios.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
+    );
+    await axios.post(`${url.value}/api/live-barang/store-live`, {
+      live_order_barang_id: namaBarang.data.data.barangentry_id,
+      live_order_nama_akun: form.value.namaAkun,
+      live_order_platform: form.value.platform,
+      live_order_harga_terjual: form.value.hargaTotal,
+    });
+
+    form.value = {
+      barang: "",
+      namaAkun: "",
+      platform: "",
+      hargaTotal: "",
+    };
+    closeModalAddOrder();
+    await fetchDataPengiriman();
+    Swal.fire({
+      title: "Berhasil!",
+      text: "Order Berhasil ditambahkan.",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Gagal menyimpan data:", error);
+    Swal.fire({
+      title: "Gagal!",
+      text: "Terjadi kesalahan saat menambahkan order.",
+      icon: "error",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const editOrderLive = async (id) => {
+  try {
+    const res = await axios.get(`${url.value}/api/live-barang/show-live/${id}`);
+    const data = res.data.data;
+    const resBarang = await axios.get(
+      `${url.value}/api/entrybarang/` + data.live_order_barang_id
+    );
+    const code = resBarang.data.data.barangentry_code_id;
+
+    const codeNama = await axios.get(`${url.value}/api/codebarang/` + code);
+
+    form.value.id = data.live_order_id;
+    form.value.barang = codeNama.data.code_nama;
+    form.value.namaAkun = data.live_order_nama_akun;
+    form.value.platform = data.live_order_platform.toLowerCase();
+    form.value.hargaTotal = Number(data.live_order_harga_terjual);
+
+    isModalOpenEditOrder.value = true;
+  } catch (error) {
+    console.error("Gagal mengambil data:", error);
+  }
+};
+
+const submitLiveEditOrder = async () => {
+  isSubmittingEdit.value = true;
+  try {
+    const namaBarang = await axios.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
+    );
+    await axios.put(
+      `${url.value}/api/live-barang/update-live/${form.value.id}`,
+      {
+        live_order_barang_id: namaBarang.data.data.barangentry_id,
+        live_order_nama_akun: form.value.namaAkun,
+        live_order_platform: form.value.platform,
+        live_order_harga_terjual: form.value.hargaTotal,
+      }
+    );
+    isModalOpenEditOrder.value = false;
+    await fetchDataPengiriman();
+    Swal.fire({
+      title: "Berhasil!",
+      text: "Order Berhasil diedit.",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Gagal update data:", error);
+    Swal.fire({
+      title: "Gagal!",
+      text: "Terjadi kesalahan saat menambahkan produk.",
+      icon: "error",
+    });
+  } finally {
+    isSubmittingEdit.value = false;
+  }
+};
+
+const closeModalEditOrder = () => {
+  isModalOpenEditOrder.value = false;
 };
 
 const resetForm = () => {
@@ -470,26 +751,36 @@ const updateHarga = (val) => {
   form.value.hargaTotal = number;
 };
 
-const deletepengirimanData = async (id) => {
-  if (confirm(`Anda yakin ingin menghapus pengirimanData" ini?`)) {
-    try {
-      const response = await axios.delete(
-        `${url.value}/api/pengiriman-barang/` + id
-      );
+const deleteOrder = async (id) => {
+  const result = await Swal.fire({
+    title: "Konfirmasi Hapus",
+    text: `Anda yakin ingin menghapus order ini?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
 
-      if (response.status === 200) {
-        pengirimanData.value = pengirimanData.value.filter(
-          (item) => item.pengirimanBarang_id !== id
-        );
-      }
-      Swal.fire({
-        title: "Berhasil",
-        text: "Data berhasil di delete",
-        icon: "info",
-        confirmButtonText: "OK",
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(`${url.value}/api/live-barang/delete-live/${id}`);
+
+      await fetchDataPengiriman();
+      await Swal.fire({
+        title: "Berhasil!",
+        text: `Order ini telah dihapus.`,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
       });
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error saat menghapus order ini:", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menghapus order ini.",
+        icon: "error",
+      });
     }
   }
 };
