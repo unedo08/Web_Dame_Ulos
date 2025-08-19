@@ -62,10 +62,13 @@
         </thead>
         <tbody>
           <template v-for="(items, akun) in filteredGroupedData" :key="akun">
+            <!-- :key="pengiriman.pengirimanBarang_id" -->
             <tr
               v-for="(pengiriman, index) in items"
-              :key="pengiriman.pengirimanBarang_id"
-              :class="[index % 2 === 0 ? 'bg-white' : 'bg-gray-50', index === items.length - 1 ? 'border-b-2 border-gray-200' : '' ]"
+              :class="[
+                index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
+                index === items.length - 1 ? 'border-b-2 border-gray-200' : '',
+              ]"
             >
               <!-- <td>{{ index + 1 }}</td> -->
               <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
@@ -166,15 +169,8 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>Nama Penerima</th>
             <th>Nama Akun</th>
-            <th>Nomor Telepon</th>
-            <th>Harga Kirim Barang</th>
-            <th>Jenis Pengiriman Barang</th>
-            <th>Alamat</th>
-            <th>Status</th>
-            <th>Catatan</th>
-            <th>Tanggal</th>
+            <th>Jumlah</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -184,23 +180,12 @@
             :key="pengiriman.pengirimanBarang_id"
           >
             <td>{{ index + 1 }}</td>
-            <td>{{ pengiriman.pengirimanBarang_nama_penerima }}</td>
-            <td>{{ pengiriman.pengirimanBarang_akun_penerima }}</td>
-            <td>{{ pengiriman.pengirimanBarang_no_telepon }}</td>
-            <td>
-              {{
-                formatCurrency(pengiriman.pengirimanBarang_harga_kirim_barang)
-              }}
-            </td>
-            <td>{{ pengiriman.pengirimanBarang_jenis_pengiriman_barang }}</td>
-            <td>{{ pengiriman.pengirimanBarang_alamat_pengiriman_barang }}</td>
-            <td>{{ pengiriman.pengirimanBarang_status }}</td>
-            <td>{{ pengiriman.pengirimanBarang_catatan }}</td>
-            <td>{{ formatDate(pengiriman.created_at) }}</td>
+            <td>{{ pengiriman.live_order_nama_akun }}</td>
+            <td>{{ pengiriman.jumlah }}</td>
             <td>
               <button
-                class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
-                @click="editTranscationLive(pengiriman.pengirimanBarang_id)"
+                class="bg-green-500 text-white px-3 py-1 rounded-md"
+                @click="isModalOpen = true"
               >
                 Edit
               </button>
@@ -470,6 +455,15 @@
       </form>
     </div>
   </div>
+
+  <ModalLiveTransaksi
+    :show="isModalOpen"
+    :namaAkun="selected.live_order_nama_akun"
+    :barang="selected.barang"
+    @close="isModalOpen = false"
+    @save="handleSave"
+    @removeItem="handleRemoveItem"
+  />
 </template>
 
 <script setup>
@@ -477,6 +471,7 @@ import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
+import ModalLiveTransaksi from "../components/ModalLiveTransaksi.vue";
 
 const config = useRuntimeConfig();
 const url = ref(config.public.apiBase);
@@ -491,6 +486,25 @@ const isSubmittingEdit = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const barangMap = ref({});
+
+// data dummy
+const isModalOpen = ref(false);
+const selected = ref({
+  nama_akun: "Frida Simamarta",
+  barang: [
+    { kode: "ULOS100001", nama: "Ulos Simarjan Sisi", jumlah: "2 pcs", harga: 1500000 },
+    { kode: "TANG100011", nama: "Ulos Pinan Lobu-lobu", jumlah: "1 pcs", harga: 2500000 },
+  ],
+});
+
+const handleSave = (form) => {
+  console.log("Form disimpan:", form);
+  isModalOpen.value = false;
+};
+
+const handleRemoveItem = (index) => {
+  selected.value.barang.splice(index, 1);
+};
 // get live order api/live-barang (oke)
 // get live order by id api/live-barang/show-live/1 (oke)
 // post order /api/live-barang/store-live
@@ -537,11 +551,13 @@ const fetchDataPengiriman = async () => {
     if (activeTab.value === "order") {
       endpoint = "/api/live-barang";
     } else {
-      endpoint = "api/live-barang";
+      endpoint = "/api/live-barang/getAmountLive";
     }
     const res = await axios.get(`${url.value}${endpoint}`);
     pengirimanData.value = res.data.data;
-    await fetchBarangNames(pengirimanData.value);
+    if (activeTab.value === "order") {
+      await fetchBarangNames(pengirimanData.value);
+    }
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
   }
@@ -564,7 +580,7 @@ const filteredGroupedData = computed(() => {
   let result = {};
 
   for (let akun in groupedData.value) {
-    const filteredItems = groupedData.value[akun].filter(item => {
+    const filteredItems = groupedData.value[akun].filter((item) => {
       const namaBarang = barangMap[item.live_order_barang_id] || "";
       const platform = capitalizeFirst(item.live_order_platform);
       return (
