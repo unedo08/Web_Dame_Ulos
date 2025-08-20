@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>Menu Database Penjualan</title>
     <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
     <input
       v-model="searchQuery"
@@ -26,46 +27,67 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(trx, index) in pagination"
-          :key="trx.transaksi_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-        >
-          <td class="px-4 py-2">{{ index + 1 }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_nama_customer }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_nomor_telepon }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_jumlah_barang }}</td>
-          <td class="px-4 py-2">
-            {{ formatCurrency(trx.transaksi_total_harga) }}
-          </td>
-          <td class="px-4 py-2">{{ trx.transaksi_cara_bayar }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_tipe }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_status }}</td>
-          <td class="px-4 py-2">{{ trx.transaksi_catatan }}</td>
-          <td class="px-4 py-2">{{ formatDate(trx.created_at) }}</td>
-          <td class="px-4 py-2">
-            <div class="flex space-x-2">
-              <button
-                class="flex items-center gap-1 px-2 py-1 bg-[#FBBF24] text-white hover:bg-[#FFD15A] rounded-md text-s"
-                @click="openViewDetail(trx.transaksi_id)"
-              >
-                View
-              </button>
-              <button
-                class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-                @click="printStruk(trx.transaksi_id)"
-              >
-                Print
-              </button>
-              <button
-                class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
-                @click="deleteTransaksi(trx.transaksi_id)"
-              >
-                Delete
-              </button>
-            </div>
-          </td>
-        </tr>
+        <template v-for="(group, gIndex) in groupedTransaksi" :key="gIndex">
+          <tr
+            v-for="(trx, tIndex) in group.items"
+            :key="trx.transaksi_id"
+            :class="tIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+          >
+            <td
+              v-if="tIndex === 0"
+              :rowspan="group.items.length"
+              class="px-4 py-2 align-top text-center"
+            >
+              {{ gIndex + 1 }}
+            </td>
+            <td
+              v-if="tIndex === 0"
+              :rowspan="group.items.length"
+              class="px-4 py-2 align-top font-semibold"
+            >
+              {{ trx.transaksi_nama_customer }}
+            </td>
+            <!-- <td
+              v-if="tIndex === 0"
+              :rowspan="group.items.length"
+              class="px-4 py-2 align-top"
+            >
+              {{ group.telepon }}
+            </td> -->
+            <td class="px-4 py-2">{{ trx.transaksi_nomor_telepon }}</td>
+            <td class="px-4 py-2">{{ trx.transaksi_jumlah_barang }}</td>
+            <td class="px-4 py-2">
+              {{ formatCurrency(trx.transaksi_total_harga) }}
+            </td>
+            <td class="px-4 py-2">{{ trx.transaksi_cara_bayar }}</td>
+            <td class="px-4 py-2">{{ trx.transaksi_tipe }}</td>
+            <td class="px-4 py-2">{{ trx.transaksi_status }}</td>
+            <td class="px-4 py-2">{{ trx.transaksi_catatan }}</td>
+            <td class="px-4 py-2">{{ formatDate(trx.created_at) }}</td>
+            <td class="px-4 py-2">
+              <div class="flex space-x-2">
+                <button
+                  class="flex items-center gap-1 px-2 py-1 bg-[#FBBF24] text-white hover:bg-[#FFD15A] rounded-md text-s"
+                  @click="openViewDetail(trx.transaksi_id)"
+                >
+                  View
+                </button>
+                <button
+                  class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
+                  @click="printStruk(trx.transaksi_id)"
+                >
+                  Print
+                </button>
+                <button
+                  class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
+                  @click="deleteTransaksi(trx.transaksi_id)"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-4">
@@ -179,11 +201,51 @@ const listTransaksi = computed(() => {
   });
 });
 
-const pagination = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return listTransaksi.value.slice(start, end);
+// nomor telepon saja
+const groupedTransaksi = computed(() => {
+  const groups = [];
+  const map = {};
+
+  const sortedList = [...listTransaksi.value].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
+
+  sortedList.forEach((trx) => {
+    if (!map[trx.transaksi_nama_customer]) {
+      map[trx.transaksi_nama_customer] = {
+        nama: trx.transaksi_nama_customer,
+        items: [],
+      };
+      groups.push(map[trx.transaksi_nama_customer]);
+    }
+    map[trx.transaksi_nama_customer].items.push(trx);
+  });
+
+  return groups;
 });
+
+// nama customer dan nomor telepon merge
+// const groupedTransaksi = computed(() => {
+//   const groups = {};
+//   transaksi.value.forEach((trx) => {
+//     const key = `${trx.transaksi_nama_customer}-${trx.transaksi_nomor_telepon}`;
+//     if (!groups[key]) {
+//       groups[key] = {
+//         nama: trx.transaksi_nama_customer,
+//         telepon: trx.transaksi_nomor_telepon,
+//         items: [],
+//       };
+//     }
+//     groups[key].items.push(trx);
+//   });
+//   return Object.values(groups);
+// });
+
+// const pagination = computed(() => {
+//   const start = (currentPage.value - 1) * itemsPerPage.value;
+//   const end = start + itemsPerPage.value;
+//   return listTransaksi.value.slice(start, end);
+// });
 
 const totalPages = computed(() => {
   return Math.ceil(listTransaksi.value.length / itemsPerPage.value);

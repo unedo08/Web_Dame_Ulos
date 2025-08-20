@@ -1,4 +1,5 @@
 <template>
+  <title>Menu Statistik</title>
   <div class="judul text-xl font-semibold mb-4">Menu Statistik</div>
   <div style="width: 300px; height: 300px">
     <h1>Pie Chart Jumlah Barang per Bulan</h1>

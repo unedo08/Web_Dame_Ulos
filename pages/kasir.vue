@@ -1,4 +1,5 @@
 <template>
+  <title>Kasir</title>
   <div class="judul text-xl font-semibold mb-4">Menu Kasir</div>
 
   <div class="flex items-start justify-between pt-2">

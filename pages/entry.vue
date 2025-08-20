@@ -1,5 +1,6 @@
 <template>
   <div>
+  <title>Barang Masuk</title>
     <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
     <div class="flex space-x-6">
       <button

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>Transaksi Live</title>
     <div class="judul text-xl font-semibold mb-4">Transaksi Live</div>
     <div class="flex space-x-6">
       <button
@@ -492,8 +493,18 @@ const isModalOpen = ref(false);
 const selected = ref({
   nama_akun: "Frida Simamarta",
   barang: [
-    { kode: "ULOS100001", nama: "Ulos Simarjan Sisi", jumlah: "2 pcs", harga: 1500000 },
-    { kode: "TANG100011", nama: "Ulos Pinan Lobu-lobu", jumlah: "1 pcs", harga: 2500000 },
+    {
+      kode: "ULOS100001",
+      nama: "Ulos Simarjan Sisi",
+      jumlah: "2 pcs",
+      harga: 1500000,
+    },
+    {
+      kode: "TANG100011",
+      nama: "Ulos Pinan Lobu-lobu",
+      jumlah: "1 pcs",
+      harga: 2500000,
+    },
   ],
 });
 

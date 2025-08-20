@@ -1,5 +1,6 @@
 <template>
   <div>
+  <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
       <div class="flex-1">
@@ -121,7 +122,7 @@
     <!-- Modal Dialog -->
     <div
       v-if="isModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
@@ -210,7 +211,7 @@
     <!-- Modal Print -->
     <div
       v-if="isModalPrintOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>

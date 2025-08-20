@@ -1,5 +1,6 @@
 <template>
   <div>
+  <title>Acara</title>
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
     <div class="flex items-center justify-end">
@@ -134,7 +135,7 @@
     <!-- Modal Dialog -->
     <div
       v-if="isModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
@@ -498,17 +499,37 @@ const submitAcara = async () => {
 };
 
 const deleteProduct = async (id, acara_nama) => {
-  if (confirm(`Anda yakin ingin menghapus "${acara_nama}" ini?`)) {
+  const result = await Swal.fire({
+    title: "Konfirmasi Hapus",
+    text: `Anda yakin ingin menghapus "${acara_nama}"?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
     try {
-      const response = await axios.delete(
-        `${url.value}/api/acara/deleteAcara/` + id
-      );
+      const response = await axios.delete(`${url.value}/api/acara/deleteAcara/${id}`);
+
       if (response.status === 200) {
         acara.value = acara.value.filter((item) => item.acara_id !== id);
+        await Swal.fire({
+          title: "Berhasil!",
+          text: `"${acara_nama}" telah dihapus.`,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       }
-      await getListAcara();
     } catch (error) {
-      console.error("Gagal menghapus data acara: ", error);
+      console.error("Error deleting product:", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menghapus data.",
+        icon: "error",
+      });
     }
   }
 };
@@ -714,10 +735,9 @@ const exportItem = async (id) => {
     const data = [headers, ...rows];
     const worksheet = XLSX.utils.aoa_to_sheet(data);
 
-    // 🔗 Merge Nama Acara (kolom A)
     const mergeRange = {
-      s: { r: 1, c: 0 }, // start row 1 (0-indexed), col 0 (A)
-      e: { r: detailData.length, c: 0 }, // end row = total rows, same col
+      s: { r: 1, c: 0 }, 
+      e: { r: detailData.length, c: 0 },
     };
     worksheet["!merges"] = [mergeRange];
 

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Packaging</div>
     <input
       v-model="searchQuery"

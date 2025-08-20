@@ -1,5 +1,8 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
+  <div
+    v-if="show"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+  >
     <div
       class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto"
     >
@@ -85,11 +88,20 @@
                 <p style="margin-top: 16px">Salam Hangat,</p>
                 <p><em>Artisan Dame Ulos</em></p>
 
-                <table style="margin-top: 16px; width: 100%; font-size: 12px; color:#541b1a">
+                <table
+                  style="
+                    margin-top: 16px;
+                    width: 100%;
+                    font-size: 12px;
+                    color: #541b1a;
+                  "
+                >
                   <tbody>
                     <tr>
-                      <td style="font-weight: bold;">Tahun Pembuatan</td>
-                      <td>{{ new Date(item.data.created_at).getFullYear() }}</td>
+                      <td style="font-weight: bold">Tahun Pembuatan</td>
+                      <td>
+                        {{ new Date(item.data.created_at).getFullYear() }}
+                      </td>
                     </tr>
                     <tr>
                       <td style="font-weight: bold">Ukuran Tenun</td>
@@ -125,7 +137,6 @@
                       <td>{{ item.data.barangentry_dryer }}</td>
                     </tr>
                   </tbody>
-                  
                 </table>
                 <p style="margin-top: 16px; font-weight: bold; font-size: 18px">
                   {{
@@ -432,3 +443,9 @@ function onBarcodeInputSize(e) {
   }, 2000);
 }
 </script>
+
+<style scoped>
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+</style>
