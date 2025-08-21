@@ -12,7 +12,5 @@ class JenisBarangM extends Model
     protected $primaryKey = 'jenisbarang_id';
     protected $fillable = ['jenisbarang_nama', 'jenisbarang_kode', 'jenisbarang_tipe', 'jenisbarang_jumlah'];
 
-    public function codes() {
-        return $this->hasMany(Code::class, 'code_jenisbarang_id');
-    }
+    
 }

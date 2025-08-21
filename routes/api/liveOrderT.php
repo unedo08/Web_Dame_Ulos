@@ -9,6 +9,9 @@ Route::get('/show-live/{id}', [LiveOrderTController::class, 'show']);    // Get 
 Route::post('/store-live', [LiveOrderTController::class, 'store']);       // Create
 Route::put('/update-live/{id}', [LiveOrderTController::class, 'update']);  // Update
 Route::delete('/delete-live/{id}', [LiveOrderTController::class, 'destroy']); // Delete
+Route::get('/data-live/{namaAkun}', [LiveOrderTController::class, 'getLiveOrderByNamaAkun']);        // Get all
+Route::get('/data-live/{id}', [LiveOrderTController::class, 'getLiveOrderByLiveId']);  
 
 // Custom route to get count by nama akun
 Route::get('/getAmountLive', [LiveOrderTController::class, 'countByNamaAkun']);
+Route::get('/data-table', [LiveOrderTController::class, 'getDataTabelLiveOrder']); 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PengirimanBarangT;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PengirimanBarangTController extends Controller
 {
@@ -22,15 +23,15 @@ class PengirimanBarangTController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'pengirimanBarang_transaksi_id' => 'required|integer',
-            'pengirimanBarang_nama_penerima' => 'required|string|max:255',
-            'pengirimanBarang_akun_penerima' => 'nullable|string|max:255',
-            'pengirimanBarang_no_telepon' => 'nullable|string|max:20',
-            'pengirimanBarang_harga_kirim_barang' => 'required|numeric',
-            'pengirimanBarang_jenis_pengiriman_barang' => 'required|string|max:100',
-            'pengirimanBarang_alamat_pengiriman_barang' => 'required|string',
-            'pengirimanBarang_catatan' => 'nullable|string',
-            'pengirimanBarang_status' => 'nullable|string|max:50',
+            'pengirimanBarang_transaksi_id'          => 'required|integer',
+            'pengirimanBarang_nama_penerima'         => 'required|string|max:255',
+            'pengirimanBarang_akun_penerima'         => 'nullable|string|max:255',
+            'pengirimanBarang_no_telepon'            => 'nullable|string|max:20',
+            'pengirimanBarang_harga_kirim_barang'    => 'required|numeric',
+            'pengirimanBarang_jenis_pengiriman_barang'=> 'required|string|max:100',
+            'pengirimanBarang_alamat_pengiriman_barang'=> 'required|string',
+            'pengirimanBarang_catatan'               => 'nullable|string',
+            'pengirimanBarang_status'                => 'nullable|string|max:50',
         ]);
 
         $item = PengirimanBarangT::create($validatedData);
@@ -65,7 +66,20 @@ class PengirimanBarangTController extends Controller
     {
         try {
             $item = PengirimanBarangT::findOrFail($id);
-            $item->update($request->all());
+
+            $validatedData = $request->validate([
+                'pengirimanBarang_transaksi_id'          => 'sometimes|integer',
+                'pengirimanBarang_nama_penerima'         => 'sometimes|string|max:255',
+                'pengirimanBarang_akun_penerima'         => 'nullable|string|max:255',
+                'pengirimanBarang_no_telepon'            => 'nullable|string|max:20',
+                'pengirimanBarang_harga_kirim_barang'    => 'sometimes|numeric',
+                'pengirimanBarang_jenis_pengiriman_barang'=> 'sometimes|string|max:100',
+                'pengirimanBarang_alamat_pengiriman_barang'=> 'sometimes|string',
+                'pengirimanBarang_catatan'               => 'nullable|string',
+                'pengirimanBarang_status'                => 'nullable|string|max:50',
+            ]);
+
+            $item->update($validatedData);
 
             return response()->json([
                 'code' => 200,
@@ -104,27 +118,26 @@ class PengirimanBarangTController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|string',
+            'pengirimanBarang_status' => 'required|string|max:50',
         ]);
 
-        
         $pengirimanBarang = PengirimanBarangT::find($id);
+
         if (!$pengirimanBarang) {
             return response()->json([
+                'code' => 404,
                 'message' => 'Data Pengiriman Barang tidak ditemukan.',
                 'data' => null
             ], 404);
         }
 
-        $pengirimanBarang->status = $request->status;
+        $pengirimanBarang->pengirimanBarang_status = $request->pengirimanBarang_status;
         $pengirimanBarang->save();
 
-        // Return success response with message and updated data
         return response()->json([
+            'code' => 200,
             'message' => 'Status updated successfully.',
             'data' => $pengirimanBarang
         ], 200);
-
-        
     }
 }

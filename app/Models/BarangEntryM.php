@@ -27,7 +27,4 @@ class BarangEntryM extends Model
         'barangentry_status'
     ];
 
-    public function code() {
-        return $this->belongsTo(Code::class, 'barangentry_code_id');
-    }
 }

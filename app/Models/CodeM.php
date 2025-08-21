@@ -12,11 +12,4 @@ class CodeM extends Model
     protected $primaryKey = 'code_id';
     protected $fillable = ['code_nama', 'code_jenisbarang_id'];
 
-    public function jenisBarang() {
-        return $this->belongsTo(JenisBarang::class, 'code_jenisbarang_id');
-    }
-
-    public function barangEntries() {
-        return $this->hasMany(BarangEntry::class, 'barangentry_code_id');
-    }
 }

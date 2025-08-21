@@ -16,6 +16,7 @@ class LiveOrderT extends Model
         'live_order_barang_id',
         'live_order_nama_akun',
         'live_order_platform',
-        'live_order_harga_terjual'
+        'live_order_harga_terjual',
+        'live_order_jumlah_barang'
     ];
 }

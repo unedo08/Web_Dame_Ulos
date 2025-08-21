@@ -29,8 +29,4 @@ class BarangEntryTempM extends Model
         'barangentry_temp_status'
     ];
 
-    public function code()
-    {
-        return $this->belongsTo(Code::class, 'barangentry_temp_code_id');
-    }
 }
