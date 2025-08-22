@@ -613,7 +613,7 @@
           </div>
         </div>
 
-        <div class="flex justify-start space-x-3 mt-6">
+        <div class="flex justify-end space-x-3 mt-6">
           <button
             @click="cancelTambahBarang"
             class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"

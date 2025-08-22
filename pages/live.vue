@@ -186,7 +186,7 @@
             <td>
               <button
                 class="bg-green-500 text-white px-3 py-1 rounded-md"
-                @click="isModalOpen = true"
+                @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)"
               >
                 Edit
               </button>
@@ -458,11 +458,11 @@
   </div>
 
   <ModalLiveTransaksi
-    :show="isModalOpen"
-    :namaAkun="selected.live_order_nama_akun"
+    v-model:show="isModalOpen"
+    :namaAkun="selected.namaAkun"
     :barang="selected.barang"
-    @close="isModalOpen = false"
     @save="handleSave"
+    @close="isModalOpen = false"
     @removeItem="handleRemoveItem"
   />
 </template>
@@ -487,40 +487,16 @@ const isSubmittingEdit = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const barangMap = ref({});
+const selected = ref({ namaAkun: "", barang: [] });
 
-// data dummy
 const isModalOpen = ref(false);
-const selected = ref({
-  nama_akun: "Frida Simamarta",
-  barang: [
-    {
-      kode: "ULOS100001",
-      nama: "Ulos Simarjan Sisi",
-      jumlah: "2 pcs",
-      harga: 1500000,
-    },
-    {
-      kode: "TANG100011",
-      nama: "Ulos Pinan Lobu-lobu",
-      jumlah: "1 pcs",
-      harga: 2500000,
-    },
-  ],
-});
-
 const handleSave = (form) => {
-  console.log("Form disimpan:", form);
   isModalOpen.value = false;
 };
 
 const handleRemoveItem = (index) => {
   selected.value.barang.splice(index, 1);
 };
-// get live order api/live-barang (oke)
-// get live order by id api/live-barang/show-live/1 (oke)
-// post order /api/live-barang/store-live
-// put update api/live-barang/update-live/1 (oke)
-// delete api/live-barang/delete-live/1 (oke)
 
 const form = ref({
   id: null,
@@ -535,6 +511,33 @@ onMounted(() => {
   url.value = config.public.apiBase;
   fetchDataPengiriman();
 });
+
+const openModalEditTransaksi = async (namaAkun) => {
+      // isModalOpen.value = true;
+
+  try {
+    const { data } = await axios.get(
+      `${url.value}/api/live-barang/data-live/` + namaAkun
+    );
+
+    console.log('xc', data.data[0].live_order_nama_akun);
+    if (data.data && data.data.length > 0) {
+      
+      selected.value = {
+        namaAkun: data.data[0].live_order_nama_akun,
+        barang: data.data.map((item) => ({
+          kode: item.code_nama,
+          nama: item.barangentry_nama,
+          jumlah: item.live_order_jumlah_barang,
+          harga: parseFloat(item.live_order_harga_terjual),
+        })),
+      };
+      isModalOpen.value = true;
+    }
+  } catch (error) {
+    console.error("Gagal ambil data:", error);
+  }
+};
 
 const capitalizeFirst = (str) => {
   if (!str) return "";

@@ -92,9 +92,11 @@
               required
             >
               <option value="" disabled>Pilih metode pembayaran</option>
-              <option value="transfer">Transfer</option>
-              <option value="cod">COD</option>
-              <option value="qris">QRIS</option>
+              <option value="Transfer Bank">Transfer Bank</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Cash">Cash</option>
+              <option value="OVO">OVO</option>
+              <option value="Gopay">Gopay</option>
             </select>
           </div>
 
@@ -103,8 +105,9 @@
               >Biaya Pengiriman *</label
             >
             <input
-              v-model="form.biaya_pengiriman"
-              type="number"
+              :value="formattedBiayaPengiriman"
+              @input="onInputBiayaPengiriman"
+              type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan biaya pengiriman"
               required
@@ -135,7 +138,10 @@
 
       <!-- Footer -->
       <div class="flex justify-end gap-2 px-6 py-4">
-        <button @click="$emit('close')" class="px-4 py-2 rounded-md border">
+        <button
+          @click="closeModal"
+          class="px-4 py-2 rounded-md border border-gray-300 text-gray-800"
+        >
           Batal
         </button>
         <button
@@ -151,12 +157,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
+const url = ref("");
 const props = defineProps({
   show: Boolean,
   namaAkun: String,
-  barang: Array, // [{kode, nama, jumlah, harga}]
+  barang: Array,
 });
 const emit = defineEmits(["close", "save", "removeItem"]);
 
@@ -170,13 +180,104 @@ const form = ref({
   pengiriman: "",
 });
 
+onMounted(async () => {
+  const config = useRuntimeConfig();
+  url.value = config.public.apiBase;
+});
+
+const jumlahBarang = computed(() =>
+  props.barang.reduce((sum, item) => sum + Number(item.jumlah), 0)
+);
+const subtotal = computed(() =>
+  props.barang.reduce(
+    (sum, item) => sum + Number(item.harga) * Number(item.jumlah),
+    0
+  )
+);
+
+function formatRupiah(value) {
+  if (!value) return "";
+  const number = parseInt(value.toString().replace(/\D/g, ""));
+  return number.toLocaleString("id-ID");
+}
+
+function parseRupiah(value) {
+  if (!value) return "";
+  return value.toString().replace(/\D/g, "");
+}
+
+const formattedBiayaPengiriman = computed(() => {
+  return form.value.biaya_pengiriman
+    ? formatRupiah(form.value.biaya_pengiriman)
+    : "";
+});
+
+function onInputBiayaPengiriman(e) {
+  const raw = parseRupiah(e.target.value);
+  form.value.biaya_pengiriman = raw;
+}
+
 const submitForm = async () => {
   isSubmitting.value = true;
   try {
-    emit("save", { ...form.value });
+    const payloadTransaksi = {
+      transaksi_nama_customer: form.value.nama_penerima,
+      transaksi_nomor_telepon: form.value.no_telepon,
+      transaksi_jumlah_barang: jumlahBarang.value,
+      transaksi_total_harga: subtotal.value,
+      transaksi_cara_bayar: form.value.metode,
+      transaksi_tipe: "PREORDER",
+      transaksi_status: "pending",
+      transaksi_catatan: "",
+    };
+
+    const { data } = await axios.post(
+      `${url.value}/api/transaksi`,
+      payloadTransaksi
+    );
+    const transaksi_id = data.data.transaksi_id;
+    for (const item of props.barang) {
+      const { data: barangResponse } = await axios.get(
+        `${url.value}/api/entrybarang/getDataByCode/${item.kode}`
+      );
+      const barangData = barangResponse.data;
+      if (!barangData || !barangData.barangentry_id) continue;
+
+      const detailPayload = {
+        transaksidetail_transaksi_id: transaksi_id,
+        transaksidetail_barang_id: barangData.barangentry_id,
+        transaksidetail_jumlah_barang: item.jumlah,
+        transaksidetail_harga_barang: parseFloat(item.harga),
+      };
+      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+    }
+
+    const pengirimanPayload = {
+      pengirimanBarang_transaksi_id: transaksi_id,
+      pengirimanBarang_nama_penerima: form.value.nama_penerima,
+      pengirimanBarang_akun_penerima: props.namaAkun,
+      pengirimanBarang_no_telepon: form.value.no_telepon,
+      pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
+      pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
+      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
+      pengirimanBarang_catatan: "",
+      pengirimanBarang_status: "Proses",
+    };
+    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+
+    emit("save");
+    emit("close");
+    Swal.fire("Berhasil", "Transaksi berhasil disimpan!", "success");
+  } catch (err) {
+    console.error("Gagal menyimpan transaksi:", err);
+    Swal.fire("Gagal", "Gagal menyimpan data!", "error");
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const closeModal = () => {
+  emit("close");
 };
 
 const formatCurrency = (value) => {

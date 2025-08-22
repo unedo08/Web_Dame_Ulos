@@ -202,7 +202,7 @@
           Print
         </button>
         <button
-          @click="$emit('close')"
+          @click="closeModal"
           class="bg-gray-500 text-white px-4 py-2 rounded"
         >
           Close
@@ -348,7 +348,7 @@ async function handleScanPriceTag() {
     barcodeList.value = [...new Set(scanned)];
   }
 
-  barcodeInput.value = "";
+  // barcodeInput.value = "";
 }
 
 async function printPriceTag() {
@@ -441,6 +441,11 @@ function onBarcodeInputSize(e) {
   scanTimeoutSize = setTimeout(() => {
     handleScanSize();
   }, 2000);
+}
+
+const closeModal = () => {
+  emit('close')
+  barcodeInput.value = "";
 }
 </script>
 
