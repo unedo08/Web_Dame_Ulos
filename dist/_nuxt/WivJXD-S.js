@@ -1,0 +1,1 @@
+import{_ as a}from"./DlAUqK2U.js";import{c as n,a as e,F as o,o as s}from"./Btc6xiXW.js";const r={};function l(f,t){return s(),n(o,null,[t[0]||(t[0]=e("title",null,"Staff",-1)),t[1]||(t[1]=e("div",{class:"judul text-xl font-semibold mb-4"},"Halaman Masih Ongoing...",-1))],64)}const c=a(r,[["render",l]]);export{c as default};

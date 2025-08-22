@@ -1,0 +1,1 @@
+import{_ as t}from"./DlAUqK2U.js";import{c as o,a as e,F as r,o as s}from"./Btc6xiXW.js";const a={};function l(i,n){return s(),o(r,null,[n[0]||(n[0]=e("title",null,"Menu Inventory",-1)),n[1]||(n[1]=e("div",{class:"judul text-xl font-semibold mb-4"},"Halaman Masih Ongoing...",-1))],64)}const u=t(a,[["render",l]]);export{u as default};
