@@ -26,6 +26,20 @@
             <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
               {{ errors.code_barang }}
             </p>
+            <div class="flex items-center mt-3">
+              <input
+                id="barangPo"
+                type="checkbox"
+                v-model="form.is_po"
+                class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"
+              />
+              <label
+                for="barangPo"
+                class="ml-2 text-xs text-gray-700 font-bold italic"
+              >
+                Barang termasuk Pre-Order
+              </label>
+            </div>
           </div>
 
           <div>
@@ -277,6 +291,7 @@ const form = reactive({
   sisaPembayaran: "",
   catatan: "",
   gambar: null,
+  is_po: false,
 });
 
 function handleKodeBarangEnter() {
@@ -403,6 +418,52 @@ async function submitForm() {
     //   payloadTransaksiDetail
     // );
 
+    if (form.is_po == true) {
+      const product = {
+        jenisbarang_kode: form.code_barang,
+        jenisbarang_nama: "PO Barang",
+        jenisbarang_jumlah: 0,
+      };
+      const response = await axios.post(
+        `${url.value}/api/jenisbarang`,
+        product
+      );
+
+      if (response.status === 201) {
+        const responseCode = await axios.post(`${url.value}/api/codebarang`, {
+          jumlah_barang: 1,
+          code_jenisbarang_id: response.data.jenisbarang_id,
+        });
+
+        if (responseCode.status === 201) {
+          const payload = {
+            barangentry_code_id: String(responseCode.data.data[0].code_id),
+            barangentry_nama: form.namaUlos,
+            barangentry_warna: "PO",
+            barangentry_nama_penenun: "PO",
+            barangentry_nama_panirat: "PO",
+            barangentry_dryer: "PO",
+            barangentry_modal: 0,
+            barangentry_price_tag: Number(form.totalPembayaran),
+            barangentry_harga_net: 0,
+            barangentry_jumlah_barang: 1,
+            barangentry_status: "PREORDER"
+          };
+
+          const responseBarang = await axios.post(
+            `${url.value}/api/entrybarang/storeDescription`,
+            payload
+          );
+
+          if(responseBarang.status === 201){
+            await axios.patch(`${url.value}/api/entrybarang/${responseBarang.data.data.barangentry_id}/updateStatus`,{
+              status: "PREORDER"
+            })
+          }
+        }
+      }
+    }
+
     const formData = new FormData();
     formData.append("preOrderBarang_transaksi_id", "");
     formData.append("preOrderBarang_nama_barang", form.namaUlos);
@@ -425,6 +486,7 @@ async function submitForm() {
       },
     });
 
+    batalPreOrder();
     Swal.fire({
       title: "Sukses!",
       text: "Berhasil Melakukan Pre-Order",
@@ -450,18 +512,6 @@ async function submitForm() {
     // } catch (err) {
     //   console.error("Error melakukan transaksi", err);
     // }
-    form.code_barang = "";
-    form.namaAkun = "";
-    form.targetSelesai = "";
-    form.dp = "";
-    form.deskripsiUlos = "";
-    form.namaUlos = "";
-    form.nomor_telepon = "";
-    form.totalPembayaran = "";
-    form.sisaPembayaran = "";
-    form.catatan = "";
-    form.alamat = "";
-    form.gambar = null;
   } catch (err) {
     console.error("Error", err);
   }

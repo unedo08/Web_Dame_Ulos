@@ -976,11 +976,11 @@ async function getListBarangTemp() {
     } else if (activeTab.value === "ready") {
       endpoint = "/api/entrybarang/getDataReady";
     } else {
-      endpoint = "/api/entrybarang/getDataPO";
+      endpoint = "/api/entrybarang/getDataPO";      
     }
     const response = await axios.get(`${url.value}${endpoint}`);
 
-    listBarang.value = response.data.data;
+    listBarang.value = response.data.data;    
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }

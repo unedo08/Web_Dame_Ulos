@@ -227,7 +227,7 @@ const submitForm = async () => {
       transaksi_total_harga: subtotal.value,
       transaksi_cara_bayar: form.value.metode,
       transaksi_tipe: "PREORDER",
-      transaksi_status: "pending",
+      transaksi_status: "PREORDER",
       transaksi_catatan: "",
     };
 
