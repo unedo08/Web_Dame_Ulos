@@ -74,7 +74,7 @@
                 </button>
                 <button
                   class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-                  @click="printStruk(trx.transaksi_id)"
+                  @click="handlePrint(trx.transaksi_id)"
                 >
                   Print
                 </button>
@@ -311,11 +311,249 @@ const paginatedPages = computed(() => {
   return pages;
 });
 
-function printStruk(id) {
-  const printWindow = window.open(`/print/${id}`, "_blank");
+async function handlePrint(transaksi_id) {
+  const { data: responsePrint } = await axios.get(
+    `${url.value}/api/transaksi/${transaksi_id}`
+  );
+
+  const transaksi = responsePrint.data;
+  const detailWithNames = await Promise.all(
+    transaksi.details.map(async (detail) => {
+      const barangRes = await axios.get(
+        `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+      );
+      const kodeBarang = await axios.get(
+        `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id
+      );
+
+      return {
+        ...detail,
+        barangentry_nama:
+          barangRes.data.data.barangentry_nama || "Tidak Diketahui",
+        barangentry_code: kodeBarang.data.code_nama,
+      };
+    })
+  );
+
+  printToNewTab(transaksi, detailWithNames);
+}
+
+function printToNewTab(data, items) {
+  const printWindow = window.open("", "_blank");
   if (!printWindow) {
-    alert("Popup diblokir! Harap izinkan pop-up untuk mencetak struk.");
+    alert("Pop-up blocker menghalangi membuka tab baru.");
+    return;
   }
+
+  const formatTanggal = (dateStr) => {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    return date.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const formatRupiah = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(value || 0);
+  };
+
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoice Transaksi</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 40px;
+        background: #fff;
+        color: #000;
+      }
+
+      .print-area {
+        max-width: 800px;
+        margin: auto;
+        box-sizing: border-box;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .info {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      .info-row {
+        display: flex;
+        margin-bottom: 4px;
+      }
+
+      .info-label {
+        width: 180px;
+        font-weight: normal;
+      }
+
+      .info-separator {
+        width: 10px;
+      }
+
+      .info-value {
+        font-weight: bold;
+        flex: 1;
+      }
+
+      h3 {
+        margin-top: 30px;
+        font-size: 15px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin-top: 12px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      thead {
+        background-color: #f9f9f9;
+        font-weight: bold;
+      }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+      }
+
+      tbody tr:not(:last-child) {
+        border-bottom: 1px dashed #ccc;
+      }
+
+      .total-row td {
+        font-weight: bold;
+        text-align: right;
+        padding-top: 12px;
+        border-top: 1px solid #ddd;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 13px;
+        color: #555;
+      }
+
+      @media print {
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="print-area">
+      <div class="header">
+        <img src="/image/DameUlosHeaderPrint.jpg" alt="Logo" class="logo" />
+      </div>
+
+      <div class="info">
+        <div class="info-row">
+          <div class="info-label">Nama Customer</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_nama_customer || "-"}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">No Telepon</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_nomor_telepon || "-"}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tanggal Pemesanan</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${formatTanggal(data.created_at)}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Metode Pembayaran</div>
+          <div class="info-separator">:</div>
+          <div class="info-value">${data.transaksi_cara_bayar || "-"}</div>
+        </div>
+      </div>
+
+      <h3>Rincian Pembelian</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Harga</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items
+            .map(
+              (item, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.barangentry_code || "-"}</td>
+                  <td>${item.barangentry_nama || "-"}</td>
+                  <td>${item.transaksidetail_jumlah_barang} pcs</td>
+                  <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
+                  <td>${formatRupiah(
+                    item.transaksidetail_jumlah_barang *
+                      item.transaksidetail_harga_barang
+                  )}</td>
+                </tr>
+              `
+            )
+            .join("")}
+          <tr class="total-row">
+            <td colspan="5">Total :</td>
+            <td>${formatRupiah(data.transaksi_total_harga)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer">
+        <p>Terima kasih telah menjadi bagian dari pelanggan kami.</p>
+        <p>Selamat menggunakan produk Anda!</p>
+      </div>
+    </div>
+
+    <script>
+      window.onload = function () {
+        window.print();
+      };
+    <\/script>
+  </body>
+  </html>
+  `;
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
 }
 
 watch(searchQuery, () => {

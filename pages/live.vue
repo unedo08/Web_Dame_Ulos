@@ -369,7 +369,7 @@
             type="text"
             id="barang"
             v-model="form.barang"
-            placeholder="Masukkan nama acara"
+            placeholder="Masukkan nama barang"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />

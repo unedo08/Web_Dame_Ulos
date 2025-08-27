@@ -585,7 +585,6 @@ async function checkoutProcess() {
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
         const kodeBarang = await axios.get(`${url.value}/api/codebarang/`+barangRes.data.data.barangentry_code_id)
-        console.log('z',kodeBarang.data.code_nama);
         
         return {
           ...detail,
