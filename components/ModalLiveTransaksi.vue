@@ -67,6 +67,9 @@
               placeholder="Masukkan nama penerima"
               required
             />
+            <p v-if="errors.nama_penerima" class="text-red-500 text-sm mt-1">
+              {{ errors.nama_penerima }}
+            </p>
           </div>
 
           <div>
@@ -80,6 +83,9 @@
               placeholder="Masukkan nomor telepon"
               required
             />
+            <p v-if="errors.no_telepon" class="text-red-500 text-sm mt-1">
+              {{ errors.no_telepon }}
+            </p>
           </div>
 
           <div>
@@ -98,6 +104,9 @@
               <option value="OVO">OVO</option>
               <option value="Gopay">Gopay</option>
             </select>
+            <p v-if="errors.metode" class="text-red-500 text-sm mt-1">
+              {{ errors.metode }}
+            </p>
           </div>
 
           <div>
@@ -112,6 +121,9 @@
               placeholder="Masukkan biaya pengiriman"
               required
             />
+            <p v-if="errors.biaya_pengiriman" class="text-red-500 text-sm mt-1">
+              {{ errors.biaya_pengiriman }}
+            </p>
           </div>
 
           <div>
@@ -121,6 +133,9 @@
               class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan alamat"
             ></textarea>
+            <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
+              {{ errors.alamat }}
+            </p>
           </div>
 
           <div>
@@ -132,6 +147,9 @@
               placeholder="Masukkan jenis pengiriman"
               required
             />
+            <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
+              {{ errors.pengiriman }}
+            </p>
           </div>
         </div>
       </div>
@@ -157,7 +175,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -169,6 +187,7 @@ const props = defineProps({
   barang: Array,
 });
 const emit = defineEmits(["close", "save", "removeItem"]);
+const errors = reactive({});
 
 const isSubmitting = ref(false);
 const form = ref({
@@ -217,7 +236,35 @@ function onInputBiayaPengiriman(e) {
   form.value.biaya_pengiriman = raw;
 }
 
+function validate() {
+  errors.nama_penerima = !form.nama_penerima ? "Nama Penerima wajib diisi" : "";
+  errors.no_telepon = !form.no_telepon ? "No Telepon wajib diisi" : "";
+  errors.metode = !form.metode ? "Metode Pembayaran wajib diisi" : "";
+  errors.biaya_pengiriman = !form.biaya_pengiriman
+    ? "Biaya Pengiriman wajib diisi"
+    : "";
+  errors.metodePembayaran = !form.metodePembayaran
+    ? "Metode Pembayaran wajib diisi"
+    : "";
+  errors.alamat = !form.alamat ? "Alamat wajib diisi" : "";
+  errors.pengiriman = !form.pengiriman ? "Pengiriman wajib diisi" : "";
+
+  return Object.values(errors).every((err) => !err);
+}
+
 const submitForm = async () => {
+
+  if (!validate()) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    return;
+  }
   isSubmitting.value = true;
   try {
     const payloadTransaksi = {
@@ -278,6 +325,18 @@ const submitForm = async () => {
 
 const closeModal = () => {
   emit("close");
+  resetForm();
+};
+
+const resetForm = () => {
+  form.value = {
+    nama_penerima: "",
+    no_telepon: "",
+    metode: "",
+    biaya_pengiriman: "",
+    alamat: "",
+    pengiriman: "",
+  };
 };
 
 const formatCurrency = (value) => {

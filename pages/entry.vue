@@ -280,13 +280,13 @@
                   >
                     Edit
                   </button>
-                  <button
+                  <!-- <button
                     v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
                     @click="openModalTambahStock(barang.barangentry_id)"
                   >
                     + Stock
-                  </button>
+                  </button> -->
                   <button
                     class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)"
@@ -430,13 +430,13 @@
                   >
                     Edit
                   </button>
-                  <button
+                  <!-- <button
                     v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
                     @click="openModalTambahStock(barang.barangentry_id)"
                   >
                     + Stock
-                  </button>
+                  </button> -->
                   <button
                     class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)"

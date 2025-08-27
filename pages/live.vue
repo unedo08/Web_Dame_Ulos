@@ -267,6 +267,9 @@
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />
+          <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
+            {{ errors.barang }}
+          </p>
         </div>
         <div class="mb-4">
           <label
@@ -283,6 +286,9 @@
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />
+          <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
+            {{ errors.namaAkun }}
+          </p>
         </div>
         <div class="mb-4">
           <label
@@ -303,6 +309,9 @@
             <option value="facebook">Facebook</option>
             <option value="whatsapp">WhatsApp</option>
           </select>
+          <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
+            {{ errors.platform }}
+          </p>
         </div>
 
         <div class="mb-4">
@@ -327,6 +336,9 @@
               class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
             />
+            <p v-if="errors.hargaTotal" class="text-red-500 text-sm mt-1">
+              {{ errors.hargaTotal }}
+            </p>
           </div>
         </div>
 
@@ -373,6 +385,9 @@
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />
+          <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
+            {{ errors.barang }}
+          </p>
         </div>
         <div class="mb-4">
           <label
@@ -389,6 +404,9 @@
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />
+          <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
+            {{ errors.namaAkun }}
+          </p>
         </div>
         <div class="mb-4">
           <label
@@ -410,6 +428,9 @@
             <option value="whatsapp">WhatsApp</option>
             <option value="shopee">Shopee</option>
           </select>
+          <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
+            {{ errors.platform }}
+          </p>
         </div>
 
         <div class="mb-4">
@@ -434,6 +455,9 @@
               class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
             />
+            <p v-if="errors.hargaTotal" class="text-red-500 text-sm mt-1">
+              {{ errors.hargaTotal }}
+            </p>
           </div>
         </div>
 
@@ -468,7 +492,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { reactive, ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -488,6 +512,7 @@ const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const barangMap = ref({});
 const selected = ref({ namaAkun: "", barang: [] });
+const errors = reactive({});
 
 const isModalOpen = ref(false);
 const handleSave = (form) => {
@@ -513,16 +538,11 @@ onMounted(() => {
 });
 
 const openModalEditTransaksi = async (namaAkun) => {
-      // isModalOpen.value = true;
-
   try {
     const { data } = await axios.get(
       `${url.value}/api/live-barang/data-live/` + namaAkun
     );
-
-    console.log('xc', data.data[0].live_order_nama_akun);
     if (data.data && data.data.length > 0) {
-      
       selected.value = {
         namaAkun: data.data[0].live_order_nama_akun,
         barang: data.data.map((item) => ({
@@ -625,7 +645,29 @@ const totalHargaPerAkun = computed(() => {
   return totalMap;
 });
 
+function validate() {
+  errors.barang = !form.barang ? "Kode barang wajib diisi" : "";
+  errors.namaAkun = !form.value.namaAkun ? "Nama akun wajib diisi" : "";
+  errors.platform = !form.value.platform ? "Platform selesai wajib diisi" : "";
+  errors.hargaTotal = !form.value.hargaTotal ? "Harga Total wajib diisi" : "";
+  console.log('xc',errors.barang);
+  
+  return Object.values(errors).every((err) => !err);
+}
+
 const submitLiveOrder = async () => {
+
+  // if (!validate()) {
+  //   Swal.fire({
+  //     title: "Gagal!",
+  //     text: "Silakan lengkapi semua field wajib.",
+  //     icon: "error",
+  //     confirmButtonText: "OK",
+  //     timer: 3000,
+  //     timerProgressBar: true,
+  //   });
+  //   return;
+  // }
   isSubmitting.value = true;
   try {
     const namaBarang = await axios.get(
@@ -689,6 +731,18 @@ const editOrderLive = async (id) => {
 };
 
 const submitLiveEditOrder = async () => {
+  // if (!validate()) {
+  //   Swal.fire({
+  //     title: "Gagal!",
+  //     text: "Silakan lengkapi semua field wajib.",
+  //     icon: "error",
+  //     confirmButtonText: "OK",
+  //     timer: 3000,
+  //     timerProgressBar: true,
+  //   });
+  //   return;
+  // }
+
   isSubmittingEdit.value = true;
   try {
     const namaBarang = await axios.get(
@@ -726,6 +780,7 @@ const submitLiveEditOrder = async () => {
 
 const closeModalEditOrder = () => {
   isModalOpenEditOrder.value = false;
+  resetForm();
 };
 
 const resetForm = () => {
