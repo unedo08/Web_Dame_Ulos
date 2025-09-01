@@ -26,7 +26,7 @@
             <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
               {{ errors.code_barang }}
             </p>
-            <div class="flex items-center mt-3">
+            <!-- <div class="flex items-center mt-3">
               <input
                 id="barangPo"
                 type="checkbox"
@@ -39,7 +39,7 @@
               >
                 Barang termasuk Pre-Order
               </label>
-            </div>
+            </div> -->
           </div>
 
           <div>
@@ -291,7 +291,7 @@ const form = reactive({
   sisaPembayaran: "",
   catatan: "",
   gambar: null,
-  is_po: false,
+  // is_po: false,
 });
 
 function handleKodeBarangEnter() {
@@ -418,7 +418,7 @@ async function submitForm() {
     //   payloadTransaksiDetail
     // );
 
-    if (form.is_po == true) {
+    // if (form.is_po == true) {
       const product = {
         jenisbarang_kode: form.code_barang,
         jenisbarang_nama: "PO Barang",
@@ -462,7 +462,7 @@ async function submitForm() {
           }
         }
       }
-    }
+    // }
 
     const formData = new FormData();
     formData.append("preOrderBarang_transaksi_id", "");
