@@ -1,6 +1,6 @@
 <template>
   <div>
-  <title>Barang Masuk</title>
+    <title>Barang Masuk</title>
     <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
     <div class="flex space-x-6">
       <button
@@ -118,7 +118,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -249,7 +249,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -399,7 +399,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_nama }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -912,6 +912,7 @@ const itemsPerPage = ref(10);
 const printContent = ref(null);
 const activeTab = ref("wait");
 const searchQuery = ref("");
+const barangMap = ref({});
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -968,6 +969,29 @@ const updateHargaNet = (val) => {
   selectedBarang.value.barangentry_harga_net = numericValue;
 };
 
+const fetchCodeBarang = async (data) => {
+  try {
+    const ids = [...new Set(data.map((item) => item.barangentry_id))];
+    const requests = ids.map((id) =>
+      axios.get(`${url.value}/api/entrybarang/${id}`)
+    );
+    const responses = await Promise.all(requests);
+
+    const codeBarangPromises = responses.map((res) =>
+      axios.get(`${url.value}/api/codebarang/${res.data.data.barangentry_code_id}`)
+    );
+    const codeBarangResults = await Promise.all(codeBarangPromises);
+    
+    codeBarangResults.forEach((res, i) => {
+      barangMap.value[ids[i]] = res.data.code_nama;      
+    });
+    console.log('cccs', barangMap.value);
+    
+  } catch (error) {
+    console.error("Data gagal diambil", error);
+  }
+};
+
 async function getListBarangTemp() {
   try {
     let endpoint = "";
@@ -976,11 +1000,11 @@ async function getListBarangTemp() {
     } else if (activeTab.value === "ready") {
       endpoint = "/api/entrybarang/getDataReady";
     } else {
-      endpoint = "/api/entrybarang/getDataPO";      
+      endpoint = "/api/entrybarang/getDataPO";
     }
     const response = await axios.get(`${url.value}${endpoint}`);
-
-    listBarang.value = response.data.data;    
+    listBarang.value = response.data.data;
+    await fetchCodeBarang(listBarang.value);
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }
