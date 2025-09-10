@@ -80,12 +80,12 @@
           >
             + Size
           </button>
-          <button
+          <!-- <button
             class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
             @click="openModal('priceTag')"
           >
             Print Price Tag
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -273,8 +273,8 @@
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
+                    <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button
-                    v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
                     @click="openModalEditBarang(barang.barangentry_id)"
                   >
@@ -607,6 +607,7 @@
             <input
               v-model="selectedBarang.barangentry_jumlah_barang"
               type="number"
+              min="1"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..."
             />
@@ -984,9 +985,7 @@ const fetchCodeBarang = async (data) => {
     
     codeBarangResults.forEach((res, i) => {
       barangMap.value[ids[i]] = res.data.code_nama;      
-    });
-    console.log('cccs', barangMap.value);
-    
+    });    
   } catch (error) {
     console.error("Data gagal diambil", error);
   }
@@ -1038,7 +1037,9 @@ function openModal(type) {
 }
 
 function tambahBarang(barang) {
-  selectedBarang.value = { ...barang };
+  selectedBarang.value = { 
+  ...barang,
+  barangentry_jumlah_barang: barang.barangentry_jumlah_barang ?? 1 };
   showModalAdd.value = true;
 }
 
@@ -1143,7 +1144,6 @@ async function handleSearch() {
       `${url.value}/api/entrybarang/getDataByCode/${keyword}`
     );
     const code = response.data.data.barangentry_code_id;
-    console.log("asdsa", code);
 
     if (!code) {
       Swal.fire({
@@ -1157,7 +1157,6 @@ async function handleSearch() {
     filteredBarang.value = listBarang.value.filter((item) =>
       String(item.barangentry_code_id).includes(String(code))
     );
-    console.log("sadas", filteredBarang.value);
 
     isSearchActive.value = true;
     showModalSearch.value = false;

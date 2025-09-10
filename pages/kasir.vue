@@ -92,7 +92,8 @@
             </template>
           </td>
           <td class="px-4 py-2">
-            <template v-if="item.quantity > 1">
+          <!-- v-if="item.quantity > 1" -->
+            <template>
               <input
                 type="text"
                 :value="formatRupiahInput(Number(item.barangentry_harga_net))"
@@ -100,9 +101,9 @@
                 class="w-28 border rounded px-2 py-1 text-right"
               />
             </template>
-            <template v-else>
+            <!-- <template v-else>
               {{ formatRupiahInput(item.barangentry_harga_net) }}
-            </template>
+            </template> -->
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="hidden">{{ item.transaksi_id }}</td>
