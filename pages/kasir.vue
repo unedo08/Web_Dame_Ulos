@@ -126,9 +126,9 @@
   <Transition name="slide">
     <div
       v-if="openModalHold"
-      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform"
+      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform flex-col"
     >
-      <div class="flex justify-between items-center p-4 border-b">
+      <div class="flex justify-between items-center p-4 border-b bg-white sticky top-0 z-10">
         <h2 class="text-md font-semibold">Pending List</h2>
         <button
           @click="openModalHold = false"
@@ -138,7 +138,7 @@
         </button>
       </div>
 
-      <div class="transition-slide p-4">
+      <div class="transition-slide p-4 border-b bg-white sticky top-[56px] z-10">
         <input
           v-model="searchHold"
           type="text"

@@ -423,8 +423,8 @@
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
+                    <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button
-                    v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
                     @click="openModalEditBarang(barang.barangentry_id)"
                   >
