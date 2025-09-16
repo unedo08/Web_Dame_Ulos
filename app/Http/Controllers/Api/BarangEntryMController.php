@@ -36,10 +36,11 @@ class BarangEntryMController extends Controller
         ]);
 
         // Update if code_id exists, otherwise create new
-        $record = BarangEntryM::updateOrCreate(
-            ['barangentry_code_id' => $data['barangentry_code_id']], 
-            $data
-        );
+        // $record = BarangEntryM::updateOrCreate(
+        //     ['barangentry_code_id' => $data['barangentry_code_id']], 
+        //     $data
+        // );
+        $record = BarangEntryM::create($data);
 
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
@@ -55,8 +56,8 @@ class BarangEntryMController extends Controller
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
             'message' => $hasNullUkuran 
-                ? 'Created/updated, but ukuran fields are missing' 
-                : 'Created or updated successfully',
+                ? 'Created, but ukuran fields are missing' 
+                : 'Created successfully',
             'data' => $record,
         ], $record->wasRecentlyCreated ? 201 : 200);
     }
@@ -69,10 +70,12 @@ class BarangEntryMController extends Controller
         ]);
 
         // Update if code_id exists, otherwise create new
-        $record = BarangEntryM::updateOrCreate(
-            ['barangentry_code_id' => $data['barangentry_code_id']], 
-            $data
-        );
+        // $record = BarangEntryM::updateOrCreate(
+        //     ['barangentry_code_id' => $data['barangentry_code_id']], 
+        //     $data
+        // );
+
+        $record = BarangEntryM::create($data);
 
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_nama);
@@ -88,8 +91,8 @@ class BarangEntryMController extends Controller
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
             'message' => $hasNullUkuran 
-                ? 'Created/updated, but Nama is missing' 
-                : 'Created or updated successfully',
+                ? 'Created, but Nama is missing' 
+                : 'Created successfully',
             'data' => $record
         ], $record->wasRecentlyCreated ? 201 : 200);
     }
