@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CodeM;
 use Illuminate\Http\Request;
 use App\Models\PreOrdeBarangT;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PreOrdeBarangTController extends Controller
 {
@@ -57,7 +59,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => null
+                'data' => 'ncns'
             ], 404);
         }
     }
@@ -77,7 +79,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => null
+                'data' => 'sssda'
             ], 404);
         }
     }
@@ -97,7 +99,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => null
+                'data' => 'sssd'
             ], 404);
         }
     }
@@ -108,7 +110,7 @@ class PreOrdeBarangTController extends Controller
             'status' => 'required|string',
         ]);
 
-        
+
         $preOrderbarang = PreOrdeBarangT::find($id);
         if (!$preOrderbarang) {
             return response()->json([
@@ -125,7 +127,35 @@ class PreOrdeBarangTController extends Controller
             'message' => 'Status updated successfully.',
             'data' => $preOrderbarang
         ], 200);
+    }
 
-        
+    public function kodePO()
+    {
+        try {
+            $kode_barang = CodeM::select('code_nama')
+                                ->where('code_nama', 'like', '%PO%')
+                                ->orderBy('code_nama', 'desc')
+                                ->first();
+
+            if (!empty($kode_barang)) {
+                return response()->json([
+                    'sukses' => true,
+                    'message' => "Kode Barang untuk barang Pre-Order",
+                    'data' => $kode_barang
+                ], 200);
+            } else {
+                return response()->json([
+                    'sukses' => false,
+                    'message' => "Kode Barang untuk barang Pre-Order tidak ditemukan.",
+                    'data' => []
+                ], 404);
+            }
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pre Order Barang not found.',
+                'data' => null
+            ], 404);
+        }
     }
 }
