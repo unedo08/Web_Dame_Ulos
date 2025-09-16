@@ -18,10 +18,10 @@
             <input
               ref="platformInput"
               v-model="form.code_barang"
-              @keyup.enter="handleKodeBarangEnter"
               type="text"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
+              class="kode_po w-full border border-gray-300 bg-gray-500 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan Kode Barang"
+              readonly
             />
             <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
               {{ errors.code_barang }}
@@ -49,7 +49,6 @@
             >
             <input
               v-model="form.namaAkun"
-              :disabled="!form.code_barang"
               type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
               placeholder="Masukkan Nama Akun"
@@ -66,7 +65,6 @@
             >
             <input
               v-model="form.targetSelesai"
-              :disabled="!form.code_barang"
               type="date"
               class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
             />
@@ -88,7 +86,6 @@
               <input
                 :value="formattedUangMuka"
                 @input="onInputUangMuka"
-                :disabled="!form.code_barang"
                 type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Uang Muka (DP)"
@@ -106,7 +103,6 @@
             >
             <textarea
               v-model="form.deskripsiUlos"
-              :disabled="!form.code_barang"
               rows="3"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
               placeholder="Masukkan Deskripsi Ulos"
@@ -139,7 +135,6 @@
             >
             <input
               v-model="form.namaUlos"
-              :disabled="!form.code_barang"
               type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
               placeholder="Masukkan Nama Ulos"
@@ -156,7 +151,6 @@
             >
             <input
               v-model="form.nomor_telepon"
-              :disabled="!form.code_barang"
               type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
               placeholder="Masukkan Nomor Telepon"
@@ -181,7 +175,6 @@
               <input
                 :value="formattedTotalPembayaran"
                 @input="onInputTotalPembayaran"
-                :disabled="!form.code_barang"
                 type="text"
                 class="w-full border-t border-b border-r border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Total Pembayaran"
@@ -206,7 +199,6 @@
               <input
                 :value="formattedSisaPembayaran"
                 @input="onInputSisaPembayaran"
-                :disabled="!form.code_barang"
                 type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Sisa Pembayaran"
@@ -223,7 +215,6 @@
             >
             <textarea
               v-model="form.catatan"
-              :disabled="!form.code_barang"
               rows="3"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
               placeholder="Masukkan Catatan"
@@ -246,7 +237,6 @@
           <button
             type="button"
             @click="submitForm"
-            :disabled="!form.code_barang"
             class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
           >
             Tambah
@@ -276,7 +266,9 @@ const errors = reactive({});
 onMounted(() => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
-  kodeBarangInput.value?.focus();
+  // kodeBarangInput.value?.focus();
+
+  kode_generator();
 });
 
 const form = reactive({
@@ -293,6 +285,26 @@ const form = reactive({
   gambar: null,
   // is_po: false,
 });
+
+async function kode_generator (){
+  try{
+    const kodePO = await axios.get(`http://192.168.18.52:8080/api/pre-order-barang/kode-generator`);
+    const kode_lama = kodePO.data.data.code_nama;
+
+    const prefix = kode_lama.match(/[A-Za-z]+/)[0];
+    const numberPart = kode_lama.replace(prefix, '');
+
+    const kodePO_baru = (parseInt(numberPart, 10) + 1).toString().padStart(numberPart.length, '0');
+
+    const kodePO_fix = prefix + kodePO_baru;
+
+    form.code_barang = kodePO_fix;
+
+  }catch(err){
+    console.error('Error pengambilan data Kode PO', err);
+    
+  }
+}
 
 function handleKodeBarangEnter() {
   platformInput.value?.focus();
@@ -547,12 +559,14 @@ function batalPreOrder() {
 .judul-label {
   font-weight: 700;
 }
-
+.kode_po{
+  background-color: #d1d0d07e !important;
+}
 input,
 textarea,
 select {
   border-color: #e4e6fc !important;
-  background-color: #fdfdff !important;
+  background-color: #fdfdff;
 }
 
 input:focus,

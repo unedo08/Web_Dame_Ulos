@@ -124,11 +124,13 @@
   </div>
 
   <Transition name="slide">
-    <div
-      v-if="openModalHold"
-      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform flex-col"
-    >
-      <div class="flex justify-between items-center p-4 border-b bg-white sticky top-0 z-10">
+  <div
+    v-if="openModalHold"
+    class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform flex-col"
+  >
+    <!-- Sticky Header -->
+    <div class="sticky top-0 z-20 bg-white border-b p-4">
+      <div class="flex justify-between items-center">
         <h2 class="text-md font-semibold">Pending List</h2>
         <button
           @click="openModalHold = false"
@@ -137,79 +139,76 @@
           &times;
         </button>
       </div>
-
-      <div class="transition-slide p-4 border-b bg-white sticky top-[56px] z-10">
+      <div class="mt-4">
         <input
           v-model="searchHold"
           type="text"
           placeholder="Cari nama customer..."
-          class="w-full border border-gray-300 px-3 py-2 rounded mb-4"
+          class="w-full border border-gray-300 px-3 py-2 rounded"
         />
-        <div v-if="filteredList.length === 0" class="text-gray-500">
-          Tidak ada transaksi hold saat ini.
-        </div>
-        <div v-else class="space-y-2">
-          <div
-            v-for="(item, index) in paginatedList"
-            :key="item.transaksi_id"
-            class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
-            @click="loadHoldTransaction(item.transaksi_id)"
-          >
-            <div class="pr-8">
-              <div class="font-semibold">
-                {{ item.transaksi_nama_customer || "Tanpa Nama" }}
-              </div>
-              <div class="text-xs text-gray-600">
-                Total: {{ formatRupiah(Number(item.transaksi_total_harga)) }}
-              </div>
-              <div class="text-xs text-gray-500">
-                {{ formatTanggalHold(item.created_at) }}
-              </div>
-            </div>
-            <div class="flex space-x-2 mt-3">
-              <button
-                @click="deleteHoldTransaction(item.transaksi_id)"
-                class="text-red-500 px-3 py-1 rounded hover:text-red-600"
-              >
-                <TrashIcon class="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
-          <button
-            @click="currentPage--"
-            :disabled="currentPage === 1"
-            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            &laquo;
-          </button>
-
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="currentPage = page"
-            :class="[
-              'px-3 py-1 rounded border',
-              page === currentPage
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100 hover:bg-gray-200',
-            ]"
-          >
-            {{ page }}
-          </button>
-
-          <button
-            @click="currentPage++"
-            :disabled="currentPage === totalPages"
-            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            &raquo;
-          </button>
-        </div>
       </div>
     </div>
-  </Transition>
+    <div class="p-4">
+      <div v-if="filteredList.length === 0" class="text-gray-500">
+        Tidak ada transaksi hold saat ini.
+      </div>
+      <div v-else class="space-y-2 transition-slide">
+        <div
+          v-for="(item, index) in paginatedList"
+          :key="item.transaksi_id"
+          class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
+          @click="loadHoldTransaction(item.transaksi_id)"
+        >
+          <div class="pr-8">
+            <div class="font-semibold">
+              {{ item.transaksi_nama_customer || "Tanpa Nama" }}
+            </div>
+            <div class="text-xs text-gray-600">
+              Total: {{ formatRupiah(Number(item.transaksi_total_harga)) }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ formatTanggalHold(item.created_at) }}
+            </div>
+          </div>
+          <div class="flex space-x-2 mt-3">
+            <button
+              @click.stop="deleteHoldTransaction(item.transaksi_id)"
+              class="text-red-500 px-3 py-1 rounded hover:text-red-600"
+            >
+              <TrashIcon class="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
+        <button
+          @click="currentPage--"
+          :disabled="currentPage === 1"
+          class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          &laquo;
+        </button>
+
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="currentPage = page"
+          :class="[ 'px-3 py-1 rounded border', page === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200' ]"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          @click="currentPage++"
+          :disabled="currentPage === totalPages"
+          class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          &raquo;
+        </button>
+      </div>
+    </div>
+  </div>
+</Transition>
 
   <!-- Modal Process -->
   <ModalKasir
