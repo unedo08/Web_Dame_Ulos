@@ -59,7 +59,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => 'ncns'
+                'data' => null
             ], 404);
         }
     }
@@ -79,7 +79,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => 'sssda'
+                'data' => null
             ], 404);
         }
     }
@@ -99,7 +99,7 @@ class PreOrdeBarangTController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pre Order Barang not found.',
-                'data' => 'sssd'
+                'data' => null
             ], 404);
         }
     }
