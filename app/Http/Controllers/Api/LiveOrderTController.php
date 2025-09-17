@@ -147,6 +147,7 @@ class LiveOrderTController extends Controller
         'live_order_t.live_order_nama_akun'
             )
             ->selectRaw('COUNT(*) as jumlah')
+            ->where('is_check', false)
             ->groupBy('live_order_t.live_order_nama_akun')
             ->get();
         
