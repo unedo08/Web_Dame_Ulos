@@ -1,22 +1,16 @@
 <template>
   <div>
-  <title>Menu Code</title>
+    <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
       <div class="flex-1">
-        <input
-          class="search-box p-2 border rounded-md"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search barang..."
-        />
+        <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+          placeholder="Search barang..." />
       </div>
 
       <div>
-        <button
-          class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
-          @click="openModal"
-        >
+        <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
+          @click="openModal">
           + Tambah
         </button>
       </div>
@@ -35,11 +29,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(barang, index) in pagination"
-            :key="barang.jenisbarang_id"
-            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-          >
+          <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
             <td class="px-4 py-2">{{ index + 1 }}</td>
             <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
             <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
@@ -49,8 +40,7 @@
               <div class="flex space-x-2">
                 <button
                   class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-s"
-                  @click="openModelPrint(barang)"
-                >
+                  @click="openModelPrint(barang)">
                   Print
                 </button>
                 <button
@@ -60,8 +50,7 @@
                       barang.jenisbarang_id,
                       barang.jenisbarang_kode
                     )
-                  "
-                >
+                    ">
                   Delete
                 </button>
               </div>
@@ -73,11 +62,7 @@
       <div class="flex justify-between items-center mt-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
-          <select
-            id="perPage"
-            v-model="itemsPerPage"
-            class="border px-2 py-1 rounded text-xs"
-          >
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
             <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="20">20</option>
@@ -86,33 +71,22 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
             Sebelumnya
           </button>
 
-          <button
-            v-for="(page, index) in paginatedPages"
-            :key="index"
-            @click="typeof page === 'number' && (currentPage = page)"
-            :class="[
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
               'px-3 py-1 rounded text-xs',
               currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
               page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]"
-            :disabled="page === '...'"
-          >
+            ]" :disabled="page === '...'">
             {{ page }}
           </button>
 
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
             Selanjutnya
           </button>
         </div>
@@ -120,43 +94,21 @@
     </div>
 
     <!-- Modal Dialog -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
-    >
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
         <form @submit.prevent="submitProduct">
           <div class="mb-4">
-            <label
-              for="jenisbarang_kode"
-              class="block text-sm font-medium text-gray-700"
-              >Kode Barang</label
-            >
-            <input
-              v-model="newProduct.jenisbarang_kode"
-              type="text"
-              id="jenisbarang_kode"
-              maxlength="5"
+            <label for="jenisbarang_kode" class="block text-sm font-medium text-gray-700">Kode Barang</label>
+            <input v-model="newProduct.jenisbarang_kode" type="text" id="jenisbarang_kode" maxlength="5"
               class="mt-1 block w-full border-[1px] pl-3 border-gray rounded-md shadow-sm w-[382px] h-[41px]"
-              placeholder=" Masukkan kode barang"
-              required
-            />
+              placeholder=" Masukkan kode barang" required />
           </div>
           <div class="mb-4">
-            <label
-              for="jenisbarang_nama"
-              class="block text-sm font-medium text-gray-700"
-              >Jenis Barang</label
-            >
-            <input
-              v-model="newProduct.jenisbarang_nama"
-              type="text"
-              id="jenisbarang_nama"
+            <label for="jenisbarang_nama" class="block text-sm font-medium text-gray-700">Jenis Barang</label>
+            <input v-model="newProduct.jenisbarang_nama" type="text" id="jenisbarang_nama"
               class="mt-1 block w-full border-[1px] border-gray rounded-md shadow-sm pl-3 w-[382px] h-[41px]"
-              placeholder=" Masukkan jenis barang"
-              required
-            />
+              placeholder=" Masukkan jenis barang" required />
           </div>
 
           <!-- <div class="mb-4">
@@ -189,18 +141,12 @@
           </div> -->
 
           <div class="flex justify-end">
-            <button
-              type="button"
-              @click="closeModal"
-              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-white rounded-md hover:bg-[#D8D8D8]"
-            >
+            <button type="button" @click="closeModal"
+              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-white rounded-md hover:bg-[#D8D8D8]">
               Cancel
             </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]"
-            >
+            <button type="submit" :disabled="isSubmitting"
+              class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-bg-[#1C9DBD]">
               {{ isSubmitting ? "Saving..." : "Save" }}
             </button>
           </div>
@@ -209,32 +155,19 @@
     </div>
 
     <!-- Modal Print -->
-    <div
-      v-if="isModalPrintOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
-    >
+    <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700"
-            >Jumlah Kode</label
-          >
-          <input
-            type="number"
-            v-model="printJumlah"
-            min="1"
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-            placeholder="Masukkan jumlah kode"
-          />
+          <label class="block text-sm font-medium text-gray-700">Jumlah Kode</label>
+          <input type="number" v-model="printJumlah" min="1"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan jumlah kode" />
         </div>
         <div class="flex justify-end">
           <button class="mr-4 text-gray-500" @click="closePrintModal">
             Cancel
           </button>
-          <button
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            @click="handlePrint"
-          >
+          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="handlePrint">
             Print
           </button>
         </div>
@@ -271,16 +204,22 @@ const isSubmitting = ref(false);
 const fetchData = async () => {
   try {
     const response = await axios.get(`${url.value}/api/jenisbarang`);
-    const fetchedData = response.data;
+    // const response = await axios.get(`http://192.168.18.52:8080/api/jenisbarang`);
 
-    barang.value = fetchedData.map((item, index) => ({
-      jenisbarang_id: item.jenisbarang_id,
-      jenisbarang_kode: item.jenisbarang_kode,
-      jenisbarang_nama: item.jenisbarang_nama,
-      jenisbarang_jumlah: item.jenisbarang_jumlah,
-      // jenisbarang_tipe: item.jenisbarang_tipe,
-      created_at: item.created_at,
-    }));
+    const fetchedData = response.data.data;
+
+    if (Array.isArray(fetchedData)) {
+      barang.value = fetchedData.map((item, index) => ({
+        jenisbarang_id: item.jenisbarang_id,
+        jenisbarang_kode: item.jenisbarang_kode,
+        jenisbarang_nama: item.jenisbarang_nama,
+        jenisbarang_jumlah: item.jumlah_barang,
+        // jenisbarang_tipe: item.jenisbarang_tipe,
+        created_at: item.created_at,
+      }));
+    } else {
+      console.error('fetchedData is not an array:', fetchedData);
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -452,8 +391,8 @@ const handlePrint = async () => {
         </head>
         <body>
           ${barcodeData
-            .map(
-              (item, i) => `
+        .map(
+          (item, i) => `
             <div class="page">
               <div class="barcode-container">
                 <div>${item.code_nama}</div>
@@ -461,8 +400,8 @@ const handlePrint = async () => {
               </div>
             </div>
           `
-            )
-            .join("")}
+        )
+        .join("")}
 
           <script>
             window.onload = function() {

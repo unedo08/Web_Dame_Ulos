@@ -28,6 +28,7 @@
                 <input type="checkbox" v-model="item.is_check"
                   class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" />
               </td>
+              <td class="px-3 py-2 hidden">{{ item.live_order_id }}</td>
               <td class="px-3 py-2">{{ item.kode }}</td>
               <td class="px-3 py-2">{{ item.nama }}</td>
               <td class="px-3 py-2 text-center">{{ item.jumlah }}</td>
@@ -263,6 +264,8 @@ const submitForm = async () => {
         transaksidetail_harga_barang: parseFloat(item.harga),
       };
       await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`)
+
     }
 
     const pengirimanPayload = {

@@ -541,7 +541,7 @@ const openModalEditTransaksi = async (namaAkun) => {
   try {
     const { data } = await axios.get(
       `${url.value}/api/live-barang/data-live/` + namaAkun
-      // `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
+      //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
     );
     
     
@@ -553,6 +553,7 @@ const openModalEditTransaksi = async (namaAkun) => {
           nama: item.barangentry_nama,
           jumlah: item.live_order_jumlah_barang,
           harga: parseFloat(item.live_order_harga_terjual),
+          live_order_id: item.live_order_id,
           is_check: false,
         })),
       };
