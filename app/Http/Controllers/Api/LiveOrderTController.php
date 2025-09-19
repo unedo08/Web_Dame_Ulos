@@ -259,5 +259,31 @@ class LiveOrderTController extends Controller
         ], 200);
 
     }
+
+    public function updateStatusCheck(Request $request, $id)
+    {
+        $request->validate([
+            'is_check' => 'required|boolean',
+        ]);
+
+        $liveorder = LiveOrderT::find($id);
+
+        if (!$liveorder) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Data Live Order tidak ditemukan.',
+                'data' => null
+            ], 404);
+        }
+
+        $liveorder->is_check = false;
+        $liveorder->save();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Status updated successfully.',
+            'data' => $liveorder
+        ], 200);
+    }
 }
 

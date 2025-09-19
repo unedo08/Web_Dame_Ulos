@@ -15,3 +15,4 @@ Route::get('/data-live/{id}', [LiveOrderTController::class, 'getLiveOrderByLiveI
 // Custom route to get count by nama akun
 Route::get('/getAmountLive', [LiveOrderTController::class, 'countByNamaAkun']);
 Route::get('/data-table', [LiveOrderTController::class, 'getDataTabelLiveOrder']); 
+Route::patch('/{id}/check', [LiveOrderTController::class, 'updateStatusCheck']); 
