@@ -262,9 +262,6 @@ class LiveOrderTController extends Controller
 
     public function updateStatusCheck(Request $request, $id)
     {
-        $request->validate([
-            'is_check' => 'required|boolean',
-        ]);
 
         $liveorder = LiveOrderT::find($id);
 
@@ -276,7 +273,7 @@ class LiveOrderTController extends Controller
             ], 404);
         }
 
-        $liveorder->is_check = false;
+        $liveorder->is_check = true;
         $liveorder->save();
 
         return response()->json([
