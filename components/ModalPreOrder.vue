@@ -198,10 +198,10 @@
               </div>
               <input
                 :value="formattedSisaPembayaran"
-                @input="onInputSisaPembayaran"
                 type="text"
-                class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                class="sisa-pembayaran w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Sisa Pembayaran"
+                readonly
               />
               <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">
                 {{ errors.sisaPembayaran }}
@@ -248,7 +248,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -288,7 +288,7 @@ const form = reactive({
 
 async function kode_generator (){
   try{
-    const kodePO = await axios.get(`http://192.168.18.52:8080/api/pre-order-barang/kode-generator`);
+    const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);
     const kode_lama = kodePO.data.data.code_nama;
 
     const prefix = kode_lama.match(/[A-Za-z]+/)[0];
@@ -342,14 +342,18 @@ function onInputTotalPembayaran(e) {
   form.totalPembayaran = raw;
 }
 
-const formattedSisaPembayaran = computed(() => {
-  return form.sisaPembayaran ? formatRupiah(form.sisaPembayaran) : "";
+const sisaPembayaran = computed(() => {
+  const total = parseInt(form.totalPembayaran) || 0;
+  const dp = parseInt(form.dp) || 0;
+  const sisa = total - dp;
+
+  return sisa >= 0 ? sisa : 0;
 });
 
-function onInputSisaPembayaran(e) {
-  const raw = parseRupiah(e.target.value);
-  form.sisaPembayaran = raw;
-}
+const formattedSisaPembayaran = computed(() => {
+  return sisaPembayaran.value ? formatRupiah(sisaPembayaran.value) : "Rp 0";
+});
+
 
 function toDatetimeString(dateStr) {
   const date = new Date(dateStr);
@@ -544,6 +548,14 @@ function batalPreOrder() {
   form.alamat = "";
   form.gambar = null;
 }
+
+watch([() => form.totalPembayaran, () => form.dp], ([total, dp]) => {
+  if (parseInt(dp) > parseInt(total)) {
+    errors.dp = "Uang Muka (DP) tidak boleh lebih besar dari Total Pembayaran";
+  } else {
+    errors.dp = "";
+  }
+});
 </script>
 
 <style>
@@ -560,6 +572,9 @@ function batalPreOrder() {
   font-weight: 700;
 }
 .kode_po{
+  background-color: #d1d0d07e !important;
+}
+.sisa-pembayaran{
   background-color: #d1d0d07e !important;
 }
 input,
