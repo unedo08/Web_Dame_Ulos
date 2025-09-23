@@ -239,25 +239,39 @@ const formatDate = (date) => {
 };
 
 const deletepengirimanData = async (id) => {
-  if (confirm(`Anda yakin ingin menghapus pengirimanData" ini?`)) {
+  const result = await Swal.fire({
+    title: "Konfirmasi Hapus",
+    text: `Anda yakin ingin menghapus data ini?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
     try {
-      const response = await axios.delete(
-        `${url.value}/api/pengiriman-barang/` + id
-      );
+      const response = await axios.delete(`${url.value}/api/pengiriman-barang/${id}`);
 
       if (response.status === 200) {
         pengirimanData.value = pengirimanData.value.filter(
           (item) => item.pengirimanBarang_id !== id
         );
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data berhasil di delete",
+          icon: "info",
+          confirmButtonText: "OK",
+        });
       }
-      Swal.fire({
-        title: "Berhasil",
-        text: "Data berhasil di delete",
-        icon: "info",
-        confirmButtonText: "OK",
-      });
     } catch (error) {
       console.error("Error deleting product:", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menghapus data.",
+        icon: "error",
+      });
     }
   }
 };
