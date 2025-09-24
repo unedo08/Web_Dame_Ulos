@@ -4,36 +4,40 @@
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
-      <form @submit.prevent="submitForm">
+      <form>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label>ID Barang *</label>
-            <input v-model="form.id_barang" type="text" required class="form-control" />
+            <label>Kode Barang *</label>
+            <input v-model="form.code" type="text" required class="form-control" />
+          </div>
+          <div class="hidden">
+            <label>Kode Barang *</label>
+            <input v-model="form.barangentry_code_id" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Nama Ulos *</label>
-            <input v-model="form.nama_ulos" type="text" required class="form-control" />
+            <input v-model="form.barangentry_nama" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Warna Ulos *</label>
-            <input v-model="form.warna_ulos" type="text" required class="form-control" />
+            <input v-model="form.barangentry_warna" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Nama Penenun *</label>
-            <input v-model="form.nama_penenun" type="text" required class="form-control" />
+            <input v-model="form.barangentry_nama_penenun" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Nama Panirat *</label>
-            <input v-model="form.nama_panirat" type="text" required class="form-control" />
+            <input v-model="form.barangentry_nama_panirat" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Dyer *</label>
-            <input v-model="form.dyer" type="text" required class="form-control" />
+            <input v-model="form.barangentry_dryer" type="text" required class="form-control" />
           </div>
 
           <div>
@@ -43,22 +47,28 @@
 
           <div>
             <label>Harga Price Tag *</label>
-            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required class="form-control text-right" />
+            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
+              class="form-control text-right" />
           </div>
 
           <div>
             <label>Harga Net *</label>
-            <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required class="form-control text-right" />
+            <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
+              class="form-control text-right" />
           </div>
 
           <div>
             <label>Ukuran Ulos *</label>
-            <input v-model="form.ukuran_ulos" type="text" required class="form-control" />
+            <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
           </div>
 
           <div>
             <label>Ukuran Mandar</label>
-            <input v-model="form.ukuran_mandar" type="text" class="form-control" />
+            <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
+          </div>
+          <div>
+            <label>Jumlah Barang</label>
+            <input v-model="form.barangentry_jumlah_barang" type="text" class="form-control" />
           </div>
         </div>
 
@@ -66,9 +76,9 @@
           <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
             Batal
           </button>
-          <button type="submit" class="px-6 py-2 rounded bg-cyan-600 text-white hover:bg-cyan-700" :disabled="loading">
-            <span v-if="loading">Menyimpan...</span>
-            <span v-else>Simpan</span>
+          <button type="button" @click="submitForm" :disabled="isSubmittingEdit"
+            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
+            {{ isSubmittingEdit ? 'Menyimpan...' : 'Simpan' }}
           </button>
         </div>
       </form>
@@ -83,6 +93,7 @@ import Swal from 'sweetalert2';
 import { useRuntimeConfig } from "#imports";
 
 const url = ref("");
+const isSubmittingEdit = ref(false);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -97,17 +108,19 @@ const emit = defineEmits(['close', 'saved']);
 
 const loading = ref(false);
 const form = ref({
-  id_barang: '',
-  nama_ulos: '',
-  warna_ulos: '',
-  nama_penenun: '',
-  nama_panirat: '',
-  dyer: '',
-  modal: 0,
-  harga_price_tag: 0,
-  harga_net: 0,
-  ukuran_ulos: '',
-  ukuran_mandar: '',
+  code: '',
+  barangentry_code_id: '',
+  barangentry_nama: '',
+  barangentry_warna: '',
+  barangentry_nama_penenun: '',
+  barangentry_nama_panirat: '',
+  barangentry_dryer: '',
+  barangentry_modal: 0,
+  barangentry_price_tag: 0,
+  barangentry_harga_net: 0,
+  barangentry_ukuran_ulos: '',
+  barangentry_ukuran_mandar: '',
+  barangentry_jumlah_barang: 0
 });
 
 const formatNumber = (value) => {
@@ -124,45 +137,63 @@ const formattedHargaNet = ref('');
 
 const updateModal = (e) => {
   const raw = parseNumber(e.target.value);
-  form.value.modal = raw;
+  form.value.barangentry_modal = raw;
   formattedModal.value = formatNumber(raw);
 };
 
 const updatePriceTag = (e) => {
   const raw = parseNumber(e.target.value);
-  form.value.harga_price_tag = raw;
+  form.value.barangentry_price_tag = raw;
   formattedPriceTag.value = formatNumber(raw);
 };
 
 const updateHargaNet = (e) => {
   const raw = parseNumber(e.target.value);
-  form.value.harga_net = raw;
+  form.value.barangentry_harga_net = raw;
   formattedHargaNet.value = formatNumber(raw);
 };
 
 const loadData = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/barang-ready/${props.id}`);
-    form.value = { ...res.data };
-    formattedModal.value = formatNumber(form.value.modal);
-    formattedPriceTag.value = formatNumber(form.value.harga_price_tag);
-    formattedHargaNet.value = formatNumber(form.value.harga_net);
+    const res = await axios.get(`${url.value}/api/entrybarang/${props.id}`);
+    form.value = { ...res.data.data };
+    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
+    form.value.code = code.data.code_nama;
+
+    formattedModal.value = formatNumber(form.value.barangentry_modal);
+    formattedPriceTag.value = formatNumber(form.value.barangentry_price_tag);
+    formattedHargaNet.value = formatNumber(form.value.barangentry_harga_net);
   } catch (err) {
     Swal.fire("Gagal", "Gagal memuat data!", "error");
   }
 };
 
 const submitForm = async () => {
-  loading.value = true;
+  isSubmittingEdit.value = true;
   try {
-    await axios.put(`${url.value}/api/barang-ready/${props.id}`, form.value);
+
+    const payload = {
+      barangentry_code_id: String(form.value.barangentry_code_id),
+      barangentry_nama: form.value.barangentry_nama,
+      barangentry_warna: form.value.barangentry_warna,
+      barangentry_nama_penenun: form.value.barangentry_nama_penenun,
+      barangentry_nama_panirat: form.value.barangentry_nama_panirat,
+      barangentry_dryer: form.value.barangentry_dryer,
+      barangentry_modal: Number(form.value.barangentry_modal),
+      barangentry_price_tag: Number(form.value.barangentry_price_tag),
+      barangentry_harga_net: Number(form.value.barangentry_harga_net),
+      barangentry_ukuran_ulos: form.value.barangentry_ukuran_ulos,
+      barangentry_ukuran_mandar: form.value.barangentry_ukuran_mandar,
+      barangentry_jumlah_barang: form.value.barangentry_jumlah_barang,
+    }
+    await axios.put(`${url.value}/api/entrybarang/ready-stock/${props.id}`, payload);
     await Swal.fire("Berhasil", "Data berhasil disimpan!", "success");
     emit('saved');
     closeModal();
   } catch (err) {
     Swal.fire("Gagal", "Gagal menyimpan data!", "error");
   } finally {
-    loading.value = false;
+    isSubmittingEdit.value = false;
   }
 };
 
@@ -186,10 +217,12 @@ watch(() => props.show, (newVal) => {
   margin-bottom: 1rem;
   outline: none;
 }
+
 .form-control:focus {
   border-color: #06b6d4;
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
 }
+
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
 }
