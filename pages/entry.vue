@@ -623,9 +623,10 @@
           </button>
           <button
             @click="submitBarang"
+            :disabled="isSubmitting"
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Simpan
+            {{ isSubmitting ? 'Dedang Menyimpan' : 'Simpan' }}
           </button>
         </div>
       </div>
@@ -694,9 +695,10 @@
           </button>
           <button
             @click="submitSizeBarang"
+            :disabled="isSubmittingSize"
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Simpan
+            {{ isSubmittingSize ? 'Sedang Meyimpan' : 'Simpan' }}
           </button>
         </div>
       </div>
@@ -914,6 +916,8 @@ const printContent = ref(null);
 const activeTab = ref("wait");
 const searchQuery = ref("");
 const barangMap = ref({});
+const isSubmitting = ref(false);
+const isSubmittingSize = ref(false);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -1049,6 +1053,7 @@ function formatRupiah(value) {
 }
 
 async function submitBarang() {
+  isSubmitting.value = true;
   try {
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
@@ -1071,6 +1076,8 @@ async function submitBarang() {
     modalOpen.value = false;
   } catch (error) {
     console.error("Gagal meyimpan barang:", error);
+  } finally {
+    isSubmitting.value = false;
   }
 }
 
@@ -1085,6 +1092,7 @@ function handleSizeSubmitted(barang) {
 }
 
 async function submitSizeBarang() {
+  isSubmittingSize.value = true;
   try {
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
@@ -1117,6 +1125,8 @@ async function submitSizeBarang() {
     modalOpen.value = false;
   } catch (error) {
     console.error("Gagal menyimpan size:", error);
+  } finally {
+    isSubmittingSize.value = false;
   }
 }
 
