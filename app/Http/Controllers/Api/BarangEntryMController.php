@@ -393,4 +393,39 @@ class BarangEntryMController extends Controller
         ], 200);
     }
 
+    public function updateReadyStock(Request $request, $id)
+    {
+        $request->validate([
+            'barangentry_nama' => 'required|string',
+            'barangentry_code_id'  => 'required|string',
+            'barangentry_warna'  => 'required|string',
+            'barangentry_nama_penenun' => 'required|string',
+            'barangentry_nama_panirat' => 'required|string',
+            'barangentry_dryer' => 'required|string',
+            'barangentry_modal' => 'required|numeric',
+            'barangentry_price_tag' => 'required|numeric',
+            'barangentry_harga_net' => 'required|numeric',
+            'barangentry_jumlah_barang' => 'required|numeric',
+            'barangentry_code_id'  => 'required|string',
+            'barangentry_ukuran_mandar' => 'nullable|string',
+            'barangentry_ukuran_ulos' => 'nullable|string',
+        ]);
+
+        $updated = BarangEntryM::find($id);
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Data Barang Ready Stock not found',
+                'code' => 404
+            ], 404);
+        }
+
+        $updated->update($request->all());
+
+        return response()->json([
+            'message' => 'Barang Ready Stock updated successfully',
+            'code' => 200,
+            'data' => $updated
+        ], 200);
+    }
+
 }

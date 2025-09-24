@@ -18,6 +18,7 @@ Route::patch('/{id}/updateStatus', [BarangEntryMController::class, 'updateStatus
 Route::get('/getDataByCode/{code_nama}', [BarangEntryMController::class, 'getDataByCode']);
 Route::get('/', [BarangEntryMController::class, 'index']);
 Route::get('/{id}', [BarangEntryMController::class, 'show']);
+Route::put('/ready-stock/{id}', [BarangEntryMController::class, 'updateReadyStock']);
 
 
 
