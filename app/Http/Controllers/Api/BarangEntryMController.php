@@ -36,11 +36,11 @@ class BarangEntryMController extends Controller
         ]);
 
         // Update if code_id exists, otherwise create new
-        // $record = BarangEntryM::updateOrCreate(
-        //     ['barangentry_code_id' => $data['barangentry_code_id']], 
-        //     $data
-        // );
-        $record = BarangEntryM::create($data);
+        $record = BarangEntryM::updateOrCreate(
+            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            $data
+        );
+        // $record = BarangEntryM::create($data);
 
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
@@ -70,12 +70,12 @@ class BarangEntryMController extends Controller
         ]);
 
         // Update if code_id exists, otherwise create new
-        // $record = BarangEntryM::updateOrCreate(
-        //     ['barangentry_code_id' => $data['barangentry_code_id']], 
-        //     $data
-        // );
+        $record = BarangEntryM::updateOrCreate(
+            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            $data
+        );
 
-        $record = BarangEntryM::create($data);
+        // $record = BarangEntryM::create($data);
 
         // Check for null ukuran
         $hasNullUkuran = is_null($record->barangentry_nama);
