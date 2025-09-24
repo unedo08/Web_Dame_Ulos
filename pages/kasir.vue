@@ -710,7 +710,7 @@ const fetchDataByBarcode = async (code) => {
       } else {
         datatableItems.value.push({
           barangentry_nama: item.barangentry_nama,
-          quantity: item.barangentry_jumlah_barang,
+          quantity: 1,
           barangentry_harga_net: item.barangentry_harga_net,
           isEditing: false,
           code_nama: code,
