@@ -90,10 +90,10 @@
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Uang Muka (DP)"
               />
-              <p v-if="errors.dp" class="text-red-500 text-sm mt-1">
-                {{ errors.dp }}
-              </p>
             </div>
+            <p v-if="errors.dp" class="text-red-500 text-sm mt-1">
+              {{ errors.dp }}
+            </p>
           </div>
 
           <div>
@@ -203,10 +203,10 @@
                 placeholder="Masukkan Sisa Pembayaran"
                 readonly
               />
-              <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">
-                {{ errors.sisaPembayaran }}
-              </p>
             </div>
+            <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">
+              {{ errors.sisaPembayaran }}
+            </p>
           </div>
           <div>
             <label
