@@ -556,6 +556,11 @@ watch([() => form.totalPembayaran, () => form.dp], ([total, dp]) => {
     errors.dp = "";
   }
 });
+
+watch(sisaPembayaran, (newValue) => {
+  form.sisaPembayaran = newValue;
+});
+// STL00005 -> 197
 </script>
 
 <style>

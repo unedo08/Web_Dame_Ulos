@@ -185,7 +185,7 @@
             <td>{{ pengiriman.jumlah }}</td>
             <td>
               <button
-                class="bg-green-500 text-white px-3 py-1 rounded-md"
+                class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
                 @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)"
               >
                 Edit

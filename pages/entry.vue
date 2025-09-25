@@ -94,6 +94,7 @@
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Kode Barang</th>
               <th class="px-4 py-2 text-left">Nama Ulos</th>
               <th class="px-4 py-2 text-left">Warna Ulos</th>
               <th class="px-4 py-2 text-left">Nama Penenun</th>
@@ -118,7 +119,8 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -225,6 +227,7 @@
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Kode Barang</th>
               <th class="px-4 py-2 text-left">Nama Ulos</th>
               <th class="px-4 py-2 text-left">Warna Ulos</th>
               <th class="px-4 py-2 text-left">Nama Penenun</th>
@@ -249,7 +252,8 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -375,6 +379,7 @@
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Kode Barang</th>
               <th class="px-4 py-2 text-left">Nama Ulos</th>
               <th class="px-4 py-2 text-left">Warna Ulos</th>
               <th class="px-4 py-2 text-left">Nama Penenun</th>
@@ -399,7 +404,8 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] + " - " + (barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>

@@ -93,14 +93,14 @@
           </td>
           <td class="px-4 py-2">
           <!-- v-if="item.quantity > 1" -->
-            <template>
+            <!-- <template> -->
               <input
                 type="text"
-                :value="formatRupiahInput(Number(item.barangentry_harga_net))"
+                :value="formatRupiahInput(item.barangentry_harga_net)"
                 @input="updateHargaNet($event, item)"
                 class="w-28 border rounded px-2 py-1 text-right"
               />
-            </template>
+            <!-- </template> -->
             <!-- <template v-else>
               {{ formatRupiahInput(item.barangentry_harga_net) }}
             </template> -->
@@ -710,7 +710,7 @@ const fetchDataByBarcode = async (code) => {
       } else {
         datatableItems.value.push({
           barangentry_nama: item.barangentry_nama,
-          quantity: 1,
+          quantity: item.barangentry_jumlah_barang,
           barangentry_harga_net: item.barangentry_harga_net,
           isEditing: false,
           code_nama: code,
