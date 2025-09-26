@@ -68,7 +68,7 @@ class PreOrdeBarangTController extends Controller
     public function getPreOrderbyBarangEntryID($id)
     {
         try {
-            $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id',$id)->one();
+            $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id',$id)->first();
             return response()->json([
                 'success' => true,
                 'message' => 'Pre Order Barang details retrieved successfully.',
