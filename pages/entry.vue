@@ -430,11 +430,24 @@
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
                     <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
+
                   <button
-                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
-                    @click="openModalEditBarang(barang.barangentry_id)"
+                    class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                    @click="openModalEditPO(barang.barangentry_id)"
                   >
-                    Edit
+                    Edit 
+                  </button>
+                  <button
+                    class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                    @click="openModalDesc(barang.barangentry_id)"
+                  >
+                    Desc + 
+                  </button>
+                  <button
+                    class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                    @click="openModalSize(barang.barangentry_id)"
+                  >
+                    Size +
                   </button>
                   <!-- <button
                     v-if="barang.barangentry_jumlah_barang > 1"
@@ -884,6 +897,27 @@
       @saved="loadData"
     />
 
+    <EditBarangPO
+      :show="showEditPO"
+      :id="selectedId"
+      @close="showEditPO = false"
+      @saved="loadData"
+    />
+
+    <EditBarangDesc
+      :show="showEditDesc"
+      :id="selectedId"
+      @close="showEditDesc = false"
+      @saved="loadData"
+    />
+
+    <EditBarangSize
+      :show="showEditSize"
+      :id="selectedId"
+      @close="showEditSize = false"
+      @saved="loadData"
+    />
+
     <!-- </div> -->
   </div>
 </template>
@@ -892,6 +926,9 @@
 import { ref, onMounted, nextTick } from "vue";
 import BaseModal from "../components/Modal.vue";
 import EditBarangReady from "../components/ModalEditBarang.vue";
+import EditBarangDesc from "../components/ModalEditDesc.vue";
+import EditBarangSize from "../components/ModalEditSize.vue";
+import EditBarangPO from "../components/ModalEditPO.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -906,6 +943,9 @@ const showModalEditStock = ref(false);
 const editJumlah = ref(1);
 
 const showEditModal = ref(false);
+const showEditDesc = ref(false);
+const showEditSize = ref(false);
+const showEditPO = ref(false);
 const selectedId = ref(null);
 
 const barangDatabase = ref([]);
@@ -949,6 +989,21 @@ function formatTanggal(tanggal) {
 const openModalEditBarang = (id) => {
   selectedId.value = id;
   showEditModal.value = true;
+};
+
+const openModalEditPO = (id) => {
+  selectedId.value = id;
+  showEditPO.value = true;
+};
+
+const openModalDesc = (id) => {
+  selectedId.value = id;
+  showEditDesc.value = true;
+};
+
+const openModalSize = (id) => {
+  selectedId.value = id;
+  showEditSize.value = true;
 };
 
 const loadData = async () => {
@@ -1011,6 +1066,17 @@ async function getListBarangTemp() {
     } else {
       endpoint = "/api/entrybarang/getDataPO";
     }
+    const response = await axios.get(`${url.value}${endpoint}`);
+    listBarang.value = response.data.data;
+    await fetchCodeBarang(listBarang.value);
+  } catch (error) {
+    console.error("Gagal Memuat Data Barang: ", error);
+  }
+}
+
+async function getListBarangPreOrder() {
+  try {
+    const responseEntry = await axios.get(`${url.value}/api/preOrderEntry/$`)
     const response = await axios.get(`${url.value}${endpoint}`);
     listBarang.value = response.data.data;
     await fetchCodeBarang(listBarang.value);

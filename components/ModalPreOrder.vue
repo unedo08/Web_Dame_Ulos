@@ -283,6 +283,7 @@ const form = reactive({
   sisaPembayaran: "",
   catatan: "",
   gambar: null,
+  barangentryID: ''
   // is_po: false,
 });
 
@@ -435,6 +436,8 @@ async function submitForm() {
     // );
 
     // if (form.is_po == true) {
+
+    const barangentryID = ref('');
       const product = {
         jenisbarang_kode: form.code_barang,
         jenisbarang_nama: "PO Barang",
@@ -470,6 +473,8 @@ async function submitForm() {
             `${url.value}/api/entrybarang/storeDescription`,
             payload
           );
+          barangentryID.value = responseBarang.data.data.barangentry_id;
+
 
           if(responseBarang.status === 201){
             await axios.patch(`${url.value}/api/entrybarang/${responseBarang.data.data.barangentry_id}/updateStatus`,{
@@ -495,6 +500,7 @@ async function submitForm() {
     formData.append("preOrderBarang_deskripsi_barang", form.deskripsiUlos);
     formData.append("preOrderBarang_catatan", form.catatan);
     formData.append("preOrderBarang_path_gambar", "test");
+    formData.append("preOrderBarang_barang_entry_id", String(barangentryID.value))
 
     await axios.post(`${url.value}/api/pre-order-barang`, formData, {
       headers: {
