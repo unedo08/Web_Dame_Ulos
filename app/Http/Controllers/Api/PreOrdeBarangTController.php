@@ -65,6 +65,24 @@ class PreOrdeBarangTController extends Controller
         }
     }
 
+    public function getPreOrderbyBarangEntryID($id)
+    {
+        try {
+            $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id',$id)->one();
+            return response()->json([
+                'success' => true,
+                'message' => 'Pre Order Barang details retrieved successfully.',
+                'data' => $item
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pre Order Barang not found.',
+                'data' => null
+            ], 404);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         try {
