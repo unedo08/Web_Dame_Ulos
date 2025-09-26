@@ -38,7 +38,12 @@ class PreOrdeBarangTController extends Controller
             'preOrderBarang_barang_entry_id' => 'required|string|max:255'
         ]);
 
-        $item = PreOrdeBarangT::create($validatedData);
+        // $item = PreOrdeBarangT::create($validatedData);
+
+        $item = PreOrdeBarangT::updateOrCreate(
+            ['preOrdeBarang_id' => $validatedData['preOrdeBarang_id']], 
+            $validatedData
+        );
 
         return response()->json([
             'success' => true,
