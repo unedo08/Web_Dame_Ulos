@@ -34,7 +34,8 @@ class PreOrdeBarangTController extends Controller
             'preOrderBarang_sisa_pembayaran' => 'required|numeric',
             'preOrderBarang_deskripsi_barang' => 'required|string',
             'preOrderBarang_catatan' => 'required|string',
-            'preOrderBarang_path_gambar' => 'required|string|max:255'
+            'preOrderBarang_path_gambar' => 'required|string|max:255',
+            'preOrderBarang_barang_entry_id' => 'required|string|max:255'
         ]);
 
         $item = PreOrdeBarangT::create($validatedData);
