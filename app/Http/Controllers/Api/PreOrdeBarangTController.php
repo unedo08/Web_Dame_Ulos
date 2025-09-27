@@ -156,30 +156,37 @@ class PreOrdeBarangTController extends Controller
     public function kodePO()
     {
         try {
-            $kode_barang = CodeM::select('code_nama')
-                                ->where('code_nama', 'like', '%PO%')
-                                ->orderBy('code_nama', 'desc')
-                                ->first();
+             $prefix = 'PO';        // Prefix tetap PO
+            $maxRetries = 10000;   // Batas pencarian kode
 
-            if (!empty($kode_barang)) {
-                return response()->json([
-                    'sukses' => true,
-                    'message' => "Kode Barang untuk barang Pre-Order",
-                    'data' => $kode_barang
-                ], 200);
-            } else {
-                return response()->json([
-                    'sukses' => false,
-                    'message' => "Kode Barang untuk barang Pre-Order tidak ditemukan.",
-                    'data' => []
-                ], 404);
+            for ($i = 1; $i <= $maxRetries; $i++) {
+                // Format angka jadi 5 digit (contoh: PO00001, PO00002, ...)
+                $nextCode = str_pad($i, 5, '0', STR_PAD_LEFT);
+                $newKode = $prefix . $nextCode;
+
+                // Cek apakah kode sudah ada di database
+                $exists =  CodeM::where('code_nama', 'like', 'PO%')
+                ->orderBy('code_nama', 'desc')
+                ->first();
+
+                if (!$exists) {
+                    break;
+                }
             }
-        } catch (ModelNotFoundException $e) {
+
             return response()->json([
-                'success' => false,
-                'message' => 'Pre Order Barang not found.',
+                'sukses' => true,
+                'message' => 'Kode Barang untuk barang Pre-Order',
+                'data' => [
+                    'code_nama' => $newKode
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'sukses' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
                 'data' => null
-            ], 404);
+            ], 500);
         }
     }
 }
