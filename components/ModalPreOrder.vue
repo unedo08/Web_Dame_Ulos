@@ -290,16 +290,16 @@ const form = reactive({
 async function kode_generator (){
   try{
     const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);
-    const kode_lama = kodePO.data.data.code_nama;
+    form.code_barang = kodePO.data.data.code_nama;
 
-    const prefix = kode_lama.match(/[A-Za-z]+/)[0];
-    const numberPart = kode_lama.replace(prefix, '');
+    //const prefix = kode_lama.match(/[A-Za-z]+/)[0];
+    //const numberPart = kode_lama.replace(prefix, '');
 
-    const kodePO_baru = (parseInt(numberPart, 10) + 1).toString().padStart(numberPart.length, '0');
+    //const kodePO_baru = (parseInt(numberPart, 10) + 1).toString().padStart(numberPart.length, '0');
 
-    const kodePO_fix = prefix + kodePO_baru;
+    //const kodePO_fix = prefix + kodePO_baru;
 
-    form.code_barang = kodePO_fix;
+    //form.code_barang = kodePO_fix;
 
   }catch(err){
     console.error('Error pengambilan data Kode PO', err);
