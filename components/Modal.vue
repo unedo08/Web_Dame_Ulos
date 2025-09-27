@@ -1,24 +1,14 @@
 <template>
-  <div
-    v-if="show"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-  >
-    <div
-      class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto"
-    >
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto">
       <h2 class="text-xl font-bold mb-4">{{ modalTitle }}</h2>
 
       <!-- Modal DESC -->
       <template v-if="type === 'desc'">
         <div class="mb-4">
           <label>Scan / Input Kode Barang:</label>
-          <input
-            ref="barcodeDesc"
-            v-model="barcode"
-            @input="onBarcodeInput"
-            class="w-full border rounded px-3 py-2"
-            autofocus
-          />
+          <input ref="barcodeDesc" v-model="barcode" @input="onBarcodeInput" class="w-full border rounded px-3 py-2"
+            autofocus />
         </div>
       </template>
 
@@ -26,37 +16,20 @@
       <template v-if="type === 'size'">
         <div class="mb-4">
           <label for="">Scan / Input Kode Barang:</label>
-          <input
-            ref="barcodeSize"
-            v-model="barcode"
-            @input="onBarcodeInputSize"
-            class="w-full border rounded px-3 py-2"
-            autofocus
-          />
+          <input ref="barcodeSize" v-model="barcode" @input="onBarcodeInputSize" class="w-full border rounded px-3 py-2"
+            autofocus />
         </div>
       </template>
 
       <!-- Modal PRICE TAG -->
       <template v-else-if="type === 'priceTag'">
         <div class="mb-4">
-          <textarea
-            v-model="barcodeInput"
-            @keyup.enter="handleScanPriceTag"
-            class="w-full border rounded px-3 py-2"
-            autofocus
-            rows="4"
-            placeholder="Scan or enter barcodes, separated by commas"
-          ></textarea>
+          <textarea v-model="barcodeInput" @input="handleInputPriceTag" class="w-full border rounded px-3 py-2"
+            autofocus rows="4" placeholder="Scan or enter barcodes, separated by commas"></textarea>
         </div>
 
-        <div
-          ref="printContent"
-          class="hidden print:block p-8 text-sm leading-relaxed"
-        >
-          <div
-            v-for="item in priceTagData"
-            :key="item.barangentry_id"
-            style="
+        <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
+          <div v-for="item in priceTagData" :key="item.barangentry_id" style="
               page-break-after: always;
               font-family: Arial, sans-serif;
               color: #541b1a;
@@ -64,14 +37,11 @@
               padding: 24px;
               max-width: 800px;
               margin: auto;
-            "
-          >
+            ">
             <div style="display: flex; gap: 40px">
               <!-- KIRI -->
               <div style="flex: 1">
-                <h2
-                  style="font-weight: bold; font-size: 16px; margin-bottom: 6px"
-                >
+                <h2 style="font-weight: bold; font-size: 16px; margin-bottom: 6px">
                   {{ item.data.barangentry_nama }}
                 </h2>
                 <p style="font-weight: bold; margin-bottom: 8px">Horas!</p>
@@ -88,14 +58,12 @@
                 <p style="margin-top: 16px">Salam Hangat,</p>
                 <p><em>Artisan Dame Ulos</em></p>
 
-                <table
-                  style="
+                <table style="
                     margin-top: 16px;
                     width: 100%;
                     font-size: 12px;
                     color: #541b1a;
-                  "
-                >
+                  ">
                   <tbody>
                     <tr>
                       <td style="font-weight: bold">Tahun Pembuatan</td>
@@ -151,23 +119,19 @@
 
               <!-- KANAN -->
               <div style="flex: 1; font-size: 12px">
-                <p
-                  style="
+                <p style="
                     font-weight: bold;
                     text-align: center;
                     margin-bottom: 10px;
-                  "
-                >
+                  ">
                   BAGAIMANA CARA PERAWATAN <br />
                   KAIN TENUN YANG BENAR?
                 </p>
-                <ol
-                  style="
+                <ol style="
                     list-style: decimal;
                     padding-left: 16px;
                     line-height: 1.6;
-                  "
-                >
+                  ">
                   <li>Ulos tidak bisa dicuci/direndam dengan detergen</li>
                   <li>
                     Setelah dipakai jangan dilipat, cukup digantung dan
@@ -179,12 +143,10 @@
                   <li>Hindari menyimpan di tempat lembab dan dalam plastik</li>
                   <li>Khusus kain dengan pewarna tekstil dapat di dry clean</li>
                 </ol>
-                <p
-                  style="
+                <p style="
                     margin-top: 20px;
                     font-family: 'Lucida Handwriting', cursive;
-                  "
-                >
+                  ">
                   Selamat Pakai
                 </p>
               </div>
@@ -194,24 +156,14 @@
       </template>
 
       <div class="mt-6 flex justify-end space-x-3">
-        <button
-          v-if="type === 'priceTag'"
-          @click="printPriceTag"
-          class="bg-green-600 text-white px-4 py-2 rounded"
-        >
+        <button v-if="type === 'priceTag'" @click="printPriceTag" class="bg-green-600 text-white px-4 py-2 rounded">
           Print
         </button>
-        <button
-          @click="closeModal"
-          class="bg-gray-500 text-white px-4 py-2 rounded"
-        >
+        <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">
           Close
         </button>
-        <button
-          v-if="barcode && size.ukuran_mandar && size.ukuran_ulos"
-          @click="submitSize"
-          class="bg-blue-500 text-white px-4 py-2 rounded"
-        >
+        <button v-if="barcode && size.ukuran_mandar && size.ukuran_ulos" @click="submitSize"
+          class="bg-blue-500 text-white px-4 py-2 rounded">
           Simpan Ukuran
         </button>
       </div>
@@ -336,6 +288,16 @@ function handleScanSize() {
     barcode.value = null;
     console.error("Gagal Memeriksa Kode Barang:");
   }
+}
+
+let priceTagTimeout;
+function handleInputPriceTag() {
+  clearTimeout(priceTagTimeout);
+  priceTagTimeout = setTimeout(() => {    
+    if (barcodeInput.value.length > 0 &&!barcodeInput.value.endsWith(",")) {
+      barcodeInput.value = barcodeInput.value.replace(/[\r\n]+/g, ",");
+    }
+  }, 300);
 }
 
 async function handleScanPriceTag() {

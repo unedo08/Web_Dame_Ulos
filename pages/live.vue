@@ -542,13 +542,14 @@ const openModalEditTransaksi = async (namaAkun) => {
     const { data } = await axios.get(
       `${url.value}/api/live-barang/data-live/` + namaAkun
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
-    );
-    
+    );  
     
     if (data.data && data.data.length > 0) {
       selected.value = {
         namaAkun: data.data[0].live_order_nama_akun,
-        barang: data.data.map((item) => ({
+        barang: data.data
+        .filter(item => item.is_check === 0)
+        .map((item) => ({
           kode: item.code_nama,
           nama: item.barangentry_nama,
           jumlah: item.live_order_jumlah_barang,

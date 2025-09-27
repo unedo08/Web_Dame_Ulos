@@ -266,9 +266,11 @@ const errors = reactive({});
 onMounted(() => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
+  
   // kodeBarangInput.value?.focus();
-
-  kode_generator();
+  //  if (props.visible) {
+  //   kode_generator();
+  // }
 });
 
 const form = reactive({
@@ -288,24 +290,14 @@ const form = reactive({
 });
 
 async function kode_generator (){
-  try{
-    const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);
+  try {
+    const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);    
     form.code_barang = kodePO.data.data.code_nama;
-
-    //const prefix = kode_lama.match(/[A-Za-z]+/)[0];
-    //const numberPart = kode_lama.replace(prefix, '');
-
-    //const kodePO_baru = (parseInt(numberPart, 10) + 1).toString().padStart(numberPart.length, '0');
-
-    //const kodePO_fix = prefix + kodePO_baru;
-
-    //form.code_barang = kodePO_fix;
-
-  }catch(err){
+  } catch(err){
     console.error('Error pengambilan data Kode PO', err);
-    
   }
 }
+
 
 function handleKodeBarangEnter() {
   platformInput.value?.focus();
@@ -539,8 +531,23 @@ async function submitForm() {
   }
 }
 
+watch(
+  () => props.visible,
+  (newVal) => {
+    if (newVal) {
+      kode_generator();
+    } else {      
+      form.code_barang = "";
+    }
+  }
+);
+
 function batalPreOrder() {
   emit("close");
+  resetForm();
+}
+
+function resetForm() {
   form.code_barang = "";
   form.namaAkun = "";
   form.targetSelesai = "";
@@ -551,9 +558,10 @@ function batalPreOrder() {
   form.totalPembayaran = "";
   form.sisaPembayaran = "";
   form.catatan = "";
-  form.alamat = "";
   form.gambar = null;
+  Object.keys(errors).forEach(key => (errors[key] = ""));
 }
+
 
 watch([() => form.totalPembayaran, () => form.dp], ([total, dp]) => {
   if (parseInt(dp) > parseInt(total)) {
@@ -566,6 +574,7 @@ watch([() => form.totalPembayaran, () => form.dp], ([total, dp]) => {
 watch(sisaPembayaran, (newValue) => {
   form.sisaPembayaran = newValue;
 });
+
 // STL00005 -> 197
 </script>
 

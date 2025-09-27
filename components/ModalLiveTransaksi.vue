@@ -192,17 +192,17 @@ function onInputBiayaPengiriman(e) {
 }
 
 function validate() {
-  errors.nama_penerima = !form.nama_penerima ? "Nama Penerima wajib diisi" : "";
-  errors.no_telepon = !form.no_telepon ? "No Telepon wajib diisi" : "";
-  errors.metode = !form.metode ? "Metode Pembayaran wajib diisi" : "";
-  errors.biaya_pengiriman = !form.biaya_pengiriman
-    ? "Biaya Pengiriman wajib diisi"
-    : "";
-  errors.metodePembayaran = !form.metodePembayaran
-    ? "Metode Pembayaran wajib diisi"
-    : "";
-  errors.alamat = !form.alamat ? "Alamat wajib diisi" : "";
-  errors.pengiriman = !form.pengiriman ? "Pengiriman wajib diisi" : "";
+  errors.nama_penerima = !form.value.nama_penerima ? "Nama Penerima wajib diisi" : "";
+  errors.no_telepon = !form.value.no_telepon ? "No Telepon wajib diisi" : "";
+  errors.metode = !form.value.metode ? "Metode Pembayaran wajib diisi" : "";
+  // errors.biaya_pengiriman = !form.value.biaya_pengiriman
+  //   ? "Biaya Pengiriman wajib diisi"
+  //   : "";
+  // errors.metodePembayaran = !form.value.metodePembayaran
+  //   ? "Metode Pembayaran wajib diisi"
+  //   : "";
+  errors.alamat = !form.value.alamat ? "Alamat wajib diisi" : "";
+  errors.pengiriman = !form.value.pengiriman ? "Pengiriman wajib diisi" : "";
 
   return Object.values(errors).every((err) => !err);
 }
@@ -264,8 +264,9 @@ const submitForm = async () => {
         transaksidetail_harga_barang: parseFloat(item.harga),
       };
       await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
-      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`)
-
+      const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
+      console.log('zxcccc', test);
+      
     }
 
     const pengirimanPayload = {
