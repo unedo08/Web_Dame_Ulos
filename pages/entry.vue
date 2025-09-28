@@ -1086,10 +1086,14 @@ async function getListBarangPreOrder() {
 }
 
 const searchFilterData = computed(() => {
-  if (!searchQuery.value) return listBarang.value;
+  const sorted = [...listBarang.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  if (!searchQuery.value) return sorted;
 
   const q = searchQuery.value.toLowerCase();
-  return listBarang.value.filter((barang) => {
+  return sorted.filter((barang) => {
     return (
       barang.barangentry_nama?.toLowerCase().includes(q) ||
       barang.barangentry_warna?.toLowerCase().includes(q)

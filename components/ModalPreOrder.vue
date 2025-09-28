@@ -478,6 +478,7 @@ async function submitForm() {
     // }
 
     const formData = new FormData();
+    formData.append("preOrdeBarang_id", "");
     formData.append("preOrderBarang_transaksi_id", "");
     formData.append("preOrderBarang_nama_barang", form.namaUlos);
     formData.append("preOrderBarang_nama_akun", form.namaAkun);

@@ -14,6 +14,10 @@
             <label>Kode Barang *</label>
             <input v-model="form.barangentry_code_id" type="text" required class="form-control" />
           </div>
+          <div class="hidden">
+            <label>preOrder ID *</label>
+            <input v-model="form.preOrdeBarang_id" type="text" required class="form-control" />
+          </div>
 
           <div>
             <label>Nama Akun *</label>
@@ -121,6 +125,7 @@ const form = ref({
   barangentry_ukuran_ulos: '',
   barangentry_ukuran_mandar: '',
   barangentry_jumlah_barang: 0,
+  preOrdeBarang_id:0,
   preOrderBarang_transaksi_id:0,
   preOrderBarang_nama_barang:'',
   preOrderBarang_nama_akun:'',
@@ -187,6 +192,7 @@ const submitForm = async () => {
   try {
 
     const payload = {
+      preOrdeBarang_id:form.value.preOrdeBarang_id,
       preOrderBarang_transaksi_id: '',
       preOrderBarang_nama_barang: form.value.barangentry_nama,
       preOrderBarang_nama_akun: form.value.preOrderBarang_nama_akun,
