@@ -24,6 +24,7 @@ class PreOrdeBarangTController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            'preOrdeBarang_id' => 'nullable|integer|exists:preOrdeBarang_t,preOrdeBarang_id',
             'preOrderBarang_transaksi_id' => 'nullable|integer',
             'preOrderBarang_nama_barang' => 'required|string|max:255',
             'preOrderBarang_nama_akun' => 'required|string|max:255',
@@ -37,6 +38,7 @@ class PreOrdeBarangTController extends Controller
             'preOrderBarang_path_gambar' => 'required|string|max:255',
             'preOrderBarang_barang_entry_id' => 'required|string|max:255'
         ]);
+
 
         // $item = PreOrdeBarangT::create($validatedData);
 
