@@ -1129,6 +1129,36 @@ function formatRupiah(value) {
 }
 
 async function submitBarang() {
+
+  const requiredFields = [
+    'code_id',
+    'barangentry_nama',
+    'barangentry_warna',
+    'barangentry_nama_penenun',
+    'barangentry_nama_panirat',
+    'barangentry_dryer',
+    'barangentry_modal',
+    'barangentry_price_tag',
+    'barangentry_harga_net',
+    'barangentry_jumlah_barang'
+  ];
+
+  const missingFields = requiredFields.filter(
+    (field) => !selectedBarang.value[field] && selectedBarang.value[field] !== 0
+  );
+
+  if (missingFields.length > 0) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    return;
+  }
+
   isSubmitting.value = true;
   try {
     const payload = {
@@ -1150,6 +1180,15 @@ async function submitBarang() {
     selectedBarang.value = {};
     showModalAdd.value = false;
     modalOpen.value = false;
+
+    Swal.fire({
+      title: "Sukses!",
+      text: "Berhasil Menambahkan Deskripsi",
+      icon: "success",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
   } catch (error) {
     console.error("Gagal meyimpan barang:", error);
   } finally {
@@ -1168,6 +1207,28 @@ function handleSizeSubmitted(barang) {
 }
 
 async function submitSizeBarang() {
+
+  const requiredFields = [
+    'code_id',
+    'ukuran_mandar',
+    'ukuran_ulos'
+  ];
+
+  const missingFields = requiredFields.filter(
+    (field) => !selectedBarang.value[field] && selectedBarang.value[field] !== 0
+  );
+
+  if (missingFields.length > 0) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silakan lengkapi semua field wajib.",
+      icon: "error",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    return;
+  }
   isSubmittingSize.value = true;
   try {
     const payload = {
@@ -1199,6 +1260,15 @@ async function submitSizeBarang() {
     selectedBarang.value = {};
     showModalAddSize.value = false;
     modalOpen.value = false;
+
+    Swal.fire({
+      title: "Sukses!",
+      text: "Berhasil Menambahkan Size",
+      icon: "success",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
   } catch (error) {
     console.error("Gagal menyimpan size:", error);
   } finally {

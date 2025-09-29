@@ -2,7 +2,8 @@
     <div class="flex flex-col h-screen bg-gray-100">
         <div class="flex flex-grow">
             <!-- Sidebar -->
-            <div class="w-64 md:w-56 lg:w-64 bg-[#520000] text-white p-6">
+            <!-- <div class="w-64 md:w-56 lg:w-64 bg-[#520000] text-white p-6"> -->
+            <div class="w-64 bg-[#520000] text-white p-6 shrink-0">
                <Sidebar />
             </div>
 
