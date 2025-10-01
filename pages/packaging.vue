@@ -30,7 +30,7 @@
           :key="pengiriman.pengirimanBarang_id"
           :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
         >
-        <pre>{{ pengiriman }}</pre>
+        <!-- <pre>{{ pengiriman }}</pre> -->
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">
             {{ pengiriman.pengirimanBarang_nama_penerima }}
