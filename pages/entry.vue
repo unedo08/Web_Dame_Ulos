@@ -430,7 +430,12 @@
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
                     <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
-
+                  <button
+                    class="text-center rounded-md bg-[#FBBF24] text-white hover:bg-[#FFD15A] px-2 py-1 h-[30px] w-[90px]"
+                    @click="printPreOrder(barang.barangentry_id)"
+                  >
+                    Print
+                  </button>
                   <button
                     class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
                     @click="openModalEditPO(barang.barangentry_id)"
@@ -1431,6 +1436,257 @@ const paginatedPages = computed(() => {
 
   return pages;
 });
+
+async function printPreOrder(id){
+
+  const response = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${id}`);
+
+  const data  = response.data.data;
+
+  const resEntry = await axios.get(`${url.value}/api/entrybarang/${id}`);
+  const barangEntry = resEntry.data.data;
+
+  const code = await axios.get(`${url.value}/api/codebarang/${barangEntry.barangentry_code_id}`)
+  const code_nama = code.data.code_nama;
+  
+  printData(data, barangEntry, code_nama);
+  
+}
+
+function printData(data, barangEntry, code_nama) {
+
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) {
+    alert("Pop-up blocker menghalangi membuka tab baru.");
+    return;
+  }
+
+  const formatTanggal = (dateStr) => {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const formatRupiah = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(value || 0);
+  };
+
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pre Order Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 40px;
+        background: #fff;
+        color: #000;
+      }
+
+      .print-area {
+        max-width: 800px;
+        margin: auto;
+        box-sizing: border-box;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        font-size: 14px;
+        gap: 40px;
+      }
+      .info-col {
+        flex: 1;
+      }
+      .info-row {
+        display: flex;
+        margin-bottom: 6px;
+      }
+      .info-label {
+        width: 150px; /* pastikan lebar sama biar titik dua sejajar */
+        font-weight: bold;
+      }
+      .info-separator {
+        margin-right: 6px;
+      }
+      .info-value {
+        flex: 1;
+        font-weight: normal;
+      }
+
+      h3 {
+        margin-top: 30px;
+        font-size: 15px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin-top: 12px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      thead {
+        background-color: #f9f9f9;
+        font-weight: bold;
+      }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+      }
+
+      tbody tr:not(:last-child) {
+        border-bottom: 1px dashed #ccc;
+      }
+
+      .total-row td {
+        font-weight: bold;
+        text-align: right;
+        padding-top: 12px;
+        border-top: 1px solid #ddd;
+      }
+
+      .signatures {
+        display: flex;
+        justify-content: flex-end; /* rata kanan */
+        gap: 40px;
+        margin: 40px 0;
+      }
+      .sign-box {
+        border: 1px solid #000;
+        width: 120px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #555;
+        margin-top: 40px;
+      }
+
+      @media print {
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="print-area">
+      <div class="header">
+        <img src="/image/DameUlosPO.png" alt="Logo Dame Ulos" class="logo"/>
+      </div>
+
+      <div class="info">
+        <div class="info-col">
+          <div class="info-row">
+            <div class="info-label">Kode PO</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${code_nama || "-"}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Nama Ulos</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${barangEntry.barangentry_nama || "-"}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Deskripsi</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${data.preOrderBarang_deskripsi || "-"}</div>
+          </div>
+        </div>
+
+        <div class="info-col">
+          <div class="info-row">
+            <div class="info-label">Tanggal Dimulai</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${formatTanggal(data.updated_at)}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Tanggal Selesai</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${formatTanggal(data.preOrderBarang_target_selesai)}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Author</div>
+            <div class="info-separator">:</div>
+            <div class="info-value">${data.preOrderBarang_nama_akun || "-"}</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Rincian Pembayaran</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Total Pembayaran</th>
+            <th>Down Payment (DP)</th>
+            <th>Pelunasan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${formatRupiah(data.preOrderBarang_total_pembayaran)}</td>
+            <td>${formatRupiah(data.preOrderBarang_uang_muka)}</td>
+            <td>${formatRupiah(data.preOrderBarang_sisa_pembayaran)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="signatures">
+        <div class="sign-box">Tanda Masuk</div>
+        <div class="sign-box">Tanda Pengambilan</div>
+      </div>
+
+      <div class="footer">
+        <p>Transaksi ini diproses berdasarkan Purchase Order yang berlaku.</p>
+        <p>Terima kasih telah mempercayakan kebutuhan Anda kepada kami.</p>
+      </div>
+    </div>
+
+    <script>
+      window.onload = function () {
+        window.print();
+      };
+    <\/script>
+  </body>
+  </html>
+  `;
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+}
 
 watch(editJumlah, (val) => {
   if (val < 1 || !val) {
