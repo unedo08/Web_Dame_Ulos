@@ -69,3 +69,7 @@ Route::prefix('/pre-order-barang')->group(function () {
 Route::prefix('/live-barang')->group(function () {
     require __DIR__.'/api/liveOrderT.php';  // Relative path
 });
+
+Route::prefix('/packaging')->group(function () {
+    require __DIR__.'/api/packagingM.php';  // Relative path
+});
