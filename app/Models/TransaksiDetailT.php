@@ -14,6 +14,7 @@ class TransaksiDetailT extends Model
         'transaksidetail_barang_id',
         'transaksidetail_jumlah_barang',
         'transaksidetail_harga_barang',
+        'transaksidetail_status_penjualan'
     ];
 
     public function transaksi()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PengirimanBarangT;
+use App\Models\TransaksiDetailT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PengirimanBarangTController extends Controller
@@ -139,5 +140,34 @@ class PengirimanBarangTController extends Controller
             'message' => 'Status updated successfully.',
             'data' => $pengirimanBarang
         ], 200);
+    }
+
+    public function getPengirimanBarangByTransaksiId($id){
+        $data = TransaksiDetailT::select(
+            'transaksidetail_t.*',
+            'barangentry_m.barangentry_nama',
+            'code_m.code_nama'
+            )
+            ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
+            ->join('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
+            ->where('transaksidetail_t.transaksidetail_transaksi_id', $id)
+            ->get();
+
+        if($data->isEmpty()){
+            return response()->json([
+                'code'    => 404,
+                'message' => 'Pengiriman order not found',
+                'data'    => null
+            ], 404);
+        }
+
+
+
+        return response()->json([
+            'code'    => 200,
+            'message' => 'Data Pengiriman',
+            'data'    => $data
+        ], 200);
+
     }
 }
