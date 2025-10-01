@@ -30,6 +30,7 @@
           :key="pengiriman.pengirimanBarang_id"
           :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
         >
+        <pre>{{ pengiriman }}</pre>
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">
             {{ pengiriman.pengirimanBarang_nama_penerima }}
@@ -54,18 +55,24 @@
           <td class="px-4 py-2">{{ formatDate(pengiriman.created_at) }}</td>
           <td class="px-4 py-2">
             <div class="flex space-x-2">
-              <button
+              <!-- <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#FBBF24] text-white hover:bg-[#FFD15A] rounded-md text-s"
                 @click="openViewDetail(pengiriman.pengirimanBarang_id)"
               >
                 View
-              </button>
+              </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
                 @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
               >
-                Print
+                Edit
               </button>
+              <!-- <button
+                class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
+                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
+              >
+                Print
+              </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#DC3545] text-white hover:bg-[#FF4456] rounded-md text-s"
                 @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
@@ -131,6 +138,15 @@
     :id="selectedPengirimanId"
     @close="showDetailModal = false"
   />
+
+   <!-- <ModalLiveTransaksi
+    v-model:show="isModalOpen"
+    :namaAkun="selected.namaAkun"
+    :barang="selected.barang"
+    @save="handleSave"
+    @close="isModalOpen = false"
+    @removeItem="handleRemoveItem"
+  /> -->
 </template>
 
 <script setup>
@@ -149,6 +165,10 @@ const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const showDetailModal = ref(false);
 const selectedPengirimanId = ref(null);
+const isModalOpen = ref(false);
+const handleSave = (form) => {
+  isModalOpen.value = false;
+};
 
 onMounted(() => {
   const config = useRuntimeConfig();
