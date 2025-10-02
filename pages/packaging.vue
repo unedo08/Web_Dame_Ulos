@@ -63,7 +63,7 @@
               </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
-                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
+                @click="openModalEditPackaging(pengiriman.transaksi_id)"
               >
                 Edit
               </button>
@@ -169,6 +169,7 @@ const isModalOpen = ref(false);
 const handleSave = (form) => {
   isModalOpen.value = false;
 };
+const selected = ref({ barang: [] });
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -220,6 +221,40 @@ const totalPages = computed(() => {
   return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
 });
 
+const openModalEditPackaging = async (trx_id) => {
+  try {
+    const { data } = await axios.get(
+      `${url.value}/api/pengiriman-barang/get-transaksi-detail/` + trx_id
+      //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
+    );  
+    
+    if (data.data && data.data.length > 0) {
+      selected.value = {
+        barang: data.data
+        .filter(item => item.is_check === 0)
+        .map((item) => ({
+          kode: item.code_nama,
+          nama: item.barangentry_nama,
+          jumlah: item.live_order_jumlah_barang,
+          harga: parseFloat(item.live_order_harga_terjual),
+          live_order_id: item.live_order_id,
+          is_check: false,
+        })),
+      };
+      isModalOpen.value = true;
+    }
+  } catch (error) {
+    console.error("Gagal ambil data:", error);
+  }
+};
+
+const editPackaging = async (trx_id) => {
+  const response = await axios.get(`${url.value}//${trx_id}`);
+
+  dataTransaksi = response.data.data;
+
+
+}
 const paginatedPages = computed(() => {
   const total = totalPages.value;
   const current = currentPage.value;
