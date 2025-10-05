@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PengirimanBarangT;
+use App\Models\CustomerM;
 use App\Models\TransaksiDetailT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -23,25 +24,54 @@ class PengirimanBarangTController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'pengirimanBarang_transaksi_id'          => 'required|integer',
-            'pengirimanBarang_nama_penerima'         => 'required|string|max:255',
-            'pengirimanBarang_akun_penerima'         => 'nullable|string|max:255',
-            'pengirimanBarang_no_telepon'            => 'nullable|string|max:20',
-            'pengirimanBarang_harga_kirim_barang'    => 'required|numeric',
-            'pengirimanBarang_jenis_pengiriman_barang'=> 'required|string|max:100',
+        $validated = $request->validate([
+            'pengirimanBarang_transaksi_id'            => 'required|integer',
+            'pengirimanBarang_nama_penerima'           => 'required|string|max:255',
+            'pengirimanBarang_akun_penerima'           => 'nullable|string|max:255',
+            'pengirimanBarang_no_telepon'              => 'nullable|string|max:20',
+            'pengirimanBarang_harga_kirim_barang'      => 'required|numeric',
+            'pengirimanBarang_jenis_pengiriman_barang' => 'required|string|max:100',
             'pengirimanBarang_alamat_pengiriman_barang'=> 'required|string',
-            'pengirimanBarang_catatan'               => 'nullable|string',
-            'pengirimanBarang_status'                => 'nullable|string|max:50',
+            'pengirimanBarang_catatan'                 => 'nullable|string',
+            'pengirimanBarang_status'                  => 'nullable|string|max:50',
         ]);
 
-        $item = PengirimanBarangT::create($validatedData);
-       
-        return response()->json([
-            'code' => 201,
-            'message' => 'Pengiriman Barang created successfully.',
-            'data' => $item
-        ], 201);
+        try {
+            $customer = CustomerM::firstOrCreate(
+                [
+                    'customer_akun'      => $validated['pengirimanBarang_akun_penerima'] ?? null,
+                    'customer_notelepon' => $validated['pengirimanBarang_no_telepon'] ?? null,
+                ],
+                [
+                    'customer_nama'     => $validated['pengirimanBarang_nama_penerima'],
+                    'customer_alamat'   => $validated['pengirimanBarang_alamat_pengiriman_barang'],
+                    'customer_platform' => '-',
+                ]
+            );
+            $pengiriman = PengirimanBarangT::create([
+                ...$validated,
+                'pengirimanBarang_status'       => $validated['pengirimanBarang_status'] ?? 'pending',
+                'pengirimanBarang_customer_id'  => $customer->customer_id,
+            ]);
+
+            return response()->json([
+                'status'  => true,
+                'code'    => 201,
+                'message' => 'Data pengiriman dan customer berhasil disimpan otomatis',
+                'data'    => [
+                    'customer'   => $customer,
+                    'pengiriman' => $pengiriman,
+                ],
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'code'    => 500,
+                'message' => 'Terjadi kesalahan saat menyimpan data',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function show($id)
@@ -66,36 +96,62 @@ class PengirimanBarangTController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $item = PengirimanBarangT::findOrFail($id);
+            $item = PengirimanBarangT::with('customer')->findOrFail($id);
 
-            $validatedData = $request->validate([
-                'pengirimanBarang_transaksi_id'          => 'sometimes|integer',
-                'pengirimanBarang_nama_penerima'         => 'sometimes|string|max:255',
-                'pengirimanBarang_akun_penerima'         => 'nullable|string|max:255',
-                'pengirimanBarang_no_telepon'            => 'nullable|string|max:20',
-                'pengirimanBarang_harga_kirim_barang'    => 'sometimes|numeric',
-                'pengirimanBarang_jenis_pengiriman_barang'=> 'sometimes|string|max:100',
-                'pengirimanBarang_alamat_pengiriman_barang'=> 'sometimes|string',
-                'pengirimanBarang_catatan'               => 'nullable|string',
-                'pengirimanBarang_status'                => 'nullable|string|max:50',
+            $validated = $request->validate([
+                'pengirimanBarang_transaksi_id'             => 'sometimes|integer',
+                'pengirimanBarang_nama_penerima'            => 'sometimes|string|max:255',
+                'pengirimanBarang_akun_penerima'            => 'nullable|string|max:255',
+                'pengirimanBarang_no_telepon'               => 'nullable|string|max:20',
+                'pengirimanBarang_harga_kirim_barang'       => 'sometimes|numeric',
+                'pengirimanBarang_jenis_pengiriman_barang'  => 'sometimes|string|max:100',
+                'pengirimanBarang_alamat_pengiriman_barang' => 'sometimes|string',
+                'pengirimanBarang_catatan'                  => 'nullable|string',
+                'pengirimanBarang_status'                   => 'nullable|string|max:50',
             ]);
 
-            $item->update($validatedData);
+            $item->update($validated);
+
+            if (
+                isset($validated['pengirimanBarang_nama_penerima']) &&
+                $item->customer &&
+                $validated['pengirimanBarang_nama_penerima'] !== $item->customer->customer_nama
+            ) {
+                $item->customer->update([
+                    'customer_nama'   => $validated['pengirimanBarang_nama_penerima'],
+                    'customer_alamat' => $validated['pengirimanBarang_alamat_pengiriman_barang'] 
+                        ?? $item->customer->customer_alamat,
+                ]);
+            }
 
             return response()->json([
-                'code' => 200,
+                'status'  => true,
+                'code'    => 200,
                 'message' => 'Pengiriman Barang updated successfully.',
-                'data' => $item
+                'data'    => [
+                    'pengiriman' => $item,
+                    'customer'   => $item->customer,
+                ],
             ], 200);
+
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'code' => 404,
+                'status'  => false,
+                'code'    => 404,
                 'message' => 'Pengiriman Barang not found.',
-                'data' => null
+                'data'    => null,
             ], 404);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'code'    => 500,
+                'message' => 'Terjadi kesalahan saat memperbarui data.',
+                'error'   => $e->getMessage(),
+            ], 500);
         }
     }
-
+    
     public function destroy($id)
     {
         try {

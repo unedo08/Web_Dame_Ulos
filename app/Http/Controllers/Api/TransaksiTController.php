@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\TransaksiT;
+use App\Models\CustomerM;
 use Illuminate\Http\Request;
 
 class TransaksiTController extends Controller
@@ -29,27 +30,53 @@ class TransaksiTController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'transaksi_id' => 'nullable|string',
-            'transaksi_nama_customer' => 'required|string|max:255',
-            'transaksi_nomor_telepon' => 'required|string|max:20',
-            'transaksi_jumlah_barang' => 'required|integer|min:1',
-            'transaksi_total_harga' => 'required|numeric|min:0',
-            'transaksi_cara_bayar' => 'nullable|string',
-            'transaksi_tipe' => 'nullable|string',
-            'transaksi_status' => 'nullable|string',
-            'transaksi_catatan' => 'nullable|string'
+            'transaksi_id'             => 'nullable|string',
+            'transaksi_nama_customer'  => 'required|string|max:255',
+            'transaksi_nomor_telepon'  => 'required|string|max:20',
+            'transaksi_jumlah_barang'  => 'required|integer|min:1',
+            'transaksi_total_harga'    => 'required|numeric|min:0',
+            'transaksi_cara_bayar'     => 'nullable|string',
+            'transaksi_tipe'           => 'nullable|string',
+            'transaksi_status'         => 'nullable|string',
+            'transaksi_catatan'        => 'nullable|string',
         ]);
 
-        $record = TransaksiT::updateOrCreate(
-            ['transaksi_id' => $validated['transaksi_id'] ?? null], 
-            $validated
-        );
+        try {
+            $customer = CustomerM::firstOrCreate(
+                [
+                    'customer_notelepon' => $validated['transaksi_nomor_telepon'],
+                ],
+                [
+                    'customer_nama'     => $validated['transaksi_nama_customer'],
+                    'customer_alamat'   => '-', // default value if not provided
+                    'customer_akun'     => null,
+                    'customer_platform' => '-',
+                ]
+            );
 
-        return response()->json([
-            'message' => 'Transaksi berhasil disimpan.',
-            'data' => $record
-        ], 201);
+            $record = TransaksiT::updateOrCreate(
+                ['transaksi_id' => $validated['transaksi_id'] ?? null],
+                array_merge($validated, [
+                    'transaksi_customer_id' => $customer->customer_id,
+                    'transaksi_status' => $validated['transaksi_status'] ?? 'pending',
+                ])
+            );
+
+            return response()->json([
+                'code'    => 201,
+                'message' => 'Transaksi dan customer berhasil disimpan.',
+                'customer'=> $customer,
+                'data'    => $record,
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'code'    => 500,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function show($id)
     {

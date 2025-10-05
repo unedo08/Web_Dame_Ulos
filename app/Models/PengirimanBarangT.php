@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CustomerM;
 
 class PengirimanBarangT extends Model
 {
@@ -18,5 +19,11 @@ class PengirimanBarangT extends Model
         'pengirimanBarang_alamat_pengiriman_barang',
         'pengirimanBarang_catatan',
         'pengirimanBarang_status',
+        'pengirimanBarang_customer_id',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(CustomerM::class, 'pengirimanBarang_customer_id', 'customer_id');
+    }
 }

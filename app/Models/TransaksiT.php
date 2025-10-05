@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TransaksiDetailT;
+use App\Models\CustomerM;
+
 
 class TransaksiT extends Model
 {
@@ -17,11 +19,17 @@ class TransaksiT extends Model
         'transaksi_cara_bayar',
         'transaksi_tipe',
         'transaksi_status',
-        'transaksi_catatan'
+        'transaksi_catatan',
+        'transaksi_customer_id'
     ];
 
     public function details()
     {
         return $this->hasMany(TransaksiDetailT::class, 'transaksidetail_transaksi_id', 'transaksi_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(CustomerM::class, 'transaksi_customer_id', 'customer_id');
     }
 }
