@@ -3,7 +3,7 @@
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] w-[800px] max-h-[90vh] overflow-y-auto">
       <!-- Header -->
       <div class="flex justify-between items-center px-6 py-4">
-        <h2 class="text-lg font-bold">Form Marketing</h2>
+        <h2 class="text-lg font-bold">Form Packaging</h2>
         <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
           ✕
         </button>
@@ -24,11 +24,13 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in barang" :key="index">
+              <!-- <pre>{{ item }}</pre> -->
+
               <td class="px-3 py-2">
                 <input type="checkbox" v-model="item.is_check"
                   class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" />
               </td>
-              <td class="px-3 py-2 hidden">{{ item.live_order_id }}</td>
+              <td class="px-3 py-2 hidden">{{ item.trx_detail_id }}</td>
               <td class="px-3 py-2">{{ item.kode }}</td>
               <td class="px-3 py-2">{{ item.nama }}</td>
               <td class="px-3 py-2 text-center">{{ item.jumlah }}</td>
@@ -47,69 +49,13 @@
           </tbody>
         </table>
 
-        <!-- Nama Akun -->
-        <div class="font-semibold mb-4">Nama Akun: {{ namaAkun }}</div>
-
-        <!-- Form Input -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Nama Penerima *</label>
-            <input v-model="form.nama_penerima" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
-              placeholder="Masukkan nama penerima" required />
-            <p v-if="errors.nama_penerima" class="text-red-500 text-sm mt-1">
-              {{ errors.nama_penerima }}
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">No Telepon/Wa *</label>
-            <input v-model="form.no_telepon" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
-              placeholder="Masukkan nomor telepon" required />
-            <p v-if="errors.no_telepon" class="text-red-500 text-sm mt-1">
-              {{ errors.no_telepon }}
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">Metode Pembayaran *</label>
-            <select v-model="form.metode" class="w-full border border-gray-300 rounded-md px-3 py-2" required>
-              <option value="" disabled>Pilih metode pembayaran</option>
-              <option value="Transfer Bank">Transfer Bank</option>
-              <option value="Credit Card">Credit Card</option>
-              <option value="Cash">Cash</option>
-              <option value="OVO">OVO</option>
-              <option value="Gopay">Gopay</option>
-            </select>
-            <p v-if="errors.metode" class="text-red-500 text-sm mt-1">
-              {{ errors.metode }}
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">Biaya Pengiriman *</label>
-            <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan biaya pengiriman"
-              required />
-            <p v-if="errors.biaya_pengiriman" class="text-red-500 text-sm mt-1">
-              {{ errors.biaya_pengiriman }}
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">Alamat</label>
+            <label class="block text-sm font-medium mb-1">Alamat <span color="red">"*" </span></label>
             <textarea v-model="form.alamat" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan alamat"></textarea>
             <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
               {{ errors.alamat }}
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">Pengiriman *</label>
-            <input v-model="form.pengiriman" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
-              placeholder="Masukkan jenis pengiriman" required />
-            <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
-              {{ errors.pengiriman }}
             </p>
           </div>
         </div>
@@ -138,7 +84,6 @@ import Swal from "sweetalert2";
 const url = ref("");
 const props = defineProps({
   show: Boolean,
-  namaAkun: String,
   barang: Array,
 });
 const emit = defineEmits(["close", "save", "removeItem"]);
@@ -146,12 +91,7 @@ const errors = reactive({});
 
 const isSubmitting = ref(false);
 const form = ref({
-  nama_penerima: "",
-  no_telepon: "",
-  metode: "",
-  biaya_pengiriman: "",
   alamat: "",
-  pengiriman: "",
 });
 
 onMounted(async () => {
@@ -192,17 +132,7 @@ function onInputBiayaPengiriman(e) {
 }
 
 function validate() {
-  errors.nama_penerima = !form.value.nama_penerima ? "Nama Penerima wajib diisi" : "";
-  errors.no_telepon = !form.value.no_telepon ? "No Telepon wajib diisi" : "";
-  errors.metode = !form.value.metode ? "Metode Pembayaran wajib diisi" : "";
-  // errors.biaya_pengiriman = !form.value.biaya_pengiriman
-  //   ? "Biaya Pengiriman wajib diisi"
-  //   : "";
-  // errors.metodePembayaran = !form.value.metodePembayaran
-  //   ? "Metode Pembayaran wajib diisi"
-  //   : "";
   errors.alamat = !form.value.alamat ? "Alamat wajib diisi" : "";
-  errors.pengiriman = !form.value.pengiriman ? "Pengiriman wajib diisi" : "";
 
   return Object.values(errors).every((err) => !err);
 }
@@ -234,59 +164,20 @@ const submitForm = async () => {
   }
 
   try {
-    const payloadTransaksi = {
-      transaksi_nama_customer: form.value.nama_penerima,
-      transaksi_nomor_telepon: form.value.no_telepon,
-      transaksi_jumlah_barang: jumlahBarang.value,
-      transaksi_total_harga: subtotal.value,
-      transaksi_cara_bayar: form.value.metode,
-      transaksi_tipe: "PREORDER",
-      transaksi_status: "PREORDER",
-      transaksi_catatan: "",
-    };
-
-    const { data } = await axios.post(
-      `${url.value}/api/transaksi`,
-      payloadTransaksi
-    );
-    const transaksi_id = data.data.transaksi_id;
     for (const item of props.barang.filter(item => item.is_check)) {
-      const { data: barangResponse } = await axios.get(
-        `${url.value}/api/entrybarang/getDataByCode/${item.kode}`
-      );
-      const barangData = barangResponse.data;
-      if (!barangData || !barangData.barangentry_id) continue;
-
       const detailPayload = {
-        transaksidetail_transaksi_id: transaksi_id,
-        transaksidetail_barang_id: barangData.barangentry_id,
-        transaksidetail_jumlah_barang: item.jumlah,
-        transaksidetail_harga_barang: parseFloat(item.harga),
+        packaging_transactiondetail_id: item.trx_detail_id,
+        packaging_nama_akun: form.value.alamat,
+        packaging_alamat: form.value.alamat,
       };
-      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
-      const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
-      console.log('zxcccc', test);
+      await axios.post(`${url.value}/api/packaging`, detailPayload);
       
     }
-
-    const pengirimanPayload = {
-      pengirimanBarang_transaksi_id: transaksi_id,
-      pengirimanBarang_nama_penerima: form.value.nama_penerima,
-      pengirimanBarang_akun_penerima: props.namaAkun,
-      pengirimanBarang_no_telepon: form.value.no_telepon,
-      pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
-      pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
-      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
-      pengirimanBarang_catatan: "",
-      pengirimanBarang_status: "Proses",
-    };
-    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
-
     emit("save");
     emit("close");
-    Swal.fire("Berhasil", "Transaksi berhasil disimpan!", "success");
+    Swal.fire("Berhasil", "Packaging berhasil disimpan!", "success");
   } catch (err) {
-    console.error("Gagal menyimpan transaksi:", err);
+    console.error("Gagal menyimpan Packaging:", err);
     Swal.fire("Gagal", "Gagal menyimpan data!", "error");
   } finally {
     isSubmitting.value = false;

@@ -63,7 +63,7 @@
               </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
-                @click="openModalEditPackaging(pengiriman.transaksi_id)"
+                @click="openModalEditPackaging(pengiriman.pengirimanBarang_transaksi_id, pengiriman.pengirimanBarang_nama_penerima)"
               >
                 Edit
               </button>
@@ -139,14 +139,14 @@
     @close="showDetailModal = false"
   />
 
-   <!-- <ModalLiveTransaksi
+   <ModalEditPackaging
     v-model:show="isModalOpen"
     :namaAkun="selected.namaAkun"
     :barang="selected.barang"
     @save="handleSave"
     @close="isModalOpen = false"
     @removeItem="handleRemoveItem"
-  /> -->
+  />
 </template>
 
 <script setup>
@@ -155,6 +155,7 @@ import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from '../components/ModalViewDetail.vue'
+import ModalEditPackaging from "../components/ModalEditPackaging.vue";
 
 const config = useRuntimeConfig();
 const url = ref('');
@@ -169,7 +170,7 @@ const isModalOpen = ref(false);
 const handleSave = (form) => {
   isModalOpen.value = false;
 };
-const selected = ref({ barang: [] });
+const selected = ref({ namaAkun: "", barang: [] });
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -191,11 +192,15 @@ const openViewDetail = (id) => {
   showDetailModal.value = true;
 };
 
-const listpengirimanData = computed(() => {
-  if (!searchQuery.value) return pengirimanData.value;
+const listpengirimanData = computed(() => {  
+  const sorted = [...pengirimanData.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  if (!searchQuery.value) return sorted;
 
   const q = searchQuery.value.toLowerCase();
-  return pengirimanData.value.filter((pengiriman) => {
+  return sorted.filter((pengiriman) => {
     return (
       pengiriman.pengirimanBarang_nama_penerima?.toLowerCase().includes(q) ||
       pengiriman.pengirimanBarang_akun_penerima?.toLowerCase().includes(q) ||
@@ -221,23 +226,26 @@ const totalPages = computed(() => {
   return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
 });
 
-const openModalEditPackaging = async (trx_id) => {
+const openModalEditPackaging = async (trx_id, namaAkun) => {
   try {
     const { data } = await axios.get(
       `${url.value}/api/pengiriman-barang/get-transaksi-detail/` + trx_id
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
-    );  
+    );
+    
+    console.log('zxcz', data.data);
     
     if (data.data && data.data.length > 0) {
       selected.value = {
+        namaAkun: namaAkun,
         barang: data.data
-        .filter(item => item.is_check === 0)
+        // .filter(item => item.is_check === 0)
         .map((item) => ({
           kode: item.code_nama,
           nama: item.barangentry_nama,
-          jumlah: item.live_order_jumlah_barang,
-          harga: parseFloat(item.live_order_harga_terjual),
-          live_order_id: item.live_order_id,
+          jumlah: item.transaksidetail_jumlah_barang,
+          harga: parseFloat(item.transaksidetail_harga_barang),
+          trx_detail_id: item.transaksidetail_barang_id,
           is_check: false,
         })),
       };
