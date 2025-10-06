@@ -322,13 +322,46 @@ class BarangEntryMController extends Controller
         ]);
     }
 
+    // public function getAllDataBarangPO()
+    // {
+    //     $data = BarangEntryM::where('barangentry_status', 'PREORDER')->get();
+
+
+    //     $hasNullUkuran = is_null($data->barangentry_nama) && is_null($data->barangentry_ukuran_mandar) && is_null($data->barangentry_ukuran_ulos);
+
+    //     return response()->json([
+    //         'code' => 200,
+    //         'message' => 'Success get data with status "PREORDER"',
+    //         'data' => $data
+    //     ]);
+    // }
+
     public function getAllDataBarangPO()
     {
         $data = BarangEntryM::where('barangentry_status', 'PREORDER')->get();
 
+     
+        $data = $data->map(function ($item) {
+            $fieldsToCheck = [
+                'barangentry_nama',
+                'barangentry_ukuran_mandar',
+                'barangentry_ukuran_ulos'
+            ];
+
+            $allFilled = collect($fieldsToCheck)->every(function ($field) use ($item) {
+                return !is_null($item->$field) && $item->$field !== '';
+            });
+
+            // Add the new attribute
+            $item->barangfilled = $allFilled;
+
+            return $item;
+        });
+
         return response()->json([
             'code' => 200,
             'message' => 'Success get data with status "PREORDER"',
+            'total_data' => $data->count(),
             'data' => $data
         ]);
     }
