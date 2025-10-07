@@ -16,5 +16,6 @@ class PackagingM extends Model
         'packaging_transactiondetail_id',
         'packaging_nama_akun',
         'packaging_alamat',
+        'packaging_status'
     ];
 }

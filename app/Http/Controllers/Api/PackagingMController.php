@@ -109,4 +109,29 @@ class PackagingMController extends Controller
             'data' => null
         ], 200);
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $packaging = PackagingM::find($id);
+
+        if (!$packaging) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Packaging not found',
+                'data' => null
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'packaging_status' => 'required|string',
+        ]);
+
+        $packaging->update($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Packaging Status updated successfully',
+            'data' => $packaging
+        ], 200);
+    }
 }
