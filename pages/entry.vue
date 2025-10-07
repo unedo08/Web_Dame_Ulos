@@ -3,55 +3,33 @@
     <title>Barang Masuk</title>
     <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
     <div class="flex space-x-6">
-      <button
-        @click="activeTab = 'wait'"
-        class="pb-1 text-sm relative"
-        :class="activeTab === 'wait' ? 'text-black' : 'text-gray-500'"
-      >
+      <button @click="activeTab = 'wait'" class="pb-1 text-sm relative"
+        :class="activeTab === 'wait' ? 'text-black' : 'text-gray-500'">
         Awaiting Stock
-        <span
-          v-if="activeTab === 'wait'"
-          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 100%"
-        ></span>
+        <span v-if="activeTab === 'wait'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 100%"></span>
       </button>
 
-      <button
-        @click="activeTab = 'ready'"
-        class="pb-1 text-sm relative"
-        :class="activeTab === 'ready' ? 'text-black' : 'text-gray-500'"
-      >
+      <button @click="activeTab = 'ready'" class="pb-1 text-sm relative"
+        :class="activeTab === 'ready' ? 'text-black' : 'text-gray-500'">
         Ready Stock
-        <span
-          v-if="activeTab === 'ready'"
-          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 100%"
-        ></span>
+        <span v-if="activeTab === 'ready'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 100%"></span>
       </button>
 
-      <button
-        @click="activeTab = 'po'"
-        class="pb-1 text-sm relative"
-        :class="activeTab === 'po' ? 'text-black' : 'text-gray-500'"
-      >
+      <button @click="activeTab = 'po'" class="pb-1 text-sm relative"
+        :class="activeTab === 'po' ? 'text-black' : 'text-gray-500'">
         List Pre-Order
-        <span
-          v-if="activeTab === 'po'"
-          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 100%"
-        ></span>
+        <span v-if="activeTab === 'po'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 100%"></span>
       </button>
     </div>
     <div class="mx-auto" v-show="activeTab === 'wait'">
       <!-- <div class="judul text-xs font-semibold mb-2">Wait to Entry</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input
-            class="search-box p-2 border rounded-md"
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search barang..."
-          />
+          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+            placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <br />
@@ -68,16 +46,12 @@
         >
           🔍 Search
         </button> -->
-          <button
-            class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="openModal('desc')"
-          >
+          <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+            @click="openModal('desc')">
             + Desc
           </button>
-          <button
-            class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="openModal('size')"
-          >
+          <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
+            @click="openModal('size')">
             + Size
           </button>
           <!-- <button
@@ -111,16 +85,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="barang in isSearchActive ? filteredBarang : pagination"
-              :key="barang.kode_barang"
-              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
-            >
+            <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
-              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -149,11 +120,7 @@
         <div class="flex justify-between items-center mt-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
-            <select
-              id="perPage"
-              v-model="itemsPerPage"
-              class="border px-2 py-1 rounded text-xs"
-            >
+            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
               <option :value="5">5</option>
               <option :value="10">10</option>
               <option :value="20">20</option>
@@ -162,33 +129,22 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+              @click="currentPage--">
               Sebelumnya
             </button>
 
-            <button
-              v-for="(page, index) in paginatedPages"
-              :key="index"
-              @click="typeof page === 'number' && (currentPage = page)"
-              :class="[
+            <button v-for="(page, index) in paginatedPages" :key="index"
+              @click="typeof page === 'number' && (currentPage = page)" :class="[
                 'px-3 py-1 rounded text-xs',
                 currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
                 page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]"
-              :disabled="page === '...'"
-            >
+              ]" :disabled="page === '...'">
               {{ page }}
             </button>
 
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages" @click="currentPage++">
               Selanjutnya
             </button>
           </div>
@@ -199,24 +155,16 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input
-            class="search-box p-2 border rounded-md"
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search barang..."
-          />
+          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+            placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
-          <button
-            class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
-            @click="openSearchModal"
-          >
+          <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+            @click="openSearchModal">
             🔍 Search
           </button>
-          <button
-            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-            @click="openModal('priceTag')"
-          >
+          <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+            @click="openModal('priceTag')">
             Print Price Tag
           </button>
         </div>
@@ -244,16 +192,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="barang in isSearchActive ? filteredBarang : pagination"
-              :key="barang.kode_barang"
-              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
-            >
+            <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
-              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -277,11 +222,10 @@
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
-                    <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
+                  <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
-                    @click="openModalEditBarang(barang.barangentry_id)"
-                  >
+                    @click="openModalEditBarang(barang.barangentry_id)">
                     Edit
                   </button>
                   <!-- <button
@@ -291,10 +235,8 @@
                   >
                     + Stock
                   </button> -->
-                  <button
-                    class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
-                    @click="deleteBarang(barang.barangentry_id)"
-                  >
+                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                    @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
                 </div>
@@ -306,11 +248,7 @@
         <div class="flex justify-between items-center mt-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
-            <select
-              id="perPage"
-              v-model="itemsPerPage"
-              class="border px-2 py-1 rounded text-xs"
-            >
+            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
               <option :value="5">5</option>
               <option :value="10">10</option>
               <option :value="20">20</option>
@@ -319,33 +257,22 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+              @click="currentPage--">
               Sebelumnya
             </button>
 
-            <button
-              v-for="(page, index) in paginatedPages"
-              :key="index"
-              @click="typeof page === 'number' && (currentPage = page)"
-              :class="[
+            <button v-for="(page, index) in paginatedPages" :key="index"
+              @click="typeof page === 'number' && (currentPage = page)" :class="[
                 'px-3 py-1 rounded text-xs',
                 currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
                 page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]"
-              :disabled="page === '...'"
-            >
+              ]" :disabled="page === '...'">
               {{ page }}
             </button>
 
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages" @click="currentPage++">
               Selanjutnya
             </button>
           </div>
@@ -357,18 +284,12 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input
-            class="search-box p-2 border rounded-md"
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search barang..."
-          />
+          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+            placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
-          <button
-            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-            @click="openModal('priceTag')"
-          >
+          <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+            @click="openModal('priceTag')">
             Print Price Tag
           </button>
         </div>
@@ -396,16 +317,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="barang in isSearchActive ? filteredBarang : pagination"
-              :key="barang.kode_barang"
-              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
-            >
+            <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
+              <!-- <pre>{{ barang }}</pre> -->
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{barangMap[barang.barangentry_id] }}</td>
-              <td class="px-4 py-2">{{(barang.barangentry_nama || "") }}</td>
+              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_panirat }}</td>
@@ -429,31 +348,34 @@
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
-                    <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
+                  <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button
                     class="text-center rounded-md bg-[#FBBF24] text-white hover:bg-[#FFD15A] px-2 py-1 h-[30px] w-[90px]"
-                    @click="printPreOrder(barang.barangentry_id)"
-                  >
+                    @click="printPreOrder(barang.barangentry_id)">
                     Print
                   </button>
                   <button
                     class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
-                    @click="openModalEditPO(barang.barangentry_id)"
-                  >
-                    Edit 
+                    @click="openModalEditPO(barang.barangentry_id)">
+                    Edit
                   </button>
-                  <button
-                    class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
-                    @click="openModalDesc(barang.barangentry_id)"
-                  >
-                    Desc + 
+                  <button v-if="barang.barangfilled"
+                    class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[30px] w-[90px]"
+                    @click="sendOrder(barang.barangentry_id)">
+                    Send
                   </button>
-                  <button
-                    class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
-                    @click="openModalSize(barang.barangentry_id)"
-                  >
-                    Size +
-                  </button>
+                  <template v-else>
+                    <button
+                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                      @click="openModalDesc(barang.barangentry_id)">
+                      Desc +
+                    </button>
+                    <button
+                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                      @click="openModalSize(barang.barangentry_id)">
+                      Size +
+                    </button>
+                  </template>
                   <!-- <button
                     v-if="barang.barangentry_jumlah_barang > 1"
                     class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
@@ -461,10 +383,8 @@
                   >
                     + Stock
                   </button> -->
-                  <button
-                    class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
-                    @click="deleteBarang(barang.barangentry_id)"
-                  >
+                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                    @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
                 </div>
@@ -476,11 +396,7 @@
         <div class="flex justify-between items-center mt-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
-            <select
-              id="perPage"
-              v-model="itemsPerPage"
-              class="border px-2 py-1 rounded text-xs"
-            >
+            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
               <option :value="5">5</option>
               <option :value="10">10</option>
               <option :value="20">20</option>
@@ -489,33 +405,22 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+              @click="currentPage--">
               Sebelumnya
             </button>
 
-            <button
-              v-for="(page, index) in paginatedPages"
-              :key="index"
-              @click="typeof page === 'number' && (currentPage = page)"
-              :class="[
+            <button v-for="(page, index) in paginatedPages" :key="index"
+              @click="typeof page === 'number' && (currentPage = page)" :class="[
                 'px-3 py-1 rounded text-xs',
                 currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
                 page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]"
-              :disabled="page === '...'"
-            >
+              ]" :disabled="page === '...'">
               {{ page }}
             </button>
 
-            <button
-              class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-            >
+            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
+              :disabled="currentPage === totalPages" @click="currentPage++">
               Selanjutnya
             </button>
           </div>
@@ -523,10 +428,7 @@
       </div>
     </div>
 
-    <div
-      v-if="showModalAdd"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
-    >
+    <div v-if="showModalAdd" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg">
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
@@ -534,194 +436,126 @@
         <div class="grid grid-cols-2 gap-4">
           <div hidden>
             <label class="block text-gray-700 mb-1">Code ID:</label>
-            <input
-              v-model="selectedBarang.code_id"
-              type="text"
-              class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
-              :readonly="true"
-            />
+            <input v-model="selectedBarang.code_id" type="text"
+              class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed" :readonly="true" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input
-              v-model="selectedBarang.code_nama"
-              type="text"
+            <input v-model="selectedBarang.code_nama" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
-              :readonly="true"
-            />
+              :readonly="true" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Ulos:</label>
-            <input
-              v-model="selectedBarang.barangentry_nama"
-              type="text"
+            <input v-model="selectedBarang.barangentry_nama" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Warna Ulos:</label>
-            <input
-              v-model="selectedBarang.barangentry_warna"
-              type="text"
+            <input v-model="selectedBarang.barangentry_warna" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Penenun:</label>
-            <input
-              v-model="selectedBarang.barangentry_nama_penenun"
-              type="text"
+            <input v-model="selectedBarang.barangentry_nama_penenun" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Panirat:</label>
-            <input
-              v-model="selectedBarang.barangentry_nama_panirat"
-              type="text"
+            <input v-model="selectedBarang.barangentry_nama_panirat" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Dyer:</label>
-            <input
-              v-model="selectedBarang.barangentry_dryer"
-              type="text"
+            <input v-model="selectedBarang.barangentry_dryer" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Modal:</label>
-            <input
-              type="text"
-              :value="formatRupiah2(selectedBarang.barangentry_modal)"
+            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
               @input="updateModal($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga"
-            />
+              placeholder="Masukkan harga" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
-            <input
-              type="text"
-              :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
+            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
               @input="updatePriceTag($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga"
-            />
+              placeholder="Masukkan harga" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net:</label>
-            <input
-              type="text"
-              :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
+            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
               @input="updateHargaNet($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga"
-            />
+              placeholder="Masukkan harga" />
           </div>
 
           <div>
             <label class="block text-gray-700 mb-1">Jumlah:</label>
-            <input
-              v-model="selectedBarang.barangentry_jumlah_barang"
-              type="number"
-              min="1"
+            <input v-model="selectedBarang.barangentry_jumlah_barang" type="number" min="1"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
         </div>
 
         <div class="flex justify-end space-x-3 mt-6">
-          <button
-            @click="cancelTambahBarang"
-            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
+          <button @click="cancelTambahBarang" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
           </button>
-          <button
-            @click="submitBarang"
-            :disabled="isSubmitting"
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <button @click="submitBarang" :disabled="isSubmitting"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             {{ isSubmitting ? 'Sedang Menyimpan' : 'Simpan' }}
           </button>
         </div>
       </div>
     </div>
 
-    <BaseModal
-      :show="modalOpen"
-      :type="modalType"
-      :barang-database="barangDatabase"
-      @close="modalOpen = false"
-      @scanned="tambahBarang"
-      @sizeSubmitted="handleSizeSubmitted"
-    />
+    <BaseModal :show="modalOpen" :type="modalType" :barang-database="barangDatabase" @close="modalOpen = false"
+      @scanned="tambahBarang" @sizeSubmitted="handleSizeSubmitted" />
 
     <!-- Modal Add Size  -->
-    <div
-      v-if="showModalAddSize"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
-    >
+    <div v-if="showModalAddSize" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
         <div class="grid gap-4">
           <div hidden>
             <label class="block text-gray-700 mb-1">Code ID:</label>
-            <input
-              v-model="selectedBarang.code_id"
-              type="text"
+            <input v-model="selectedBarang.code_id" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
-              :readonly="true"
-            />
+              :readonly="true" />
           </div>
           <div hidden>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input
-              v-model="selectedBarang.kode_barang"
-              type="text"
+            <input v-model="selectedBarang.kode_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
-              :readonly="true"
-            />
+              :readonly="true" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Ulos:</label>
-            <input
-              v-model="selectedBarang.ukuran_ulos"
-              type="text"
+            <input v-model="selectedBarang.ukuran_ulos" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Mandar:</label>
-            <input
-              v-model="selectedBarang.ukuran_mandar"
-              type="text"
+            <input v-model="selectedBarang.ukuran_mandar" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..."
-            />
+              placeholder="..." />
           </div>
         </div>
         <div class="flex justify-end space-x-3 mt-6">
-          <button
-            @click="cancelSizeBarang"
-            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
+          <button @click="cancelSizeBarang" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
           </button>
-          <button
-            @click="submitSizeBarang"
-            :disabled="isSubmittingSize"
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <button @click="submitSizeBarang" :disabled="isSubmittingSize"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             {{ isSubmittingSize ? 'Sedang Meyimpan' : 'Simpan' }}
           </button>
         </div>
@@ -729,15 +563,8 @@
     </div>
 
     <!-- Print -->
-    <div
-      ref="printContent"
-      class="hidden print:block p-8 text-sm leading-relaxed"
-    >
-      <div
-        v-for="item in priceTagData"
-        :key="item.data.barangentry_id"
-        style="page-break-after: always"
-      >
+    <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
+      <div v-for="item in priceTagData" :key="item.data.barangentry_id" style="page-break-after: always">
         <div style="display: flex; gap: 40px">
           <div style="flex: 1">
             <h1>{{ item.data.barangentry_nama }}</h1>
@@ -755,14 +582,12 @@
             <p class="mt-4">Salam Hangat,</p>
             <p><em>Artisan Dame Ulos</em></p>
 
-            <table
-              style="
+            <table style="
                 margin-top: 20px;
                 width: 100%;
                 border-collapse: collapse;
                 font-size: 0.9rem;
-              "
-            >
+              ">
               <tbody>
                 <tr>
                   <td style="padding: 4px 8px; font-weight: bold">
@@ -831,30 +656,16 @@
     </div>
 
     <!-- Modal Search -->
-    <div
-      v-if="showModalSearch"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
-    >
+    <div v-if="showModalSearch" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
         <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
-        <input
-          v-model="searchCode"
-          @keyup.enter="handleSearch"
-          type="text"
-          class="w-full border rounded px-3 py-2"
-          placeholder="Scan atau ketik kode barang..."
-        />
+        <input v-model="searchCode" @keyup.enter="handleSearch" type="text" class="w-full border rounded px-3 py-2"
+          placeholder="Scan atau ketik kode barang..." />
         <div class="flex justify-end space-x-3 mt-4">
-          <button
-            @click="closeSearchModal"
-            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
+          <button @click="closeSearchModal" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
           </button>
-          <button
-            @click="handleSearch"
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <button @click="handleSearch" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Cari
           </button>
         </div>
@@ -862,66 +673,32 @@
     </div>
 
     <!-- Modal Edit Stock -->
-    <div
-      v-if="showModalEditStock"
-      class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
-    >
+    <div v-if="showModalEditStock" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white p-6 rounded-md w-80 shadow-md">
         <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
 
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          >Jumlah <span style="color: red">*</span></label
-        >
-        <input
-          v-model="editJumlah"
-          type="number"
+        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah <span style="color: red">*</span></label>
+        <input v-model="editJumlah" type="number"
           class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Masukkan jumlah"
-        />
+          placeholder="Masukkan jumlah" />
 
         <div class="flex justify-end mt-6 space-x-2">
-          <button
-            class="px-4 py-2 bg-gray-300 text-sm rounded hover:bg-gray-400"
-            @click="showModalEditStock = false"
-          >
+          <button class="px-4 py-2 bg-gray-300 text-sm rounded hover:bg-gray-400" @click="showModalEditStock = false">
             Batal
           </button>
-          <button
-            class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-            @click="editStockSubmit"
-          >
+          <button class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600" @click="editStockSubmit">
             Simpan
           </button>
         </div>
       </div>
     </div>
-    <EditBarangReady
-      :show="showEditModal"
-      :id="selectedId"
-      @close="showEditModal = false"
-      @saved="loadData"
-    />
+    <EditBarangReady :show="showEditModal" :id="selectedId" @close="showEditModal = false" @saved="loadData" />
 
-    <EditBarangPO
-      :show="showEditPO"
-      :id="selectedId"
-      @close="showEditPO = false"
-      @saved="loadData"
-    />
+    <EditBarangPO :show="showEditPO" :id="selectedId" @close="showEditPO = false" @saved="loadData" />
 
-    <EditBarangDesc
-      :show="showEditDesc"
-      :id="selectedId"
-      @close="showEditDesc = false"
-      @saved="loadData"
-    />
+    <EditBarangDesc :show="showEditDesc" :id="selectedId" @close="showEditDesc = false" @saved="loadData" />
 
-    <EditBarangSize
-      :show="showEditSize"
-      :id="selectedId"
-      @close="showEditSize = false"
-      @saved="loadData"
-    />
+    <EditBarangSize :show="showEditSize" :id="selectedId" @close="showEditSize = false" @saved="loadData" />
 
     <!-- </div> -->
   </div>
@@ -1052,10 +829,10 @@ const fetchCodeBarang = async (data) => {
       axios.get(`${url.value}/api/codebarang/${res.data.data.barangentry_code_id}`)
     );
     const codeBarangResults = await Promise.all(codeBarangPromises);
-    
+
     codeBarangResults.forEach((res, i) => {
-      barangMap.value[ids[i]] = res.data.code_nama;      
-    });    
+      barangMap.value[ids[i]] = res.data.code_nama;
+    });
   } catch (error) {
     console.error("Data gagal diambil", error);
   }
@@ -1072,7 +849,13 @@ async function getListBarangTemp() {
       endpoint = "/api/entrybarang/getDataPO";
     }
     const response = await axios.get(`${url.value}${endpoint}`);
+    // const response = await axios.get(`http://192.168.18.52:8080${endpoint}`);
     listBarang.value = response.data.data;
+
+    console.log('endpoint', endpoint);
+    console.log('res', response);
+
+
     await fetchCodeBarang(listBarang.value);
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
@@ -1122,15 +905,85 @@ function openModal(type) {
 }
 
 function tambahBarang(barang) {
-  selectedBarang.value = { 
-  ...barang,
-  barangentry_jumlah_barang: barang.barangentry_jumlah_barang ?? 1 };
+  selectedBarang.value = {
+    ...barang,
+    barangentry_jumlah_barang: barang.barangentry_jumlah_barang ?? 1
+  };
   showModalAdd.value = true;
 }
 
 function formatRupiah(value) {
   const number = parseInt(value);
   return "Rp. " + number.toLocaleString("id-ID");
+}
+
+async function sendOrder(barangentry_id) {
+  try {
+    const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
+
+    const dataPreOrder = res.data.data;
+    console.log('sss', dataPreOrder);
+
+    const payloadTransaksi = {
+      transaksi_nama_customer: dataPreOrder.preOrderBarang_nama_akun,
+      transaksi_nomor_telepon: dataPreOrder.preOrderBarang_no_telepon,
+      transaksi_jumlah_barang: 1,
+      transaksi_total_harga: dataPreOrder.preOrderBarang_total_pembayaran,
+      transaksi_cara_bayar: 'Transfer Bank',
+      transaksi_tipe: "PREORDER",
+      transaksi_status: "PREORDER",
+      transaksi_catatan: "",
+    };
+
+    const { data } = await axios.post(
+      `${url.value}/api/transaksi`,
+      payloadTransaksi
+    );
+    const transaksi_id = data.data.transaksi_id;
+    // for (const item of props.barang.filter(item => item.is_check)) {
+    const code = await axios.get(`${url.value}/api/codebarang/${dataPreOrder.preOrderBarang_barang_entry_id}`)
+    console.log('zxc', dataPreOrder.preOrderBarang_barang_entry_id);
+
+    const { data: barangResponse } = await axios.get(
+      `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`
+    );
+    const barangData = barangResponse.data;
+    console.log('zxcz', barangData);
+
+
+    const detailPayload = {
+      transaksidetail_transaksi_id: transaksi_id,
+      transaksidetail_barang_id: barangData.barangentry_id,
+      transaksidetail_jumlah_barang: item.jumlah,
+      transaksidetail_harga_barang: parseFloat(item.harga),
+    };
+    await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+    const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
+    console.log('zxcccc', test);
+
+    // }
+
+    const pengirimanPayload = {
+      pengirimanBarang_transaksi_id: transaksi_id,
+      pengirimanBarang_nama_penerima: dataPreOrder.preOrderBarang_nama_akun,
+      pengirimanBarang_akun_penerima: dataPreOrder.preOrderBarang_nama_akun,
+      pengirimanBarang_no_telepon: dataPreOrder.preOrderBarang_no_telepon,
+      pengirimanBarang_harga_kirim_barang: 15000,
+      pengirimanBarang_jenis_pengiriman_barang: 'JNE',
+      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
+      pengirimanBarang_catatan: "",
+      pengirimanBarang_status: "Proses",
+    };
+    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+
+    return;
+    const resEntry = await axios.get(`${url.value}/api/entrybarang/${props.id}`);
+    form.value = { ...res.data.data, ...resEntry.data.data };
+
+  } catch (err) {
+    console.error('Error saat kirim po', err);
+
+  }
 }
 
 async function submitBarang() {
@@ -1437,20 +1290,20 @@ const paginatedPages = computed(() => {
   return pages;
 });
 
-async function printPreOrder(id){
+async function printPreOrder(id) {
 
   const response = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${id}`);
 
-  const data  = response.data.data;
+  const data = response.data.data;
 
   const resEntry = await axios.get(`${url.value}/api/entrybarang/${id}`);
   const barangEntry = resEntry.data.data;
 
   const code = await axios.get(`${url.value}/api/codebarang/${barangEntry.barangentry_code_id}`)
   const code_nama = code.data.code_nama;
-  
+
   printData(data, barangEntry, code_nama);
-  
+
 }
 
 function printData(data, barangEntry, code_nama) {
@@ -1708,6 +1561,7 @@ watch(activeTab, () => {
 * {
   font-family: "Nunito", sans-serif;
 }
+
 .search-box {
   border: 1px solid #ccc;
   padding: 10px;

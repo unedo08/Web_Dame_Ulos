@@ -63,6 +63,11 @@ const items = ref([
     icon: CubeIcon,
   },
   {
+    title: "Packaging - Barang",
+    path: "/packaging-pengiriman",
+    icon: CubeIcon,
+  },
+  {
     title: "Staff",
     path: "/staff",
     icon: UserGroupIcon,
@@ -107,9 +112,7 @@ function toggleDropdown(index) {
 
 <template>
   <aside class="w-56 min-h-screen fixed top-0 text-white overflow-y-auto z-50">
-    <header
-      class="flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer"
-    >
+    <header class="flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer">
       <NuxtLink to="/beranda" class="flex items-center gap-2">
         <Logo />
       </NuxtLink>
@@ -119,38 +122,26 @@ function toggleDropdown(index) {
       <div class="grid gap-2 text-left">
         <div v-for="(item, index) in items" :key="index">
           <!-- Jika tidak punya children (biasa) -->
-          <NuxtLink
-            v-if="!item.children"
-            :to="item.path"
-            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
-          >
+          <NuxtLink v-if="!item.children" :to="item.path"
+            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
             <component :is="item.icon" class="w-5 h-5 text-white" />
             <span class="truncate">{{ item.title }}</span>
           </NuxtLink>
 
           <!-- Jika punya submenu (dropdown) -->
           <div v-else>
-            <div
-              @click="toggleDropdown(index)"
-              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer"
-            >
+            <div @click="toggleDropdown(index)"
+              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer">
               <div class="flex items-center gap-2">
                 <component :is="item.icon" class="w-5 h-5 text-white" />
                 <span class="truncate">{{ item.title }}</span>
               </div>
               <!-- Dropdown Icon -->
-              <component
-                :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon"
-                class="w-4 h-4 text-white"
-              />
+              <component :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon" class="w-4 h-4 text-white" />
             </div>
             <div v-if="activeDropdown === index" class="ml-4">
-              <NuxtLink
-                v-for="(child, idx) in item.children"
-                :key="idx"
-                :to="child.path"
-                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
-              >
+              <NuxtLink v-for="(child, idx) in item.children" :key="idx" :to="child.path"
+                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
                 <span class="truncate">{{ child.title }}</span>
               </NuxtLink>
             </div>

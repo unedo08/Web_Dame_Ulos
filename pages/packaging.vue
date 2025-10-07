@@ -2,12 +2,7 @@
   <div>
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Packaging</div>
-    <input
-      v-model="searchQuery"
-      type="text"
-      class="search-box mb-4"
-      placeholder="Cari Pengiriman Barang..."
-    />
+    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari Pengiriman Barang..." />
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
@@ -25,12 +20,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(pengiriman, index) in pagination"
-          :key="pengiriman.pengirimanBarang_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-        >
-        <!-- <pre>{{ pengiriman }}</pre> -->
+        <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id"
+          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+          <!-- <pre>{{ pengiriman }}</pre> -->
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">
             {{ pengiriman.pengirimanBarang_nama_penerima }}
@@ -63,20 +55,17 @@
               </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
-                @click="openModalEditPackaging(pengiriman.pengirimanBarang_transaksi_id, pengiriman.pengirimanBarang_nama_penerima)"
-              >
+                @click="openModalEditPackaging(pengiriman.pengirimanBarang_transaksi_id, pengiriman.pengirimanBarang_nama_penerima)">
                 Edit
               </button>
               <!-- <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
-                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
-              >
-                Print
+                @click="selesaiPackaging(pengiriman.pengirimanBarang_id)">
+                Selesai
               </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#DC3545] text-white hover:bg-[#FF4456] rounded-md text-s"
-                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)"
-              >
+                @click="deletepengirimanData(pengiriman.pengirimanBarang_id)">
                 Delete
               </button>
             </div>
@@ -87,11 +76,7 @@
     <div class="flex justify-between items-center mt-4 text-xs">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
-        <select
-          id="perPage"
-          v-model="itemsPerPage"
-          class="border px-2 py-1 rounded text-xs"
-        >
+        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
@@ -100,53 +85,32 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+          @click="currentPage--">
           Sebelumnya
         </button>
 
-        <button
-          v-for="(page, index) in paginatedPages"
-          :key="index"
-          @click="typeof page === 'number' && (currentPage = page)"
-          :class="[
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
             'px-3 py-1 rounded text-xs',
             currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
             page === '...' ? 'cursor-default' : 'cursor-pointer',
-          ]"
-          :disabled="page === '...'"
-        >
+          ]" :disabled="page === '...'">
           {{ page }}
         </button>
 
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+          @click="currentPage++">
           Selanjutnya
         </button>
       </div>
     </div>
   </div>
   <!-- Modal -->
-  <ViewDetailModal
-    :show="showDetailModal"
-    :id="selectedPengirimanId"
-    @close="showDetailModal = false"
-  />
+  <ViewDetailModal :show="showDetailModal" :id="selectedPengirimanId" @close="showDetailModal = false" />
 
-   <ModalEditPackaging
-    v-model:show="isModalOpen"
-    :namaAkun="selected.namaAkun"
-    :barang="selected.barang"
-    @save="handleSave"
-    @close="isModalOpen = false"
-    @removeItem="handleRemoveItem"
-  />
+  <ModalEditPackaging v-model:show="isModalOpen" :namaAkun="selected.namaAkun" :barang="selected.barang"
+    @save="handleSave" @close="isModalOpen = false" @removeItem="handleRemoveItem" />
 </template>
 
 <script setup>
@@ -192,7 +156,7 @@ const openViewDetail = (id) => {
   showDetailModal.value = true;
 };
 
-const listpengirimanData = computed(() => {  
+const listpengirimanData = computed(() => {
   const sorted = [...pengirimanData.value].sort((a, b) => {
     return new Date(b.created_at) - new Date(a.created_at);
   });
@@ -232,22 +196,20 @@ const openModalEditPackaging = async (trx_id, namaAkun) => {
       `${url.value}/api/pengiriman-barang/get-transaksi-detail/` + trx_id
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
     );
-    
-    console.log('zxcz', data.data);
-    
+
     if (data.data && data.data.length > 0) {
       selected.value = {
         namaAkun: namaAkun,
         barang: data.data
-        // .filter(item => item.is_check === 0)
-        .map((item) => ({
-          kode: item.code_nama,
-          nama: item.barangentry_nama,
-          jumlah: item.transaksidetail_jumlah_barang,
-          harga: parseFloat(item.transaksidetail_harga_barang),
-          trx_detail_id: item.transaksidetail_barang_id,
-          is_check: false,
-        })),
+          // .filter(item => item.is_check === 0)
+          .map((item) => ({
+            kode: item.code_nama,
+            nama: item.barangentry_nama,
+            jumlah: item.transaksidetail_jumlah_barang,
+            harga: parseFloat(item.transaksidetail_harga_barang),
+            trx_detail_id: item.transaksidetail_barang_id,
+            is_check: false,
+          })),
       };
       isModalOpen.value = true;
     }

@@ -1,0 +1,296 @@
+<template>
+  <div>
+    <title>Packaging - Barang</title>
+    <div class="judul text-xl font-semibold mb-4">
+      Packaging - Barang yang sudah dikirim
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <input v-model="searchQuery" type="text" class="search-box" placeholder="Cari Pengiriman Barang..." />
+
+      <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+        Export Excel
+      </button>
+    </div>
+
+    <table class="datatable w-full rounded-md overflow-hidden">
+      <thead class="bg-blue-100">
+        <tr>
+          <th class="px-4 py-2 text-left">No</th>
+          <th class="px-4 py-2 text-left">Tanggal</th>
+          <th class="px-4 py-2 text-left">Nama Akun</th>
+          <th class="px-4 py-2 text-left">Alamat</th>
+          <th class="px-4 py-2 text-left">Status</th>
+          <th class="px-4 py-2 text-left">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.packaging_id"
+          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+          <td class="px-4 py-2">{{ index + 1 }}</td>
+          <td class="px-4 py-2">{{ formatDate(pengiriman.created_at) }}</td>
+          <td class="px-4 py-2">{{ pengiriman.packaging_nama_akun }}</td>
+          <td class="px-4 py-2">{{ pengiriman.packaging_alamat }}</td>
+          <td class="px-4 py-2">{{ pengiriman.packaging_status }}</td>
+          <td class="px-4 py-2">
+            <div class="flex space-x-2">
+              <button v-if="pengiriman.packaging_status === 'Done'"
+                class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s" :disabled="true">
+                Selesai
+              </button>
+              <template v-else>
+                <button class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s"
+                  @click="selesaiPackaging(pengiriman.packaging_id)">
+                  Selesai
+                </button>
+              </template>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-4 text-xs">
+      <div class="flex items-center space-x-2">
+        <label for="perPage">Tampilkan:</label>
+        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+          <option :value="5">5</option>
+          <option :value="10">10</option>
+          <option :value="20">20</option>
+          <option :value="50">50</option>
+        </select>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+          @click="currentPage--">
+          Sebelumnya
+        </button>
+
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
+            'px-3 py-1 rounded text-xs',
+            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+            page === '...' ? 'cursor-default' : 'cursor-pointer',
+          ]" :disabled="page === '...'">
+          {{ page }}
+        </button>
+
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+          @click="currentPage++">
+          Selanjutnya
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed, watch } from "vue";
+import axios from "axios";
+import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
+const config = useRuntimeConfig();
+const url = ref("");
+
+const pengirimanData = ref([]);
+const searchQuery = ref("");
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+
+onMounted(() => {
+  url.value = config.public.apiBase;
+  fetchDataPengiriman();
+});
+
+// 🔹 Fetch Data
+const fetchDataPengiriman = async () => {
+  try {
+    const res = await axios.get(`${url.value}/api/packaging`);
+    pengirimanData.value = res.data.data;
+  } catch (error) {
+    console.error("Gagal fetch data pengiriman:", error);
+  }
+};
+
+// 🔹 Filter & Sorting
+const listpengirimanData = computed(() => {
+  const sorted = [...pengirimanData.value].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
+
+  if (!searchQuery.value) return sorted;
+
+  const q = searchQuery.value.toLowerCase();
+  return sorted.filter((pengiriman) => {
+    return (
+      pengiriman.packaging_nama_akun?.toLowerCase().includes(q) ||
+      pengiriman.packaging_alamat?.toLowerCase().includes(q) ||
+      pengiriman.packaging_status?.toLowerCase().includes(q)
+    );
+  });
+});
+
+// 🔹 Pagination
+const pagination = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return listpengirimanData.value.slice(start, end);
+});
+
+const totalPages = computed(() =>
+  Math.ceil(listpengirimanData.value.length / itemsPerPage.value)
+);
+
+const paginatedPages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (current <= 3) pages.push(1, 2, 3, "...", total);
+    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
+    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
+  }
+  return pages;
+});
+
+watch(currentPage, (val) => {
+  if (val < 1) currentPage.value = 1;
+  if (val > totalPages.value) currentPage.value = totalPages.value;
+});
+
+// 🔹 Format Tanggal
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+// 🔹 Update Status “Selesai”
+const selesaiPackaging = async (id) => {
+  const result = await Swal.fire({
+    title: "Konfirmasi Selesai",
+    text: `Anda yakin ingin selesaikan data ini?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Selesaikan!",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const payload = { packaging_status: "Done" };
+      const response = await axios.post(
+        `${url.value}/api/packaging/update-status/${id}`,
+        payload
+      );
+
+      if (response.status === 200) {
+        await fetchDataPengiriman();
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data berhasil diselesaikan",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Terjadi kesalahan saat menyelesaikan data.",
+        icon: "error",
+      });
+    }
+  }
+};
+
+// 🔹 Export Excel
+const exportToExcel = () => {
+  if (!listpengirimanData.value.length) {
+    Swal.fire({
+      title: "Tidak ada data",
+      text: "Data pengiriman kosong, tidak bisa diexport.",
+      icon: "info",
+    });
+    return;
+  }
+
+  const dataToExport = listpengirimanData.value.map((item, index) => ({
+    No: index + 1,
+    Tanggal: formatDate(item.created_at),
+    "Nama Akun": item.packaging_nama_akun,
+    Alamat: item.packaging_alamat,
+    Status: item.packaging_status,
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Data Packaging");
+
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  const fileName = `Data_Packaging_${new Date()
+    .toISOString()
+    .split("T")[0]}.xlsx`;
+  saveAs(blob, fileName);
+};
+</script>
+
+<style scoped>
+* {
+  font-family: "Nunito", sans-serif;
+}
+
+.search-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 385px;
+  height: 34px;
+}
+
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.datatable th,
+.datatable td {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
+}
+
+.search-box::placeholder {
+  color: #888;
+}
+
+.btn-selesai {
+  background-color: #26d04b;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-selesai:hover {
+  background-color: #6bdd84;
+}
+</style>

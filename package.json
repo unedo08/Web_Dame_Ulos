@@ -17,6 +17,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.9",
     "dayjs": "^1.11.13",
+    "file-saver": "^2.0.5",
     "nuxt": "^3.16.2",
     "pinia": "^3.0.1",
     "sweetalert2": "^11.22.0",
