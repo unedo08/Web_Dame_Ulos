@@ -361,7 +361,7 @@
                   </button>
                   <button v-if="barang.barangfilled"
                     class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[30px] w-[90px]"
-                    @click="sendOrder(barang.barangentry_id)">
+                    @click="openSendModal(barang.barangentry_id)">
                     Send
                   </button>
                   <template v-else>
@@ -700,6 +700,8 @@
 
     <EditBarangSize :show="showEditSize" :id="selectedId" @close="showEditSize = false" @saved="loadData" />
 
+    <SendOrderModal :visible="showSendModal" @close="showSendModal = false" @submitted="handleSend" />
+
     <!-- </div> -->
   </div>
 </template>
@@ -711,6 +713,7 @@ import EditBarangReady from "../components/ModalEditBarang.vue";
 import EditBarangDesc from "../components/ModalEditDesc.vue";
 import EditBarangSize from "../components/ModalEditSize.vue";
 import EditBarangPO from "../components/ModalEditPO.vue";
+import SendOrderModal from "../components/ModalSendOrder.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -729,6 +732,7 @@ const showEditDesc = ref(false);
 const showEditSize = ref(false);
 const showEditPO = ref(false);
 const selectedId = ref(null);
+const showSendModal = ref(false);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -766,6 +770,15 @@ function formatTanggal(tanggal) {
     month: "long",
     year: "numeric",
   }).format(date);
+}
+
+function openSendModal(id) {
+  selectedId.value = id;
+  showSendModal.value = true;
+}
+
+function handleSend(data) {
+  sendOrder(selectedId.value, data);
 }
 
 const openModalEditBarang = (id) => {
@@ -851,11 +864,6 @@ async function getListBarangTemp() {
     const response = await axios.get(`${url.value}${endpoint}`);
     // const response = await axios.get(`http://192.168.18.52:8080${endpoint}`);
     listBarang.value = response.data.data;
-
-    console.log('endpoint', endpoint);
-    console.log('res', response);
-
-
     await fetchCodeBarang(listBarang.value);
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
@@ -917,19 +925,17 @@ function formatRupiah(value) {
   return "Rp. " + number.toLocaleString("id-ID");
 }
 
-async function sendOrder(barangentry_id) {
+async function sendOrder(barangentry_id, formData) {
   try {
     const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
 
     const dataPreOrder = res.data.data;
-    console.log('sss', dataPreOrder);
-
     const payloadTransaksi = {
-      transaksi_nama_customer: dataPreOrder.preOrderBarang_nama_akun,
-      transaksi_nomor_telepon: dataPreOrder.preOrderBarang_no_telepon,
+      transaksi_nama_customer: formData.nama_akun,
+      transaksi_nomor_telepon: formData.no_telepon,
       transaksi_jumlah_barang: 1,
-      transaksi_total_harga: dataPreOrder.preOrderBarang_total_pembayaran,
-      transaksi_cara_bayar: 'Transfer Bank',
+      transaksi_total_harga: parseInt(formData.total_pembayaran),
+      transaksi_cara_bayar: formData.cara_bayar,
       transaksi_tipe: "PREORDER",
       transaksi_status: "PREORDER",
       transaksi_catatan: "",
@@ -940,48 +946,58 @@ async function sendOrder(barangentry_id) {
       payloadTransaksi
     );
     const transaksi_id = data.data.transaksi_id;
-    // for (const item of props.barang.filter(item => item.is_check)) {
-    const code = await axios.get(`${url.value}/api/codebarang/${dataPreOrder.preOrderBarang_barang_entry_id}`)
-    console.log('zxc', dataPreOrder.preOrderBarang_barang_entry_id);
+
+    const barang = await axios.get(`${url.value}/api/entrybarang/${barangentry_id}`)
+
+    const code = await axios.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
 
     const { data: barangResponse } = await axios.get(
       `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`
     );
     const barangData = barangResponse.data;
-    console.log('zxcz', barangData);
-
 
     const detailPayload = {
       transaksidetail_transaksi_id: transaksi_id,
       transaksidetail_barang_id: barangData.barangentry_id,
-      transaksidetail_jumlah_barang: item.jumlah,
-      transaksidetail_harga_barang: parseFloat(item.harga),
+      transaksidetail_jumlah_barang: 1,
+      transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
     };
     await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
-    const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
-    console.log('zxcccc', test);
-
-    // }
 
     const pengirimanPayload = {
       pengirimanBarang_transaksi_id: transaksi_id,
-      pengirimanBarang_nama_penerima: dataPreOrder.preOrderBarang_nama_akun,
-      pengirimanBarang_akun_penerima: dataPreOrder.preOrderBarang_nama_akun,
-      pengirimanBarang_no_telepon: dataPreOrder.preOrderBarang_no_telepon,
-      pengirimanBarang_harga_kirim_barang: 15000,
-      pengirimanBarang_jenis_pengiriman_barang: 'JNE',
-      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
+      pengirimanBarang_nama_penerima: formData.nama_akun,
+      pengirimanBarang_akun_penerima: formData.nama_akun,
+      pengirimanBarang_no_telepon: formData.no_telepon,
+      pengirimanBarang_harga_kirim_barang: parseInt(formData.harga_kirim),
+      pengirimanBarang_jenis_pengiriman_barang: formData.jenis_pengiriman,
+      pengirimanBarang_alamat_pengiriman_barang: formData.alamat,
       pengirimanBarang_catatan: "",
       pengirimanBarang_status: "Proses",
     };
+
     await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil!",
+      text: "Pre-Order berhasil dikirim menjadi Transaksi.",
+      timer: 2500,
+      showConfirmButton: false,
+    });
 
-    return;
-    const resEntry = await axios.get(`${url.value}/api/entrybarang/${props.id}`);
-    form.value = { ...res.data.data, ...resEntry.data.data };
-
+    await getListBarangTemp();
+    showSendModal.value = false;
   } catch (err) {
-    console.error('Error saat kirim po', err);
+    console.error('sad', err);
+
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silahkan lengkapi preorder",
+      icon: "error",
+      confirmButtonText: "OK",
+      timer: 3000,
+      timerProgressBar: true,
+    });
 
   }
 }

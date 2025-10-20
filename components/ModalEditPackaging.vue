@@ -51,7 +51,7 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Alamat <span color="red">"*" </span></label>
+            <label class="block text-sm font-medium mb-1">Alamat <span style="color:red">*</span></label>
             <textarea v-model="form.alamat" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan alamat"></textarea>
             <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
@@ -171,7 +171,7 @@ const submitForm = async () => {
         packaging_alamat: form.value.alamat,
       };
       await axios.post(`${url.value}/api/packaging`, detailPayload);
-      
+
     }
     emit("save");
     emit("close");
