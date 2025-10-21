@@ -9,7 +9,6 @@ use Illuminate\Validation\Rule;
 
 class CustomerMController extends Controller
 {
-    // GET /api/customers
     public function index()
     {
         $customers = CustomerM::orderBy('customer_nama')->get();
@@ -21,7 +20,6 @@ class CustomerMController extends Controller
         ], 200);
     }
 
-    // GET /api/customers/{id}
     public function show($id)
     {
         $customer = CustomerM::find($id);
@@ -41,7 +39,6 @@ class CustomerMController extends Controller
         ], 200);
     }
 
-    // POST /api/customers
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -61,7 +58,6 @@ class CustomerMController extends Controller
         ], 201);
     }
 
-    // PUT/PATCH /api/customers/{id}
     public function update(Request $request, $id)
     {
         $customer = CustomerM::find($id);
@@ -97,7 +93,6 @@ class CustomerMController extends Controller
         ], 200);
     }
 
-    // DELETE /api/customers/{id}
     public function destroy($id)
     {
         $customer = CustomerM::find($id);
