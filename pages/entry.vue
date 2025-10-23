@@ -777,8 +777,42 @@ function openSendModal(id) {
   showSendModal.value = true;
 }
 
-function handleSend(data) {
-  sendOrder(selectedId.value, data);
+async function handleSend(data) {
+  // sendOrder(selectedId.value, data);
+  const pengiriman_id = await sendOrder(selectedId.value, data)
+  if (!pengiriman_id) return
+
+  const result = await Swal.fire({
+    title: "Konfirmasi Pengiriman",
+    text: "Pilih jenis pengiriman",
+    showDenyButton: true,
+    denyButtonText: "DIJEMPUT",
+    confirmButtonText: "DIKIRIM",
+    cancelButtonText: "Batal"
+  });
+
+  if (result.isConfirmed) {
+    await updatePengiriman(pengiriman_id, data.nama_akun, "DIKIRIM")
+  } else if (result.isDenied) {
+    await updatePengiriman(pengiriman_id, data.nama_akun, "DIJEMPUT")
+  }
+}
+
+async function updatePengiriman(pengiriman_id, namaAkun, status) {
+  await axios.put(`${url.value}/api/pengiriman-barang/${pengiriman_id}`, {
+    pengirimanBarang_nama_penerima: namaAkun,
+    pengirimanBarang_status: status
+  })
+
+  Swal.fire({
+    icon: "success",
+    title: "Berhasil",
+    text: `Barang akan ${status.toUpperCase()}`,
+    timer: 2000,
+    showConfirmButton: false
+  })
+
+  await getListBarangTemp();
 }
 
 const openModalEditBarang = (id) => {
@@ -976,19 +1010,23 @@ async function sendOrder(barangentry_id, formData) {
       pengirimanBarang_status: "Proses",
     };
 
-    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
-    Swal.fire({
-      icon: "success",
-      title: "Berhasil!",
-      text: "Pre-Order berhasil dikirim menjadi Transaksi.",
-      timer: 2500,
-      showConfirmButton: false,
-    });
+    const resPengiriman = await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+    const dataPengiriman = resPengiriman.data.data;
 
     await getListBarangTemp();
     showSendModal.value = false;
+
+    return dataPengiriman.pengiriman.pengirimanBarang_id;
+
+    // Swal.fire({
+    //   icon: "success",
+    //   title: "Berhasil!",
+    //   text: "Pre-Order berhasil dikirim menjadi Transaksi.",
+    //   timer: 2500,
+    //   showConfirmButton: false,
+    // });
   } catch (err) {
-    console.error('sad', err);
+    // console.error('sad', err);
 
     Swal.fire({
       title: "Gagal!",

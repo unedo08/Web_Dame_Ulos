@@ -255,17 +255,14 @@ async function buildRowsForPackaging(pkg) {
     const transaksiId = pkgDetailResp?.data?.packaging_transactiondetail_id;
     if (!transaksiId) return [];
 
-    // 2) Ambil transaksi lengkap (bukan transaksi-detail langsung)
     const { data: trxResp } = await axios.get(`${url.value}/api/transaksi/${transaksiId}`);
     const details = Array.isArray(trxResp?.data?.details) ? trxResp.data.details : [];
 
     const rows = [];
     for (const d of details) {
-      // 3) Ambil entrybarang untuk dapat code_id
       const { data: ebResp } = await axios.get(`${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`);
       const entry = ebResp?.data || {};
 
-      // 4) Ambil code nama
       let codeNama = "-";
       if (entry.barangentry_code_id) {
         const { data: codeResp } = await axios.get(`${url.value}/api/codebarang/${entry.barangentry_code_id}`);
