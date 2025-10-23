@@ -37,17 +37,18 @@ class PengirimanBarangTController extends Controller
         ]);
 
         try {
-            $customer = CustomerM::firstOrCreate(
+            $customer = CustomerM::updateOrCreate(
                 [
-                    'customer_akun'      => $validated['pengirimanBarang_akun_penerima'] ?? null,
                     'customer_notelepon' => $validated['pengirimanBarang_no_telepon'] ?? null,
                 ],
                 [
-                    'customer_nama'     => $validated['pengirimanBarang_nama_penerima'],
-                    'customer_alamat'   => $validated['pengirimanBarang_alamat_pengiriman_barang'],
-                    'customer_platform' => '-',
+                    'customer_akun'      => $validated['pengirimanBarang_akun_penerima'] ?? null,
+                    'customer_nama'      => $validated['pengirimanBarang_nama_penerima'],
+                    'customer_alamat'    => $validated['pengirimanBarang_alamat_pengiriman_barang'],
+                    'customer_platform'  => '-',
                 ]
             );
+
             $pengiriman = PengirimanBarangT::create([
                 ...$validated,
                 'pengirimanBarang_status'       => $validated['pengirimanBarang_status'] ?? 'pending',
