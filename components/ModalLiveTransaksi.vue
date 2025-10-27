@@ -53,7 +53,7 @@
         <!-- Form Input -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Nama Penerima *</label>
+            <label class="block text-sm font-medium mb-1">Nama Penerima <span style="color:red">*</span></label>
             <input v-model="form.nama_penerima" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan nama penerima" required />
             <p v-if="errors.nama_penerima" class="text-red-500 text-sm mt-1">
@@ -62,7 +62,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">No Telepon/Wa *</label>
+            <label class="block text-sm font-medium mb-1">No Telepon/Wa <span style="color:red">*</span></label>
             <input v-model="form.no_telepon" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan nomor telepon" required />
             <p v-if="errors.no_telepon" class="text-red-500 text-sm mt-1">
@@ -71,7 +71,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Metode Pembayaran *</label>
+            <label class="block text-sm font-medium mb-1">Metode Pembayaran <span style="color:red">*</span></label>
             <select v-model="form.metode" class="w-full border border-gray-300 rounded-md px-3 py-2" required>
               <option value="" disabled>Pilih metode pembayaran</option>
               <option value="Transfer Bank">Transfer Bank</option>
@@ -86,7 +86,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Biaya Pengiriman *</label>
+            <label class="block text-sm font-medium mb-1">Biaya Pengiriman <span style="color:red">*</span></label>
             <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan biaya pengiriman"
               required />
@@ -105,7 +105,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Pengiriman *</label>
+            <label class="block text-sm font-medium mb-1">Pengiriman <span style="color:red">*</span></label>
             <input v-model="form.pengiriman" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan jenis pengiriman" required />
             <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
