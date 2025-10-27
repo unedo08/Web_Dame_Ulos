@@ -20,6 +20,7 @@ class PreOrdeBarangT extends Model
         'preOrderBarang_deskripsi_barang',
         'preOrderBarang_catatan',
         'preOrderBarang_path_gambar',
-        'preOrderBarang_barang_entry_id'
+        'preOrderBarang_barang_entry_id',
+        'preOrderBarang_cara_bayar'
     ];
 }
