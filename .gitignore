@@ -18,6 +18,10 @@ logs
 .fleet
 .idea
 
+# .gitignore
+package-lock.json
+
+
 # Local env files
 #.env
 #.env.*
