@@ -266,7 +266,7 @@ const submitForm = async () => {
       await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
       const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
       console.log('zxcccc', test);
-      
+
     }
 
     const pengirimanPayload = {

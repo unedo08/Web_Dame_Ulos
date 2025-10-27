@@ -1,15 +1,9 @@
 <template>
-  <div
-    v-if="show"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-  >
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Detail Transaksi</h2>
-        <button
-          @click="$emit('close')"
-          class="text-gray-500 hover:text-red-500 text-xl"
-        >
+        <button @click="$emit('close')" class="text-gray-500 hover:text-red-500 text-xl">
           &times;
         </button>
       </div>
@@ -27,11 +21,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(item, index) in detailBarang"
-              :key="item.transaksidetail_id"
-              class="text-center"
-            >
+            <tr v-for="(item, index) in detailBarang" :key="item.transaksidetail_id" class="text-center">
               <td class="p-2">{{ index + 1 }}</td>
               <td class="p-2">{{ item.kode_barang }}</td>
               <td class="p-2">{{ item.nama_barang }}</td>

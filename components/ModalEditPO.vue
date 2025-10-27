@@ -1,42 +1,41 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
+    <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label>Kode Barang *</label>
+            <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.code" type="text" required class="form-control" />
           </div>
           <div class="hidden">
-            <label>Kode Barang *</label>
+            <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.barangentry_code_id" type="text" required class="form-control" />
           </div>
           <div class="hidden">
-            <label>preOrder ID *</label>
+            <label>preOrder ID <span style="color:red">*</span></label>
             <input v-model="form.preOrdeBarang_id" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Nama Akun *</label>
+            <label>Nama Akun <span style="color:red">*</span></label>
             <input v-model="form.preOrderBarang_nama_akun" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Target Selesai *</label>
+            <label>Target Selesai <span style="color:red">*</span></label>
             <input v-model="form.preOrderBarang_target_selesai" type="date" required class="form-control" />
           </div>
 
           <div>
-            <label>Uang Muka (DP) *</label>
-            <input v-model="formattedModal" @input="updateModal" type="text" required
-              class="form-control text-right" />
+            <label>Uang Muka (DP) <span style="color:red">*</span></label>
+            <input v-model="formattedModal" @input="updateModal" type="text" required class="form-control text-right" />
           </div>
 
           <div>
-            <label>Deskripsi Ulos *</label>
+            <label>Deskripsi Ulos <span style="color:red">*</span></label>
             <textarea v-model="form.preOrderBarang_deskripsi_barang" rows="3" required class="form-control"></textarea>
           </div>
 
@@ -49,28 +48,29 @@
           </div> -->
 
           <div>
-            <label>Nama Ulos *</label>
+            <label>Nama Ulos <span style="color:red">*</span></label>
             <input v-model="form.preOrderBarang_nama_barang" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>No Telepon *</label>
+            <label>No Telepon <span style="color:red">*</span></label>
             <input v-model="form.preOrderBarang_no_telepon" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Total Pembayaran *</label>
+            <label>Total Pembayaran <span style="color:red">*</span></label>
             <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
               class="form-control text-right" />
           </div>
 
           <div>
-            <label>Sisa Pembayaran *</label>
-            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required class="form-control text-right" />
+            <label>Sisa Pembayaran <span style="color:red">*</span></label>
+            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
+              class="form-control text-right" />
           </div>
 
           <div>
-            <label>Catatan *</label>
+            <label>Catatan <span style="color:red">*</span></label>
             <textarea v-model="form.preOrderBarang_catatan" rows="3" required class="form-control"></textarea>
           </div>
         </div>
@@ -125,18 +125,18 @@ const form = ref({
   barangentry_ukuran_ulos: '',
   barangentry_ukuran_mandar: '',
   barangentry_jumlah_barang: 0,
-  preOrdeBarang_id:0,
-  preOrderBarang_transaksi_id:0,
-  preOrderBarang_nama_barang:'',
-  preOrderBarang_nama_akun:'',
-  preOrderBarang_no_telepon:'',
-  preOrderBarang_target_selesai:0,
-  preOrderBarang_total_pembayaran:0,
-  preOrderBarang_uang_muka:0,
-  preOrderBarang_sisa_pembayaran:0,
-  preOrderBarang_deskripsi_barang:'',
-  preOrderBarang_catatan:'',
-  preOrderBarang_barang_entry_id:0
+  preOrdeBarang_id: 0,
+  preOrderBarang_transaksi_id: 0,
+  preOrderBarang_nama_barang: '',
+  preOrderBarang_nama_akun: '',
+  preOrderBarang_no_telepon: '',
+  preOrderBarang_target_selesai: 0,
+  preOrderBarang_total_pembayaran: 0,
+  preOrderBarang_uang_muka: 0,
+  preOrderBarang_sisa_pembayaran: 0,
+  preOrderBarang_deskripsi_barang: '',
+  preOrderBarang_catatan: '',
+  preOrderBarang_barang_entry_id: 0
 });
 
 const formatNumber = (value) => {
@@ -178,7 +178,7 @@ const loadData = async () => {
 
     const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
     form.value.code = code.data.code_nama;
-    
+
     formattedModal.value = formatNumber(form.value.preOrderBarang_uang_muka);
     formattedPriceTag.value = formatNumber(form.value.preOrderBarang_sisa_pembayaran);
     formattedHargaNet.value = formatNumber(form.value.preOrderBarang_total_pembayaran);
@@ -192,7 +192,7 @@ const submitForm = async () => {
   try {
 
     const payload = {
-      preOrdeBarang_id:form.value.preOrdeBarang_id,
+      preOrdeBarang_id: form.value.preOrdeBarang_id,
       preOrderBarang_transaksi_id: '',
       preOrderBarang_nama_barang: form.value.barangentry_nama,
       preOrderBarang_nama_akun: form.value.preOrderBarang_nama_akun,

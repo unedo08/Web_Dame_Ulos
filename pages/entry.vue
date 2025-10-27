@@ -792,9 +792,9 @@ async function handleSend(data) {
   });
 
   if (result.isConfirmed) {
-    await updatePengiriman(pengiriman_id, data.nama_akun, "DIKIRIM")
+    await updatePengiriman(pengiriman_id, data.nama_akun, "Dikirim")
   } else if (result.isDenied) {
-    await updatePengiriman(pengiriman_id, data.nama_akun, "DIJEMPUT")
+    await updatePengiriman(pengiriman_id, data.nama_akun, "Dijemput")
   }
 }
 
@@ -1017,14 +1017,6 @@ async function sendOrder(barangentry_id, formData) {
     showSendModal.value = false;
 
     return dataPengiriman.pengiriman.pengirimanBarang_id;
-
-    // Swal.fire({
-    //   icon: "success",
-    //   title: "Berhasil!",
-    //   text: "Pre-Order berhasil dikirim menjadi Transaksi.",
-    //   timer: 2500,
-    //   showConfirmButton: false,
-    // });
   } catch (err) {
     // console.error('sad', err);
 

@@ -3,48 +3,29 @@
     <title>Transaksi Live</title>
     <div class="judul text-xl font-semibold mb-4">Transaksi Live</div>
     <div class="flex space-x-6">
-      <button
-        @click="activeTab = 'order'"
-        class="pb-1 text-sm relative"
-        :class="activeTab === 'order' ? 'text-black' : 'text-gray-500'"
-      >
+      <button @click="activeTab = 'order'" class="pb-1 text-sm relative"
+        :class="activeTab === 'order' ? 'text-black' : 'text-gray-500'">
         Order
-        <span
-          v-if="activeTab === 'order'"
-          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 90%"
-        ></span>
+        <span v-if="activeTab === 'order'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 90%"></span>
       </button>
 
-      <button
-        @click="activeTab = 'transaction'"
-        class="pb-1 text-sm relative"
-        :class="activeTab === 'transaction' ? 'text-black' : 'text-gray-500'"
-      >
+      <button @click="activeTab = 'transaction'" class="pb-1 text-sm relative"
+        :class="activeTab === 'transaction' ? 'text-black' : 'text-gray-500'">
         Transcation
-        <span
-          v-if="activeTab === 'transaction'"
-          class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
-          style="width: 90%"
-        ></span>
+        <span v-if="activeTab === 'transaction'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
+          style="width: 90%"></span>
       </button>
     </div>
     <div class="mx-auto" v-show="activeTab === 'order'">
       <br />
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="search-box p-2 rounded-md"
-            placeholder="Cari data live..."
-          />
+          <input v-model="searchQuery" type="text" class="search-box p-2 rounded-md" placeholder="Cari data live..." />
         </div>
         <div>
-          <button
-            class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
-            @click="openModalAddOrder"
-          >
+          <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
+            @click="openModalAddOrder">
             + Live
           </button>
         </div>
@@ -64,13 +45,10 @@
         <tbody>
           <template v-for="(items, akun) in filteredGroupedData" :key="akun">
             <!-- :key="pengiriman.pengirimanBarang_id" -->
-            <tr
-              v-for="(pengiriman, index) in items"
-              :class="[
-                index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
-                index === items.length - 1 ? 'border-b-2 border-gray-200' : '',
-              ]"
-            >
+            <tr v-for="(pengiriman, index) in items" :class="[
+              index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
+              index === items.length - 1 ? 'border-b-2 border-gray-200' : '',
+            ]">
               <!-- <td>{{ index + 1 }}</td> -->
               <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
                 {{ akun }}
@@ -93,14 +71,12 @@
                 <div class="flex space-x-2">
                   <button
                     class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
-                    @click="editOrderLive(pengiriman.live_order_id)"
-                  >
+                    @click="editOrderLive(pengiriman.live_order_id)">
                     Edit
                   </button>
                   <button
                     class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
-                    @click="deleteOrder(pengiriman.live_order_id)"
-                  >
+                    @click="deleteOrder(pengiriman.live_order_id)">
                     Delete
                   </button>
                 </div>
@@ -112,11 +88,7 @@
       <div class="flex justify-between items-center mt-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
-          <select
-            id="perPage"
-            v-model="itemsPerPage"
-            class="border px-2 py-1 rounded text-xs"
-          >
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
             <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="20">20</option>
@@ -125,33 +97,22 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
             Sebelumnya
           </button>
 
-          <button
-            v-for="(page, index) in paginatedPages"
-            :key="index"
-            @click="typeof page === 'number' && (currentPage = page)"
-            :class="[
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
               'px-3 py-1 rounded text-xs',
               currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
               page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]"
-            :disabled="page === '...'"
-          >
+            ]" :disabled="page === '...'">
             {{ page }}
           </button>
 
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
             Selanjutnya
           </button>
         </div>
@@ -160,12 +121,7 @@
 
     <div class="mx-auto" v-show="activeTab === 'transaction'">
       <br />
-      <input
-        v-model="searchQuery"
-        type="text"
-        class="search-box mb-4"
-        placeholder="Cari data live..."
-      />
+      <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari data live..." />
       <table class="datatable">
         <thead>
           <tr>
@@ -176,18 +132,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(pengiriman, index) in pagination"
-            :key="pengiriman.pengirimanBarang_id"
-          >
+          <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id">
             <td>{{ index + 1 }}</td>
             <td>{{ pengiriman.live_order_nama_akun }}</td>
             <td>{{ pengiriman.jumlah }}</td>
             <td>
-              <button
-                class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
-                @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)"
-              >
+              <button class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
+                @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)">
                 Edit
               </button>
             </td>
@@ -197,11 +148,7 @@
       <div class="flex justify-between items-center mt-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
-          <select
-            id="perPage"
-            v-model="itemsPerPage"
-            class="border px-2 py-1 rounded text-xs"
-          >
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
             <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="20">20</option>
@@ -210,33 +157,22 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
             Sebelumnya
           </button>
 
-          <button
-            v-for="(page, index) in paginatedPages"
-            :key="index"
-            @click="typeof page === 'number' && (currentPage = page)"
-            :class="[
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
               'px-3 py-1 rounded text-xs',
               currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
               page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]"
-            :disabled="page === '...'"
-          >
+            ]" :disabled="page === '...'">
             {{ page }}
           </button>
 
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
             Selanjutnya
           </button>
         </div>
@@ -245,64 +181,39 @@
   </div>
 
   <!-- Modal Add Order -->
-  <div
-    v-if="isModalOpenAddOrder"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-  >
+  <div v-if="isModalOpenAddOrder" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Tambah Transaksi Live</h3>
       <form @submit.prevent="submitLiveOrder">
         <div class="mb-4">
-          <label
-            for="barang"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="barang" class="block text-sm font-medium text-gray-700 mb-1">
             Barang<span class="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="barang"
-            v-model="form.barang"
-            placeholder="Masukkan nama acara"
+          <input type="text" id="barang" v-model="form.barang" placeholder="Masukkan nama acara"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          />
+            required />
           <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
             {{ errors.barang }}
           </p>
         </div>
         <div class="mb-4">
-          <label
-            for="namaAkun"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="namaAkun" class="block text-sm font-medium text-gray-700 mb-1">
             Nama Akun<span class="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="namaAkun"
-            v-model="form.namaAkun"
-            placeholder="Masukkan nama akun"
+          <input type="text" id="namaAkun" v-model="form.namaAkun" placeholder="Masukkan nama akun"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          />
+            required />
           <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
             {{ errors.namaAkun }}
           </p>
         </div>
         <div class="mb-4">
-          <label
-            for="platform"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="platform" class="block text-sm font-medium text-gray-700 mb-1">
             Platform<span class="text-red-500">*</span>
           </label>
-          <select
-            id="platform"
-            v-model="form.platform"
+          <select id="platform" v-model="form.platform"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          >
+            required>
             <option value="" disabled>Pilih Platform</option>
             <option value="tiktok">TikTok</option>
             <option value="instagram">Instagram</option>
@@ -315,27 +226,18 @@
         </div>
 
         <div class="mb-4">
-          <label
-            for="hargaTotal"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="hargaTotal" class="block text-sm font-medium text-gray-700 mb-1">
             Harga Total<span class="text-red-500">*</span>
           </label>
           <div class="flex">
             <span
-              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
-            >
+              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
               Rp
             </span>
-            <input
-              type="text"
-              id="hargaTotal"
-              :value="formattedHarga"
-              @input="updateHarga($event.target.value)"
+            <input type="text" id="hargaTotal" :value="formattedHarga" @input="updateHarga($event.target.value)"
               placeholder="Masukkan harga"
               class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-              required
-            />
+              required />
             <p v-if="errors.hargaTotal" class="text-red-500 text-sm mt-1">
               {{ errors.hargaTotal }}
             </p>
@@ -343,18 +245,12 @@
         </div>
 
         <div class="flex justify-end space-x-2">
-          <button
-            type="button"
-            @click="closeModalAddOrder"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-          >
+          <button type="button" @click="closeModalAddOrder"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
             Batal
           </button>
-          <button
-            type="submit"
-            :disabled="isSubmitting"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]"
-          >
+          <button type="submit" :disabled="isSubmitting"
+            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
             {{ isSubmitting ? "Menyimpan..." : "Tambah" }}
           </button>
         </div>
@@ -363,64 +259,40 @@
   </div>
 
   <!-- Modal Edit Order -->
-  <div
-    v-if="isModalOpenEditOrder"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-  >
+  <div v-if="isModalOpenEditOrder"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Edit Transaksi Live</h3>
       <form @submit.prevent="submitLiveEditOrder">
         <div class="mb-4">
-          <label
-            for="barang"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="barang" class="block text-sm font-medium text-gray-700 mb-1">
             Barang<span class="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="barang"
-            v-model="form.barang"
-            placeholder="Masukkan nama barang"
+          <input type="text" id="barang" v-model="form.barang" placeholder="Masukkan nama barang"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          />
+            required />
           <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
             {{ errors.barang }}
           </p>
         </div>
         <div class="mb-4">
-          <label
-            for="namaAkun"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="namaAkun" class="block text-sm font-medium text-gray-700 mb-1">
             Nama Akun<span class="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="namaAkun"
-            v-model="form.namaAkun"
-            placeholder="Masukkan nama akun"
+          <input type="text" id="namaAkun" v-model="form.namaAkun" placeholder="Masukkan nama akun"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          />
+            required />
           <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
             {{ errors.namaAkun }}
           </p>
         </div>
         <div class="mb-4">
-          <label
-            for="platform"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="platform" class="block text-sm font-medium text-gray-700 mb-1">
             Platform<span class="text-red-500">*</span>
           </label>
-          <select
-            id="platform"
-            v-model="form.platform"
+          <select id="platform" v-model="form.platform"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required
-          >
+            required>
             <option value="" disabled>Pilih Platform</option>
             <option value="tiktok">TikTok</option>
             <option value="instagram">Instagram</option>
@@ -434,27 +306,18 @@
         </div>
 
         <div class="mb-4">
-          <label
-            for="hargaTotal"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="hargaTotal" class="block text-sm font-medium text-gray-700 mb-1">
             Harga Total<span class="text-red-500">*</span>
           </label>
           <div class="flex">
             <span
-              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
-            >
+              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
               Rp
             </span>
-            <input
-              type="text"
-              id="hargaTotal"
-              :value="formattedHarga"
-              @input="updateHarga($event.target.value)"
+            <input type="text" id="hargaTotal" :value="formattedHarga" @input="updateHarga($event.target.value)"
               placeholder="Masukkan harga"
               class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-              required
-            />
+              required />
             <p v-if="errors.hargaTotal" class="text-red-500 text-sm mt-1">
               {{ errors.hargaTotal }}
             </p>
@@ -462,18 +325,12 @@
         </div>
 
         <div class="flex justify-end space-x-2">
-          <button
-            type="button"
-            @click="closeModalEditOrder"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-          >
+          <button type="button" @click="closeModalEditOrder"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
             Batal
           </button>
-          <button
-            type="submit"
-            :disabled="isSubmittingEdit"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]"
-          >
+          <button type="submit" :disabled="isSubmittingEdit"
+            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
             {{ isSubmittingEdit ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>
@@ -481,14 +338,8 @@
     </div>
   </div>
 
-  <ModalLiveTransaksi
-    v-model:show="isModalOpen"
-    :namaAkun="selected.namaAkun"
-    :barang="selected.barang"
-    @save="handleSave"
-    @close="isModalOpen = false"
-    @removeItem="handleRemoveItem"
-  />
+  <ModalLiveTransaksi v-model:show="isModalOpen" :namaAkun="selected.namaAkun" :barang="selected.barang"
+    @save="handleSave" @close="isModalOpen = false" @removeItem="handleRemoveItem" />
 </template>
 
 <script setup>
@@ -542,21 +393,21 @@ const openModalEditTransaksi = async (namaAkun) => {
     const { data } = await axios.get(
       `${url.value}/api/live-barang/data-live/` + namaAkun
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
-    );  
-    
+    );
+
     if (data.data && data.data.length > 0) {
       selected.value = {
         namaAkun: data.data[0].live_order_nama_akun,
         barang: data.data
-        .filter(item => item.is_check === 0)
-        .map((item) => ({
-          kode: item.code_nama,
-          nama: item.barangentry_nama,
-          jumlah: item.live_order_jumlah_barang,
-          harga: parseFloat(item.live_order_harga_terjual),
-          live_order_id: item.live_order_id,
-          is_check: false,
-        })),
+          .filter(item => item.is_check === 0)
+          .map((item) => ({
+            kode: item.code_nama,
+            nama: item.barangentry_nama,
+            jumlah: item.live_order_jumlah_barang,
+            harga: parseFloat(item.live_order_harga_terjual),
+            live_order_id: item.live_order_id,
+            is_check: true,
+          })),
       };
       isModalOpen.value = true;
     }
@@ -657,8 +508,8 @@ function validate() {
   errors.namaAkun = !form.value.namaAkun ? "Nama akun wajib diisi" : "";
   errors.platform = !form.value.platform ? "Platform selesai wajib diisi" : "";
   errors.hargaTotal = !form.value.hargaTotal ? "Harga Total wajib diisi" : "";
-  console.log('xc',errors.barang);
-  
+  console.log('xc', errors.barang);
+
   return Object.values(errors).every((err) => !err);
 }
 

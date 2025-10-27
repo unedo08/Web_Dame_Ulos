@@ -49,7 +49,7 @@
           </tbody>
         </table>
 
-        <div class="grid grid-cols-2 gap-4">
+        <!-- <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1">Alamat <span style="color:red">*</span></label>
             <textarea v-model="form.alamat" class="w-full border border-gray-300 rounded-md px-3 py-2"
@@ -58,7 +58,7 @@
               {{ errors.alamat }}
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- Footer -->
@@ -139,17 +139,17 @@ function validate() {
 
 const submitForm = async () => {
 
-  if (!validate()) {
-    Swal.fire({
-      title: "Gagal!",
-      text: "Silakan lengkapi semua field wajib.",
-      icon: "error",
-      confirmButtonText: "OK",
-      timer: 3000,
-      timerProgressBar: true,
-    });
-    return;
-  }
+  // if (!validate()) {
+  //   Swal.fire({
+  //     title: "Gagal!",
+  //     text: "Silakan lengkapi semua field wajib.",
+  //     icon: "error",
+  //     confirmButtonText: "OK",
+  //     timer: 3000,
+  //     timerProgressBar: true,
+  //   });
+  //   return;
+  // }
   isSubmitting.value = true;
 
   const barangTerpilih = props.barang.filter(item => item.is_check);
