@@ -96,7 +96,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Alamat</label>
+            <label class="block text-sm font-medium mb-1">Alamat <span style="color:red">*</span></label>
             <textarea v-model="form.alamat" class="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="Masukkan alamat"></textarea>
             <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
