@@ -4,54 +4,34 @@
 
   <div class="flex items-start justify-between pt-2">
     <div class="flex flex-col flex-1 space-y-2">
-      <input
-        class="search-box p-2 border rounded-md"
-        v-model="searchQueryCustomer"
-        type="text"
-        placeholder="Nama Customer"
-      />
-      <input
-        class="search-box p-2 border rounded-md"
-        v-model="searchQueryPhone"
-        type="text"
-        placeholder="Nomor Telepon"
-      />
+      <input class="search-box p-2 border rounded-md" v-model="searchQueryCustomer" type="text"
+        placeholder="Nama Customer" />
+      <input class="search-box p-2 border rounded-md" v-model="searchQueryPhone" type="text"
+        placeholder="Nomor Telepon" />
     </div>
 
     <div class="flex space-x-2 ml-4">
-      <button
-        class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
-        @click="openModalLive = true"
-      >
+      <button class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
+        @click="openModalLive = true">
         Online
       </button>
-      <button
-        class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
-        @click="openModalPreOrder = true"
-      >
+      <button class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
+        @click="openModalPreOrder = true">
         Pre-Order
       </button>
-      <button
-        class="bg-[#FACC15] text-white rounded-md hover:bg-[#F4C405] w-[132.97px] h-[34px]"
-        @click="
-          () => {
-            openModalHold = true;
-            fetchHoldTransactions();
-          }
-        "
-      >
+      <button class="bg-[#FACC15] text-white rounded-md hover:bg-[#F4C405] w-[132.97px] h-[34px]" @click="
+        () => {
+          openModalHold = true;
+          fetchHoldTransactions();
+        }
+      ">
         Pending List
       </button>
-      <button
-        class="bg-[#404040] text-white rounded-md hover:bg-[#363535] w-[104px] h-[34px]"
-        @click="handleHold"
-      >
+      <button class="bg-[#404040] text-white rounded-md hover:bg-[#363535] w-[104px] h-[34px]" @click="handleHold">
         Hold
       </button>
-      <button
-        class="bg-[#22C55E] text-white rounded-md hover:bg-[#21B156] w-[104px] h-[34px]"
-        @click="openModalProcess = true"
-      >
+      <button class="bg-[#22C55E] text-white rounded-md hover:bg-[#21B156] w-[104px] h-[34px]"
+        @click="openModalProcess = true">
         Checkout
       </button>
     </div>
@@ -71,35 +51,22 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, index) in datatableItems"
-          :key="index"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-        >
+        <tr v-for="(item, index) in datatableItems" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">{{ item.barangentry_nama }}</td>
           <td class="px-4 py-2">
-            <template v-if="item.quantity > 1">
-              <input
-                type="number"
-                v-model.number="item.quantity"
-                class="w-16 border px-2 py-1"
-                min="1"
-              />
+            <template v-if="item.barangentry_jumlah_barang > 1">
+              <input type="number" v-model.number="item.quantity" class="w-16 border px-2 py-1" min="1" />
             </template>
             <template v-else>
               {{ item.quantity }}
             </template>
           </td>
           <td class="px-4 py-2">
-          <!-- v-if="item.quantity > 1" -->
+            <!-- v-if="item.quantity > 1" -->
             <!-- <template> -->
-              <input
-                type="text"
-                :value="formatRupiahInput(item.barangentry_harga_net)"
-                @input="updateHargaNet($event, item)"
-                class="w-28 border rounded px-2 py-1 text-right"
-              />
+            <input type="text" :value="formatRupiahInput(item.barangentry_harga_net)"
+              @input="updateHargaNet($event, item)" class="w-28 border rounded px-2 py-1 text-right" />
             <!-- </template> -->
             <!-- <template v-else>
               {{ formatRupiahInput(item.barangentry_harga_net) }}
@@ -108,10 +75,7 @@
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="hidden">{{ item.transaksi_id }}</td>
           <td class="px-4 py-2">
-            <button
-              @click="removeItem(index)"
-              class="text-red-500 px-2 py-1 rounded hover:text-red-600 text-s"
-            >
+            <button @click="removeItem(index)" class="text-red-500 px-2 py-1 rounded hover:text-red-600 text-s">
               <TrashIcon class="w-5 h-5" />
             </button>
           </td>
@@ -124,98 +88,70 @@
   </div>
 
   <Transition name="slide">
-  <div
-    v-if="openModalHold"
-    class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform flex-col"
-  >
-    <!-- Sticky Header -->
-    <div class="sticky top-0 z-20 bg-white border-b p-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-md font-semibold">Pending List</h2>
-        <button
-          @click="openModalHold = false"
-          class="text-gray-600 hover:text-red-500 text-xl font-bold"
-        >
-          &times;
-        </button>
-      </div>
-      <div class="mt-4">
-        <input
-          v-model="searchHold"
-          type="text"
-          placeholder="Cari nama customer..."
-          class="w-full border border-gray-300 px-3 py-2 rounded"
-        />
-      </div>
-    </div>
-    <div class="p-4">
-      <div v-if="filteredList.length === 0" class="text-gray-500">
-        Tidak ada transaksi hold saat ini.
-      </div>
-      <div v-else class="space-y-2 transition-slide">
-        <div
-          v-for="(item, index) in paginatedList"
-          :key="item.transaksi_id"
-          class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
-          @click="loadHoldTransaction(item.transaksi_id)"
-        >
-          <div class="pr-8">
-            <div class="font-semibold">
-              {{ item.transaksi_nama_customer || "Tanpa Nama" }}
-            </div>
-            <div class="text-xs text-gray-600">
-              Total: {{ formatRupiah(Number(item.transaksi_total_harga)) }}
-            </div>
-            <div class="text-xs text-gray-500">
-              {{ formatTanggalHold(item.created_at) }}
-            </div>
-          </div>
-          <div class="flex space-x-2 mt-3">
-            <button
-              @click.stop="deleteHoldTransaction(item.transaksi_id)"
-              class="text-red-500 px-3 py-1 rounded hover:text-red-600"
-            >
-              <TrashIcon class="w-5 h-5" />
-            </button>
-          </div>
+    <div v-if="openModalHold"
+      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto transition-transform flex-col">
+      <!-- Sticky Header -->
+      <div class="sticky top-0 z-20 bg-white border-b p-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-md font-semibold">Pending List</h2>
+          <button @click="openModalHold = false" class="text-gray-600 hover:text-red-500 text-xl font-bold">
+            &times;
+          </button>
+        </div>
+        <div class="mt-4">
+          <input v-model="searchHold" type="text" placeholder="Cari nama customer..."
+            class="w-full border border-gray-300 px-3 py-2 rounded" />
         </div>
       </div>
-      <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
-        <button
-          @click="currentPage--"
-          :disabled="currentPage === 1"
-          class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          &laquo;
-        </button>
+      <div class="p-4">
+        <div v-if="filteredList.length === 0" class="text-gray-500">
+          Tidak ada transaksi hold saat ini.
+        </div>
+        <div v-else class="space-y-2 transition-slide">
+          <div v-for="(item, index) in paginatedList" :key="item.transaksi_id"
+            class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
+            @click="loadHoldTransaction(item.transaksi_id)">
+            <div class="pr-8">
+              <div class="font-semibold">
+                {{ item.transaksi_nama_customer || "Tanpa Nama" }}
+              </div>
+              <div class="text-xs text-gray-600">
+                Total: {{ formatRupiah(Number(item.transaksi_total_harga)) }}
+              </div>
+              <div class="text-xs text-gray-500">
+                {{ formatTanggalHold(item.created_at) }}
+              </div>
+            </div>
+            <div class="flex space-x-2 mt-3">
+              <button @click.stop="deleteHoldTransaction(item.transaksi_id)"
+                class="text-red-500 px-3 py-1 rounded hover:text-red-600">
+                <TrashIcon class="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
+          <button @click="currentPage--" :disabled="currentPage === 1"
+            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+            &laquo;
+          </button>
 
-        <button
-          v-for="page in totalPages"
-          :key="page"
-          @click="currentPage = page"
-          :class="[ 'px-3 py-1 rounded border', page === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200' ]"
-        >
-          {{ page }}
-        </button>
+          <button v-for="page in totalPages" :key="page" @click="currentPage = page"
+            :class="['px-3 py-1 rounded border', page === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200']">
+            {{ page }}
+          </button>
 
-        <button
-          @click="currentPage++"
-          :disabled="currentPage === totalPages"
-          class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          &raquo;
-        </button>
+          <button @click="currentPage++" :disabled="currentPage === totalPages"
+            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+            &raquo;
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</Transition>
+  </Transition>
 
   <!-- Modal Process -->
-  <ModalKasir
-    v-if="openModalProcess"
-    @close="openModalProcess = false"
-    title="Selesaikan Transaksi"
-  >
+  <ModalKasir v-if="openModalProcess" @close="openModalProcess = false" title="Selesaikan Transaksi">
     <label>Metode Pembayaran:</label>
     <select v-model="processForm.paymentMethod" class="input-field mb-2">
       <option disabled value="">Pilih metode pembayaran</option>
@@ -227,26 +163,13 @@
     </select>
 
     <label>Catatan:</label>
-    <textarea
-      v-model="processForm.notes"
-      class="input-field mb-4"
-      placeholder="Catatan tambahan"
-    ></textarea>
+    <textarea v-model="processForm.notes" class="input-field mb-4" placeholder="Catatan tambahan"></textarea>
 
-    <button
-      @click="checkoutProcess"
-      class="w-full text-white px-4 py-2 rounded-md transition font-semibold"
-      :class="
-        isLoading
-          ? 'bg-gray-400 cursor-not-allowed'
-          : 'bg-green-600 hover:bg-green-700'
-      "
-      :disabled="isLoading"
-    >
-      <span
-        v-if="isLoading"
-        class="loader-border ease-linear rounded-full border-2 border-t-2 h-5 w-5"
-      ></span>
+    <button @click="checkoutProcess" class="w-full text-white px-4 py-2 rounded-md transition font-semibold" :class="isLoading
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-green-600 hover:bg-green-700'
+      " :disabled="isLoading">
+      <span v-if="isLoading" class="loader-border ease-linear rounded-full border-2 border-t-2 h-5 w-5"></span>
       <span v-if="isLoading">Mohon tunggu sebentar...</span>
       <span v-else>Checkout</span>
     </button>
@@ -256,10 +179,7 @@
   <ModalLive :visible="openModalLive" @close="openModalLive = false" />
 
   <!-- Modal PreOrder -->
-  <ModalPreOrder
-    :visible="openModalPreOrder"
-    @close="openModalPreOrder = false"
-  />
+  <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
 </template>
 
 <script setup>
@@ -440,7 +360,7 @@ async function handleHold() {
     });
     return;
   }
-  
+
   const jumlahBarang = datatableItems.value.reduce(
     (total, item) => total + (item.quantity || 0),
     0
@@ -584,8 +504,8 @@ async function checkoutProcess() {
         const barangRes = await axios.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
-        const kodeBarang = await axios.get(`${url.value}/api/codebarang/`+barangRes.data.data.barangentry_code_id)
-        
+        const kodeBarang = await axios.get(`${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id)
+
         return {
           ...detail,
           barangentry_nama:
@@ -710,7 +630,8 @@ const fetchDataByBarcode = async (code) => {
       } else {
         datatableItems.value.push({
           barangentry_nama: item.barangentry_nama,
-          quantity: item.barangentry_jumlah_barang,
+          quantity: 1,
+          barangentry_jumlah_barang: item.barangentry_jumlah_barang,
           barangentry_harga_net: 0,
           isEditing: false,
           code_nama: code,
@@ -901,8 +822,8 @@ function printToNewTab(data, items) {
         </thead>
         <tbody>
           ${items
-            .map(
-              (item, index) => `
+      .map(
+        (item, index) => `
                 <tr>
                   <td>${index + 1}</td>
                   <td>${item.barangentry_code || "-"}</td>
@@ -910,13 +831,13 @@ function printToNewTab(data, items) {
                   <td>${item.transaksidetail_jumlah_barang} pcs</td>
                   <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
                   <td>${formatRupiah(
-                    item.transaksidetail_jumlah_barang *
-                      item.transaksidetail_harga_barang
-                  )}</td>
+          item.transaksidetail_jumlah_barang *
+          item.transaksidetail_harga_barang
+        )}</td>
                 </tr>
               `
-            )
-            .join("")}
+      )
+      .join("")}
           <tr class="total-row">
             <td colspan="5">Total :</td>
             <td>${formatRupiah(data.transaksi_total_harga)}</td>
@@ -1036,6 +957,7 @@ watch(searchHold, () => {
 .transition-slide {
   font-size: 12px;
 }
+
 @keyframes spinner {
   to {
     transform: rotate(360deg);
@@ -1046,9 +968,11 @@ watch(searchHold, () => {
 .slide-leave-active {
   transition: transform 0.3s ease;
 }
+
 .slide-enter-from {
   transform: translateX(100%);
 }
+
 .slide-leave-to {
   transform: translateX(100%);
 }

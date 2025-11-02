@@ -256,6 +256,7 @@ async function buildRowsForPackaging(pkg) {
     if (!transaksiId) return [];
 
     const { data: trxResp } = await axios.get(`${url.value}/api/transaksi/${transaksiId}`);
+
     const details = Array.isArray(trxResp?.data?.details) ? trxResp.data.details : [];
 
     const rows = [];

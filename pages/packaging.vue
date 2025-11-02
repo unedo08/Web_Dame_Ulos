@@ -196,7 +196,6 @@ const openModalEditPackaging = async (trx_id, namaAkun) => {
       `${url.value}/api/pengiriman-barang/get-transaksi-detail/` + trx_id
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
     );
-
     if (data.data && data.data.length > 0) {
       selected.value = {
         namaAkun: namaAkun,
@@ -207,7 +206,7 @@ const openModalEditPackaging = async (trx_id, namaAkun) => {
             nama: item.barangentry_nama,
             jumlah: item.transaksidetail_jumlah_barang,
             harga: parseFloat(item.transaksidetail_harga_barang),
-            trx_detail_id: item.transaksidetail_barang_id,
+            trx_detail_id: item.transaksidetail_transaksi_id,
             is_check: true,
           })),
       };
