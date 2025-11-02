@@ -47,11 +47,12 @@
           🔍 Search
         </button> -->
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="openModal('desc')">
+            @click="showModalAdd = true">
             + Desc
           </button>
+
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="openModal('size')">
+            @click="showModalAddSize = true">
             + Size
           </button>
           <!-- <button
@@ -441,9 +442,9 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input v-model="selectedBarang.code_nama" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
-              :readonly="true" />
+            <input v-model="selectedBarang.code_nama" @input="handleBarcodeDesc"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
+              placeholder="Scan atau ketik kode barang..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Ulos:</label>
@@ -531,11 +532,11 @@
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
               :readonly="true" />
           </div>
-          <div hidden>
+          <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input v-model="selectedBarang.kode_barang" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
-              :readonly="true" />
+            <input v-model="selectedBarang.kode_barang" @input="handleBarcodeSize"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
+              placeholder="Scan atau ketik kode barang..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Ulos:</label>
@@ -902,6 +903,82 @@ async function getListBarangTemp() {
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }
+}
+
+let barcodeTimeoutDesc = null;
+
+async function handleBarcodeDesc() {
+  clearTimeout(barcodeTimeoutDesc);
+  barcodeTimeoutDesc = setTimeout(async () => {
+    if (!selectedBarang.value.code_nama) return;
+
+    try {
+      const response = await axios.get(
+        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.code_nama}`
+      );
+      const data = response.data.data;
+
+      if (!data) {
+        Swal.fire({
+          icon: "error",
+          title: "Kode Tidak Ditemukan",
+          text: "Pastikan kode barang valid",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      selectedBarang.value.code_id = data.code_id;
+    } catch (err) {
+      console.error("Gagal mengambil data kode:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Terjadi kesalahan saat memeriksa kode.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  }, 600);
+}
+
+let barcodeTimeoutSize = null;
+
+async function handleBarcodeSize() {
+  clearTimeout(barcodeTimeoutSize);
+  barcodeTimeoutSize = setTimeout(async () => {
+    if (!selectedBarang.value.kode_barang) return;
+
+    try {
+      const response = await axios.get(
+        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.kode_barang}`
+      );
+      const data = response.data.data;
+
+      if (!data) {
+        Swal.fire({
+          icon: "error",
+          title: "Kode Tidak Ditemukan",
+          text: "Pastikan kode barang valid",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      selectedBarang.value.code_id = data.code_id;
+    } catch (err) {
+      console.error("Gagal mengambil data kode:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Terjadi kesalahan saat memeriksa kode.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  }, 600);
 }
 
 async function getListBarangPreOrder() {

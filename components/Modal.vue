@@ -293,8 +293,8 @@ function handleScanSize() {
 let priceTagTimeout;
 function handleInputPriceTag() {
   clearTimeout(priceTagTimeout);
-  priceTagTimeout = setTimeout(() => {    
-    if (barcodeInput.value.length > 0 &&!barcodeInput.value.endsWith(",")) {
+  priceTagTimeout = setTimeout(() => {
+    if (barcodeInput.value.length > 0 && !barcodeInput.value.endsWith(",")) {
       barcodeInput.value = barcodeInput.value.replace(/[\r\n]+/g, ",");
     }
   }, 300);
