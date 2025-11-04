@@ -7,70 +7,24 @@
       <form>
         <div class="grid grid-cols-1 gap-4">
           <div>
-            <label>Kode Barang *</label>
-            <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly />
+            <label>Kode Barang <span style="color:red">*</span></label>
+            <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
+              disabled />
           </div>
           <div class="hidden">
-            <label>Kode Barang *</label>
+            <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.barangentry_code_id" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Ukuran Ulos *</label>
+            <label>Ukuran Ulos <span style="color:red">*</span></label>
             <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Ukuran Mandar</label>
-            <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
+            <label>Ukuran Mandar <span style="color:red">*</span></label>
+            <input v-model="form.barangentry_ukuran_mandar" type="text" required class="form-control" />
           </div>
-
-          <!-- <div>
-            <label>Nama Ulos *</label>
-            <input v-model="form.barangentry_nama" type="text" required class="form-control" />
-          </div>
-
-          <div>
-            <label>Warna Ulos *</label>
-            <input v-model="form.barangentry_warna" type="text" required class="form-control" />
-          </div>
-
-          <div>
-            <label>Nama Penenun *</label>
-            <input v-model="form.barangentry_nama_penenun" type="text" required class="form-control" />
-          </div>
-
-          <div>
-            <label>Nama Panirat *</label>
-            <input v-model="form.barangentry_nama_panirat" type="text" required class="form-control" />
-          </div>
-
-          <div>
-            <label>Dyer *</label>
-            <input v-model="form.barangentry_dryer" type="text" required class="form-control" />
-          </div>
-
-          <div>
-            <label>Modal *</label>
-            <input v-model="formattedModal" @input="updateModal" type="text" required class="form-control text-right" />
-          </div>
-
-          <div>
-            <label>Harga Price Tag *</label>
-            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
-              class="form-control text-right" />
-          </div>
-
-          <div>
-            <label>Harga Net *</label>
-            <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
-              class="form-control text-right" />
-          </div> -->
-
-          <!-- <div>
-            <label>Jumlah Barang</label>
-            <input v-model="form.barangentry_jumlah_barang" type="text" class="form-control" />
-          </div> -->
         </div>
 
         <div class="flex justify-end mt-6 space-x-4">
@@ -111,17 +65,8 @@ const loading = ref(false);
 const form = ref({
   code: '',
   barangentry_code_id: '',
-  // barangentry_nama: '',
-  // barangentry_warna: '',
-  // barangentry_nama_penenun: '',
-  // barangentry_nama_panirat: '',
-  // barangentry_dryer: '',
-  // barangentry_modal: 0,
-  // barangentry_price_tag: 0,
-  // barangentry_harga_net: 0,
   barangentry_ukuran_ulos: '',
   barangentry_ukuran_mandar: '',
-  // barangentry_jumlah_barang: 0
 });
 
 const formatNumber = (value) => {
@@ -161,9 +106,6 @@ const loadData = async () => {
     const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
     form.value.code = code.data.code_nama;
 
-    // formattedModal.value = formatNumber(form.value.barangentry_modal);
-    // formattedPriceTag.value = formatNumber(form.value.barangentry_price_tag);
-    // formattedHargaNet.value = formatNumber(form.value.barangentry_harga_net);
   } catch (err) {
     Swal.fire("Gagal", "Gagal memuat data!", "error");
   }
@@ -172,20 +114,22 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true;
   try {
+    if (!form.value.barangentry_ukuran_ulos || form.value.barangentry_ukuran_ulos.trim() === "") {
+      Swal.fire("Gagal!", "Ukuran Ulos wajib diisi.", "error");
+      isSubmittingEdit.value = false;
+      return;
+    }
+
+    if (!form.value.barangentry_ukuran_mandar || form.value.barangentry_ukuran_mandar.trim() === "") {
+      Swal.fire("Gagal!", "Ukuran Mandar wajib diisi.", "error");
+      isSubmittingEdit.value = false;
+      return;
+    }
 
     const payload = {
       barangentry_code_id: String(form.value.barangentry_code_id),
-      // barangentry_nama: form.value.barangentry_nama,
-      // barangentry_warna: form.value.barangentry_warna,
-      // barangentry_nama_penenun: form.value.barangentry_nama_penenun,
-      // barangentry_nama_panirat: form.value.barangentry_nama_panirat,
-      // barangentry_dryer: form.value.barangentry_dryer,
-      // barangentry_modal: Number(form.value.barangentry_modal),
-      // barangentry_price_tag: Number(form.value.barangentry_price_tag),
-      // barangentry_harga_net: Number(form.value.barangentry_harga_net),
       barangentry_ukuran_ulos: form.value.barangentry_ukuran_ulos,
       barangentry_ukuran_mandar: form.value.barangentry_ukuran_mandar,
-      // barangentry_jumlah_barang: form.value.barangentry_jumlah_barang,
     }
     await axios.put(`${url.value}/api/entrybarang/ready-stock-size/${props.id}`, payload);
     await Swal.fire("Berhasil", "Data berhasil disimpan!", "success");

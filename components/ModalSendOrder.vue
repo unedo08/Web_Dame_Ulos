@@ -31,13 +31,14 @@
                     </select>
                 </div>
 
-                <!-- TOTAL PEMBAYARAN
+                <!-- TOTAL PEMBAYARAN -->
                 <div class="flex flex-col gap-1">
                     <label class="text-sm font-medium">Total Pembayaran <span style="color:red">*</span></label>
                     <input :value="formatCurrency(form.total_pembayaran)"
                         @input="e => form.total_pembayaran = unformat(e.target.value)" inputmode="numeric"
-                        class="border border-gray-300 bg-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none" />
-                </div> -->
+                        class="border border-gray-300 bg-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                        placeholder="Total Pembayaran" />
+                </div>
 
                 <!-- HARGA KIRIM -->
                 <div class="flex flex-col gap-1">

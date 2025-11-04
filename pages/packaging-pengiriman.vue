@@ -35,7 +35,8 @@
           <td class="px-4 py-2">
             <div class="flex space-x-2">
               <button v-if="pengiriman.packaging_status === 'Done'"
-                class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s" :disabled="true">
+                class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s" :disabled="true"
+                :hidden="true">
                 Selesai
               </button>
               <template v-else>
@@ -333,7 +334,7 @@ const exportToExcel = async () => {
       "Tgl": r.tgl,
       "Nama": r.nama,
       "Alamat": r.alamat,
-      "Barang": r.barang,
+      "Kode Barang": r.barang,
       "Qty": r.qty,
       "Harga": r.harga,
     }));

@@ -7,58 +7,59 @@
       <form>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label>Kode Barang *</label>
-            <input v-model="form.code" type="text" required class="form-control" />
+            <label>Kode Barang <span style="color:red">*</span></label>
+            <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
+              disabled />
           </div>
           <div class="hidden">
-            <label>Kode Barang *</label>
+            <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.barangentry_code_id" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Nama Ulos *</label>
+            <label>Nama Ulos <span style="color:red">*</span></label>
             <input v-model="form.barangentry_nama" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Warna Ulos *</label>
+            <label>Warna Ulos <span style="color:red">*</span></label>
             <input v-model="form.barangentry_warna" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Nama Penenun *</label>
+            <label>Nama Penenun <span style="color:red">*</span></label>
             <input v-model="form.barangentry_nama_penenun" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Nama Panirat *</label>
+            <label>Nama Panirat <span style="color:red">*</span></label>
             <input v-model="form.barangentry_nama_panirat" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Dyer *</label>
+            <label>Dyer <span style="color:red">*</span></label>
             <input v-model="form.barangentry_dryer" type="text" required class="form-control" />
           </div>
 
           <div>
-            <label>Modal *</label>
+            <label>Modal <span style="color:red">*</span></label>
             <input v-model="formattedModal" @input="updateModal" type="text" required class="form-control text-right" />
           </div>
 
           <div>
-            <label>Harga Price Tag *</label>
+            <label>Harga Price Tag <span style="color:red">*</span></label>
             <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
               class="form-control text-right" />
           </div>
 
           <div>
-            <label>Harga Net *</label>
+            <label>Harga Net <span style="color:red">*</span></label>
             <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
               class="form-control text-right" />
           </div>
 
           <div>
-            <label>Ukuran Ulos *</label>
+            <label>Ukuran Ulos <span style="color:red">*</span></label>
             <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
           </div>
 
