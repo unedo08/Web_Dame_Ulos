@@ -195,9 +195,9 @@ function validate() {
   errors.nama_penerima = !form.value.nama_penerima ? "Nama Penerima wajib diisi" : "";
   errors.no_telepon = !form.value.no_telepon ? "No Telepon wajib diisi" : "";
   errors.metode = !form.value.metode ? "Metode Pembayaran wajib diisi" : "";
-  // errors.biaya_pengiriman = !form.value.biaya_pengiriman
-  //   ? "Biaya Pengiriman wajib diisi"
-  //   : "";
+  errors.biaya_pengiriman = !form.value.biaya_pengiriman
+    ? "Biaya Pengiriman wajib diisi"
+    : "";
   // errors.metodePembayaran = !form.value.metodePembayaran
   //   ? "Metode Pembayaran wajib diisi"
   //   : "";

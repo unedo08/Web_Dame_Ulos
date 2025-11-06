@@ -2,13 +2,8 @@
   <div>
     <title>Menu Database Penjualan</title>
     <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
-    <input
-      v-model="searchQuery"
-      type="text"
-      class="search-box mb-4"
-      placeholder="Cari transaksi
-      ..."
-    />
+    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi
+      ..." />
 
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
@@ -28,23 +23,12 @@
       </thead>
       <tbody>
         <template v-for="(group, gIndex) in groupedTransaksi" :key="gIndex">
-          <tr
-            v-for="(trx, tIndex) in group.items"
-            :key="trx.transaksi_id"
-            :class="tIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-          >
-            <td
-              v-if="tIndex === 0"
-              :rowspan="group.items.length"
-              class="px-4 py-2 align-top text-center"
-            >
+          <tr v-for="(trx, tIndex) in group.items" :key="trx.transaksi_id"
+            :class="tIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top text-center">
               {{ gIndex + 1 }}
             </td>
-            <td
-              v-if="tIndex === 0"
-              :rowspan="group.items.length"
-              class="px-4 py-2 align-top font-semibold"
-            >
+            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top font-semibold">
               {{ trx.transaksi_nama_customer }}
             </td>
             <!-- <td
@@ -68,20 +52,17 @@
               <div class="flex space-x-2">
                 <button
                   class="flex items-center gap-1 px-2 py-1 bg-[#FBBF24] text-white hover:bg-[#FFD15A] rounded-md text-s"
-                  @click="openViewDetail(trx.transaksi_id)"
-                >
+                  @click="openViewDetail(trx.transaksi_id)">
                   View
                 </button>
                 <button
                   class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-                  @click="handlePrint(trx.transaksi_id)"
-                >
+                  @click="handlePrint(trx.transaksi_id)">
                   Print
                 </button>
                 <button
                   class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
-                  @click="deleteTransaksi(trx.transaksi_id)"
-                >
+                  @click="deleteTransaksi(trx.transaksi_id)">
                   Delete
                 </button>
               </div>
@@ -93,11 +74,7 @@
     <div class="flex justify-between items-center mt-4">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
-        <select
-          id="perPage"
-          v-model="itemsPerPage"
-          class="border px-2 py-1 rounded"
-        >
+        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
@@ -106,43 +83,28 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
+          @click="currentPage--">
           Sebelumnya
         </button>
 
-        <button
-          v-for="(page, index) in paginatedPages"
-          :key="index"
-          @click="typeof page === 'number' && (currentPage = page)"
-          :class="[
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
             'px-3 py-1 rounded',
             currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
             page === '...' ? 'cursor-default' : 'cursor-pointer',
-          ]"
-          :disabled="page === '...'"
-        >
+          ]" :disabled="page === '...'">
           {{ page }}
         </button>
 
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
+          @click="currentPage++">
           Selanjutnya
         </button>
       </div>
     </div>
 
-    <ViewDetailModal
-      :show="showDetailModal"
-      :id="trx_id"
-      @close="showDetailModal = false"
-    />
+    <ViewDetailModal :show="showDetailModal" :id="trx_id" @close="showDetailModal = false" />
   </div>
 </template>
 
@@ -268,26 +230,46 @@ const formatDate = (date) => {
 };
 
 const deleteTransaksi = async (id) => {
-  if (confirm(`Anda yakin ingin menghapus transaksi" ini?`)) {
-    try {
-      const response = await axios.delete(`${url.value}/api/transaksi/` + id);
+  Swal.fire({
+    title: "Apakah Anda yakin?",
+    text: "Data transaksi yang dihapus tidak dapat dikembalikan!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Batal",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`${url.value}/api/transaksi/${id}`);
 
-      if (response.status === 200) {
-        transaksi.value = transaksi.value.filter(
-          (item) => item.transaksi_id !== id
-        );
+        if (response.status === 200) {
+          transaksi.value = transaksi.value.filter(
+            (item) => item.transaksi_id !== id
+          );
+
+          Swal.fire({
+            title: "Terhapus!",
+            text: "Data transaksi berhasil dihapus.",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
+      } catch (error) {
+        console.error("Gagal menghapus transaksi:", error);
+        Swal.fire({
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat menghapus data.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
-      Swal.fire({
-        title: "Berhasil",
-        text: "Data berhasil di delete",
-        icon: "info",
-        confirmButtonText: "OK",
-      });
-    } catch (error) {
-      console.error("Error deleting product:", error);
     }
-  }
+  });
 };
+
 
 const paginatedPages = computed(() => {
   const total = totalPages.value;
@@ -445,6 +427,13 @@ function printToNewTab(data, items) {
         text-align: left;
       }
 
+      th:nth-child(5),
+      th:nth-child(6),
+      td:nth-child(5),
+      td:nth-child(6) {
+        text-align: right;
+      }
+
       tbody tr:not(:last-child) {
         border-bottom: 1px dashed #ccc;
       }
@@ -514,8 +503,8 @@ function printToNewTab(data, items) {
         </thead>
         <tbody>
           ${items
-            .map(
-              (item, index) => `
+      .map(
+        (item, index) => `
                 <tr>
                   <td>${index + 1}</td>
                   <td>${item.barangentry_code || "-"}</td>
@@ -523,13 +512,13 @@ function printToNewTab(data, items) {
                   <td>${item.transaksidetail_jumlah_barang} pcs</td>
                   <td>${formatRupiah(item.transaksidetail_harga_barang)}</td>
                   <td>${formatRupiah(
-                    item.transaksidetail_jumlah_barang *
-                      item.transaksidetail_harga_barang
-                  )}</td>
+          item.transaksidetail_jumlah_barang *
+          item.transaksidetail_harga_barang
+        )}</td>
                 </tr>
               `
-            )
-            .join("")}
+      )
+      .join("")}
           <tr class="total-row">
             <td colspan="5">Total :</td>
             <td>${formatRupiah(data.transaksi_total_harga)}</td>

@@ -1,95 +1,60 @@
 <template>
-  <div
-    v-if="visible"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-  >
-    <div
-      class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative"
-    >
+  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
       <h2 class="text-xl font-semibold mb-4">Tambah Online Transaksi</h2>
 
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Kode Barang <span class="required">*</span></label
-            >
-            <input
-              ref="kodeBarangInput"
-              v-model="form.code_barang"
-              @keyup.enter="handleKodeBarangEnter"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Kode Barang <span
+                class="required">*</span></label>
+            <input ref="kodeBarangInput" v-model="form.code_barang" @keyup.enter="handleKodeBarangEnter" type="text"
+              :disabled="isKodeBarangDisabled"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="Masukkan Kode Barang"
-            />
+              placeholder="Masukkan Kode Barang" />
             <p v-if="errors.code_barang" class="text-red-500 text-sm mt-1">
               {{ errors.code_barang }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Platform <span class="required">*</span></label
-            >
-            <input
-              ref="platformInput"
-              v-model="form.platform"
-              :disabled="!form.code_barang"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Platform <span
+                class="required">*</span></label>
+            <input ref="platformInput" v-model="form.platform" :disabled="!form.code_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Nama Platform"
-            />
+              placeholder="Masukkan Nama Platform" />
             <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
               {{ errors.platform }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Nama Penerima <span class="required">*</span></label
-            >
-            <input
-              v-model="form.namaPenerima"
-              :disabled="!form.code_barang"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Nama Penerima <span
+                class="required">*</span></label>
+            <input v-model="form.namaPenerima" :disabled="!form.code_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Nama Penerima"
-            />
+              placeholder="Masukkan Nama Penerima" />
             <p v-if="errors.namaPenerima" class="text-red-500 text-sm mt-1">
               {{ errors.namaPenerima }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Pengiriman <span class="required">*</span></label
-            >
-            <input
-              v-model="form.pengiriman"
-              :disabled="!form.code_barang"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Pengiriman <span
+                class="required">*</span></label>
+            <input v-model="form.pengiriman" :disabled="!form.code_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Pengiriman"
-            />
+              placeholder="Masukkan Pengiriman" />
             <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
               {{ errors.pengiriman }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Metode Pembayaran <span class="required">*</span></label
-            >
-            <select
-              v-model="form.metodePembayaran"
-              :disabled="!form.code_barang"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-            >
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran <span
+                class="required">*</span></label>
+            <select v-model="form.metodePembayaran" :disabled="!form.code_barang"
+              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100">
               <option disabled value="">Pilih metode pembayaran</option>
               <option>Transfer Bank</option>
               <option>COD</option>
@@ -102,17 +67,11 @@
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Alamat <span class="required">*</span></label
-            >
-            <textarea
-              v-model="form.alamat"
-              :disabled="!form.code_barang"
-              rows="3"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Alamat <span
+                class="required">*</span></label>
+            <textarea v-model="form.alamat" :disabled="!form.code_barang" rows="3"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Alamat"
-            ></textarea>
+              placeholder="Masukkan Alamat"></textarea>
             <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">
               {{ errors.alamat }}
             </p>
@@ -122,113 +81,72 @@
         <!-- Kolom Kanan -->
         <div class="space-y-4">
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Nama Akun <span class="required">*</span></label
-            >
-            <input
-              v-model="form.namaAkun"
-              :disabled="!form.code_barang"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Nama Akun <span
+                class="required">*</span></label>
+            <input v-model="form.namaAkun" :disabled="!form.code_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Nama Akun"
-            />
+              placeholder="Masukkan Nama Akun" />
             <p v-if="errors.namaAkun" class="text-red-500 text-sm mt-1">
               {{ errors.namaAkun }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Harga Terjual <span class="required">*</span></label
-            >
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Harga Terjual <span
+                class="required">*</span></label>
             <div class="flex">
-              <div
-                class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
-              >
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
-              <input
-                :value="formattedHargaTerjual"
-                @input="onInputHargaTerjual"
-                :disabled="!form.code_barang"
+              <input :value="formattedHargaTerjual" @input="onInputHargaTerjual" :disabled="!form.code_barang"
                 type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-                placeholder="Masukkan Harga Terjual"
-              />
-              <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
-                {{ errors.hargaTerjual }}
-              </p>
+                placeholder="Masukkan Harga Terjual" />
             </div>
+            <p v-if="errors.hargaTerjual" class="text-red-500 text-sm mt-1">
+              {{ errors.hargaTerjual }}
+            </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Nama Telepon <span class="required">*</span></label
-            >
-            <input
-              v-model="form.nomor_telepon"
-              :disabled="!form.code_barang"
-              type="text"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Nama Telepon <span
+                class="required">*</span></label>
+            <input v-model="form.nomor_telepon" :disabled="!form.code_barang" type="text"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Nomor Telepon"
-            />
+              placeholder="Masukkan Nomor Telepon" />
             <p v-if="errors.nomor_telepon" class="text-red-500 text-sm mt-1">
               {{ errors.nomor_telepon }}
             </p>
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Biaya Pengiriman <span class="required">*</span></label
-            >
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Biaya Pengiriman <span
+                class="required">*</span></label>
             <div class="flex">
-              <div
-                class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm"
-              >
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
-              <input
-                :value="formattedBiayaPengiriman"
-                @input="onInputBiayaPengiriman"
-                :disabled="!form.code_barang"
+              <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" :disabled="!form.code_barang"
                 type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-                placeholder="Masukkan Biaya Pengiriman"
-              />
-              <p
-                v-if="errors.biayaPengiriman"
-                class="text-red-500 text-sm mt-1"
-              >
-                {{ errors.biayaPengiriman }}
-              </p>
+                placeholder="Masukkan Biaya Pengiriman" />
             </div>
+            <p v-if="errors.biayaPengiriman" class="text-red-500 text-sm mt-1">
+              {{ errors.biayaPengiriman }}
+            </p>
           </div>
 
           <div class="invisible">
             <label class="block text-sm font-medium">Placeholder</label>
-            <input
-              type="text"
-              class="w-full border px-4 py-2 rounded-md"
-              disabled
-            />
+            <input type="text" class="w-full border px-4 py-2 rounded-md" disabled />
           </div>
 
           <div>
-            <label
-              class="judul-label block text-sm font-medium text-gray-700 mb-1"
-              >Catatan <span class="required">*</span></label
-            >
-            <textarea
-              v-model="form.catatan"
-              :disabled="!form.code_barang"
-              rows="3"
+            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Catatan <span
+                class="required">*</span></label>
+            <textarea v-model="form.catatan" :disabled="!form.code_barang" rows="3"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
-              placeholder="Masukkan Catatan"
-            ></textarea>
+              placeholder="Masukkan Catatan"></textarea>
             <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">
               {{ errors.catatan }}
             </p>
@@ -237,20 +155,14 @@
 
         <!-- Tombol -->
         <div class="md:col-span-2 flex justify-end gap-4 mt-8">
-          <button
-            type="button"
-            @click="batalLive()"
-            class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
-          >
+          <button type="button" @click="batalLive()"
+            class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition">
             Batal
           </button>
-          <button
-            type="button"
-            @click="submitForm"
-            :disabled="!form.code_barang"
-            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400"
-          >
-            Tambah
+          <button type="button" @click="submitForm" :disabled="!form.code_barang"
+            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
+            <span v-if="!isSubmitting">Tambah</span>
+            <span v-else>Memproses...</span>
           </button>
         </div>
       </form>
@@ -271,6 +183,8 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const kodeBarangInput = ref(null);
+const isKodeBarangDisabled = ref(false);
+const isSubmitting = ref(false);
 const url = ref("");
 const platformInput = ref(null);
 const errors = reactive({});
@@ -296,7 +210,10 @@ const form = reactive({
 });
 
 function handleKodeBarangEnter() {
-  platformInput.value?.focus();
+  if (form.code_barang.trim() !== "") {
+    isKodeBarangDisabled.value = true;
+    platformInput.value?.focus();
+  }
 }
 
 function formatRupiah(value) {
@@ -349,6 +266,10 @@ function validate() {
 }
 
 async function submitForm() {
+
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+
   if (!validate()) {
     Swal.fire({
       title: "Gagal!",
@@ -417,6 +338,8 @@ async function submitForm() {
         confirmButtonText: "OK",
         timer: 3000,
         timerProgressBar: true,
+      }).then(() => {
+        emit("close");
       });
     } catch (err) {
       console.error("Error melakukan transaksi", err);
@@ -436,7 +359,10 @@ async function submitForm() {
     form.catatan = "";
   } catch (err) {
     console.error("Error", err);
+  } finally {
+    isSubmitting.value = false;
   }
+
 }
 
 function batalLive() {
@@ -453,6 +379,7 @@ function batalLive() {
   form.namaAkun = "";
   form.biayaPengiriman = "";
   form.catatan = "";
+  isKodeBarangDisabled.value = false;
 }
 </script>
 

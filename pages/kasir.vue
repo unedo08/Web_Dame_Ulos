@@ -753,6 +753,13 @@ function printToNewTab(data, items) {
         text-align: left;
       }
 
+      th:nth-child(5),
+      th:nth-child(6),
+      td:nth-child(5),
+      td:nth-child(6) {
+        text-align: right;
+      }
+
       tbody tr:not(:last-child) {
         border-bottom: 1px dashed #ccc;
       }

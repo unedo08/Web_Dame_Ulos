@@ -29,123 +29,119 @@
         </div>
 
         <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
-          <div v-for="item in priceTagData" :key="item.barangentry_id" style="
+          <div v-for="item in priceTagData" :key="item.data.barangentry_id" style="
               page-break-after: always;
-              font-family: Arial, sans-serif;
-              color: #541b1a;
-              border: 1px solid #ccc;
-              padding: 24px;
-              max-width: 800px;
-              margin: auto;
+              border: 1px solid #999;
+              padding: 32px 40px;
+              font-family: 'Times New Roman', serif;
+              color: #541B1A;            
             ">
-            <div style="display: flex; gap: 40px">
-              <!-- KIRI -->
-              <div style="flex: 1">
-                <h2 style="font-weight: bold; font-size: 16px; margin-bottom: 6px">
-                  {{ item.data.barangentry_nama }}
-                </h2>
-                <p style="font-weight: bold; margin-bottom: 8px">Horas!</p>
-                <p>Mauliate atas dukungan dan pelestarian budaya Batak.</p>
-                <p>
+
+            <h1 style="
+              font-size: 20px;
+              font-weight: 700;
+              text-transform: uppercase;
+              margin-bottom: 14px;
+            ">
+              {{ item.data.barangentry_nama }}
+            </h1>
+
+            <!-- BODY -->
+            <div style="display: flex; gap: 60px;">
+              <!-- LEFT COLUMN -->
+              <div style="flex: 1.2;">
+                <p style="margin: 0; font-weight: 700;">Horas!</p>
+                <p style="margin: 4px 0; text-align: justify;">
+                  Mauliate atas dukungan dan pelestarian budaya Batak.
                   Dengan membeli dan memiliki salah satu karya terbaik dari
-                  <strong>Dame Ulos</strong>,
-                </p>
-                <p>
-                  kamu telah ikut
-                  <strong>Menjaga Kehidupan dan Tradisi Batak</strong>.
+                  <strong>Dame Ulos</strong>, kamu telah ikut
+                  <em style="font-weight: 600;">Menjaga Kehidupan dan Tradisi Batak.</em>
                 </p>
 
-                <p style="margin-top: 16px">Salam Hangat,</p>
-                <p><em>Artisan Dame Ulos</em></p>
+                <p style="margin-top: 16px;">Salam Hangat,</p>
+                <p style="font-style: italic; font-weight: 600;">Artisan Dame Ulos</p>
 
                 <table style="
-                    margin-top: 16px;
-                    width: 100%;
-                    font-size: 12px;
-                    color: #541b1a;
-                  ">
+                  margin-top: 16px;
+                  border-collapse: collapse;
+                  font-size: 13px;
+                  line-height: 1.4;
+                ">
+                  <pre>{{ item.data }}</pre>
                   <tbody>
                     <tr>
-                      <td style="font-weight: bold">Tahun Pembuatan</td>
-                      <td>
-                        {{ new Date(item.data.created_at).getFullYear() }}
-                      </td>
+                      <td style="padding: 3px 8px 3px 0;">Tahun Pembuatan</td>
+                      <td>: {{ new Date(item.data.created_at).getFullYear() }}</td>
                     </tr>
                     <tr>
-                      <td style="font-weight: bold">Ukuran Tenun</td>
+                      <td style="padding: 3px 8px 3px 0;">Ukuran Tenun</td>
                       <td>
+                        :
                         {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
                         {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
                       </td>
                     </tr>
                     <tr>
-                      <td style="font-weight: bold">Warna</td>
-                      <td>{{ item.data.barangentry_warna }}</td>
+                      <td style="padding: 3px 8px 3px 0;">Warna</td>
+                      <td>: {{ item.data.barangentry_warna }}</td>
                     </tr>
                     <tr>
-                      <td style="font-weight: bold">Maker</td>
-                      <td>Dame Ulos Collective</td>
+                      <td style="padding: 3px 8px 3px 0;">Maker</td>
+                      <td>: Dame Ulos Collective</td>
                     </tr>
                     <tr>
-                      <td style="padding-left: 12px; font-weight: bold">
-                        a. Penenun
-                      </td>
-                      <td>{{ item.data.barangentry_nama_penenun }}</td>
+                      <td style="padding: 3px 8px 3px 0;">a. Penenun</td>
+                      <td>: {{ item.data.barangentry_nama_penenun }}</td>
                     </tr>
                     <tr>
-                      <td style="padding-left: 12px; font-weight: bold">
-                        b. Panirat
-                      </td>
-                      <td>{{ item.data.barangentry_nama_panirat }}</td>
+                      <td style="padding: 3px 8px 3px 0;">b. Dyer</td>
+                      <td>: {{ item.data.barangentry_dryer }}</td>
                     </tr>
-                    <tr>
-                      <td style="padding-left: 12px; font-weight: bold">
-                        c. Dyer
-                      </td>
-                      <td>{{ item.data.barangentry_dryer }}</td>
+                    <tr v-if="item.data.barangentry_pemintal">
+                      <td style="padding: 3px 8px 3px 0;">c. Panirat</td>
+                      <td>: {{ item.data.barangentry_pemintal }}</td>
                     </tr>
                   </tbody>
                 </table>
-                <p style="margin-top: 16px; font-weight: bold; font-size: 18px">
-                  {{
-                    new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 0,
-                    }).format(item.data.barangentry_price_tag)
-                  }}
+
+                <p style="margin-top: 20px; font-size: 18px; font-weight: 700;">
+                  Rp {{ Number(item.data.barangentry_harga_net).toLocaleString("id-ID") }}
                 </p>
               </div>
 
-              <!-- KANAN -->
-              <div style="flex: 1; font-size: 12px">
+              <!-- RIGHT COLUMN -->
+              <div style="flex: 1; font-size: 13px; line-height: 1.5;">
                 <p style="
-                    font-weight: bold;
-                    text-align: center;
-                    margin-bottom: 10px;
-                  ">
+                  font-weight: 700;
+                  text-align: center;
+                  margin-bottom: 12px;
+                  text-transform: uppercase;
+                ">
                   BAGAIMANA CARA PERAWATAN <br />
-                  KAIN TENUN YANG BENAR?
+                  KAIN TENUN YANG BENAR ?
                 </p>
-                <ol style="
-                    list-style: decimal;
-                    padding-left: 16px;
-                    line-height: 1.6;
-                  ">
+
+                <ol style="padding-left: 18px; margin-top: 0;">
                   <li>Ulos tidak bisa dicuci/direndam dengan detergen</li>
                   <li>
-                    Setelah dipakai jangan dilipat, cukup digantung dan
-                    dianginkan
+                    Setelah dipakai jangan dilipat, cukup digantung dan dianginkan
+                    (keringat dapat menimbulkan jamur)
                   </li>
                   <li>
-                    Jika tidak digunakan dalam waktu lama, jemur selama 1 jam
+                    Apabila tidak digunakan dalam kurun waktu yang lama, sebaiknya kain
+                    dijemur di luar ruangan selama satu jam untuk menghindari jamur
                   </li>
-                  <li>Hindari menyimpan di tempat lembab dan dalam plastik</li>
-                  <li>Khusus kain dengan pewarna tekstil dapat di dry clean</li>
+                  <li>Hindari menyimpan di tempat yang lembab dan di dalam plastik</li>
+                  <li>
+                    Khusus kain dengan pewarna tekstil dapat di <em>dryclean</em>
+                  </li>
                 </ol>
+
                 <p style="
-                    margin-top: 20px;
-                    font-family: 'Lucida Handwriting', cursive;
+                    text-align: right;
+                    margin-top: 80px;
+                    font-style: italic;
+                    font-size: 15px;
                   ">
                   Selamat Pakai
                 </p>
@@ -153,6 +149,7 @@
             </div>
           </div>
         </div>
+
       </template>
 
       <div class="mt-6 flex justify-end space-x-3">
