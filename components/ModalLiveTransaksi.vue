@@ -338,4 +338,112 @@ const formatCurrency = (value) => {
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+div {
+  font-family: "Poppins", "Inter", sans-serif;
+  color: #404040;
+}
+
+h2 {
+  color: #000000;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+table {
+  border: 1px solid #E4E6FC;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+th {
+  background-color: #F8F8FB;
+  color: #000000;
+  font-weight: 500;
+  border-bottom: 1px solid #E4E6FC;
+}
+
+td {
+  border-top: 1px solid #E4E6FC;
+  color: #000000;
+}
+
+input[type="checkbox"] {
+  accent-color: #0A84FF;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+}
+
+input,
+textarea,
+select {
+  background-color: #FDFDFF;
+  border: 1px solid #E4E6FC;
+  border-radius: 6px;
+  color: #000000;
+  font-size: 14px;
+  padding: 8px 10px;
+  transition: all 0.2s ease;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  background-color: #FDFDFF;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  background-color: #FDFDFF;
+  border-color: #0A84FF;
+  box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.15);
+  outline: none;
+}
+
+.text-red-500 {
+  color: #FF5757;
+}
+
+button {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+button.bg-blue-500 {
+  background-color: #0A84FF !important;
+  transition: 0.2s ease;
+}
+
+button.bg-blue-500:hover {
+  background-color: #0077e6 !important;
+}
+
+button.border-gray-300 {
+  border: 1px solid #E4E6FC !important;
+  background-color: #F8F8FB;
+  color: #404040;
+}
+
+button.border-gray-300:hover {
+  background-color: #EDEDF8;
+}
+
+.font-semibold {
+  color: #000000;
+  font-weight: 600;
+}
+
+.bg-black\/40 {
+  background-color: rgba(0, 0, 0, 0.4);
+}
 </style>

@@ -1,13 +1,11 @@
 <template>
   <div>
-  <title>Acara</title>
+    <title>Acara</title>
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
     <div class="flex items-center justify-end">
-      <button
-        class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
-        @click="openModal"
-      >
+      <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
+        @click="openModal">
         + Tambah Acara
       </button>
     </div>
@@ -28,11 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="acara in pagination"
-            :key="acara.acara_id"
-            class="odd:bg-white even:bg-gray-50 hover:bg-gray-100"
-          >
+          <tr v-for="acara in pagination" :key="acara.acara_id" class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
             <td class="px-4 py-2">{{ acara.acara_nama }}</td>
             <td class="px-4 py-2">{{ acara.acara_jumlahbarang }}</td>
             <td class="px-4 py-2">
@@ -47,35 +41,20 @@
             <td class="px-4 py-2">{{ acara.acara_keterangan }}</td>
             <td class="px-4 py-2">{{ acara.acara_status }}</td>
             <td class="space-x-2 px-4 py-2">
-              <button
-                class="text-blue-500 hover:text-blue-700"
-                @click="editItem(acara)"
-                title="Edit"
-              >
+              <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
                 <PencilIcon class="w-5 h-5" />
               </button>
 
-              <button
-                class="text-green-500 hover:text-green-700"
-                @click="markAsDone(acara)"
-                title="Selesai"
-              >
+              <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
                 <CheckCircleIcon class="w-5 h-5" />
               </button>
 
-              <button
-                class="text-yellow-500 hover:text-yellow-700"
-                @click="exportItem(acara.acara_id)"
-                title="Export"
-              >
+              <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)" title="Export">
                 <ArrowDownTrayIcon class="w-5 h-5" />
               </button>
 
-              <button
-                class="text-red-500 hover:text-red-700"
-                @click="deleteProduct(acara.acara_id, acara.acara_nama)"
-                title="Delete"
-              >
+              <button class="text-red-500 hover:text-red-700" @click="deleteProduct(acara.acara_id, acara.acara_nama)"
+                title="Delete">
                 <TrashIcon class="w-5 h-5" />
               </button>
             </td>
@@ -86,11 +65,7 @@
       <div class="flex justify-between items-center mt-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
-          <select
-            id="perPage"
-            v-model="itemsPerPage"
-            class="border px-2 py-1 rounded text-xs"
-          >
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
             <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="20">20</option>
@@ -99,33 +74,22 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
             Sebelumnya
           </button>
 
-          <button
-            v-for="(page, index) in paginatedPages"
-            :key="index"
-            @click="typeof page === 'number' && (currentPage = page)"
-            :class="[
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
               'px-3 py-1 rounded text-xs',
               currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
               page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]"
-            :disabled="page === '...'"
-          >
+            ]" :disabled="page === '...'">
             {{ page }}
           </button>
 
-          <button
-            class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
             Selanjutnya
           </button>
         </div>
@@ -133,62 +97,37 @@
     </div>
 
     <!-- Modal Dialog -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
-    >
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
         <form @submit.prevent="submitAcara">
           <div class="mb-4">
-            <label
-              for="acara_nama"
-              class="block text-sm font-medium text-gray-700"
-              >Nama Acara <span class="required">*</span></label
-            >
-            <input
-              v-model="newProduct.acara_nama"
-              type="text"
-              id="acara_nama"
+            <label for="acara_nama" class="block text-sm font-medium text-gray-700">Nama Acara <span
+                class="required">*</span></label>
+            <input v-model="newProduct.acara_nama" type="text" id="acara_nama"
               class="mt-1 block w-full border border-gray-300 pl-3 border-gray bg-[#FDFDFF] rounded-md shadow-sm w-[382px] h-[41px]"
-              placeholder="Masukkan Nama Acara"
-              required
-            />
+              placeholder="Masukkan Nama Acara" required />
             <p v-if="errors.acara_nama" class="text-red-500 text-sm mt-1">
               {{ errors.acara_nama }}
             </p>
           </div>
           <div class="mb-4">
-            <label
-              for="acara_keterangan"
-              class="block text-sm font-medium text-gray-700"
-              >Keterangan <span class="required">*</span></label
-            >
-            <textarea
-              v-model="newProduct.acara_keterangan"
-              id="acara_keterangan"
-              rows="3"
+            <label for="acara_keterangan" class="block text-sm font-medium text-gray-700">Keterangan <span
+                class="required">*</span></label>
+            <textarea v-model="newProduct.acara_keterangan" id="acara_keterangan" rows="3"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-[#FDFDFF]"
-              placeholder="Masukkan keterangan acara"
-              required
-            ></textarea>
+              placeholder="Masukkan keterangan acara" required></textarea>
             <p v-if="errors.acara_keterangan" class="text-red-500 text-sm mt-1">
               {{ errors.acara_keterangan }}
             </p>
           </div>
 
           <div class="flex justify-end">
-            <button
-              type="button"
-              @click="closeModal"
-              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-gray-800 rounded-md hover:bg-[#D8D8D8]"
-            >
+            <button type="button" @click="closeModal"
+              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-gray-800 rounded-md hover:bg-[#D8D8D8]">
               Batal
             </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#1C9DBD]"
-            >
+            <button type="submit" class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#1C9DBD]">
               Tambah
             </button>
           </div>
@@ -197,32 +136,19 @@
     </div>
 
     <!-- Modal Print -->
-    <div
-      v-if="isModalPrintOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
-    >
+    <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700"
-            >Jumlah Kode</label
-          >
-          <input
-            type="number"
-            v-model="printJumlah"
-            min="1"
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-            placeholder="Masukkan jumlah kode"
-          />
+          <label class="block text-sm font-medium text-gray-700">Jumlah Kode</label>
+          <input type="number" v-model="printJumlah" min="1"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan jumlah kode" />
         </div>
         <div class="flex justify-end">
           <button class="mr-4 text-gray-500" @click="closePrintModal">
             Cancel
           </button>
-          <button
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            @click="handlePrint"
-          >
+          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="handlePrint">
             Print
           </button>
         </div>
@@ -230,10 +156,7 @@
     </div>
 
     <!-- Modal Edit Acara -->
-    <div
-      v-if="isEditModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
-    >
+    <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
         <h3 class="text-lg font-semibold mb-4">
           Edit Acara - {{ editForm.acara_nama }}
@@ -242,21 +165,12 @@
         <!-- Input Scan Barcode -->
         <div class="flex space-x-2 items-end mb-4">
           <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700"
-              >Scan Barcode / Kode Barang</label
-            >
-            <input
-              v-model="barcodeInput"
-              @keyup.enter="addToTempBarang"
-              type="text"
+            <label class="block text-sm font-medium text-gray-700">Scan Barcode / Kode Barang</label>
+            <input v-model="barcodeInput" @keyup.enter="addToTempBarang" type="text"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Scan atau ketik kode barang"
-            />
+              placeholder="Scan atau ketik kode barang" />
           </div>
-          <button
-            @click="addToTempBarang"
-            class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <button @click="addToTempBarang" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Tambah
           </button>
         </div>
@@ -276,11 +190,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(barang, index) in tempBarangList"
-              :key="index"
-              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-            >
+            <tr v-for="(barang, index) in tempBarangList" :key="index"
+              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
               <td class="px-4 py-2">{{ barang.code }}</td>
               <td class="px-4 py-2"></td>
               <td class="hide-col px-4 py-2">{{ barang.acara_id }}</td>
@@ -294,11 +205,8 @@
               </td>
               <td class="hide-col px-4 py-2">{{ barang.acara_status }}</td>
               <td class="px-4 py-2">
-                <button
-                  @click="removeFromTempBarang(barang.acaradet_id)"
-                  class="text-red-500 hover:text-red-700"
-                >
-                  Delete
+                <button @click="removeFromTempBarang(barang.acaradet_id)" class="text-red-500 hover:text-red-700">
+                  <TrashIcon class="w-5 h-5" />
                 </button>
               </td>
             </tr>
@@ -306,16 +214,10 @@
         </table>
 
         <div class="flex justify-end">
-          <button
-            @click="closeEditModal"
-            class="mr-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
+          <button @click="closeEditModal" class="mr-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
             Batal
           </button>
-          <button
-            @click="submitEdit"
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
+          <button @click="submitEdit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
             Submit
           </button>
         </div>
@@ -736,7 +638,7 @@ const exportItem = async (id) => {
     const worksheet = XLSX.utils.aoa_to_sheet(data);
 
     const mergeRange = {
-      s: { r: 1, c: 0 }, 
+      s: { r: 1, c: 0 },
       e: { r: detailData.length, c: 0 },
     };
     worksheet["!merges"] = [mergeRange];

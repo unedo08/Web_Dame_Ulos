@@ -515,17 +515,6 @@ function validate() {
 
 const submitLiveOrder = async () => {
 
-  // if (!validate()) {
-  //   Swal.fire({
-  //     title: "Gagal!",
-  //     text: "Silakan lengkapi semua field wajib.",
-  //     icon: "error",
-  //     confirmButtonText: "OK",
-  //     timer: 3000,
-  //     timerProgressBar: true,
-  //   });
-  //   return;
-  // }
   isSubmitting.value = true;
   try {
     const namaBarang = await axios.get(
@@ -589,17 +578,6 @@ const editOrderLive = async (id) => {
 };
 
 const submitLiveEditOrder = async () => {
-  // if (!validate()) {
-  //   Swal.fire({
-  //     title: "Gagal!",
-  //     text: "Silakan lengkapi semua field wajib.",
-  //     icon: "error",
-  //     confirmButtonText: "OK",
-  //     timer: 3000,
-  //     timerProgressBar: true,
-  //   });
-  //   return;
-  // }
 
   isSubmittingEdit.value = true;
   try {
@@ -829,5 +807,87 @@ watch(activeTab, () => {
 
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.bg-white.rounded-lg.shadow-lg {
+  border: 1px solid #E4E6FC;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+input,
+select,
+textarea {
+  background-color: #FDFDFF !important;
+  border: 1px solid #E4E6FC !important;
+  border-radius: 8px !important;
+  font-size: 14px;
+  color: #000000;
+  transition: all 0.2s ease-in-out;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #808080;
+  opacity: 0.8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #1C9DBD !important;
+  outline: none;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(28, 157, 189, 0.15);
+}
+
+label {
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.inline-flex.items-center {
+  background-color: #FDFDFF !important;
+  border: 1px solid #E4E6FC !important;
+  color: #404040;
+}
+
+button {
+  font-weight: 500;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+button.bg-gray-200 {
+  background-color: #F3F4F6;
+  color: #404040;
+  border: 1px solid #E4E6FC;
+}
+
+button.bg-gray-200:hover {
+  background-color: #E8E9F0;
+}
+
+button.bg-\[\#1C9DBD\] {
+  background: linear-gradient(180deg, #1C9DBD 0%, #0A84FF 100%) !important;
+  border: none;
+}
+
+button.bg-\[\#1C9DBD\]:hover {
+  background: linear-gradient(180deg, #0A84FF 0%, #0077E6 100%) !important;
+}
+
+h3 {
+  color: #000000;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.bg-gray-800.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.text-red-500 {
+  color: #FF5757;
 }
 </style>
