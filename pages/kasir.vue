@@ -656,14 +656,23 @@ function validateHargaNonZero() {
     .map(i => `${i.code_nama || '-'} • ${i.barangentry_nama}`);
 
   if (invalids.length > 0) {
+    const maxShow = 3;
+    const shownList = invalids.slice(0, maxShow);
+    const hiddenCount = invalids.length - maxShow;
+
+    const listHtml = `
+      <ul style="list-style:disc;margin-left:18px">
+        ${shownList.map(x => `<li>${x}</li>`).join("")}
+        ${hiddenCount > 0 ? `<li style="list-style:none;color:#666;">+ ${hiddenCount} more</li>` : ""}
+      </ul>
+    `;
+
     Swal.fire({
-      title: "Harga masih 0",
+      title: "Harga Belum diisi",
       html: `
         <div class="text-left">
-          <p class="mb-2">Beberapa item masih memiliki harga 0. Mohon isi harga terlebih dahulu:</p>
-          <ul style="list-style:disc;margin-left:18px">
-            ${invalids.map(x => `<li>${x}</li>`).join("")}
-          </ul>
+          <p class="mb-2">Harga tidak boleh 0. Isi harga terlebih dahulu:</p>
+          ${listHtml}
         </div>
       `,
       icon: "warning",
