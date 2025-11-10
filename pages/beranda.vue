@@ -1,5 +1,6 @@
 <template>
   <div class="beranda">
+    <title>Beranda</title>
     <div class="judul text-lg font-semibold mb-4">Beranda</div>
     <div class="flex flex-wrap gap-6">
       <div class="card">
@@ -11,7 +12,7 @@
           <div class="card-value">{{ totalBarang }}</div>
         </div>
       </div>
-      
+
       <div class="card">
         <div class="card-icon">
           <PieChart v-if="dataPerMonth" :dataPerMonth="dataPerMonth" />
