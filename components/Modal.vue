@@ -67,7 +67,7 @@
                   font-size: 13px;
                   line-height: 1.4;
                 ">
-                  <pre>{{ item.data }}</pre>
+                  <!-- <pre>{{ item.data }}</pre> -->
                   <tbody>
                     <tr>
                       <td style="padding: 3px 8px 3px 0;">Tahun Pembuatan</td>

@@ -430,7 +430,7 @@
     </div>
 
     <div v-if="showModalAdd" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg">
+      <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
         </h2>

@@ -66,7 +66,8 @@
             <!-- v-if="item.quantity > 1" -->
             <!-- <template> -->
             <input type="text" :value="formatRupiahInput(item.barangentry_harga_net)"
-              @input="updateHargaNet($event, item)" class="w-28 border rounded px-2 py-1 text-right" />
+              @input="updateHargaNet($event, item)" class="w-28 border rounded px-2 py-1 text-right"
+              inputmode="numeric" />
             <!-- </template> -->
             <!-- <template v-else>
               {{ formatRupiahInput(item.barangentry_harga_net) }}
@@ -291,7 +292,7 @@ async function loadHoldTransaction(id) {
         return {
           barangentry_nama: res.data.data.barangentry_nama,
           quantity: detail.transaksidetail_jumlah_barang,
-          barangentry_harga_net: detail.transaksidetail_harga_barang,
+          barangentry_harga_net: Math.floor(detail.transaksidetail_harga_barang),
           code_nama: resCode.data.code_nama,
           transaksi_id: id
         };
@@ -360,6 +361,8 @@ async function handleHold() {
     });
     return;
   }
+
+  if (!validateHargaNonZero()) return;
 
   const jumlahBarang = datatableItems.value.reduce(
     (total, item) => total + (item.quantity || 0),
@@ -431,7 +434,6 @@ const processForm = ref({
 
 async function checkoutProcess() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
-    openModalProcess.value = false;
     Swal.fire({
       title: "Gagal",
       text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
@@ -446,6 +448,8 @@ async function checkoutProcess() {
     alert("Pilih metode pembayaran");
     return;
   }
+
+  if (!validateHargaNonZero()) return;
 
   isLoading.value = true;
 
@@ -602,13 +606,13 @@ function removeItem(index) {
 }
 
 function formatRupiahInput(angka) {
-  if (angka === null || angka === undefined) return '';
-  return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (!angka) return "";
+  return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function updateHargaNet(event, item) {
-  const value = event.target.value.replace(/[^\d]/g, '');
-  item.barangentry_harga_net = parseInt(value) || 0;
+  let value = event.target.value.replace(/[^\d]/g, "");
+  item.barangentry_harga_net = value ? Number(value) : 0;
 }
 
 const fetchDataByBarcode = async (code) => {
@@ -645,6 +649,31 @@ const fetchDataByBarcode = async (code) => {
     alert("Gagal mengambil data barang");
   }
 };
+
+function validateHargaNonZero() {
+  const invalids = datatableItems.value
+    .filter(i => !i.barangentry_harga_net || Number(i.barangentry_harga_net) <= 0)
+    .map(i => `${i.code_nama || '-'} • ${i.barangentry_nama}`);
+
+  if (invalids.length > 0) {
+    Swal.fire({
+      title: "Harga masih 0",
+      html: `
+        <div class="text-left">
+          <p class="mb-2">Beberapa item masih memiliki harga 0. Mohon isi harga terlebih dahulu:</p>
+          <ul style="list-style:disc;margin-left:18px">
+            ${invalids.map(x => `<li>${x}</li>`).join("")}
+          </ul>
+        </div>
+      `,
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
+    openModalProcess.value = false;
+    return false;
+  }
+  return true;
+}
 
 function printToNewTab(data, items) {
   const printWindow = window.open("", "_blank");
