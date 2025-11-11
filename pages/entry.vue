@@ -777,6 +777,7 @@ const searchQuery = ref("");
 const barangMap = ref({});
 const isSubmitting = ref(false);
 const isSubmittingSize = ref(false);
+const pengirimanStatus = ref("");
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -799,30 +800,32 @@ function formatTanggal(tanggal) {
   }).format(date);
 }
 
-function openSendModal(id) {
+async function openSendModal(id) {
   selectedId.value = id;
+
+  const result = await Swal.fire({
+    title: "Konfirmasi Pengiriman",
+    text: "Pilih metode pengiriman",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "DIKIRIM",
+    denyButtonText: "DIJEMPUT"
+  });
+
+  if (!result.isConfirmed && !result.isDenied) return;
+  pengirimanStatus.value = result.isConfirmed ? "Dikirim" : "Dijemput";
+
   showSendModal.value = true;
 }
 
 async function handleSend(data) {
-  // sendOrder(selectedId.value, data);
-  const pengiriman_id = await sendOrder(selectedId.value, data)
-  if (!pengiriman_id) return
 
-  const result = await Swal.fire({
-    title: "Konfirmasi Pengiriman",
-    text: "Pilih jenis pengiriman",
-    showDenyButton: true,
-    denyButtonText: "DIJEMPUT",
-    confirmButtonText: "DIKIRIM",
-    cancelButtonText: "Batal"
-  });
+  const pengiriman_id = await sendOrder(selectedId.value, data);
+  if (!pengiriman_id) return;
 
-  if (result.isConfirmed) {
-    await updatePengiriman(pengiriman_id, data.nama_akun, "Dikirim")
-  } else if (result.isDenied) {
-    await updatePengiriman(pengiriman_id, data.nama_akun, "Dijemput")
-  }
+  await updatePengiriman(pengiriman_id, data.nama_akun, pengirimanStatus.value);
+
+  showSendModal.value = false;
 }
 
 async function updatePengiriman(pengiriman_id, namaAkun, status) {

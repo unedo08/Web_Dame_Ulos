@@ -55,7 +55,7 @@
               </button> -->
               <button
                 class="flex items-center gap-1 px-2 py-1 bg-[#3D8BFD] text-white hover:bg-[#5C9EFF] rounded-md text-s"
-                @click="openModalEditPackaging(pengiriman.pengirimanBarang_transaksi_id, pengiriman.pengirimanBarang_nama_penerima)">
+                @click="openModalEditPackaging(pengiriman)">
                 Edit
               </button>
               <!-- <button
@@ -110,7 +110,10 @@
   <ViewDetailModal :show="showDetailModal" :id="selectedPengirimanId" @close="showDetailModal = false" />
 
   <ModalEditPackaging v-model:show="isModalOpen" :namaAkun="selected.namaAkun" :barang="selected.barang"
-    @save="handleSave" @close="isModalOpen = false" @removeItem="handleRemoveItem" />
+    :pengiriman="selectedPengiriman" @save="handleSave" @close="isModalOpen = false" @openPreview="openPreview"
+    @removeItem="handleRemoveItem" />
+
+  <ModalPackagingPreview :show="showPreview" :data="previewData" @close="showPreview = false" />
 </template>
 
 <script setup>
@@ -120,6 +123,7 @@ import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from '../components/ModalViewDetail.vue'
 import ModalEditPackaging from "../components/ModalEditPackaging.vue";
+import ModalPackagingPreview from "../components/ModalPackagingPreview.vue";
 
 const config = useRuntimeConfig();
 const url = ref('');
@@ -131,10 +135,11 @@ const itemsPerPage = ref(10);
 const showDetailModal = ref(false);
 const selectedPengirimanId = ref(null);
 const isModalOpen = ref(false);
-const handleSave = (form) => {
-  isModalOpen.value = false;
-};
 const selected = ref({ namaAkun: "", barang: [] });
+const showPreview = ref(false);
+const previewData = ref({});
+const selectedPengiriman = ref(null);
+
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -154,6 +159,28 @@ const fetchDataPengiriman = async () => {
 const openViewDetail = (id) => {
   selectedPengirimanId.value = id;
   showDetailModal.value = true;
+};
+
+function openPreview(data) {
+  previewData.value = data;
+  showPreview.value = true;
+}
+
+const handleSave = () => {
+  Swal.fire({
+    title: "Berhasil",
+    text: "Data tersimpan!",
+    icon: "success",
+  }).then(() => {
+    previewData.value = {
+      nama: selectedPengiriman.value.pengirimanBarang_nama_penerima,
+      telp: selectedPengiriman.value.pengirimanBarang_no_telepon,
+      alamat: selectedPengiriman.value.pengirimanBarang_alamat_pengiriman_barang,
+    };
+
+    isModalOpen.value = false;
+    showPreview.value = true;
+  });
 };
 
 const listpengirimanData = computed(() => {
@@ -190,28 +217,25 @@ const totalPages = computed(() => {
   return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
 });
 
-const openModalEditPackaging = async (trx_id, namaAkun) => {
+const openModalEditPackaging = async (pengiriman) => {
+  selectedPengiriman.value = pengiriman;
+  const trx_id = pengiriman.pengirimanBarang_transaksi_id;
+
   try {
-    const { data } = await axios.get(
-      `${url.value}/api/pengiriman-barang/get-transaksi-detail/` + trx_id
-      //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
-    );
-    if (data.data && data.data.length > 0) {
-      selected.value = {
-        namaAkun: namaAkun,
-        barang: data.data
-          // .filter(item => item.is_check === 0)
-          .map((item) => ({
-            kode: item.code_nama,
-            nama: item.barangentry_nama,
-            jumlah: item.transaksidetail_jumlah_barang,
-            harga: parseFloat(item.transaksidetail_harga_barang),
-            trx_detail_id: item.transaksidetail_transaksi_id,
-            is_check: true,
-          })),
-      };
-      isModalOpen.value = true;
-    }
+    const res = await axios.get(`${url.value}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
+    selected.value = {
+      namaAkun: pengiriman.pengirimanBarang_akun_penerima,
+      barang: res.data.data.map(item => ({
+        kode: item.code_nama,
+        nama: item.barangentry_nama,
+        jumlah: item.transaksidetail_jumlah_barang,
+        harga: parseFloat(item.transaksidetail_harga_barang),
+        trx_detail_id: item.transaksidetail_transaksi_id,
+        is_check: true
+      }))
+    };
+
+    isModalOpen.value = true;
   } catch (error) {
     console.error("Gagal ambil data:", error);
   }

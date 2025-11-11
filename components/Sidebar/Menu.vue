@@ -59,14 +59,14 @@ const items = ref([
   },
   {
     title: "Packaging",
-    path: "/packaging",
+    path: "/packaging-page",
     icon: CubeIcon,
   },
-  {
-    title: "Packaging - Barang",
-    path: "/packaging-pengiriman",
-    icon: CubeIcon,
-  },
+  // {
+  //   title: "Packaging - Barang",
+  //   path: "/packaging-pengiriman",
+  //   icon: CubeIcon,
+  // },
   {
     title: "Staff",
     path: "/staff",

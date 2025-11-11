@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   },
 
   // css: ['bootstrap/dist/css/bootstrap.css', 'assets/css/tailwind.css'],
-  css: ['~/assets/css/tailwind.css'],
+  css: ['~/assets/css/tailwind.css', '~/assets/css/print.css'],
   vite: {
     plugins: [
       tailwindcss(),
