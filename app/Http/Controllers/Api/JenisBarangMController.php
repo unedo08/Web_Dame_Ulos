@@ -18,9 +18,9 @@ class JenisBarangMController extends Controller
                 'jenisbarang_m.jenisbarang_nama',
                 DB::raw('SUM(jenisbarang_m.jenisbarang_jumlah) as jumlah_barang')
             )
-            ->join('code_m', 'code_m.code_jenisbarang_id', '=', 'jenisbarang_m.jenisbarang_id')
-            ->join('barangentry_m', 'barangentry_m.barangentry_code_id', '=', 'code_m.code_id')
-            ->where('barangentry_m.barangentry_status', 'READY')
+            // ->join('code_m', 'code_m.code_jenisbarang_id', '=', 'jenisbarang_m.jenisbarang_id')
+            // ->join('barangentry_m', 'barangentry_m.barangentry_code_id', '=', 'code_m.code_id')
+            // ->where('barangentry_m.barangentry_status', 'READY')
             ->groupBy(
                 'jenisbarang_m.jenisbarang_id',
                 'jenisbarang_m.jenisbarang_kode',
