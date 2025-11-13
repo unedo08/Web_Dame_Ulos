@@ -292,6 +292,7 @@ const deleteProduct = async (id, kode_barang) => {
       await axios.delete(`${url.value}/api/jenisbarang/${id}`);
       barang.value = barang.value.filter((item) => item.jenisbarang_id !== id);
       Swal.fire("Berhasil!", `"${kode_barang}" telah dihapus.`, "success");
+
     } catch (error) {
       Swal.fire("Gagal", "Terjadi kesalahan saat menghapus data.", "error");
     }
@@ -307,6 +308,122 @@ const paginatedPages = computed(() => {
   if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
   return [1, "...", current - 1, current, current + 1, "...", total];
 });
+
+//added by unedo
+const openModelPrint = (product) => {
+  selectedProduct.value = { ...product };
+  const tipe = "tunggal";//product.jenisbarang_tipe;
+
+  if (tipe === "tunggal") {
+    printJumlah.value = 1;
+    handlePrint();
+  } else {
+    printJumlah.value = product.jenisbarang_jumlah;
+    isModalPrintOpen.value = true;
+  }
+};
+
+// Print Barcode
+const handlePrint = async () => {
+  const kodeBarang = selectedProduct.value.jenisbarang_kode;
+  const jenisbarang_id = selectedProduct.value.jenisbarang_id;
+  const tipeBarang = selectedProduct.value.jenisbarang_tipe;
+  
+  const jumlah = tipeBarang === "majemuk" ? printJumlah.value : 1;
+  try {
+    let barcodeData = [];
+    // if (tipeBarang === "majemuk") {
+    console.log('sadsada', jumlah);
+    console.log('sadsada', jenisbarang_id);
+    
+      const response = await axios.post(`${url.value}/api/codebarang`, {
+        jumlah_barang: jumlah,
+        code_jenisbarang_id: jenisbarang_id,
+      });
+      barcodeData = response.data.data;
+    // } else {
+    //   barcodeData = [{ code_nama: kodeBarang }];
+    // }
+
+    const win = window.open("", "", "width=800,height=600");
+    if (!win) return;
+
+    win.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print Barcode</title>
+          <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
+          <style>
+            @media print {
+              @page {
+                size: A4 landscape;
+                margin: 0;
+              }
+              body {
+                margin: 0;
+              }
+              .page {
+                page-break-after: always;
+                width: 100vw;
+                height: 100vh;
+                position: relative;
+              }
+            }
+            .barcode-container {
+              position: absolute;
+              bottom: 20px;
+              right: 20px;
+              text-align: center;
+              font-size: 10px;
+            }
+          </style>
+        </head>
+        <body>
+          ${barcodeData
+            .map(
+              (item, i) => `
+            <div class="page">
+              <div class="barcode-container">
+                <div>${item.code_nama}</div>
+                <svg id="barcode-${i}"></svg>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+
+          <script>
+            window.onload = function() {
+              const barcodes = ${JSON.stringify(barcodeData)};
+              for (let i = 0; i < barcodes.length; i++) {
+                JsBarcode("#barcode-" + i, barcodes[i].code_nama, {
+                  format: "CODE128",
+                  lineColor: "#000",
+                  width: 2,
+                  height: 60,
+                  displayValue: false
+                });
+              }
+              window.print();
+            }
+          <\/script>
+        </body>
+      </html>
+    `);
+
+    win.document.close();
+    closePrintModal();
+  } catch (error) {
+    console.error("Gagal update jumlah code barang:", error);
+    alert("Gagal melakukan update jumlah barcode. Coba lagi.");
+  }
+};
+
+const closePrintModal = () => {
+  isModalPrintOpen.value = false;
+  selectedProduct.value = null;
+};
 </script>
 
 <style scoped>
