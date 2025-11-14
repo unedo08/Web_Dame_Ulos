@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CodeM;
 use App\Models\JenisBarangM;
+use App\Models\BarangEntryM;
 use Illuminate\Http\Request;
 
 class CodeMController extends Controller
@@ -95,5 +96,30 @@ class CodeMController extends Controller
             'code' => 200,
             'total' => $jumlah
         ]);
+    }
+
+    public function getDataByCode($code_nama)
+    {
+        $item_code = CodeM::where('code_nama', $code_nama)->first();
+        if (!$item_code) {
+            return response()->json([
+                'message' => 'Kode tidak ditemukan',
+                'code' => 404
+            ], 404);
+        }
+
+        $item = BarangEntryM::where('barangentry_code_id', $item_code->code_id)->first();
+        if (!$item) {
+            return response()->json([
+                'message' => 'Barang entry tidak ditemukan untuk kode tersebut',
+                'code' => 404
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Data ditemukan',
+            'code' => 200,
+            'data' => $item
+        ], 200);
     }
 }

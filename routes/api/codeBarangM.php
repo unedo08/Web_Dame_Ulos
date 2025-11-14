@@ -8,3 +8,4 @@ Route::get('/', [CodeMController::class, 'index']);
 Route::get('/{id}', [CodeMController::class, 'show']);
 Route::post('/', [CodeMController::class, 'store']);
 Route::delete('/delete/{jenisbarang_id}', [CodeMController::class, 'destroy']);
+Route::get('/getDataByCode/{code_nama}', [CodeMController::class, 'getDataByCode']);
