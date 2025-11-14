@@ -108,18 +108,18 @@ class CodeMController extends Controller
             ], 404);
         }
 
-        $item = BarangEntryM::where('barangentry_code_id', $item_code->code_id)->first();
-        if (!$item) {
-            return response()->json([
-                'message' => 'Barang entry tidak ditemukan untuk kode tersebut',
-                'code' => 404
-            ], 404);
-        }
+        // $item = BarangEntryM::where('barangentry_code_id', $item_code->code_id)->first();
+        // if (!$item) {
+        //     return response()->json([
+        //         'message' => 'Barang entry tidak ditemukan untuk kode tersebut',
+        //         'code' => 404
+        //     ], 404);
+        // }
 
         return response()->json([
             'message' => 'Data ditemukan',
             'code' => 200,
-            'data' => $item
+            'data' => $item_code
         ], 200);
     }
 }
