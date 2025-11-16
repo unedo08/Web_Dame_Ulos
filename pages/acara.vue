@@ -42,7 +42,7 @@
             <td class="px-4 py-2">{{ acara.acara_status }}</td>
             <td class="space-x-2 px-4 py-2">
               <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
-                <PencilIcon class="w-5 h-5" />
+                <PlusIcon class="w-5 h-5" />
               </button>
 
               <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
@@ -70,6 +70,7 @@
             <option :value="10">10</option>
             <option :value="20">20</option>
             <option :value="50">50</option>
+            <option value="all">All</option>
           </select>
         </div>
 
@@ -233,6 +234,7 @@ import {
   CheckCircleIcon,
   ArrowDownTrayIcon,
   TrashIcon,
+  PlusIcon
 } from "@heroicons/vue/24/solid";
 import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
@@ -279,12 +281,17 @@ onMounted(async () => {
 });
 
 const pagination = computed(() => {
+  if (itemsPerPage.value === "all") {
+    return listAcara.value;
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   return listAcara.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
   return Math.ceil(listAcara.value.length / itemsPerPage.value);
 });
 
@@ -318,22 +325,18 @@ async function getListAcara() {
 }
 
 const paginatedPages = computed(() => {
+  if (itemsPerPage.value === "all") return [1];
+
   const total = totalPages.value;
   const current = currentPage.value;
   const pages = [];
 
   if (total <= 5) {
-    for (let i = 1; i <= total; i++) {
-      pages.push(i);
-    }
+    for (let i = 1; i <= total; i++) pages.push(i);
   } else {
-    if (current <= 3) {
-      pages.push(1, 2, 3, "...", total);
-    } else if (current >= total - 2) {
-      pages.push(1, "...", total - 2, total - 1, total);
-    } else {
-      pages.push(1, "...", current - 1, current, current + 1, "...", total);
-    }
+    if (current <= 3) pages.push(1, 2, 3, "...", total);
+    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
+    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
   }
 
   return pages;

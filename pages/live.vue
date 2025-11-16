@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="(items, akun) in filteredGroupedData" :key="akun">
+          <template v-for="(items, akun) in paginatedGroupedData" :key="akun">
             <!-- :key="pengiriman.pengirimanBarang_id" -->
             <tr v-for="(pengiriman, index) in items" :class="[
               index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
@@ -93,6 +93,7 @@
             <option :value="10">10</option>
             <option :value="20">20</option>
             <option :value="50">50</option>
+            <option value="all">All</option>
           </select>
         </div>
 
@@ -153,6 +154,7 @@
             <option :value="10">10</option>
             <option :value="20">20</option>
             <option :value="50">50</option>
+            <option value="all">All</option>
           </select>
         </div>
 
@@ -490,6 +492,21 @@ const filteredGroupedData = computed(() => {
   return result;
 });
 
+const paginatedGroupedData = computed(() => {
+  const groups = Object.entries(filteredGroupedData.value);
+
+  if (itemsPerPage.value === "all") {
+    return Object.fromEntries(groups);
+  }
+
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+
+  return Object.fromEntries(groups.slice(start, end));
+});
+
+const totalGroups = computed(() => Object.keys(filteredGroupedData.value).length);
+
 const totalHargaPerAkun = computed(() => {
   const totalMap = {};
   pengirimanData.value.forEach((item) => {
@@ -644,12 +661,22 @@ const listpengirimanData = computed(() => {
 });
 
 const pagination = computed(() => {
+  if (itemsPerPage.value === "all") {
+    return listpengirimanData.value;
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   return listpengirimanData.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
+
+  if (activeTab.value === "order") {
+    return Math.ceil(totalGroups.value / itemsPerPage.value);
+  }
+
   return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
 });
 

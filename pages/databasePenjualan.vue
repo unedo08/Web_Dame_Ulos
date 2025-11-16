@@ -22,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <template v-for="(group, gIndex) in groupedTransaksi" :key="gIndex">
+        <template v-for="(group, gIndex) in paginatedGroups" :key="gIndex">
           <tr v-for="(trx, tIndex) in group.items" :key="trx.transaksi_id"
             :class="tIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
             <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top text-center">
@@ -72,34 +72,35 @@
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-4">
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 text-sm">
         <label for="perPage">Tampilkan:</label>
         <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
           <option :value="50">50</option>
+          <option value="all">All</option>
         </select>
       </div>
 
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
+      <div class="flex items-center space-x-1 text-sm">
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+          :disabled="currentPage === 1" @click="currentPage--">
+          Prev
         </button>
 
         <button v-for="(page, index) in paginatedPages" :key="index"
           @click="typeof page === 'number' && (currentPage = page)" :class="[
             'px-3 py-1 rounded',
             currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer',
+            page === '...' ? 'cursor-default text-gray-500' : 'cursor-pointer'
           ]" :disabled="page === '...'">
           {{ page }}
         </button>
 
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+          :disabled="currentPage === totalPages" @click="currentPage++">
+          Next
         </button>
       </div>
     </div>
@@ -203,15 +204,38 @@ const groupedTransaksi = computed(() => {
 //   return Object.values(groups);
 // });
 
-// const pagination = computed(() => {
-//   const start = (currentPage.value - 1) * itemsPerPage.value;
-//   const end = start + itemsPerPage.value;
-//   return listTransaksi.value.slice(start, end);
-// });
+const paginatedGroups = computed(() => {
+  if (itemsPerPage.value === "all") return groupedTransaksi.value;
+
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return groupedTransaksi.value.slice(start, end);
+});
+
 
 const totalPages = computed(() => {
-  return Math.ceil(listTransaksi.value.length / itemsPerPage.value);
+  if (itemsPerPage.value === "all") return 1;
+  return Math.ceil(groupedTransaksi.value.length / itemsPerPage.value);
 });
+
+const paginatedPages = computed(() => {
+  if (itemsPerPage.value === "all") return [1];
+
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (current <= 3) pages.push(1, 2, 3, "...", total);
+    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
+    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
+  }
+
+  return pages;
+});
+
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("id-ID", {
@@ -269,29 +293,6 @@ const deleteTransaksi = async (id) => {
     }
   });
 };
-
-
-const paginatedPages = computed(() => {
-  const total = totalPages.value;
-  const current = currentPage.value;
-  const pages = [];
-
-  if (total <= 5) {
-    for (let i = 1; i <= total; i++) {
-      pages.push(i);
-    }
-  } else {
-    if (current <= 3) {
-      pages.push(1, 2, 3, "...", total);
-    } else if (current >= total - 2) {
-      pages.push(1, "...", total - 2, total - 1, total);
-    } else {
-      pages.push(1, "...", current - 1, current, current + 1, "...", total);
-    }
-  }
-
-  return pages;
-});
 
 async function handlePrint(transaksi_id) {
   const { data: responsePrint } = await axios.get(

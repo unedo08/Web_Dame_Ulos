@@ -2,8 +2,6 @@
   <div>
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
-
-    <!-- Search & Button -->
     <div class="flex items-center justify-between pt-2">
       <input class="search-box p-2 border rounded-md w-[385px] text-sm" v-model="searchQuery" type="text"
         placeholder="Search barang..." />
@@ -13,7 +11,6 @@
       </button>
     </div>
 
-    <!-- Table -->
     <table class="datatable w-full rounded-md overflow-hidden mt-4">
       <thead class="bg-blue-100">
         <tr>
@@ -47,7 +44,6 @@
       </tbody>
     </table>
 
-    <!-- Pagination -->
     <div class="flex justify-between items-center mt-4 text-xs">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
@@ -56,6 +52,7 @@
           <option :value="10">10</option>
           <option :value="20">20</option>
           <option :value="50">50</option>
+          <option value="all">All</option>
         </select>
       </div>
 
@@ -81,7 +78,6 @@
       </div>
     </div>
 
-    <!-- Modal Tambah -->
     <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-50">
       <div class="bg-white p-6 rounded-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
@@ -123,7 +119,6 @@
       </div>
     </div>
 
-    <!-- Modal Print -->
     <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
@@ -151,7 +146,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 
-// ===== State =====
 const searchQuery = ref("");
 const barang = ref([]);
 const newProduct = ref({
@@ -169,7 +163,6 @@ const currentPage = ref(1);
 const itemsPerPage = ref(10);
 const isSubmitting = ref(false);
 
-// ===== Fetch Data =====
 const fetchData = async () => {
   try {
     const response = await axios.get(`${url.value}/api/jenisbarang`);
@@ -191,7 +184,6 @@ onMounted(() => {
   fetchData();
 });
 
-// ===== Filter & Pagination =====
 const listBarang = computed(() => {
   const sorted = [...barang.value].sort(
     (a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -207,15 +199,20 @@ const listBarang = computed(() => {
 });
 
 const pagination = computed(() => {
+  if (itemsPerPage.value === "all") {
+    return listBarang.value;
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
   return listBarang.value.slice(start, start + itemsPerPage.value);
 });
 
-const totalPages = computed(() =>
-  Math.ceil(listBarang.value.length / itemsPerPage.value)
-);
 
-// ===== Modal Tambah =====
+const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
+  return Math.ceil(listBarang.value.length / itemsPerPage.value);
+});
+
 const openModal = () => {
   isModalOpen.value = true;
   errors.value = {};
@@ -227,7 +224,6 @@ const closeModal = () => {
   errors.value = {};
 };
 
-// ===== Validasi =====
 function validateProduct() {
   errors.value = {};
   if (!newProduct.value.jenisbarang_kode.trim())
@@ -241,7 +237,6 @@ function validateProduct() {
   return Object.keys(errors.value).length === 0;
 }
 
-// ===== Submit Produk =====
 const submitProduct = async () => {
   if (isSubmitting.value) return;
   if (!validateProduct()) {
@@ -270,12 +265,10 @@ const submitProduct = async () => {
   }
 };
 
-// Reset error otomatis saat user mengetik
 watch(newProduct, () => {
   errors.value = {};
 }, { deep: true });
 
-// ===== Delete Produk =====
 const deleteProduct = async (id, kode_barang) => {
   const result = await Swal.fire({
     title: "Konfirmasi Hapus",
@@ -299,10 +292,12 @@ const deleteProduct = async (id, kode_barang) => {
   }
 };
 
-// ===== Pagination Buttons =====
 const paginatedPages = computed(() => {
+  if (itemsPerPage.value === "all") return [1];
+
   const total = totalPages.value;
   const current = currentPage.value;
+
   if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
   if (current <= 3) return [1, 2, 3, "...", total];
   if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
@@ -312,15 +307,10 @@ const paginatedPages = computed(() => {
 //added by unedo
 const openModelPrint = (product) => {
   selectedProduct.value = { ...product };
-  const tipe = "tunggal";//product.jenisbarang_tipe;
+  const tipe = "tunggal";
 
-  if (tipe === "tunggal") {
-    printJumlah.value = 1;
-    handlePrint();
-  } else {
-    printJumlah.value = product.jenisbarang_jumlah;
-    isModalPrintOpen.value = true;
-  }
+  printJumlah.value = product.jenisbarang_jumlah;
+  isModalPrintOpen.value = true;
 };
 
 // Print Barcode
@@ -328,22 +318,22 @@ const handlePrint = async () => {
   const kodeBarang = selectedProduct.value.jenisbarang_kode;
   const jenisbarang_id = selectedProduct.value.jenisbarang_id;
   const tipeBarang = selectedProduct.value.jenisbarang_tipe;
-  
-  const jumlah = tipeBarang === "majemuk" ? printJumlah.value : 1;
+
+  // const jumlah = tipeBarang === "majemuk" ? printJumlah.value : 1;
+  const jumlah = Number(printJumlah.value);
+  if (!jumlah || jumlah < 1) {
+    alert("Jumlah harus minimal 1!");
+    return;
+  }
+
   try {
     let barcodeData = [];
-    // if (tipeBarang === "majemuk") {
-    console.log('sadsada', jumlah);
-    console.log('sadsada', jenisbarang_id);
-    
-      const response = await axios.post(`${url.value}/api/codebarang`, {
-        jumlah_barang: jumlah,
-        code_jenisbarang_id: jenisbarang_id,
-      });
-      barcodeData = response.data.data;
-    // } else {
-    //   barcodeData = [{ code_nama: kodeBarang }];
-    // }
+
+    const response = await axios.post(`${url.value}/api/codebarang`, {
+      jumlah_barang: jumlah,
+      code_jenisbarang_id: jenisbarang_id,
+    });
+    barcodeData = response.data.data;
 
     const win = window.open("", "", "width=800,height=600");
     if (!win) return;
@@ -381,8 +371,8 @@ const handlePrint = async () => {
         </head>
         <body>
           ${barcodeData
-            .map(
-              (item, i) => `
+        .map(
+          (item, i) => `
             <div class="page">
               <div class="barcode-container">
                 <div>${item.code_nama}</div>
@@ -390,8 +380,8 @@ const handlePrint = async () => {
               </div>
             </div>
           `
-            )
-            .join("")}
+        )
+        .join("")}
 
           <script>
             window.onload = function() {
@@ -448,7 +438,6 @@ const closePrintModal = () => {
 .datatable th,
 .datatable td {
   padding: 10px;
-  /* border: 1px solid #ddd; */
   text-align: left;
   font-size: 12px;
 }
@@ -469,7 +458,6 @@ const closePrintModal = () => {
   background-color: #3d8bfd;
 }
 
-/* Modal styles */
 .fixed {
   position: fixed;
 }
@@ -481,8 +469,6 @@ const closePrintModal = () => {
 .bg-white input:focus {
   outline: none;
   border-color: #8e9196;
-  /* abu-abu muda */
   color: #111827;
-  /* hampir hitam */
 }
 </style>

@@ -25,7 +25,6 @@
       </button>
     </div>
     <div class="mx-auto" v-show="activeTab === 'wait'">
-      <!-- <div class="judul text-xs font-semibold mb-2">Wait to Entry</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
           <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
@@ -33,34 +32,15 @@
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <br />
-          <!-- <button
-          v-if="isSearchActive"
-          @click="resetSearch"
-          class="btn-reset-pencarian bg-red-500 text-white text-center rounded hover:bg-red-600 btn-s w-[110px] h-[30px]"
-        >
-          Reset Pencarian
-        </button>
-        <button
-          class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
-          @click="openSearchModal"
-        >
-          🔍 Search
-        </button> -->
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="showModalAdd = true">
+            @click="openTambahBarang()">
             + Desc
           </button>
 
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
-            @click="showModalAddSize = true">
+            @click="openAddSize()">
             + Size
           </button>
-          <!-- <button
-            class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
-            @click="openModal('priceTag')"
-          >
-            Print Price Tag
-          </button> -->
         </div>
       </div>
 
@@ -126,6 +106,7 @@
               <option :value="10">10</option>
               <option :value="20">20</option>
               <option :value="50">50</option>
+              <option value="all">All</option>
             </select>
           </div>
 
@@ -254,6 +235,7 @@
               <option :value="10">10</option>
               <option :value="20">20</option>
               <option :value="50">50</option>
+              <option value="all">All</option>
             </select>
           </div>
 
@@ -402,6 +384,7 @@
               <option :value="10">10</option>
               <option :value="20">20</option>
               <option :value="50">50</option>
+              <option value="all">All</option>
             </select>
           </div>
 
@@ -441,57 +424,59 @@
               class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed" :readonly="true" />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input v-model="selectedBarang.code_nama" @input="handleBarcodeDesc"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="Scan atau ketik kode barang..." />
+            <label class="block mb-1 font-medium">Kode Barang <span style="color:red">*</span>:</label>
+            <input ref="inputKodeDesc" v-model="selectedBarang.code_nama" @input="handleBarcodeDesc"
+              :readonly="!!selectedBarang.code_id" :class="[
+                'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus',
+                selectedBarang.code_id ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+              ]" placeholder="Scan atau ketik kode barang..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Ulos:</label>
+            <label class="block text-gray-700 mb-1">Nama Ulos <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_nama" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Warna Ulos:</label>
+            <label class="block text-gray-700 mb-1">Warna Ulos <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_warna" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Penenun:</label>
+            <label class="block text-gray-700 mb-1">Nama Penenun <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_nama_penenun" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Panirat:</label>
+            <label class="block text-gray-700 mb-1">Nama Panirat <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_nama_panirat" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Dyer:</label>
+            <label class="block text-gray-700 mb-1">Dyer <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_dryer" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Modal:</label>
+            <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span>:</label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
               @input="updateModal($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan harga" />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Harga Price Tag:</label>
+            <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span>:</label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
               @input="updatePriceTag($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan harga" />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Harga Net:</label>
+            <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span>:</label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
               @input="updateHargaNet($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -499,7 +484,7 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 mb-1">Jumlah:</label>
+            <label class="block text-gray-700 mb-1">Jumlah <span style="color:red">*</span>:</label>
             <input v-model="selectedBarang.barangentry_jumlah_barang" type="number" min="1"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
@@ -534,9 +519,11 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
-            <input v-model="selectedBarang.kode_barang" @input="handleBarcodeSize"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="Scan atau ketik kode barang..." />
+            <input ref="inputKodeSize" v-model="selectedBarang.kode_barang" @input="handleBarcodeSize"
+              :readonly="!!selectedBarang.code_id" :class="[
+                'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus',
+                selectedBarang.code_id ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+              ]" placeholder="Scan atau ketik kode barang..." />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Ulos:</label>
@@ -778,6 +765,8 @@ const barangMap = ref({});
 const isSubmitting = ref(false);
 const isSubmittingSize = ref(false);
 const pengirimanStatus = ref("");
+const inputKodeDesc = ref(null);
+const inputKodeSize = ref(null);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -1038,12 +1027,17 @@ const searchFilterData = computed(() => {
 });
 
 const pagination = computed(() => {
+  if (itemsPerPage.value === "all") {
+    return searchFilterData.value;
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   return searchFilterData.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
   return Math.ceil(listBarang.value.length / itemsPerPage.value);
 });
 
@@ -1204,6 +1198,22 @@ async function submitBarang() {
   } finally {
     isSubmitting.value = false;
   }
+}
+
+async function openTambahBarang() {
+  selectedBarang.value = {
+    barangentry_jumlah_barang: 1
+  };
+  showModalAdd.value = true;
+  await nextTick();
+  if (inputKodeDesc.value) inputKodeDesc.value.focus();
+}
+
+async function openAddSize() {
+  selectedBarang.value = {};
+  showModalAddSize.value = true
+  await nextTick();
+  if (inputKodeSize.value) inputKodeSize.value.focus();
 }
 
 function cancelTambahBarang() {
@@ -1421,26 +1431,23 @@ const deleteBarang = async (id) => {
 };
 
 const paginatedPages = computed(() => {
+  if (itemsPerPage.value === "all") return [1];
+
   const total = totalPages.value;
   const current = currentPage.value;
   const pages = [];
 
   if (total <= 5) {
-    for (let i = 1; i <= total; i++) {
-      pages.push(i);
-    }
+    for (let i = 1; i <= total; i++) pages.push(i);
   } else {
-    if (current <= 3) {
-      pages.push(1, 2, 3, "...", total);
-    } else if (current >= total - 2) {
-      pages.push(1, "...", total - 2, total - 1, total);
-    } else {
-      pages.push(1, "...", current - 1, current, current + 1, "...", total);
-    }
+    if (current <= 3) pages.push(1, 2, 3, "...", total);
+    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
+    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
   }
 
   return pages;
 });
+
 
 async function printPreOrder(id) {
 

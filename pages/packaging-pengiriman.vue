@@ -60,6 +60,7 @@
           <option :value="10">10</option>
           <option :value="20">20</option>
           <option :value="50">50</option>
+          <option value="all">All</option>
         </select>
       </div>
 
@@ -136,16 +137,20 @@ const listpengirimanData = computed(() => {
   });
 });
 
-// 🔹 Pagination
 const pagination = computed(() => {
+  if (itemsPerPage.value === "all") {
+    return listpengirimanData.value;
+  }
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   return listpengirimanData.value.slice(start, end);
 });
 
-const totalPages = computed(() =>
-  Math.ceil(listpengirimanData.value.length / itemsPerPage.value)
-);
+const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
+  return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
+});
 
 const paginatedPages = computed(() => {
   const total = totalPages.value;
