@@ -426,7 +426,7 @@ class BarangEntryMController extends Controller
         ], 200);
     }
 
-    public function updateReadyStock(Request $request, $id)
+    public function updateReadyStockDesc(Request $request, $id)
     {
         $request->validate([
             'barangentry_nama' => 'required|string',
@@ -495,5 +495,44 @@ class BarangEntryMController extends Controller
             'data' => $updated
         ], 200);
     }
+
+    public function updateReadyStock(Request $request, $id)
+{
+    $request->validate([
+        'barangentry_nama' => 'sometimes|required|string',
+        'barangentry_code_id'  => 'sometimes|required|string',
+        'barangentry_warna'  => 'sometimes|required|string',
+        'barangentry_nama_penenun' => 'sometimes|required|string',
+        'barangentry_nama_panirat' => 'sometimes|required|string',
+        'barangentry_dryer' => 'sometimes|required|string',
+        'barangentry_modal' => 'sometimes|required|numeric',
+        'barangentry_price_tag' => 'sometimes|required|numeric',
+        'barangentry_harga_net' => 'sometimes|required|numeric',
+        'barangentry_jumlah_barang' => 'sometimes|required|numeric',
+
+        // Size fields (optional)
+        'barangentry_ukuran_mandar' => 'sometimes|nullable|string',
+        'barangentry_ukuran_ulos' => 'sometimes|nullable|string',
+    ]);
+
+    $updated = BarangEntryM::find($id);
+
+    if (!$updated) {
+        return response()->json([
+            'message' => 'Data Barang Ready Stock not found',
+            'code' => 404
+        ], 404);
+    }
+
+    // Only update fields that exist in the payload
+    $updated->update($request->only(array_keys($request->all())));
+
+    return response()->json([
+        'message' => 'Barang Ready Stock updated successfully',
+        'code' => 200,
+        'data' => $updated
+    ], 200);
+}
+
 
 }
