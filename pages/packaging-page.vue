@@ -6,14 +6,14 @@
         <div class="flex space-x-4 mb-4">
             <button @click="activeTab = 'pending'" :class="[
                 'px-4 py-2 text-sm font-semibold',
-                activeTab === 'pending' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+                activeTab === 'pending' ? 'border-b-2 border-blue-500 text-red-900 font-semibold' : 'text-gray-500'
             ]">
                 Packaging Belum Diproses
             </button>
 
             <button @click="activeTab = 'done'" :class="[
                 'px-4 py-2 text-sm font-semibold',
-                activeTab === 'done' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+                activeTab === 'done' ? 'border-b-2 border-blue-500 text-red-900 font-semibold' : 'text-gray-500'
             ]">
                 Packaging Sudah Dikirim
             </button>

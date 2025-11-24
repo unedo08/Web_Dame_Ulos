@@ -76,17 +76,14 @@ const submitForm = async () => {
       });
     }
 
-    // ✅ Emit save hanya 1x
     emit("save");
 
-    // ✅ Kirim preview data
     emit("openPreview", {
       nama: props.pengiriman.pengirimanBarang_nama_penerima,
       telp: props.pengiriman.pengirimanBarang_no_telepon,
       alamat: props.pengiriman.pengirimanBarang_alamat_pengiriman_barang
     });
 
-    // ✅ Tutup modal edit
     emit("close");
 
   } catch (error) {

@@ -78,7 +78,7 @@
 
           <div>
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
-              Total Pembayaran <span class="required">*</span>
+              Harga Net <span class="required">*</span>
             </label>
             <div class="flex">
               <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
@@ -86,7 +86,7 @@
               </div>
               <input :value="formattedHargaNet" @input="updateHargaNet" type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
-                placeholder="Masukkan Total Pembayaran" />
+                placeholder="Masukkan Harga Net" />
             </div>
           </div>
 

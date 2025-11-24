@@ -151,7 +151,6 @@
     </div>
   </Transition>
 
-  <!-- Modal Process -->
   <ModalKasir v-if="openModalProcess" @close="openModalProcess = false" title="Selesaikan Transaksi">
     <label>Metode Pembayaran:</label>
     <select v-model="processForm.paymentMethod" class="input-field mb-2">
@@ -176,10 +175,8 @@
     </button>
   </ModalKasir>
 
-  <!-- Modal Live -->
   <ModalLive :visible="openModalLive" @close="openModalLive = false" />
 
-  <!-- Modal PreOrder -->
   <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
 </template>
 
@@ -263,9 +260,11 @@ const waitingList = ref([]);
 async function fetchHoldTransactions() {
   try {
     const response = await axios.get(`${url.value}/api/transaksi/status/hold`);
-    waitingList.value = response.data.data;
+    waitingList.value = Array.isArray(response.data?.data) ? response.data.data : [];
+    currentPage.value = 1;
   } catch (error) {
     console.error("Gagal mengambil data hold:", error);
+    waitingList.value = [];
     Swal.fire("Gagal", "Tidak bisa mengambil daftar transaksi hold", "error");
   }
 }
@@ -273,31 +272,59 @@ async function fetchHoldTransactions() {
 async function loadHoldTransaction(id) {
   try {
     const { data } = await axios.get(`${url.value}/api/transaksi/${id}`);
-    const transaksi = data.data;
+    const transaksi = data?.data;
+    if (!transaksi) {
+      Swal.fire("Gagal", "Data transaksi tidak ditemukan", "error");
+      return;
+    }
 
-    searchQueryCustomer.value = transaksi.transaksi_nama_customer;
-    searchQueryPhone.value = transaksi.transaksi_nomor_telepon;
-    currentTransaksiId.value = transaksi.transaksi_id;
-    const detailList = transaksi.details || [];
+    searchQueryCustomer.value = transaksi.transaksi_nama_customer || "";
+    searchQueryPhone.value = transaksi.transaksi_nomor_telepon || "";
+    currentTransaksiId.value = transaksi.transaksi_id || null;
 
-    datatableItems.value = await Promise.all(
+    const detailList = Array.isArray(transaksi.details) ? transaksi.details : [];
+
+    const mapped = await Promise.all(
       detailList.map(async (detail) => {
-        const res = await axios.get(
-          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
-        );
+        try {
+          const resEntry = await axios.get(
+            `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+          );
 
-        const resCode = await axios.get(
-          `${url.value}/api/codebarang/` + res.data.data.barangentry_code_id
-        );
-        return {
-          barangentry_nama: res.data.data.barangentry_nama,
-          quantity: detail.transaksidetail_jumlah_barang,
-          barangentry_harga_net: Math.floor(detail.transaksidetail_harga_barang),
-          code_nama: resCode.data.code_nama,
-          transaksi_id: id
-        };
+          const entry = resEntry?.data?.data;
+          let codeNama = "";
+          if (entry?.barangentry_code_id) {
+            const resCode = await axios.get(
+              `${url.value}/api/codebarang/${entry.barangentry_code_id}`
+            );
+            codeNama = resCode?.data?.code_nama || "";
+          }
+
+          return {
+            barangentry_nama: entry?.barangentry_nama || detail?.barangentry_nama || "Tidak Diketahui",
+            quantity: detail?.transaksidetail_jumlah_barang ?? 1,
+            barangentry_jumlah_barang: entry?.barangentry_jumlah_barang ?? 1,
+            barangentry_harga_net: Math.floor(detail?.transaksidetail_harga_barang ?? entry?.barangentry_harga_net ?? 0),
+            isEditing: false,
+            code_nama: codeNama,
+            transaksi_id: transaksi.transaksi_id || null,
+          };
+        } catch (err) {
+          console.warn("Gagal memetakan detail transaksi:", err);
+          return {
+            barangentry_nama: detail?.nama_barang || "Tidak Diketahui",
+            quantity: detail?.transaksidetail_jumlah_barang ?? 1,
+            barangentry_jumlah_barang: 1,
+            barangentry_harga_net: Math.floor(detail?.transaksidetail_harga_barang ?? 0),
+            isEditing: false,
+            code_nama: detail?.kode_barang || "",
+            transaksi_id: transaksi.transaksi_id || null,
+          };
+        }
       })
     );
+
+    datatableItems.value = mapped;
 
     openModalHold.value = false;
   } catch (err) {
@@ -306,25 +333,30 @@ async function loadHoldTransaction(id) {
   }
 }
 
-const filteredList = computed(() =>
-  waitingList.value
-    .filter((item) =>
-      (item.transaksi_nama_customer || "Tanpa Nama")
-        .toLowerCase()
-        .includes(searchHold.value.toLowerCase())
-    )
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-);
+const filteredList = computed(() => {
+  const q = (searchHold.value || "").toString().toLowerCase().trim();
+
+  const data = waitingList.value
+    .filter((item) => {
+      const name = (item.transaksi_nama_customer || "Tanpa Nama").toString().toLowerCase();
+      return name.includes(q);
+    })
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  return data;
+});
 
 const paginatedList = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
+  const perPage = Number(itemsPerPage) || 10;
+  const start = (currentPage.value - 1) * perPage;
+  const end = start + perPage;
   return filteredList.value.slice(start, end);
 });
 
-const totalPages = computed(() =>
-  Math.ceil(filteredList.value.length / itemsPerPage)
-);
+const totalPages = computed(() => {
+  const perPage = Number(itemsPerPage) || 10;
+  return Math.max(1, Math.ceil(filteredList.value.length / perPage));
+});
 
 async function deleteHoldTransaction(id) {
   const konfirmasi = await Swal.fire({
@@ -338,17 +370,26 @@ async function deleteHoldTransaction(id) {
     cancelButtonText: "Batal",
   });
 
-  if (konfirmasi.isConfirmed) {
-    try {
-      await axios.delete(`${url.value}/api/transaksi/${id}`);
-      await fetchHoldTransactions();
-      Swal.fire("Berhasil", "Transaksi hold berhasil dihapus.", "success");
-    } catch (err) {
-      console.error("Gagal hapus transaksi hold:", err);
-      Swal.fire("Gagal", "Tidak bisa menghapus transaksi hold", "error");
+  if (!konfirmasi.isConfirmed) return;
+
+  try {
+    await axios.delete(`${url.value}/api/transaksi/${id}`);
+    await fetchHoldTransactions();
+
+    if (currentTransaksiId.value === id) {
+      currentTransaksiId.value = null;
+      datatableItems.value = [];
+      searchQueryCustomer.value = "";
+      searchQueryPhone.value = "";
     }
+
+    Swal.fire("Berhasil", "Transaksi hold berhasil dihapus.", "success");
+  } catch (err) {
+    console.error("Gagal hapus transaksi hold:", err);
+    Swal.fire("Gagal", "Tidak bisa menghapus transaksi hold", "error");
   }
 }
+
 
 async function handleHold() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
@@ -458,18 +499,28 @@ async function checkoutProcess() {
     0
   );
 
-  const payload = {
-    transaksi_nama_customer: searchQueryCustomer.value,
-    transaksi_nomor_telepon: searchQueryPhone.value,
-    transaksi_jumlah_barang: jumlahBarang,
-    transaksi_total_harga: parseRupiah(subtotal.value),
-    transaksi_cara_bayar: processForm.value.paymentMethod,
-    transaksi_tipe: "offline",
-    transaksi_status: "pending",
-    transaksi_catatan: processForm.value.notes,
-  };
-
   try {
+    if (currentTransaksiId.value) {
+      try {
+        await axios.put(`${url.value}/api/transaksi/${currentTransaksiId.value}`, {
+          transaksi_status: "pending",
+        });
+      } catch (err) {
+        console.warn("Gagal update transaksi hold:", err);
+      }
+    }
+
+    const payload = {
+      transaksi_nama_customer: searchQueryCustomer.value,
+      transaksi_nomor_telepon: searchQueryPhone.value,
+      transaksi_jumlah_barang: jumlahBarang,
+      transaksi_total_harga: parseRupiah(subtotal.value),
+      transaksi_cara_bayar: processForm.value.paymentMethod,
+      transaksi_tipe: "offline",
+      transaksi_status: "pending",
+      transaksi_catatan: processForm.value.notes,
+    };
+
     const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
     const transaksi_id = data.data.transaksi_id;
 
@@ -508,12 +559,13 @@ async function checkoutProcess() {
         const barangRes = await axios.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
-        const kodeBarang = await axios.get(`${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id)
+        const kodeBarang = await axios.get(
+          `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id
+        );
 
         return {
           ...detail,
-          barangentry_nama:
-            barangRes.data.data.barangentry_nama || "Tidak Diketahui",
+          barangentry_nama: barangRes.data.data.barangentry_nama || "Tidak Diketahui",
           barangentry_code: kodeBarang.data.code_nama,
         };
       })
@@ -527,17 +579,20 @@ async function checkoutProcess() {
       timer: 3000,
       timerProgressBar: true,
     });
-
     printToNewTab(transaksi, detailWithNames);
 
+    await fetchHoldTransactions();
+    currentTransaksiId.value = null;
     processForm.value.paymentMethod = "";
     processForm.value.notes = "";
     searchQueryCustomer.value = "";
     searchQueryPhone.value = "";
     datatableItems.value = [];
     openModalProcess.value = false;
+
   } catch (err) {
     console.error("Gagal menyimpan transaksi:", err);
+    Swal.fire("Gagal", "Terjadi kesalahan saat Checkout", "error");
   } finally {
     isLoading.value = false;
   }
@@ -619,34 +674,66 @@ const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
     const baseURL = configURL.public.apiBase;
-    const { data } = await axios.get(
-      `${baseURL}/api/entrybarang/getDataKasir/` + code
+    const { data } = await axios.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
+
+    if (!data || !Array.isArray(data.data) || data.data.length === 0) {
+      Swal.fire("Tidak ditemukan", "Kode barang tidak ditemukan", "warning");
+      return;
+    }
+
+    const item = data.data[0];
+
+    const existingItem = datatableItems.value.find(
+      (i) => i.barangentry_nama === item.barangentry_nama
     );
 
-    if (data && Array.isArray(data.data) && data.data.length > 0) {
-      const item = data.data[0];
-      const existingItem = datatableItems.value.find(
-        (i) => i.barangentry_nama === item.barangentry_nama
-      );
-
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        datatableItems.value.push({
-          barangentry_nama: item.barangentry_nama,
-          quantity: 1,
-          barangentry_jumlah_barang: item.barangentry_jumlah_barang,
-          barangentry_harga_net: 0,
-          isEditing: false,
-          code_nama: code,
-        });
-      }
-    } else {
-      alert("Data tidak ditemukan");
+    if (item.barangentry_jumlah_barang === 0) {
+      Swal.fire({
+        title: "Tidak dapat scan",
+        text: "Barang ini memiliki jumlah 0 dan tidak bisa discan.",
+        icon: "warning",
+      });
+      return;
     }
+
+    if (item.barangentry_jumlah_barang === 1) {
+      if (existingItem) {
+        Swal.fire({
+          title: "Barang sudah discan",
+          text: "Barang dengan jumlah 1 hanya bisa discan sekali.",
+          icon: "info",
+        });
+        return;
+      }
+
+      datatableItems.value.push({
+        barangentry_nama: item.barangentry_nama,
+        quantity: 1,
+        barangentry_jumlah_barang: item.barangentry_jumlah_barang,
+        barangentry_harga_net: 0,
+        isEditing: false,
+        code_nama: code,
+      });
+
+      return;
+    }
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      datatableItems.value.push({
+        barangentry_nama: item.barangentry_nama,
+        quantity: 1,
+        barangentry_jumlah_barang: item.barangentry_jumlah_barang,
+        barangentry_harga_net: 0,
+        isEditing: false,
+        code_nama: code,
+      });
+    }
+
   } catch (error) {
     console.error(error);
-    alert("Gagal mengambil data barang");
+    Swal.fire("Error", "Gagal mengambil data barang", "error");
   }
 };
 

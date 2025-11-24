@@ -4,21 +4,21 @@
     <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
     <div class="flex space-x-6">
       <button @click="activeTab = 'wait'" class="pb-1 text-sm relative"
-        :class="activeTab === 'wait' ? 'text-black' : 'text-gray-500'">
+        :class="activeTab === 'wait' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Awaiting Stock
         <span v-if="activeTab === 'wait'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 100%"></span>
       </button>
 
       <button @click="activeTab = 'ready'" class="pb-1 text-sm relative"
-        :class="activeTab === 'ready' ? 'text-black' : 'text-gray-500'">
+        :class="activeTab === 'ready' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Ready Stock
         <span v-if="activeTab === 'ready'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 100%"></span>
       </button>
 
       <button @click="activeTab = 'po'" class="pb-1 text-sm relative"
-        :class="activeTab === 'po' ? 'text-black' : 'text-gray-500'">
+        :class="activeTab === 'po' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         List Pre-Order
         <span v-if="activeTab === 'po'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 100%"></span>
@@ -510,34 +510,49 @@
     <div v-if="showModalAddSize" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
+
         <div class="grid gap-4">
+
           <div hidden>
             <label class="block text-gray-700 mb-1">Code ID:</label>
             <input v-model="selectedBarang.code_id" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus cursor-not-allowed"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none cursor-not-allowed"
               :readonly="true" />
           </div>
+
           <div>
             <label class="block text-gray-700 mb-1">Kode Barang:</label>
             <input ref="inputKodeSize" v-model="selectedBarang.kode_barang" @input="handleBarcodeSize"
               :readonly="!!selectedBarang.code_id" :class="[
-                'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus',
+                'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500',
                 selectedBarang.code_id ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
               ]" placeholder="Scan atau ketik kode barang..." />
           </div>
+
+          <!-- Ukuran Ulos -->
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Ulos:</label>
-            <input v-model="selectedBarang.ukuran_ulos" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+            <div class="flex items-center gap-2">
+              <input v-model="selectedBarang.ukuran_ulos" type="text"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan ukuran" />
+              <span class="text-gray-700 text-sm">cm</span>
+            </div>
           </div>
+
+          <!-- Ukuran Mandar -->
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Mandar:</label>
-            <input v-model="selectedBarang.ukuran_mandar" type="text"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+            <div class="flex items-center gap-2">
+              <input v-model="selectedBarang.ukuran_mandar" type="text"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan ukuran" />
+              <span class="text-gray-700 text-sm">cm</span>
+            </div>
           </div>
+
         </div>
+
         <div class="flex justify-end space-x-3 mt-6">
           <button @click="cancelSizeBarang" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
@@ -549,6 +564,7 @@
         </div>
       </div>
     </div>
+
 
     <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
       <div v-for="item in priceTagData" :key="item.data.barangentry_id"
@@ -594,10 +610,7 @@
                 </tr>
                 <tr>
                   <td style="padding: 3px 8px 3px 0;">Ukuran Tenun</td>
-                  <td>
-                    : {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                    {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
-                  </td>
+                  <td>: {{ formatUkuran(item.data.barangentry_ukuran_ulos, item.data.barangentry_ukuran_mandar) }}</td>
                 </tr>
                 <tr>
                   <td style="padding: 3px 8px 3px 0;">Warna</td>
@@ -867,6 +880,12 @@ const formatRupiah2 = (value) => {
   const number = parseInt(value.toString().replace(/\D/g, ""), 10);
   return number.toLocaleString("id-ID");
 };
+
+function formatUkuran(ulos, mandar) {
+  const u = ulos ? `${ulos} cm` : "-";
+  const m = mandar ? `${mandar} cm` : "-";
+  return `${u} x ${m}`;
+}
 
 const updatePriceTag = (val) => {
   const numericValue = parseInt(val.replace(/\D/g, ""), 10) || 0;
@@ -1276,6 +1295,7 @@ async function submitSizeBarang() {
         barangentry_ukuran_mandar: payload.barangentry_ukuran_mandar,
       });
     }
+    await getListBarangTemp();
 
     selectedBarang.value = {};
     showModalAddSize.value = false;

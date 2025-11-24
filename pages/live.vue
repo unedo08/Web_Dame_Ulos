@@ -4,14 +4,14 @@
     <div class="judul text-xl font-semibold mb-4">Transaksi Live</div>
     <div class="flex space-x-6">
       <button @click="activeTab = 'order'" class="pb-1 text-sm relative"
-        :class="activeTab === 'order' ? 'text-black' : 'text-gray-500'">
+        :class="activeTab === 'order' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Order
         <span v-if="activeTab === 'order'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 90%"></span>
       </button>
 
       <button @click="activeTab = 'transaction'" class="pb-1 text-sm relative"
-        :class="activeTab === 'transaction' ? 'text-black' : 'text-gray-500'">
+        :class="activeTab === 'transaction' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Transcation
         <span v-if="activeTab === 'transaction'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 90%"></span>
