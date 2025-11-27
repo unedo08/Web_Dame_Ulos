@@ -205,18 +205,15 @@
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
                   <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
-                  <button
+                  <button v-if="barang.barangentry_jumlah_barang > 0"
                     class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
                     @click="openModalEditBarang(barang.barangentry_id)">
                     Edit
                   </button>
-                  <!-- <button
-                    v-if="barang.barangentry_jumlah_barang > 1"
-                    class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
-                    @click="openModalTambahStock(barang.barangentry_id)"
-                  >
-                    + Stock
-                  </button> -->
+                  <button v-else disabled
+                    class="bg-gray-400 text-white text-xs rounded-md px-2 py-1 h-[30px] w-[45px] cursor-not-allowed">
+                    Edit
+                  </button>
                   <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)">
                     Delete
@@ -359,13 +356,6 @@
                       Size +
                     </button>
                   </template>
-                  <!-- <button
-                    v-if="barang.barangentry_jumlah_barang > 1"
-                    class="bg-[#3D8BFD] text-white text-xs rounded-md hover:bg-[#367EE7] px-2 py-1 h-[30px] w-[60px]"
-                    @click="openModalTambahStock(barang.barangentry_id)"
-                  >
-                    + Stock
-                  </button> -->
                   <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
                     @click="deleteBarang(barang.barangentry_id)">
                     Delete
@@ -419,12 +409,12 @@
         </h2>
         <div class="grid grid-cols-2 gap-4">
           <div hidden>
-            <label class="block text-gray-700 mb-1">Code ID:</label>
+            <label class="block text-gray-700 mb-1">Code ID</label>
             <input v-model="selectedBarang.code_id" type="text"
               class="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed" :readonly="true" />
           </div>
           <div>
-            <label class="block mb-1 font-medium">Kode Barang <span style="color:red">*</span>:</label>
+            <label class="block mb-1 font-medium">Kode Barang <span style="color:red">*</span></label>
             <input ref="inputKodeDesc" v-model="selectedBarang.code_nama" @input="handleBarcodeDesc"
               :readonly="!!selectedBarang.code_id" :class="[
                 'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus',
@@ -432,51 +422,51 @@
               ]" placeholder="Scan atau ketik kode barang..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Ulos <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Nama Ulos <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Warna Ulos <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Warna Ulos <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_warna" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Penenun <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Nama Penenun <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama_penenun" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Nama Panirat <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Nama Panirat <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama_panirat" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Dyer <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Dyer <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_dryer" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
               @input="updateModal($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan harga" />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
               @input="updatePriceTag($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan harga" />
           </div>
           <div>
-            <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
               @input="updateHargaNet($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -484,7 +474,7 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 mb-1">Jumlah <span style="color:red">*</span>:</label>
+            <label class="block text-gray-700 mb-1">Jumlah <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_jumlah_barang" type="number" min="1"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
               placeholder="..." />
@@ -514,14 +504,14 @@
         <div class="grid gap-4">
 
           <div hidden>
-            <label class="block text-gray-700 mb-1">Code ID:</label>
+            <label class="block text-gray-700 mb-1">Code ID</label>
             <input v-model="selectedBarang.code_id" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none cursor-not-allowed"
               :readonly="true" />
           </div>
 
           <div>
-            <label class="block text-gray-700 mb-1">Kode Barang:</label>
+            <label class="block text-gray-700 mb-1">Kode Barang</label>
             <input ref="inputKodeSize" v-model="selectedBarang.kode_barang" @input="handleBarcodeSize"
               :readonly="!!selectedBarang.code_id" :class="[
                 'w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500',
@@ -531,7 +521,7 @@
 
           <!-- Ukuran Ulos -->
           <div>
-            <label class="block text-gray-700 mb-1">Ukuran Ulos:</label>
+            <label class="block text-gray-700 mb-1">Ukuran Ulos</label>
             <div class="flex items-center gap-2">
               <input v-model="selectedBarang.ukuran_ulos" type="text"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -542,7 +532,7 @@
 
           <!-- Ukuran Mandar -->
           <div>
-            <label class="block text-gray-700 mb-1">Ukuran Mandar:</label>
+            <label class="block text-gray-700 mb-1">Ukuran Mandar</label>
             <div class="flex items-center gap-2">
               <input v-model="selectedBarang.ukuran_mandar" type="text"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -1032,6 +1022,12 @@ async function getListBarangPreOrder() {
 const searchFilterData = computed(() => {
   const sorted = [...listBarang.value].sort((a, b) => {
     return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  sorted.sort((a, b) => {
+    if (a.barangentry_jumlah_barang === 0 && b.barangentry_jumlah_barang > 0) return 1;
+    if (a.barangentry_jumlah_barang > 0 && b.barangentry_jumlah_barang === 0) return -1;
+    return 0;
   });
 
   if (!searchQuery.value) return sorted;

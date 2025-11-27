@@ -3,7 +3,6 @@
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto">
       <h2 class="text-xl font-bold mb-4">{{ modalTitle }}</h2>
 
-      <!-- Modal DESC -->
       <template v-if="type === 'desc'">
         <div class="mb-4">
           <label>Scan / Input Kode Barang:</label>
@@ -12,7 +11,6 @@
         </div>
       </template>
 
-      <!-- Modal SIZE -->
       <template v-if="type === 'size'">
         <div class="mb-4">
           <label for="">Scan / Input Kode Barang:</label>
@@ -21,7 +19,6 @@
         </div>
       </template>
 
-      <!-- Modal PRICE TAG -->
       <template v-else-if="type === 'priceTag'">
         <div class="mb-4">
           <textarea v-model="barcodeInput" @input="handleInputPriceTag" class="w-full border rounded px-3 py-2"
@@ -46,9 +43,7 @@
               {{ item.data.barangentry_nama }}
             </h1>
 
-            <!-- BODY -->
             <div style="display: flex; gap: 60px;">
-              <!-- LEFT COLUMN -->
               <div style="flex: 1.2;">
                 <p style="margin: 0; font-weight: 700;">Horas!</p>
                 <p style="margin: 4px 0; text-align: justify;">
@@ -78,7 +73,7 @@
                       <td>
                         :
                         {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                        {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
+                        {{ item.data.barangentry_ukuran_mandar ?? "-" }}
                       </td>
                     </tr>
                     <tr>
@@ -104,7 +99,12 @@
                   </tbody>
                 </table>
 
-                <p style="margin-top: 20px; font-size: 18px; font-weight: 700;">
+                <p style="
+                    margin-top: 20px;
+                    font-size: 26px;
+                    font-weight: 800;
+                    letter-spacing: 1px;
+                  ">
                   Rp {{ Number(item.data.barangentry_harga_net).toLocaleString("id-ID") }}
                 </p>
               </div>

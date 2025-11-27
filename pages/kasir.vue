@@ -63,15 +63,11 @@
             </template>
           </td>
           <td class="px-4 py-2">
-            <!-- v-if="item.quantity > 1" -->
-            <!-- <template> -->
-            <input type="text" :value="formatRupiahInput(item.barangentry_harga_net)"
-              @input="updateHargaNet($event, item)" class="w-28 border rounded px-2 py-1 text-right"
-              inputmode="numeric" />
-            <!-- </template> -->
-            <!-- <template v-else>
-              {{ formatRupiahInput(item.barangentry_harga_net) }}
-            </template> -->
+            <input type="text" v-model="item.barangentry_harga_net"
+              @input="item.barangentry_harga_net = $event.target.value.replace(/\D/g, '')"
+              class="w-28 border rounded px-2 py-1 text-right" />
+
+
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="hidden">{{ item.transaksi_id }}</td>
@@ -304,7 +300,7 @@ async function loadHoldTransaction(id) {
             barangentry_nama: entry?.barangentry_nama || detail?.barangentry_nama || "Tidak Diketahui",
             quantity: detail?.transaksidetail_jumlah_barang ?? 1,
             barangentry_jumlah_barang: entry?.barangentry_jumlah_barang ?? 1,
-            barangentry_harga_net: Math.floor(detail?.transaksidetail_harga_barang ?? entry?.barangentry_harga_net ?? 0),
+            barangentry_harga_net: 0,
             isEditing: false,
             code_nama: codeNama,
             transaksi_id: transaksi.transaksi_id || null,
@@ -315,7 +311,7 @@ async function loadHoldTransaction(id) {
             barangentry_nama: detail?.nama_barang || "Tidak Diketahui",
             quantity: detail?.transaksidetail_jumlah_barang ?? 1,
             barangentry_jumlah_barang: 1,
-            barangentry_harga_net: Math.floor(detail?.transaksidetail_harga_barang ?? 0),
+            barangentry_harga_net: 0,
             isEditing: false,
             code_nama: detail?.kode_barang || "",
             transaksi_id: transaksi.transaksi_id || null,
@@ -661,7 +657,7 @@ function removeItem(index) {
 }
 
 function formatRupiahInput(angka) {
-  if (!angka) return "";
+  if (angka === null || angka === undefined) return "";
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
@@ -999,6 +995,19 @@ function printToNewTab(data, items) {
 watch(searchHold, () => {
   currentPage.value = 1;
 });
+
+watch(
+  datatableItems,
+  (val) => {
+    val.forEach((item) => {
+      if (item.barangentry_harga_net === "" || item.barangentry_harga_net == null) {
+        item.barangentry_harga_net = 0;
+      }
+    });
+  },
+  { deep: true }
+);
+
 </script>
 
 <style scoped>
