@@ -737,14 +737,10 @@ function validateHargaNonZero() {
   const invalids = datatableItems.value
     .filter(i => {
       const v = i.barangentry_harga_net;
-
-      // Jika kosong, null, undefined → TOLAK
       if (v === "" || v === null || v === undefined) return true;
 
-      // Jika bukan angka (NaN) → TOLAK
       if (isNaN(Number(v))) return true;
 
-      // Harga 0 DIIZINKAN, jadi tidak dicek <= 0 lagi
       return false;
     })
     .map(i => `${i.code_nama || '-'} • ${i.barangentry_nama}`);
