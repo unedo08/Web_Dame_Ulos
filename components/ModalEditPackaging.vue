@@ -11,18 +11,20 @@
         <table class="w-full border border-gray-200 rounded-md mb-4 text-sm">
           <thead class="bg-gray-100">
             <tr>
-              <th>Pilih</th>
-              <th>Kode Barang</th>
-              <th>Nama Barang</th>
+              <th class="text-center">Pilih</th>
+              <th class="text-center">Kode Barang</th>
+              <th class="text-center">Nama Barang</th>
               <th class="text-center">Jumlah</th>
               <th class="text-right">Harga</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in barang" :key="index">
-              <td><input type="checkbox" v-model="item.is_check" class="h-4 w-4" /></td>
-              <td>{{ item.kode }}</td>
-              <td>{{ item.nama }}</td>
+              <td class="text-center">
+                <input type="checkbox" v-model="item.is_check" class="h-4 w-4" />
+              </td>
+              <td class="text-center">{{ item.kode }}</td>
+              <td class="text-center">{{ item.nama }}</td>
               <td class="text-center">{{ item.jumlah }}</td>
               <td class="text-right">{{ formatCurrency(item.harga) }}</td>
             </tr>

@@ -73,7 +73,7 @@
                       <td>
                         :
                         {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
-                        {{ item.data.barangentry_ukuran_mandar ?? "-" }}
+                        {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
                       </td>
                     </tr>
                     <tr>
@@ -327,7 +327,7 @@ async function printPriceTag() {
         const res = await axios.get(
           `${url.value}/api/entrybarang/getDataByCode/${code}`
         );
-        if (res.data) results.push(res.data);
+        if (res.data?.data) results.push({ data: res.data.data });
       } catch (err) {
         console.error(`Gagal ambil data untuk ${code}`, err);
       }

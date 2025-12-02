@@ -234,8 +234,10 @@ function formatRupiahSubtotal(value) {
 }
 
 function parseRupiah(value) {
-  if (!value) return "";
-  return value.toString().replace(/\D/g, "");
+  if (value === null || value === undefined || value === "") return "0";
+
+  const cleaned = value.toString().replace(/\D/g, "");
+  return cleaned === "" ? "0" : cleaned;
 }
 
 const formatTanggalHold = (dateStr) => {
@@ -475,14 +477,12 @@ async function checkoutProcess() {
       title: "Gagal",
       text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
       icon: "error",
-      timer: 3000,
-      timerProgressBar: true,
     });
     return;
   }
 
   if (!processForm.value.paymentMethod) {
-    alert("Pilih metode pembayaran");
+    Swal.fire("Pilih metode pembayaran terlebih dahulu");
     return;
   }
 
@@ -495,86 +495,81 @@ async function checkoutProcess() {
     0
   );
 
+  const payload = {
+    transaksi_nama_customer: searchQueryCustomer.value,
+    transaksi_nomor_telepon: searchQueryPhone.value,
+    transaksi_jumlah_barang: jumlahBarang,
+    transaksi_total_harga: parseRupiah(subtotal.value),
+    transaksi_cara_bayar: processForm.value.paymentMethod,
+    transaksi_tipe: "offline",
+    transaksi_status: "pending",
+    transaksi_catatan: processForm.value.notes,
+  };
+
+  let transaksi_id = null;
+
   try {
     if (currentTransaksiId.value) {
-      try {
-        await axios.put(`${url.value}/api/transaksi/${currentTransaksiId.value}`, {
-          transaksi_status: "pending",
-        });
-      } catch (err) {
-        console.warn("Gagal update transaksi hold:", err);
-      }
+      transaksi_id = currentTransaksiId.value;
+      const payload_hold = {
+        transaksi_id: String(transaksi_id),
+        transaksi_nama_customer: searchQueryCustomer.value,
+        transaksi_nomor_telepon: searchQueryPhone.value,
+        transaksi_jumlah_barang: jumlahBarang,
+        transaksi_total_harga: parseRupiah(subtotal.value),
+        transaksi_cara_bayar: processForm.value.paymentMethod,
+        transaksi_tipe: "offline",
+        transaksi_status: "pending",
+        transaksi_catatan: processForm.value.notes,
+      };
+
+      await axios.post(`${url.value}/api/transaksi`, payload_hold);
+    } else {
+      const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+      transaksi_id = data.data.transaksi_id;
     }
-
-    const payload = {
-      transaksi_nama_customer: searchQueryCustomer.value,
-      transaksi_nomor_telepon: searchQueryPhone.value,
-      transaksi_jumlah_barang: jumlahBarang,
-      transaksi_total_harga: parseRupiah(subtotal.value),
-      transaksi_cara_bayar: processForm.value.paymentMethod,
-      transaksi_tipe: "offline",
-      transaksi_status: "pending",
-      transaksi_catatan: processForm.value.notes,
-    };
-
-    const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
-    const transaksi_id = data.data.transaksi_id;
-
     for (const item of datatableItems.value) {
-      try {
-        const { data: barangResponse } = await axios.get(
-          `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
-        );
+      const { data: barangResponse } = await axios.get(
+        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+      );
 
-        const barangData = barangResponse.data;
-        if (!barangData || !barangData.barangentry_id) {
-          console.warn(`Barang tidak ditemukan untuk kode: ${item.code_nama}`);
-          continue;
-        }
+      const barangData = barangResponse.data;
+      if (!barangData || !barangData.barangentry_id) continue;
 
-        const detailPayload = {
-          transaksidetail_transaksi_id: transaksi_id,
-          transaksidetail_barang_id: barangData.barangentry_id,
-          transaksidetail_jumlah_barang: item.quantity,
-          transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
-        };
+      const detailPayload = {
+        transaksidetail_transaksi_id: transaksi_id,
+        transaksidetail_barang_id: barangData.barangentry_id,
+        transaksidetail_jumlah_barang: item.quantity,
+        transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
+      };
 
-        await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
-      } catch (innerErr) {
-        console.error("Gagal melakukan transaksi", innerErr);
-      }
+      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
     }
-
-    const { data: responsePrint } = await axios.get(
-      `${url.value}/api/transaksi/${transaksi_id}`
-    );
+    const { data: responsePrint } = await axios.get(`${url.value}/api/transaksi/${transaksi_id}`);
 
     const transaksi = responsePrint.data;
+
     const detailWithNames = await Promise.all(
       transaksi.details.map(async (detail) => {
         const barangRes = await axios.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
         );
+
         const kodeBarang = await axios.get(
           `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id
         );
 
         return {
           ...detail,
-          barangentry_nama: barangRes.data.data.barangentry_nama || "Tidak Diketahui",
+          barangentry_nama: barangRes.data.data.barangentry_nama || "-",
           barangentry_code: kodeBarang.data.code_nama,
         };
       })
     );
 
-    Swal.fire({
-      title: "Sukses!",
-      text: "Berhasil Melakukan Pembelian",
-      icon: "success",
-      confirmButtonText: "OK",
-      timer: 3000,
-      timerProgressBar: true,
-    });
+    openModalProcess.value = false;
+    await nextTick();
+    Swal.fire("Sukses!", "Checkout berhasil", "success");
     printToNewTab(transaksi, detailWithNames);
 
     await fetchHoldTransactions();
@@ -584,10 +579,10 @@ async function checkoutProcess() {
     searchQueryCustomer.value = "";
     searchQueryPhone.value = "";
     datatableItems.value = [];
-    openModalProcess.value = false;
 
   } catch (err) {
     console.error("Gagal menyimpan transaksi:", err);
+    openModalProcess.value = false;
     Swal.fire("Gagal", "Terjadi kesalahan saat Checkout", "error");
   } finally {
     isLoading.value = false;
