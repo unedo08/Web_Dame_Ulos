@@ -8,6 +8,7 @@ use App\Models\PengirimanBarangT;
 use App\Models\CustomerM;
 use App\Models\TransaksiDetailT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class PengirimanBarangTController extends Controller
 {
@@ -228,4 +229,47 @@ class PengirimanBarangTController extends Controller
         ], 200);
 
     }
+
+    public function getPengiriman()
+    {
+        $data = DB::table('pengirimanBarang_t')
+            ->leftJoin('transaksi_t', 'transaksi_t.transaksi_id', '=', 'pengirimanBarang_t.pengirimanBarang_transaksi_id')
+            ->leftJoin('transaksidetail_t', 'transaksidetail_t.transaksidetail_transaksi_id', '=', 'transaksi_t.transaksi_id')
+            ->leftJoin('packaging_m', 'packaging_m.packaging_transactiondetail_id', '=', 'transaksidetail_t.transaksidetail_id')
+            ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
+            ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
+            ->select(
+                'pengirimanBarang_t.*',
+                'transaksidetail_t.transaksidetail_id',
+                'transaksidetail_t.transaksidetail_transaksi_id',
+                'packaging_m.packaging_id',
+                'packaging_m.packaging_status',
+                'barangentry_m.barangentry_id',
+                'code_m.code_nama',
+                DB::raw("
+                    CASE
+                        WHEN packaging_m.packaging_id IS NOT NULL THEN 'PACKAGING'
+                        ELSE 'NOT PACKAGING'
+                    END AS status_pengiriman
+                ")
+            )
+            ->orderBy('pengirimanBarang_t.updated_at', 'DESC')
+            ->get();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Pengiriman Barang not found',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Pengiriman Barang found',
+            'count' => $data->count(),
+            'data' => $data
+        ], 200);
+    }
+
 }
