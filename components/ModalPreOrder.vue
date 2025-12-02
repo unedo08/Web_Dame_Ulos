@@ -71,6 +71,7 @@
               <div v-if="uploadProgress > 0" class="w-full bg-gray-200 h-2 rounded-full mt-3">
                 <div class="bg-green-600 h-2 rounded-full" :style="{ width: uploadProgress + '%' }"></div>
               </div>
+              <p v-if="errors.compressImage" class="text-red-500 text-sm mt-1">{{ errors.compressImage }}</p>
             </div>
           </div>
 
@@ -306,6 +307,7 @@ function validate() {
   errors.totalPembayaran = !form.totalPembayaran ? "Total wajib diisi" : "";
   errors.metodePembayaran = !form.metodePembayaran ? "Pilih metode pembayaran" : "";
   errors.catatan = !form.catatan ? "Catatan wajib diisi" : "";
+  errors.compressImage = !form.gambarCompressed? "Please Input Image": "";
 
   return Object.values(errors).every((e) => !e);
 }
