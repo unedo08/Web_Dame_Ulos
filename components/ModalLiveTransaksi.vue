@@ -1,7 +1,6 @@
 <template>
   <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] w-[800px] max-h-[90vh] overflow-y-auto">
-      <!-- Header -->
       <div class="flex justify-between items-center px-6 py-4">
         <h2 class="text-lg font-bold">Form Marketing</h2>
         <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
@@ -9,7 +8,6 @@
         </button>
       </div>
 
-      <!-- Table Barang -->
       <div class="p-6">
         <table class="w-full border border-gray-200 rounded-md mb-4 text-sm">
           <thead class="bg-gray-100">
@@ -19,7 +17,6 @@
               <th class="px-3 py-2 text-left">Nama Barang</th>
               <th class="px-3 py-2 text-center">Jumlah</th>
               <th class="px-3 py-2 text-right">Harga</th>
-              <!-- <th class="px-3 py-2 text-center">Action</th> -->
             </tr>
           </thead>
           <tbody>
@@ -35,22 +32,11 @@
               <td class="px-3 py-2 text-right">
                 {{ formatCurrency(item.harga) }}
               </td>
-              <!-- <td class="px-3 py-2 text-center">
-                <button
-                  @click="$emit('removeItem', index)"
-                  class="text-red-500 hover:text-red-700"
-                >
-                  🗑
-                </button>
-              </td> -->
             </tr>
           </tbody>
         </table>
 
-        <!-- Nama Akun -->
         <div class="font-semibold mb-4">Nama Akun: {{ namaAkun }}</div>
-
-        <!-- Form Input -->
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1">Nama Penerima <span style="color:red">*</span></label>
@@ -115,7 +101,6 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="flex justify-end gap-2 px-6 py-4">
         <button @click="closeModal" class="px-4 py-2 rounded-md border border-gray-300 text-gray-800">
           Batal
@@ -198,9 +183,6 @@ function validate() {
   errors.biaya_pengiriman = !form.value.biaya_pengiriman
     ? "Biaya Pengiriman wajib diisi"
     : "";
-  // errors.metodePembayaran = !form.value.metodePembayaran
-  //   ? "Metode Pembayaran wajib diisi"
-  //   : "";
   errors.alamat = !form.value.alamat ? "Alamat wajib diisi" : "";
   errors.pengiriman = !form.value.pengiriman ? "Pengiriman wajib diisi" : "";
 
@@ -265,8 +247,6 @@ const submitForm = async () => {
       };
       await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
       const test = await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
-      console.log('zxcccc', test);
-
     }
 
     const pengirimanPayload = {

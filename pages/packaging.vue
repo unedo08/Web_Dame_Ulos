@@ -236,7 +236,7 @@ const openModalEditPackaging = async (pengiriman) => {
         nama: item.barangentry_nama,
         jumlah: item.transaksidetail_jumlah_barang,
         harga: parseFloat(item.transaksidetail_harga_barang),
-        trx_detail_id: item.transaksidetail_transaksi_id,
+        trx_detail_id: item.transaksidetail_id,
         is_check: true
       }))
     };
