@@ -38,10 +38,18 @@ class CodeMController extends Controller
 
         $createdCodes = [];
 
-        for ($i = 0; $i < $jumlahBarang; $i++) {
-            $newKode = $this->generateKode($item->jenisbarang_kode, $item->jenisbarang_id);
+        if (substr($item->jenisbarang_kode, 0, 2) !== 'PO') {
+            for ($i = 0; $i < $jumlahBarang; $i++) {
+                $newKode = $this->generateKode($item->jenisbarang_kode, $item->jenisbarang_id);
+                $codeM = CodeM::create([
+                    'code_nama' => $newKode,
+                    'code_jenisbarang_id' => $item->jenisbarang_id,
+                ]);
+                $createdCodes[] = $codeM;
+            }
+        }else{
             $codeM = CodeM::create([
-                'code_nama' => $newKode,
+                'code_nama' => $item->jenisbarang_kode,
                 'code_jenisbarang_id' => $item->jenisbarang_id,
             ]);
             $createdCodes[] = $codeM;

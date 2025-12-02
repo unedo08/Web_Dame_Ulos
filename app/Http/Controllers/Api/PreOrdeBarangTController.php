@@ -159,24 +159,24 @@ class PreOrdeBarangTController extends Controller
     public function kodePO()
     {
         try {
-             $prefix = 'PO';        // Prefix tetap PO
-            $maxRetries = 10000;   // Batas pencarian kode
+            $prefix = 'PO';
+            $length = 6; // jumlah digit angka
 
-            for ($i = 1; $i <= $maxRetries; $i++) {
-                // Format angka jadi 5 digit (contoh: PO00001, PO00002, ...)
-                $nextCode = str_pad($i, 5, '0', STR_PAD_LEFT);
-                $newKode = $prefix . $nextCode;
-
-                // Cek apakah kode sudah ada di database
-                $exists =  CodeM::where('code_nama', 'like', 'PO%')
+            // Ambil kode terakhir yang dimulai dengan PO
+            $lastCode = CodeM::where('code_nama', 'like', $prefix . '%')
                 ->orderBy('code_nama', 'desc')
                 ->first();
 
-                if (!$exists) {
-                    break;
-                }
+            if ($lastCode) {
+                // ambil angka terakhir sebagai int
+                $lastNumber = (int) substr($lastCode->code_nama, strlen($prefix));
+                $nextNumber = $lastNumber + 1;
+            } else {
+                $nextNumber = 1;
             }
 
+            // Format angka jadi 6 digit, misal PO000001
+            $newKode = $prefix . str_pad($nextNumber, $length, '0', STR_PAD_LEFT);
             return response()->json([
                 'sukses' => true,
                 'message' => 'Kode Barang untuk barang Pre-Order',
@@ -184,6 +184,7 @@ class PreOrdeBarangTController extends Controller
                     'code_nama' => $newKode
                 ]
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'sukses' => false,
@@ -192,4 +193,5 @@ class PreOrdeBarangTController extends Controller
             ], 500);
         }
     }
+
 }

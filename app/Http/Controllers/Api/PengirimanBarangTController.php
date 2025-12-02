@@ -239,22 +239,59 @@ class PengirimanBarangTController extends Controller
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->select(
-                'pengirimanBarang_t.*',
-                'transaksidetail_t.transaksidetail_id',
-                'transaksidetail_t.transaksidetail_transaksi_id',
-                'packaging_m.packaging_id',
-                'packaging_m.packaging_status',
-                'barangentry_m.barangentry_id',
-                'code_m.code_nama',
+                // pengirimanBarang_t fields
+                'pengirimanBarang_t.pengirimanBarang_id',
+                'pengirimanBarang_t.pengirimanBarang_transaksi_id',
+                'pengirimanBarang_t.pengirimanBarang_nama_penerima',
+                'pengirimanBarang_t.pengirimanBarang_akun_penerima',
+                'pengirimanBarang_t.pengirimanBarang_no_telepon',
+                'pengirimanBarang_t.pengirimanBarang_harga_kirim_barang',
+                'pengirimanBarang_t.pengirimanBarang_jenis_pengiriman_barang',
+                'pengirimanBarang_t.pengirimanBarang_alamat_pengiriman_barang',
+                'pengirimanBarang_t.pengirimanBarang_catatan',
+                'pengirimanBarang_t.pengirimanBarang_status',
+                'pengirimanBarang_t.pengirimanBarang_customer_id',
+
+                // packaging_m fields (ambil 1 value per pengiriman)
+                DB::raw("MAX(packaging_m.packaging_transactiondetail_id) as packaging_transactiondetail_id"),
+                DB::raw("MAX(packaging_m.packaging_nama_akun) as packaging_nama_akun"),
+                DB::raw("MAX(packaging_m.packaging_alamat) as packaging_alamat"),
+                DB::raw("MAX(packaging_m.packaging_status) as packaging_status"),
+
+                // status pengiriman
                 DB::raw("
                     CASE
-                        WHEN packaging_m.packaging_id IS NOT NULL THEN 'PACKAGING'
+                        WHEN MAX(packaging_m.packaging_id) IS NOT NULL THEN 'PACKAGING'
                         ELSE 'NOT PACKAGING'
                     END AS status_pengiriman
-                ")
+                "),
+
+                // list barang & code
+                DB::raw("GROUP_CONCAT(DISTINCT barangentry_m.barangentry_id) as list_barang_id"),
+                DB::raw("GROUP_CONCAT(DISTINCT code_m.code_nama) as list_code_nama")
+            )
+            ->groupBy(
+                'pengirimanBarang_t.pengirimanBarang_id',
+                'pengirimanBarang_t.pengirimanBarang_transaksi_id',
+                'pengirimanBarang_t.pengirimanBarang_nama_penerima',
+                'pengirimanBarang_t.pengirimanBarang_akun_penerima',
+                'pengirimanBarang_t.pengirimanBarang_no_telepon',
+                'pengirimanBarang_t.pengirimanBarang_harga_kirim_barang',
+                'pengirimanBarang_t.pengirimanBarang_jenis_pengiriman_barang',
+                'pengirimanBarang_t.pengirimanBarang_alamat_pengiriman_barang',
+                'pengirimanBarang_t.pengirimanBarang_catatan',
+                'pengirimanBarang_t.pengirimanBarang_status',
+                'pengirimanBarang_t.pengirimanBarang_customer_id'
             )
             ->orderBy('pengirimanBarang_t.updated_at', 'DESC')
             ->get();
+
+        // convert string list jadi array
+        $data = $data->map(function ($item) {
+            $item->list_barang_id = $item->list_barang_id ? explode(',', $item->list_barang_id) : [];
+            $item->list_code_nama = $item->list_code_nama ? explode(',', $item->list_code_nama) : [];
+            return $item;
+        });
 
         if ($data->isEmpty()) {
             return response()->json([
