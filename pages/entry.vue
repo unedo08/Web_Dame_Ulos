@@ -341,8 +341,8 @@
                   </button>
                   <button v-if="barang.barangfilled"
                     class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[30px] w-[90px]"
-                    @click="openSendModal(barang.barangentry_id)">
-                    Send
+                    @click="handleSendClick(barang)">
+                    {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
                   </button>
                   <template v-else>
                     <button
@@ -734,7 +734,9 @@ import SendOrderModal from "../components/ModalSendOrder.vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const modalOpen = ref(false);
 const modalType = ref("desc");
 const showModalAdd = ref(false);
@@ -1006,6 +1008,14 @@ async function handleBarcodeSize() {
       });
     }
   }, 600);
+}
+
+function handleSendClick(barang) {
+  if (barang.status_barang === "PACKAGING") {
+    router.push(`/packaging-page`);
+  } else {
+    openSendModal(barang.barangentry_id);
+  }
 }
 
 async function getListBarangPreOrder() {
