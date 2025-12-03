@@ -32,7 +32,7 @@ class TransaksiTController extends Controller
         $validated = $request->validate([
             'transaksi_id'             => 'nullable|string',
             'transaksi_nama_customer'  => 'required|string|max:255',
-            'transaksi_nomor_telepon'  => 'required|string|max:20',
+            'transaksi_nomor_telepon'  => 'nullable|string|max:20',
             'transaksi_jumlah_barang'  => 'required|integer|min:1',
             'transaksi_total_harga'    => 'required|numeric|min:0',
             'transaksi_cara_bayar'     => 'nullable|string',
