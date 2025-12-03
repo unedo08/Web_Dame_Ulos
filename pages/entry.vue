@@ -1081,7 +1081,7 @@ async function sendOrder(barangentry_id, formData) {
     const dataPreOrder = res.data.data;
     const payloadTransaksi = {
       transaksi_nama_customer: formData.nama_akun,
-      transaksi_nomor_telepon: formData.no_telepon,
+      transaksi_nomor_telepon: "",
       transaksi_jumlah_barang: 1,
       transaksi_total_harga: parseInt(formData.total_pembayaran),
       transaksi_cara_bayar: formData.cara_bayar,

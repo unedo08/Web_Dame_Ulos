@@ -100,7 +100,7 @@
 
           <div>
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
-              Total Pembayaran <span class="required">*</span>
+              Harga Net <span class="required">*</span>
             </label>
             <div class="flex">
               <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
@@ -110,7 +110,7 @@
                 class="w-full border-t border-b border-r border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Total Pembayaran" />
             </div>
-            <p v-if="errors.totalPembayaran" class="text-red-500 text-sm mt-1">{{ errors.totalPembayaran }}</p>
+            <p v-if="errors.hargaNet" class="text-red-500 text-sm mt-1">{{ errors.hargaNet }}</p>
           </div>
 
           <div>
@@ -196,6 +196,7 @@ const form = reactive({
   namaUlos: "",
   nomor_telepon: "",
   totalPembayaran: "",
+  hargaNet: "",
   metodePembayaran: "",
   catatan: "",
   gambar: null,
@@ -231,13 +232,13 @@ function onInputUangMuka(e) {
   form.dp = parseRupiah(e.target.value);
 }
 
-const formattedTotalPembayaran = computed(() => formatRupiah(form.totalPembayaran));
+const formattedTotalPembayaran = computed(() => formatRupiah(form.hargaNet));
 function onInputTotalPembayaran(e) {
-  form.totalPembayaran = parseRupiah(e.target.value);
+  form.hargaNet = parseRupiah(e.target.value);
 }
 
 const sisaPembayaran = computed(() => {
-  return (parseInt(form.totalPembayaran) || 0) - (parseInt(form.dp) || 0);
+  return (parseInt(form.hargaNet) || 0) - (parseInt(form.dp) || 0);
 });
 
 const formattedSisaPembayaran = computed(() => formatRupiah(sisaPembayaran.value));
@@ -305,9 +306,10 @@ function validate() {
   errors.namaUlos = !form.namaUlos ? "Nama ulos wajib diisi" : "";
   errors.nomor_telepon = !form.nomor_telepon ? "Telepon wajib diisi" : "";
   errors.totalPembayaran = !form.totalPembayaran ? "Total wajib diisi" : "";
+  errors.hargaNet = !form.hargaNet ? "Total wajib diisi" : "";
   errors.metodePembayaran = !form.metodePembayaran ? "Pilih metode pembayaran" : "";
   errors.catatan = !form.catatan ? "Catatan wajib diisi" : "";
-  errors.compressImage = !form.gambarCompressed? "Please Input Image": "";
+  errors.compressImage = !form.gambarCompressed ? "Please Input Image" : "";
 
   return Object.values(errors).every((e) => !e);
 }
@@ -346,7 +348,7 @@ async function submitForm() {
       barangentry_nama_panirat: "PO",
       barangentry_dryer: "PO",
       barangentry_modal: 0,
-      barangentry_price_tag: Number(form.totalPembayaran),
+      barangentry_price_tag: Number(form.hargaNet),
       barangentry_harga_net: 0,
       barangentry_jumlah_barang: 1,
       barangentry_status: "PREORDER",
@@ -365,7 +367,7 @@ async function submitForm() {
       toDatetimeString(form.targetSelesai)
     );
 
-    formData.append("preOrderBarang_total_pembayaran", form.totalPembayaran);
+    formData.append("preOrderBarang_total_pembayaran", form.hargaNet);
     formData.append("preOrderBarang_uang_muka", form.dp);
     formData.append("preOrderBarang_sisa_pembayaran", sisaPembayaran.value);
     formData.append("preOrderBarang_deskripsi_barang", form.deskripsiUlos);
@@ -394,7 +396,7 @@ async function submitForm() {
       created_at: new Date().toISOString(),
       target_selesai: form.targetSelesai,
       author: "Tari",
-      total: form.totalPembayaran,
+      total: form.hargaNet,
       dp: form.dp,
       sisa: sisaPembayaran.value
     });
@@ -521,6 +523,7 @@ function batalPreOrder() {
     namaUlos: "",
     nomor_telepon: "",
     totalPembayaran: "",
+    hargaNet: "",
     metodePembayaran: "",
     catatan: "",
     gambar: null,
