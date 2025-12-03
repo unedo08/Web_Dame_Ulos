@@ -27,4 +27,10 @@ class BarangEntryM extends Model
         'barangentry_status'
     ];
 
+    public function transaksiDetail()
+    {
+        return $this->hasOne(TransaksiDetailT::class, 'transaksidetail_barang_id', 'barangentry_id');
+    }
+
+
 }

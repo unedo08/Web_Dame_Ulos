@@ -21,4 +21,10 @@ class TransaksiDetailT extends Model
     {
         return $this->belongsTo(TransaksiT::class, 'transaksidetail_transaksi_id', 'transaksi_id');
     }
+
+    public function pengirimanBarang()
+    {
+        return $this->hasOne(PengirimanBarangT::class, 'pengirimanBarang_transaksi_id', 'transaksidetail_transaksi_id');
+    }
+
 }

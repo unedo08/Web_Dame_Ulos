@@ -344,10 +344,13 @@ class BarangEntryMController extends Controller
 
     public function getAllDataBarangPO()
     {
-        $data = BarangEntryM::where('barangentry_status', 'PREORDER')->get();
-
+        // Ambil barang PREORDER sekaligus join ke transaksi & pengiriman
+        $data = BarangEntryM::where('barangentry_status', 'PREORDER')
+            ->with(['transaksiDetail.pengirimanBarang'])
+            ->get();
 
         $data = $data->map(function ($item) {
+            // ----------- CEK FIELD LENGKAP ----------- //
             $fieldsToCheck = [
                 'barangentry_nama',
                 'barangentry_ukuran_mandar',
@@ -358,8 +361,14 @@ class BarangEntryMController extends Controller
                 return !is_null($item->$field) && $item->$field !== '';
             });
 
-            // Add the new attribute
             $item->barangfilled = $allFilled;
+
+
+            // ----------- CEK STATUS PACKAGING ----------- //
+            $hasPackaging = optional($item->transaksiDetail)->pengirimanBarang !== null;
+
+            $item->status_barang = $hasPackaging ? 'PACKAGING' : 'PREORDER';
+
 
             return $item;
         });
@@ -371,6 +380,7 @@ class BarangEntryMController extends Controller
             'data' => $data
         ]);
     }
+
 
     public function updateStok(Request $request, $id)
     {
