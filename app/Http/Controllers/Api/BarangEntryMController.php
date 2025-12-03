@@ -20,9 +20,10 @@ class BarangEntryMController extends Controller
             'data' => $data
         ], 200);
     }
-    
-    public function storeDescription(Request $request){
-         $data = $request->validate([
+
+    public function storeDescription(Request $request)
+    {
+        $data = $request->validate([
             'barangentry_nama' => 'required|string',
             'barangentry_code_id'  => 'required|string',
             'barangentry_warna'  => 'required|string',
@@ -33,36 +34,39 @@ class BarangEntryMController extends Controller
             'barangentry_price_tag' => 'required|numeric',
             'barangentry_harga_net' => 'required|numeric',
             'barangentry_jumlah_barang' => 'required|numeric',
+            'barangentry_status' => 'string',
         ]);
 
-        // Update if code_id exists, otherwise create new
         $record = BarangEntryM::updateOrCreate(
-            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            ['barangentry_code_id' => $data['barangentry_code_id']],
             $data
         );
-        // $record = BarangEntryM::create($data);
 
-        // Check for null ukuran
-        $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
-
-        if(!$hasNullUkuran){
-            $record = BarangEntryM::updateOrCreate(
-                ['barangentry_code_id' => $data['barangentry_code_id']],
-                ['barangentry_status' => 'READY']
-            );
+        if ($record->barangentry_status == "PREORDER") {
+            $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
+        } else {
+            $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
+            if (!$hasNullUkuran) {
+                $record = BarangEntryM::updateOrCreate(
+                    ['barangentry_code_id' => $data['barangentry_code_id']],
+                    ['barangentry_status' => 'READY']
+                );
+            }
         }
+
 
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
-            'message' => $hasNullUkuran 
-                ? 'Created, but ukuran fields are missing' 
+            'message' => $hasNullUkuran
+                ? 'Created, but ukuran fields are missing'
                 : 'Created successfully',
             'data' => $record,
         ], $record->wasRecentlyCreated ? 201 : 200);
     }
 
-    public function storeSize(Request $request){
+    public function storeSize(Request $request)
+    {
         $data = $request->validate([
             'barangentry_code_id'  => 'required|string',
             'barangentry_ukuran_mandar' => 'nullable|string',
@@ -71,27 +75,28 @@ class BarangEntryMController extends Controller
 
         // Update if code_id exists, otherwise create new
         $record = BarangEntryM::updateOrCreate(
-            ['barangentry_code_id' => $data['barangentry_code_id']], 
+            ['barangentry_code_id' => $data['barangentry_code_id']],
             $data
         );
 
-        // $record = BarangEntryM::create($data);
-
-        // Check for null ukuran
-        $hasNullUkuran = is_null($record->barangentry_nama);
-
-        if(!$hasNullUkuran){
-            $record = BarangEntryM::updateOrCreate(
-                ['barangentry_code_id' => $data['barangentry_code_id']],
-                ['barangentry_status' => 'READY']
-            );
+        if ($record->barangentry_status == "PREORDER") {
+            $hasNullUkuran = is_null($record->barangentry_nama);
+        } else {
+            $hasNullUkuran = is_null($record->barangentry_nama);
+            if (!$hasNullUkuran) {
+                $record = BarangEntryM::updateOrCreate(
+                    ['barangentry_code_id' => $data['barangentry_code_id']],
+                    ['barangentry_status' => 'READY']
+                );
+            }
         }
+
 
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
-            'message' => $hasNullUkuran 
-                ? 'Created, but Nama is missing' 
+            'message' => $hasNullUkuran
+                ? 'Created, but Nama is missing'
                 : 'Created successfully',
             'data' => $record
         ], $record->wasRecentlyCreated ? 201 : 200);
@@ -132,16 +137,16 @@ class BarangEntryMController extends Controller
     {
         $code = CodeM::where('code_nama', $codeNama)->first();
         $entries = BarangEntryM::where('barangentry_code_id', $code->code_id)
-                       ->where('barangentry_status', 'READY')
-                       ->get();
-        
+            ->where('barangentry_status', 'READY')
+            ->get();
+
         if ($entries->isEmpty()) {
             return response()->json([
                 "code" => 404,
                 "message" => "No entries found for code_nama: {$codeNama}"
             ], 404);
         }
-        
+
         // Check for missing fields
         $incomplete = $entries->filter(function ($entry) {
             return is_null($entry->barangentry_nama) || is_null($entry->barangentry_ukuran_mandar);
@@ -290,7 +295,8 @@ class BarangEntryMController extends Controller
         ], 200);
     }
 
-    public function getAllBarangEntryAmount(){
+    public function getAllBarangEntryAmount()
+    {
         $jumlah = BarangEntryM::count();
 
         return response()->json([
@@ -340,7 +346,7 @@ class BarangEntryMController extends Controller
     {
         $data = BarangEntryM::where('barangentry_status', 'PREORDER')->get();
 
-     
+
         $data = $data->map(function ($item) {
             $fieldsToCheck = [
                 'barangentry_nama',
@@ -389,7 +395,7 @@ class BarangEntryMController extends Controller
             'data' => $entry
         ], 200);
     }
-    
+
     public function deleteBarangEntry(Request $request, $id)
     {
         $request->validate([
@@ -497,42 +503,40 @@ class BarangEntryMController extends Controller
     }
 
     public function updateReadyStock(Request $request, $id)
-{
-    $request->validate([
-        'barangentry_nama' => 'sometimes|required|string',
-        'barangentry_code_id'  => 'sometimes|required|string',
-        'barangentry_warna'  => 'sometimes|required|string',
-        'barangentry_nama_penenun' => 'sometimes|required|string',
-        'barangentry_nama_panirat' => 'sometimes|required|string',
-        'barangentry_dryer' => 'sometimes|required|string',
-        'barangentry_modal' => 'sometimes|required|numeric',
-        'barangentry_price_tag' => 'sometimes|required|numeric',
-        'barangentry_harga_net' => 'sometimes|required|numeric',
-        'barangentry_jumlah_barang' => 'sometimes|required|numeric',
+    {
+        $request->validate([
+            'barangentry_nama' => 'sometimes|required|string',
+            'barangentry_code_id'  => 'sometimes|required|string',
+            'barangentry_warna'  => 'sometimes|required|string',
+            'barangentry_nama_penenun' => 'sometimes|required|string',
+            'barangentry_nama_panirat' => 'sometimes|required|string',
+            'barangentry_dryer' => 'sometimes|required|string',
+            'barangentry_modal' => 'sometimes|required|numeric',
+            'barangentry_price_tag' => 'sometimes|required|numeric',
+            'barangentry_harga_net' => 'sometimes|required|numeric',
+            'barangentry_jumlah_barang' => 'sometimes|required|numeric',
 
-        // Size fields (optional)
-        'barangentry_ukuran_mandar' => 'sometimes|nullable|string',
-        'barangentry_ukuran_ulos' => 'sometimes|nullable|string',
-    ]);
+            // Size fields (optional)
+            'barangentry_ukuran_mandar' => 'sometimes|nullable|string',
+            'barangentry_ukuran_ulos' => 'sometimes|nullable|string',
+        ]);
 
-    $updated = BarangEntryM::find($id);
+        $updated = BarangEntryM::find($id);
 
-    if (!$updated) {
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Data Barang Ready Stock not found',
+                'code' => 404
+            ], 404);
+        }
+
+        // Only update fields that exist in the payload
+        $updated->update($request->only(array_keys($request->all())));
+
         return response()->json([
-            'message' => 'Data Barang Ready Stock not found',
-            'code' => 404
-        ], 404);
+            'message' => 'Barang Ready Stock updated successfully',
+            'code' => 200,
+            'data' => $updated
+        ], 200);
     }
-
-    // Only update fields that exist in the payload
-    $updated->update($request->only(array_keys($request->all())));
-
-    return response()->json([
-        'message' => 'Barang Ready Stock updated successfully',
-        'code' => 200,
-        'data' => $updated
-    ], 200);
-}
-
-
 }
