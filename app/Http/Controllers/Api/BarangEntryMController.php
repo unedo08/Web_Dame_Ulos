@@ -344,12 +344,13 @@ class BarangEntryMController extends Controller
 
     public function getAllDataBarangPO()
     {
-        // Ambil barang PREORDER sekaligus join ke transaksi & pengiriman
         $data = BarangEntryM::where('barangentry_status', 'PREORDER')
+            ->whereDoesntHave('transaksiDetail.pengirimanBarang')
             ->with(['transaksiDetail.pengirimanBarang'])
             ->get();
 
         $data = $data->map(function ($item) {
+
             // ----------- CEK FIELD LENGKAP ----------- //
             $fieldsToCheck = [
                 'barangentry_nama',
@@ -363,23 +364,20 @@ class BarangEntryMController extends Controller
 
             $item->barangfilled = $allFilled;
 
-
-            // ----------- CEK STATUS PACKAGING ----------- //
-            $hasPackaging = optional($item->transaksiDetail)->pengirimanBarang !== null;
-
-            $item->status_barang = $hasPackaging ? 'PACKAGING' : 'PREORDER';
-
+            // ----------- STATUS BARANG (semua pasti PREORDER karena difilter) ----------- //
+            $item->status_barang = 'PREORDER';
 
             return $item;
         });
 
         return response()->json([
             'code' => 200,
-            'message' => 'Success get data with status "PREORDER"',
+            'message' => 'Success get data PREORDER that are NOT in pengiriman',
             'total_data' => $data->count(),
             'data' => $data
         ]);
     }
+
 
 
     public function updateStok(Request $request, $id)
