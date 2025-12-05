@@ -21,14 +21,22 @@ Route::middleware('jwt')->group(function () {
     Route::put('/user', [AuthController::class, 'updateUser']);
 });
 
+// Route::middleware(['jwt', 'role:Super Admin'])->group(function () {
+//     Route::prefix('jenisbarang')->group(function () {
+//         require __DIR__.'/api/jenisBarangM.php';  // Relative path
+//     });
+// });
+
+Route::prefix('jenisbarang')->group(function () {
+        require __DIR__.'/api/jenisBarangM.php';  // Relative path
+    });
+
 // // jenis barang
 // Route::get('/getDataTable', [BarangEntryTempController::class, 'showDataTable']);
 // Route::post('/jenisbarang', [JenisBarangMController::class, 'store']);
 // Route::delete('/jenisbarang/{id}', [JenisBarangMController::class, 'destroy']);
 
-Route::prefix('jenisbarang')->group(function () {
-    require __DIR__.'/api/jenisBarangM.php';  // Relative path
-});
+
 
 Route::prefix('codebarang')->group(function () {
     require __DIR__.'/api/codeBarangM.php';  // Relative path
@@ -76,4 +84,8 @@ Route::prefix('/packaging')->group(function () {
 
 Route::prefix('/customer')->group(function () {
     require __DIR__.'/api/customerM.php';  // Relative path
+});
+
+Route::prefix('/carabayar')->group(function () {
+    require __DIR__.'/api/carabayarM.php';  // Relative path
 });
