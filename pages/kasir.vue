@@ -151,11 +151,13 @@
     <label>Metode Pembayaran:</label>
     <select v-model="processForm.paymentMethod" class="input-field mb-2">
       <option disabled value="">Pilih metode pembayaran</option>
-      <option>Cash</option>
-      <option>Credit Card</option>
-      <option>Transfer Bank</option>
-      <option>OVO</option>
-      <option>Gopay</option>
+      <option
+        v-for="cb in caraBayarList"
+        :key="cb.id"
+        :value="cb.carabayar_kode"
+      >
+        {{ cb.carabayar_nama }}
+      </option>
     </select>
 
     <label>Catatan:</label>
@@ -200,6 +202,7 @@ const openModalPreOrder = ref(false);
 
 const barcodeInput = ref("");
 let barcodeTimeout = null;
+const caraBayarList = ref([]);
 
 const datatableItems = ref([]);
 const isLoading = ref(false);
@@ -210,6 +213,12 @@ onMounted(() => {
   url.value = config.public.apiBase;
   window.addEventListener("keydown", handleBarcodeInput);
 });
+
+onMounted(async () => {
+  const res = await axios.get(`${url.value}/api/carabayar`);
+  caraBayarList.value = res.data.data;
+});
+
 
 const subtotal = computed(() =>
   datatableItems.value.reduce((total, item) => {

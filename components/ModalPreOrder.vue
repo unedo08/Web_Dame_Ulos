@@ -59,7 +59,6 @@
 
           <div>
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Gambar</label>
-
             <div class="w-full border border-dashed border-gray-400 rounded-md p-4 flex flex-col items-start">
               <input type="file" accept="image/*" @change="handleFileUpload" />
               <p class="text-xs text-gray-500 mt-1">Ukuran Maksimal: 5MB</p>
@@ -74,12 +73,11 @@
               <p v-if="errors.compressImage" class="text-red-500 text-sm mt-1">{{ errors.compressImage }}</p>
             </div>
           </div>
-
         </div>
 
         <div class="space-y-4">
           <div>
-            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            <label class="judul-label block text-sm font-medium mb-1">
               Nama Ulos <span class="required">*</span>
             </label>
             <input v-model="form.namaUlos" type="text"
@@ -89,7 +87,7 @@
           </div>
 
           <div>
-            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            <label class="judul-label block text-sm font-medium mb-1">
               No Telepon <span class="required">*</span>
             </label>
             <input v-model="form.nomor_telepon" type="text"
@@ -99,7 +97,7 @@
           </div>
 
           <div>
-            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            <label class="judul-label block text-sm font-medium mb-1">
               Harga Net <span class="required">*</span>
             </label>
             <div class="flex">
@@ -114,7 +112,7 @@
           </div>
 
           <div>
-            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            <label class="judul-label block text-sm font-medium mb-1">
               Sisa Pembayaran <span class="required">*</span>
             </label>
             <div class="flex">
@@ -132,19 +130,22 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Metode Pembayaran <span class="required">*</span>
             </label>
+
             <select v-model="form.metodePembayaran"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+
               <option disabled value="">Pilih metode pembayaran</option>
-              <option>Transfer Bank</option>
-              <option>COD</option>
-              <option>QRIS</option>
-              <option>Virtual Account</option>
+
+              <option v-for="cb in caraBayarList" :key="cb.id" :value="cb.carabayar_kode">
+                {{ cb.carabayar_nama }}
+              </option>
             </select>
+
             <p v-if="errors.metodePembayaran" class="text-red-500 text-sm mt-1">{{ errors.metodePembayaran }}</p>
           </div>
 
           <div>
-            <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            <label class="judul-label block text-sm font-medium mb-1">
               Catatan <span class="required">*</span>
             </label>
             <textarea v-model="form.catatan" rows="3"
@@ -152,7 +153,6 @@
               placeholder="Masukkan Catatan"></textarea>
             <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">{{ errors.catatan }}</p>
           </div>
-
         </div>
 
         <div class="md:col-span-2 flex justify-end gap-4 mt-8">
@@ -166,6 +166,7 @@
             Tambah
           </button>
         </div>
+
       </form>
     </div>
   </div>
@@ -181,10 +182,14 @@ const props = defineProps({ visible: Boolean });
 const emit = defineEmits(["close"]);
 
 const url = ref("");
+const caraBayarList = ref([]);
 
-onMounted(() => {
+onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
+
+  const res = await axios.get(`${url.value}/api/carabayar`);
+  caraBayarList.value = res.data.data;
 });
 
 const form = reactive({
@@ -195,7 +200,6 @@ const form = reactive({
   deskripsiUlos: "",
   namaUlos: "",
   nomor_telepon: "",
-  totalPembayaran: "",
   hargaNet: "",
   metodePembayaran: "",
   catatan: "",
@@ -209,12 +213,8 @@ const imagePreview = ref(null);
 const uploadProgress = ref(0);
 
 async function kode_generator() {
-  try {
-    const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);
-    form.code_barang = kodePO.data.data.code_nama;
-  } catch (err) {
-    console.error("Kode PO Error", err);
-  }
+  const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`);
+  form.code_barang = kodePO.data.data.code_nama;
 }
 
 function parseRupiah(val) {
@@ -222,7 +222,6 @@ function parseRupiah(val) {
 }
 
 function formatRupiah(val) {
-  if (val === null || val === undefined) return "0";
   const n = parseInt(val.toString().replace(/\D/g, "")) || 0;
   return n.toLocaleString("id-ID");
 }
@@ -237,26 +236,12 @@ function onInputTotalPembayaran(e) {
   form.hargaNet = parseRupiah(e.target.value);
 }
 
-const sisaPembayaran = computed(() => {
-  return (parseInt(form.hargaNet) || 0) - (parseInt(form.dp) || 0);
-});
-
+const sisaPembayaran = computed(() => (parseInt(form.hargaNet) || 0) - (parseInt(form.dp) || 0));
 const formattedSisaPembayaran = computed(() => formatRupiah(sisaPembayaran.value));
 
 async function handleFileUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-
-  const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-  if (!allowedTypes.includes(file.type)) {
-    Swal.fire("Format Tidak Valid", "Gunakan JPG atau PNG", "error");
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    Swal.fire("File Terlalu Besar", "Maksimal 5MB", "error");
-    return;
-  }
 
   form.gambar = file;
   imagePreview.value = URL.createObjectURL(file);
@@ -305,7 +290,6 @@ function validate() {
   errors.deskripsiUlos = !form.deskripsiUlos ? "Deskripsi wajib diisi" : "";
   errors.namaUlos = !form.namaUlos ? "Nama ulos wajib diisi" : "";
   errors.nomor_telepon = !form.nomor_telepon ? "Telepon wajib diisi" : "";
-  errors.totalPembayaran = !form.totalPembayaran ? "Total wajib diisi" : "";
   errors.hargaNet = !form.hargaNet ? "Total wajib diisi" : "";
   errors.metodePembayaran = !form.metodePembayaran ? "Pilih metode pembayaran" : "";
   errors.catatan = !form.catatan ? "Catatan wajib diisi" : "";
@@ -317,7 +301,6 @@ function validate() {
 function toDatetimeString(dateStr) {
   const date = new Date(dateStr);
   const pad = (n) => (n < 10 ? "0" + n : n);
-
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} 00:00:00`;
 }
 
@@ -387,128 +370,12 @@ async function submitForm() {
     });
 
     Swal.fire("Berhasil!", "Pre-order berhasil ditambahkan", "success");
-
-    printPreOrder({
-      code: form.code_barang,
-      nama_ulos: form.namaUlos,
-      no_telp: form.nomor_telepon,
-      deskripsi: form.deskripsiUlos,
-      created_at: new Date().toISOString(),
-      target_selesai: form.targetSelesai,
-      author: "Tari",
-      total: form.hargaNet,
-      dp: form.dp,
-      sisa: sisaPembayaran.value
-    });
-
     batalPreOrder();
+
   } catch (err) {
     console.error(err);
     Swal.fire("Gagal", "Terjadi kesalahan server", "error");
   }
-}
-
-function printPreOrder(data) {
-  console.log('zxczxc', data);
-
-  const printWindow = window.open("", "_blank");
-  if (!printWindow) {
-    alert("Pop-up blocker menghalangi membuka tab baru.");
-    return;
-  }
-
-  const tanggalFormatted = (dateStr) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  const rupiah = (v) =>
-    new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(v);
-
-  const htmlContent = String.raw`
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Pre Order Invoice</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .logo { width: 100%; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 10px; border: 1px solid #ddd; }
-    .footer { margin-top: 40px; text-align: center; color: #555; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <img src="/image/DameUlosPO.png" class="logo" />
-    <h1>Pre Order</h1>
-  </div>
-
-  <div class="info">
-    <p>Kode PO : <b>${data.code}</b></p>
-    <p>Nama Ulos : <b>${data.nama_ulos}</b></p>
-    <p>No Telepon : <b>${data.no_telp}</b></p>
-    <p>Tanggal Dimulai : <b>-</b></p>
-    <p>Tanggal Selesai : <b>${data.target_selesai}</b></p>
-    <p>Author : <b>${data.author}</b></p>
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Total Pembayaran</th>
-        <th>Down Payment (DP)</th>
-        <th>Pelunasan</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Rp.${formatRupiah(data.total)}</td>
-        <td>Rp.${formatRupiah(data.dp)}</td>
-        <td>Rp.${formatRupiah(data.pelunasan)}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div style="display:flex; justify-content:space-between; margin-top:60px;">
-    <div style="border:1px solid #ccc; width:150px; height:150px; text-align:center; padding-top:60px;">
-      Tanda Masuk
-    </div>
-    <div style="border:1px solid #ccc; width:150px; height:150px; text-align:center; padding-top:60px;">
-      Tanda Pengambilan
-    </div>
-  </div>
-
-  <div class="footer">
-    <p>Transaksi ini diproses berdasarkan Purchase Order yang berlaku.</p>
-    <p>Terima kasih telah mempercayakan kebutuhan Anda kepada kami.</p>
-  </div>
-
-  <script>
-    window.onload = () => {
-      window.focus();
-      setTimeout(() => {
-        window.print();
-      }, 150);
-    };
-  <\/script>
-</body>
-</html>
-`;
-
-
-  printWindow.document.write(htmlContent);
-  printWindow.document.close();
 }
 
 function batalPreOrder() {
@@ -522,7 +389,6 @@ function batalPreOrder() {
     deskripsiUlos: "",
     namaUlos: "",
     nomor_telepon: "",
-    totalPembayaran: "",
     hargaNet: "",
     metodePembayaran: "",
     catatan: "",
