@@ -23,7 +23,7 @@ import {
 const items = ref([
   {
     title: "Akun Pembeli",
-    path: "#",
+    path: "/customer",
     icon: UserIcon,
   },
   {
