@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TransaksiT;
+use App\Models\BarangEntryM;
+use App\Models\PengirimanBarangT;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TransaksiDetailT extends Model
 {
+    use SoftDeletes;
     protected $table = 'transaksidetail_t';
     protected $primaryKey = 'transaksidetail_id';
     protected $fillable = [
@@ -14,7 +18,10 @@ class TransaksiDetailT extends Model
         'transaksidetail_barang_id',
         'transaksidetail_jumlah_barang',
         'transaksidetail_harga_barang',
-        'transaksidetail_status_penjualan'
+        'transaksidetail_status_penjualan',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 
     public function transaksi()
@@ -26,5 +33,17 @@ class TransaksiDetailT extends Model
     {
         return $this->hasOne(PengirimanBarangT::class, 'pengirimanBarang_transaksi_id', 'transaksidetail_transaksi_id');
     }
+
+    public function barang()
+    {
+        return $this->belongsTo(BarangEntryM::class, 'transaksidetail_barang_id', 'barangentry_id');
+    }
+
+    public function pengiriman()
+    {
+        return $this->hasOne(PengirimanBarangT::class, 'pengirimanBarang_transaksi_id', 'transaksidetail_transaksi_id');
+    }
+
+    
 
 }

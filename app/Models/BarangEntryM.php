@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangEntryM extends Model
 {
+    use SoftDeletes;
     use HasFactory;
     protected $table = 'barangentry_m';
     protected $primaryKey = 'barangentry_id';
@@ -24,12 +26,20 @@ class BarangEntryM extends Model
         'barangentry_ukuran_mandar',
         'barangentry_ukuran_ulos',
         'barangentry_jumlah_barang',
-        'barangentry_status'
+        'barangentry_status',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 
     public function transaksiDetail()
     {
         return $this->hasOne(TransaksiDetailT::class, 'transaksidetail_barang_id', 'barangentry_id');
+    }
+
+    public function code()
+    {
+        return $this->hasOne(CodeM::class, 'code_id', 'barangentry_code_id');
     }
 
 

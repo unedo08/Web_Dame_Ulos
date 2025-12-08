@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\TransaksiDetailT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiDetailTController extends Controller
 {
@@ -13,9 +14,7 @@ class TransaksiDetailTController extends Controller
         $details = TransaksiDetailT::with('transaksi')->get();
 
         if ($details->isEmpty()) {
-            return response()->json([
-                'message' => 'No transaction details found.'
-            ], 404);
+            return response()->json(['message' => 'No transaction details found.'], 404);
         }
 
         return response()->json([
@@ -24,10 +23,8 @@ class TransaksiDetailTController extends Controller
         ], 200);
     }
 
-
     public function store(Request $request)
     {
-        // Validate the request parameters
         $validatedData = $request->validate([
             'transaksidetail_id' => 'nullable|string',
             'transaksidetail_transaksi_id' => 'required|integer|exists:transaksi_t,transaksi_id',
@@ -36,9 +33,10 @@ class TransaksiDetailTController extends Controller
             'transaksidetail_harga_barang' => 'required|numeric|min:0',
         ]);
 
-        // Create the transaction detail using validated data
+        $validatedData['create_id'] = Auth::id(); // ⬅️ Save who created
+
         $detail = TransaksiDetailT::updateOrCreate(
-            ['transaksidetail_id' => $validatedData['transaksidetail_id'] ?? null], 
+            ['transaksidetail_id' => $validatedData['transaksidetail_id'] ?? null],
             $validatedData
         );
 
@@ -53,9 +51,7 @@ class TransaksiDetailTController extends Controller
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
-            return response()->json([
-                'message' => 'Transaction detail not found.'
-            ], 404);
+            return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
         return response()->json([
@@ -69,12 +65,13 @@ class TransaksiDetailTController extends Controller
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
-            return response()->json([
-                'message' => 'Transaction detail not found.'
-            ], 404);
+            return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
-        $detail->update($request->all());
+        $data = $request->all();
+        $data['update_id'] = Auth::id(); // ⬅️ Save who updated
+
+        $detail->update($data);
 
         return response()->json([
             'message' => 'Transaction detail updated successfully.',
@@ -87,16 +84,16 @@ class TransaksiDetailTController extends Controller
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
-            return response()->json([
-                'message' => 'Transaction detail not found.'
-            ], 404);
+            return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
-        $detail->delete();
+        $detail->delete_id = Auth::id();  // ⬅️ Save who deleted
+        $detail->save();
+
+        $detail->delete(); // If using soft delete, this will fill deleted_at
 
         return response()->json([
             'message' => 'Transaction detail deleted successfully.'
         ], 200);
     }
-
 }

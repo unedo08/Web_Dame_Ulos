@@ -9,6 +9,7 @@ use App\Models\CustomerM;
 use App\Models\TransaksiDetailT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PengirimanBarangTController extends Controller
 {
@@ -25,6 +26,13 @@ class PengirimanBarangTController extends Controller
 
     public function store(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+
         $validated = $request->validate([
             'pengirimanBarang_transaksi_id'            => 'required|integer',
             'pengirimanBarang_nama_penerima'           => 'required|string|max:255',
@@ -49,6 +57,10 @@ class PengirimanBarangTController extends Controller
                     'customer_platform'  => '-',
                 ]
             );
+
+            // Tambah create_id + update_id
+            $validated['create_id'] = Auth::id();
+            $validated['update_id'] = Auth::id();
 
             $pengiriman = PengirimanBarangT::create([
                 ...$validated,
@@ -98,6 +110,13 @@ class PengirimanBarangTController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+            if (!Auth::check()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthorized: Please login first.'
+                ], 401);
+            }
             $item = PengirimanBarangT::with('customer')->findOrFail($id);
 
             $validated = $request->validate([
@@ -111,6 +130,9 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_catatan'                  => 'nullable|string',
                 'pengirimanBarang_status'                   => 'nullable|string|max:50',
             ]);
+
+            // Tambahkan update_id
+            $validated['update_id'] = Auth::id();
 
             $item->update($validated);
 
@@ -157,8 +179,20 @@ class PengirimanBarangTController extends Controller
     public function destroy($id)
     {
         try {
+
+            if (!Auth::check()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthorized: Please login first.'
+                ], 401);
+            }
             $item = PengirimanBarangT::findOrFail($id);
-            $item->delete();
+
+            // simpan delete_id sebelum soft delete
+            $item->delete_id = Auth::id();
+            $item->save();
+
+            $item->delete(); // soft delete
 
             return response()->json([
                 'code' => 200,
@@ -176,6 +210,14 @@ class PengirimanBarangTController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+        
         $request->validate([
             'pengirimanBarang_status' => 'required|string|max:50',
         ]);
@@ -191,6 +233,7 @@ class PengirimanBarangTController extends Controller
         }
 
         $pengirimanBarang->pengirimanBarang_status = $request->pengirimanBarang_status;
+        $pengirimanBarang->update_id = Auth::id();
         $pengirimanBarang->save();
 
         return response()->json([
@@ -220,8 +263,6 @@ class PengirimanBarangTController extends Controller
             ], 404);
         }
 
-
-
         return response()->json([
             'code'    => 200,
             'message' => 'Data Pengiriman',
@@ -239,7 +280,6 @@ class PengirimanBarangTController extends Controller
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->select(
-                // pengirimanBarang_t fields
                 'pengirimanBarang_t.pengirimanBarang_id',
                 'pengirimanBarang_t.pengirimanBarang_transaksi_id',
                 'pengirimanBarang_t.pengirimanBarang_nama_penerima',
@@ -252,13 +292,11 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_t.pengirimanBarang_status',
                 'pengirimanBarang_t.pengirimanBarang_customer_id',
 
-                // packaging_m fields (ambil 1 value per pengiriman)
                 DB::raw("MAX(packaging_m.packaging_transactiondetail_id) as packaging_transactiondetail_id"),
                 DB::raw("MAX(packaging_m.packaging_nama_akun) as packaging_nama_akun"),
                 DB::raw("MAX(packaging_m.packaging_alamat) as packaging_alamat"),
                 DB::raw("MAX(packaging_m.packaging_status) as packaging_status"),
 
-                // status pengiriman
                 DB::raw("
                     CASE
                         WHEN MAX(packaging_m.packaging_id) IS NOT NULL THEN 'PACKAGING'
@@ -266,7 +304,6 @@ class PengirimanBarangTController extends Controller
                     END AS status_pengiriman
                 "),
 
-                // list barang & code
                 DB::raw("GROUP_CONCAT(DISTINCT barangentry_m.barangentry_id) as list_barang_id"),
                 DB::raw("GROUP_CONCAT(DISTINCT code_m.code_nama) as list_code_nama")
             )
@@ -286,7 +323,6 @@ class PengirimanBarangTController extends Controller
             ->orderBy('pengirimanBarang_t.updated_at', 'DESC')
             ->get();
 
-        // convert string list jadi array
         $data = $data->map(function ($item) {
             $item->list_barang_id = $item->list_barang_id ? explode(',', $item->list_barang_id) : [];
             $item->list_code_nama = $item->list_code_nama ? explode(',', $item->list_code_nama) : [];
@@ -308,5 +344,4 @@ class PengirimanBarangTController extends Controller
             'data' => $data
         ], 200);
     }
-
 }

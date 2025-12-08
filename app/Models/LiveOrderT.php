@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LiveOrderT extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     protected $table = 'live_order_t';
@@ -18,6 +20,9 @@ class LiveOrderT extends Model
         'live_order_platform',
         'live_order_harga_terjual',
         'live_order_jumlah_barang',
-        'is_check'
+        'is_check',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 }

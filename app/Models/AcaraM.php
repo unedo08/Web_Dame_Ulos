@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AcaraM extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     protected $table = 'acara_m';
@@ -21,5 +23,8 @@ class AcaraM extends Model
         'acara_hargapricetagbarang',
         'acara_keterangan',
         'acara_status',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 }

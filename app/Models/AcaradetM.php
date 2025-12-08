@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AcaradetM extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     protected $table = 'acaradet_m';
@@ -16,6 +18,9 @@ class AcaradetM extends Model
     protected $fillable = [
         'acaradet_acara_id',
         'acaradet_barangentry_id',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 
     public function acara()

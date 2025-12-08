@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\TransaksiT;
+use App\Models\TransaksiDetailT;
 use App\Models\CustomerM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiTController extends Controller
 {
@@ -29,6 +31,13 @@ class TransaksiTController extends Controller
 
     public function store(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'User not log in',
+            ], 401);
+        }
+
         $validated = $request->validate([
             'transaksi_id'             => 'nullable|string',
             'transaksi_nama_customer'  => 'required|string|max:255',
@@ -48,7 +57,7 @@ class TransaksiTController extends Controller
                 ],
                 [
                     'customer_nama'     => $validated['transaksi_nama_customer'],
-                    'customer_alamat'   => '-', // default value if not provided
+                    'customer_alamat'   => '-',
                     'customer_akun'     => null,
                     'customer_platform' => '-',
                 ]
@@ -58,20 +67,23 @@ class TransaksiTController extends Controller
                 ['transaksi_id' => $validated['transaksi_id'] ?? null],
                 array_merge($validated, [
                     'transaksi_customer_id' => $customer->customer_id,
-                    'transaksi_status' => $validated['transaksi_status'] ?? 'pending',
+                    'transaksi_status'      => $validated['transaksi_status'] ?? 'pending',
+                    'create_id'             => Auth::id(),   // ← Set user login
                 ])
             );
 
             return response()->json([
-                'code'    => 201,
-                'message' => 'Transaksi dan customer berhasil disimpan.',
-                'customer'=> $customer,
-                'data'    => $record,
+                'code'     => 201,
+                'status'   => true,
+                'message'  => 'Transaksi dan customer berhasil disimpan.',
+                'customer' => $customer,
+                'data'     => $record,
             ], 201);
 
         } catch (\Exception $e) {
             return response()->json([
                 'code'    => 500,
+                'status'  => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
@@ -97,46 +109,73 @@ class TransaksiTController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Akses ditolak, Anda belum login.'
+            ], 401);
+        }
+
         $request->validate([
             'status' => 'required|string',
         ]);
 
-        
         $transaksi = TransaksiT::find($id);
         if (!$transaksi) {
             return response()->json([
+                'status'  => false,
                 'message' => 'Data transaksi tidak ditemukan.',
-                'data' => null
+                'data'    => null
             ], 404);
         }
 
-        $transaksi->status = $request->status;
+        $transaksi->transaksi_status = $request->status;  
+        $transaksi->update_id = Auth::id();              
         $transaksi->save();
 
-        // Return success response with message and updated data
         return response()->json([
-            'message' => 'Status updated successfully.',
-            'data' => $transaksi
+            'status'  => true,
+            'message' => 'Status transaksi berhasil diperbarui.',
+            'data'    => $transaksi
         ], 200);
-
-        
     }
 
 
 
     public function destroy($id)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Akses ditolak, Anda belum login.'
+            ], 401);
+        }
+
+        $userId = Auth::id(); 
+
         $transaksi = TransaksiT::find($id);
+
         if (!$transaksi) {
             return response()->json([
+                'status'  => false,
                 'message' => 'Data transaksi tidak ditemukan.',
-                'data' => null
+                'data'    => null
             ], 404);
         }
 
+        
+        $transaksi->delete_id = $userId;
+        $transaksi->save();
+
+        TransaksiDetailT::where('transaksidetail_transaksi_id', $id)
+            ->update(['delete_id' => $userId]);
+
         $transaksi->delete();
+        TransaksiDetailT::where('transaksidetail_transaksi_id', $id)->delete();
+
         return response()->json([
-            'message' => 'Transaction deleted successfully.'
+            'status'  => true,
+            'message' => 'Transaksi dan detail berhasil dihapus oleh user ID: ' . $userId
         ], 200);
     }
 
@@ -155,6 +194,53 @@ class TransaksiTController extends Controller
             'message' => 'Transactions with status hold retrieved successfully.',
             'data' => $transactions
         ], 200);
+    }
+
+    public function getTransaksiGrouped()
+    {
+        $transaksi = TransaksiT::with([
+            'customer',
+            'caraBayar',
+            'user',
+            'details.barang',
+            'details.pengiriman'
+        ])
+        ->get()
+        ->groupBy(function($item) {
+            return $item->transaksi_id;
+        });
+
+        $result = [];
+
+        foreach ($transaksi as $key => $group) {
+            $first = $group->first();
+            $result[] = [
+                'transaksi_id' => $first->transaksi_id,
+                'created_at' => $first->created_at,
+                'customer_nama' => $first->customer->customer_nama ?? 'Unknown',
+                'transaksi_tipe' => $first->transaksi_tipe,
+                'cara_bayar' => $first->caraBayar?->carabayar_nama,
+                'user' => $first->user?->name,
+                'items' => $group->flatMap(function($trans) {
+                    return $trans->details->map(function($d) {
+                        return [
+                            'code_nama' => $d->barang->code->code_nama ?? null,
+                            'barang_modal' => $d->barang->barangentry_modal ?? null,
+                            'barang_price_tag' => $d->barang->barangentry_price_tag ?? null,
+                            'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
+                            'transaksi_catatan' => $d->transaksi_catatan ?? null,
+                            'transaksi_status' => $d->transaksi_status ?? null
+                        ];
+                    });
+                })
+            ];
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Data berhasil diambil',
+            'data' => $result
+        ]);
     }
 
 }

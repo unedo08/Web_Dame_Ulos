@@ -6,9 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\AcaraM;
 use App\Models\AcaradetM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AcaraMController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
         return response()->json([
@@ -18,7 +31,10 @@ class AcaraMController extends Controller
         ], 200);
     }
 
-    public function addAcara(Request $request){
+    public function addAcara(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = $request->validate([
             'acara_nama' => 'required|string',
             'acara_keterangan' => 'nullable|string'
@@ -35,6 +51,8 @@ class AcaraMController extends Controller
 
     public function updateAcara(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $request->validate([
             'acara_jumlahbarang' => 'required|integer',
             'acara_modalbarang' => 'required|numeric',
@@ -63,6 +81,8 @@ class AcaraMController extends Controller
 
     public function store(Request $request)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = $request->validate([
             'acara_nama' => 'required|string',
             'acara_jumlahbarang' => 'required|integer',
@@ -84,6 +104,8 @@ class AcaraMController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $acara = AcaraM::find($id);
         if (!$acara) {
             return response()->json([
@@ -101,6 +123,8 @@ class AcaraMController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $acara = AcaraM::find($id);
         if (!$acara) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -117,6 +141,8 @@ class AcaraMController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $request->validate([
             'acara_status' => 'required|string',
         ]);
@@ -126,7 +152,7 @@ class AcaraMController extends Controller
             return response()->json(['message' => 'Data not found'], 404);
         }
 
-        $acara->acara_status = $request->input('acara_status');
+        $acara->acara_status = $request->acara_status;
         $acara->save();
 
         return response()->json([
@@ -138,25 +164,40 @@ class AcaraMController extends Controller
 
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $acara = AcaraM::find($id);
         if (!$acara) {
             return response()->json(['message' => 'Data not found'], 404);
         }
-        $deleted = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->get();
-        if(!$deleted->isEmpty()){
-            $deleted = AcaradetM::where('acaradet_acara_id', $acara->acara_id)->delete();
-        }
 
+        // simpan siapa yang delete
+        $acara->delete_id = Auth::id();
+        $acara->save();
+
+        // update delete_id untuk detail
+        AcaradetM::where('acaradet_acara_id', $acara->acara_id)->update([
+            'delete_id' => Auth::id(),
+        ]);
+
+        // hapus detail
+        AcaradetM::where('acaradet_acara_id', $acara->acara_id)->delete();
+
+        // hapus acara
         $acara->delete();
+
         return response()->json([
             'message' => 'Data deleted',
             'code' => 200
         ], 200);
     }
 
-    public function exportData($id){
+    public function exportData($id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $acara = AcaraM::find($id);
-        if(!$acara){
+        if (!$acara) {
             return response()->json(['message' => 'Data not found'], 404);
         }
 
@@ -172,4 +213,3 @@ class AcaraMController extends Controller
         ], 200);
     }
 }
-

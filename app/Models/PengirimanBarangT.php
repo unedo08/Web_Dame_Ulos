@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CustomerM;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PengirimanBarangT extends Model
 {
+    use SoftDeletes;
     protected $table = 'pengirimanBarang_t';
     protected $primaryKey = 'pengirimanBarang_id';
     protected $fillable = [
@@ -20,6 +22,9 @@ class PengirimanBarangT extends Model
         'pengirimanBarang_catatan',
         'pengirimanBarang_status',
         'pengirimanBarang_customer_id',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 
     public function customer()

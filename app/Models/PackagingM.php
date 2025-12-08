@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PackagingM extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     protected $table = 'packaging_m';
@@ -16,6 +18,9 @@ class PackagingM extends Model
         'packaging_transactiondetail_id',
         'packaging_nama_akun',
         'packaging_alamat',
-        'packaging_status'
+        'packaging_status',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 }

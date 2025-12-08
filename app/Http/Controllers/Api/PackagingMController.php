@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PackagingM;
 use App\Models\TransaksiDetailT;
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class PackagingMController extends Controller
 {
     public function index()
     {
         $data = PackagingM::all();
+
         return response()->json([
             'status' => true,
             'message' => 'List of all packaging',
@@ -23,17 +24,29 @@ class PackagingMController extends Controller
 
     public function store(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+
         $validated = $request->validate([
             'packaging_transactiondetail_id' => 'nullable|integer',
             'packaging_nama_akun' => 'required|string|max:255',
             'packaging_alamat' => 'nullable|string',
         ]);
 
+        // Tambah create_id & update_id otomatis
+        $validated['create_id'] = Auth::id();
+        $validated['update_id'] = Auth::id();
+
         $packaging = PackagingM::create($validated);
 
+        // Update status transaksi detail jika ada ID
         if (!empty($validated['packaging_transactiondetail_id'])) {
             TransaksiDetailT::where('transaksidetail_id', $validated['packaging_transactiondetail_id'])
-            ->update(['transaksidetail_status_penjualan' => 1]);
+                ->update(['transaksidetail_status_penjualan' => 1]);
         }
 
         return response()->json([
@@ -64,6 +77,13 @@ class PackagingMController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+
         $packaging = PackagingM::find($id);
 
         if (!$packaging) {
@@ -80,6 +100,9 @@ class PackagingMController extends Controller
             'packaging_alamat' => 'nullable|string',
         ]);
 
+        // update_id otomatis
+        $validated['update_id'] = Auth::id();
+
         $packaging->update($validated);
 
         return response()->json([
@@ -91,6 +114,13 @@ class PackagingMController extends Controller
 
     public function destroy($id)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+
         $packaging = PackagingM::find($id);
 
         if (!$packaging) {
@@ -101,6 +131,11 @@ class PackagingMController extends Controller
             ], 404);
         }
 
+        // Simpan siapa yang menghapus
+        $packaging->delete_id = Auth::id();
+        $packaging->save();
+
+        // Soft delete
         $packaging->delete();
 
         return response()->json([
@@ -112,6 +147,13 @@ class PackagingMController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized: Please login first.'
+            ], 401);
+        }
+
         $packaging = PackagingM::find($id);
 
         if (!$packaging) {
@@ -126,6 +168,7 @@ class PackagingMController extends Controller
             'packaging_status' => 'required|string',
         ]);
 
+        $packaging->update_id = Auth::id();
         $packaging->update($validated);
 
         return response()->json([

@@ -7,6 +7,7 @@ use App\Models\CodeM;
 use Illuminate\Http\Request;
 use App\Models\PreOrdeBarangT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class PreOrdeBarangTController extends Controller
 {
@@ -23,6 +24,11 @@ class PreOrdeBarangTController extends Controller
 
     public function store(Request $request)
     {
+        // 🔐 CEK LOGIN
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
+        }
+
         $validatedData = $request->validate([
             'preOrdeBarang_id' => 'nullable|integer|exists:preOrdeBarang_t,preOrdeBarang_id',
             'preOrderBarang_transaksi_id' => 'nullable|integer',
@@ -40,11 +46,12 @@ class PreOrdeBarangTController extends Controller
             'preOrderBarang_cara_bayar' => 'string|max:255'
         ]);
 
-
-        // $item = PreOrdeBarangT::create($validatedData);
+        // Tambahkan create_id & update_id
+        $validatedData['create_id'] = Auth::id();
+        $validatedData['update_id'] = Auth::id();
 
         $item = PreOrdeBarangT::updateOrCreate(
-            ['preOrdeBarang_id' => $validatedData['preOrdeBarang_id']], 
+            ['preOrdeBarang_id' => $validatedData['preOrdeBarang_id'] ?? null],
             $validatedData
         );
 
@@ -75,27 +82,29 @@ class PreOrdeBarangTController extends Controller
 
     public function getPreOrderbyBarangEntryID($id)
     {
-        try {
-            $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id',$id)->first();
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre Order Barang details retrieved successfully.',
-                'data' => $item
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pre Order Barang not found.',
-                'data' => null
-            ], 404);
-        }
+        $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id', $id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pre Order Barang details retrieved successfully.',
+            'data' => $item
+        ], 200);
     }
 
     public function update(Request $request, $id)
     {
+        // 🔐 CEK LOGIN
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
+        }
+
         try {
             $item = PreOrdeBarangT::findOrFail($id);
-            $item->update($request->all());
+
+            $data = $request->all();
+            $data['update_id'] = Auth::id();
+
+            $item->update($data);
 
             return response()->json([
                 'success' => true,
@@ -113,8 +122,19 @@ class PreOrdeBarangTController extends Controller
 
     public function destroy($id)
     {
+        // 🔐 CEK LOGIN
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
+        }
+
         try {
             $item = PreOrdeBarangT::findOrFail($id);
+
+            // simpan delete_id sebelum soft delete
+            $item->delete_id = Auth::id();
+            $item->save();
+
+            // soft delete
             $item->delete();
 
             return response()->json([
@@ -122,6 +142,7 @@ class PreOrdeBarangTController extends Controller
                 'message' => 'Pre Order Barang deleted successfully.',
                 'data' => null
             ], 200);
+
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
@@ -133,26 +154,30 @@ class PreOrdeBarangTController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        // 🔐 CEK LOGIN
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
+        }
+
         $request->validate([
             'status' => 'required|string',
         ]);
 
-
-        $preOrderbarang = PreOrdeBarangT::find($id);
-        if (!$preOrderbarang) {
+        $item = PreOrdeBarangT::find($id);
+        if (!$item) {
             return response()->json([
                 'message' => 'Data Pre Order tidak ditemukan.',
                 'data' => null
             ], 404);
         }
 
-        $preOrderbarang->status = $request->status;
-        $preOrderbarang->save();
+        $item->status = $request->status;
+        $item->update_id = Auth::id();
+        $item->save();
 
-        // Return success response with message and updated data
         return response()->json([
             'message' => 'Status updated successfully.',
-            'data' => $preOrderbarang
+            'data' => $item
         ], 200);
     }
 
@@ -160,29 +185,22 @@ class PreOrdeBarangTController extends Controller
     {
         try {
             $prefix = 'PO';
-            $length = 6; // jumlah digit angka
+            $length = 6;
 
-            // Ambil kode terakhir yang dimulai dengan PO
             $lastCode = CodeM::where('code_nama', 'like', $prefix . '%')
                 ->orderBy('code_nama', 'desc')
                 ->first();
 
-            if ($lastCode) {
-                // ambil angka terakhir sebagai int
-                $lastNumber = (int) substr($lastCode->code_nama, strlen($prefix));
-                $nextNumber = $lastNumber + 1;
-            } else {
-                $nextNumber = 1;
-            }
+            $nextNumber = $lastCode
+                ? ((int) substr($lastCode->code_nama, strlen($prefix))) + 1
+                : 1;
 
-            // Format angka jadi 6 digit, misal PO000001
             $newKode = $prefix . str_pad($nextNumber, $length, '0', STR_PAD_LEFT);
+
             return response()->json([
                 'sukses' => true,
                 'message' => 'Kode Barang untuk barang Pre-Order',
-                'data' => [
-                    'code_nama' => $newKode
-                ]
+                'data' => ['code_nama' => $newKode]
             ], 200);
 
         } catch (\Exception $e) {
@@ -193,5 +211,4 @@ class PreOrdeBarangTController extends Controller
             ], 500);
         }
     }
-
 }

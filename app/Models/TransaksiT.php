@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TransaksiDetailT;
 use App\Models\CustomerM;
+use App\Models\CaraBayarM;
+use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 
 class TransaksiT extends Model
 {
+    use SoftDeletes;
     protected $table = 'transaksi_t';
     protected $primaryKey = 'transaksi_id';
     protected $fillable = [
@@ -20,7 +25,10 @@ class TransaksiT extends Model
         'transaksi_tipe',
         'transaksi_status',
         'transaksi_catatan',
-        'transaksi_customer_id'
+        'transaksi_customer_id',
+        'create_id',
+        'update_id',
+        'delete_id'
     ];
 
     public function details()
@@ -31,5 +39,16 @@ class TransaksiT extends Model
     public function customer()
     {
         return $this->belongsTo(CustomerM::class, 'transaksi_customer_id', 'customer_id');
+    }
+
+
+    public function caraBayar()
+    {
+        return $this->belongsTo(CaraBayarM::class, 'transaksi_cara_bayar', 'carabayar_kode');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'create_id', 'id');
     }
 }

@@ -6,11 +6,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CustomerM;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerMController extends Controller
 {
+    // CEK LOGIN GLOBAL
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $customers = CustomerM::orderBy('customer_nama')->get();
 
         return response()->json([
@@ -22,6 +38,8 @@ class CustomerMController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $customer = CustomerM::find($id);
 
         if (!$customer) {
@@ -41,6 +59,8 @@ class CustomerMController extends Controller
 
     public function store(Request $request)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $validated = $request->validate([
             'customer_nama' => 'required|string|max:255',
             'customer_akun' => 'nullable|string|max:255',
@@ -48,6 +68,9 @@ class CustomerMController extends Controller
             'customer_notelpon' => 'required|string|max:50|unique:customer_m,customer_notelpon',
             'customer_platform' => 'nullable|string|max:255',
         ]);
+
+        // Tambah create_id
+        $validated['create_id'] = Auth::id();
 
         $customer = CustomerM::create($validated);
 
@@ -60,6 +83,8 @@ class CustomerMController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $customer = CustomerM::find($id);
 
         if (!$customer) {
@@ -84,6 +109,9 @@ class CustomerMController extends Controller
             'customer_platform' => 'nullable|string|max:255',
         ]);
 
+        // Tambah update_id
+        $validated['update_id'] = Auth::id();
+
         $customer->update($validated);
 
         return response()->json([
@@ -95,6 +123,8 @@ class CustomerMController extends Controller
 
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $customer = CustomerM::find($id);
 
         if (!$customer) {
@@ -105,7 +135,11 @@ class CustomerMController extends Controller
             ], 404);
         }
 
-        $customer->delete();
+        // Tambah delete_id
+        $customer->delete_id = Auth::id();
+        $customer->save();
+
+        $customer->delete(); // soft delete
 
         return response()->json([
             'code' => 200,
