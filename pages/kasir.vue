@@ -151,11 +151,7 @@
     <label>Metode Pembayaran:</label>
     <select v-model="processForm.paymentMethod" class="input-field mb-2">
       <option disabled value="">Pilih metode pembayaran</option>
-      <option
-        v-for="cb in caraBayarList"
-        :key="cb.id"
-        :value="cb.carabayar_kode"
-      >
+      <option v-for="cb in caraBayarList" :key="cb.id" :value="cb.carabayar_kode">
         {{ cb.carabayar_nama }}
       </option>
     </select>
@@ -482,6 +478,7 @@ const processForm = ref({
 
 async function checkoutProcess() {
   if (!searchQueryCustomer.value || datatableItems.value.length === 0) {
+    openModalProcess.value = false;
     Swal.fire({
       title: "Gagal",
       text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
@@ -491,7 +488,12 @@ async function checkoutProcess() {
   }
 
   if (!processForm.value.paymentMethod) {
-    Swal.fire("Pilih metode pembayaran terlebih dahulu");
+    openModalProcess.value = false;
+    Swal.fire({
+      title: "Gagal",
+      text: "Isi Nama Customer dan Nomor Telepon terlebih dahulu",
+      icon: "error",
+    });
     return;
   }
 

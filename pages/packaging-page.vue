@@ -3,12 +3,13 @@
     <title>Packaging</title>
 
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
-    <input
-      v-model="searchQuery"
-      type="text"
-      class="search-box mb-4"
-      placeholder="Cari Pengiriman Barang..."
-    />
+    <div class="flex justify-between items-center mb-4">
+      <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari Pengiriman Barang..." />
+
+      <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+        Export Excel
+      </button>
+    </div>
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
@@ -27,11 +28,8 @@
       </thead>
 
       <tbody>
-        <tr
-          v-for="(row, index) in pagination"
-          :key="row.pengirimanBarang_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-        >
+        <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
+          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td>{{ index + 1 }}</td>
           <td>{{ row.pengirimanBarang_nama_penerima }}</td>
           <td>{{ row.pengirimanBarang_akun_penerima }}</td>
@@ -58,19 +56,17 @@
 
           <td>
             <div class="flex gap-2">
-              <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs"
-                      @click="openModalEdit(row)">
+              <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
                 Edit
               </button>
 
               <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                      @click="deleteData(row.pengirimanBarang_id)">
+                @click="deleteData(row.pengirimanBarang_id)">
                 Delete
               </button>
 
               <button v-if="row.status_pengiriman === 'PACKAGING' && row.packaging_status !== 'Done'"
-                      class="px-2 py-1 bg-green-600 text-white rounded text-xs"
-                      @click="selesaikanPackaging(row)">
+                class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
                 Selesai
               </button>
             </div>
@@ -92,35 +88,24 @@
       </div>
 
       <div class="flex space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded"
-                @click="currentPage--" :disabled="currentPage === 1">
+        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage--" :disabled="currentPage === 1">
           Sebelumnya
         </button>
 
-        <button v-for="p in paginatedPages"
-                :key="p"
-                @click="typeof p === 'number' && (currentPage = p)"
-                :class="['px-3 py-1 rounded',
-                  currentPage === p ? 'bg-blue-500 text-white' : 'bg-gray-200']">
+        <button v-for="p in paginatedPages" :key="p" @click="typeof p === 'number' && (currentPage = p)" :class="['px-3 py-1 rounded',
+          currentPage === p ? 'bg-blue-500 text-white' : 'bg-gray-200']">
           {{ p }}
         </button>
 
-        <button class="px-3 py-1 bg-gray-300 rounded"
-                @click="currentPage++"
-                :disabled="currentPage === totalPages">
+        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage++" :disabled="currentPage === totalPages">
           Selanjutnya
         </button>
       </div>
     </div>
 
 
-    <ModalEditPackaging
-      v-model:show="isModalOpen"
-      :barang="selectedBarang"
-      :pengiriman="selectedPengiriman"
-      @save="handleSave"
-      @close="isModalOpen = false"
-    />
+    <ModalEditPackaging v-model:show="isModalOpen" :barang="selectedBarang" :pengiriman="selectedPengiriman"
+      @save="handleSave" @close="isModalOpen = false" />
   </div>
 </template>
 
@@ -131,6 +116,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 import ModalEditPackaging from "../components/ModalEditPackaging.vue";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const config = useRuntimeConfig();
 const url = config.public.apiBase;
@@ -179,7 +166,6 @@ const openModalEdit = async (row) => {
       is_check: true,
     }));
 
-    // BUKA MODAL
     isModalOpen.value = true;
 
   } catch (err) {
@@ -227,6 +213,140 @@ const selesaikanPackaging = async (row) => {
   } catch (err) {
     console.error(err);
     Swal.fire("Gagal", "Terjadi kesalahan", "error");
+  }
+};
+
+async function buildRows(row) {
+  try {
+    const trxId = row.pengirimanBarang_transaksi_id;
+    if (!trxId) return [];
+
+    const { data: trx } = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
+
+    if (!trx.data || trx.data.length === 0) return [];
+
+    const rows = [];
+
+    for (const d of trx.data) {
+      rows.push({
+        tgl: new Date(row.created_at),
+        penerima: row.pengirimanBarang_nama_penerima ?? "-",
+        akun: row.pengirimanBarang_akun_penerima ?? "-",
+        alamat: row.pengirimanBarang_alamat_pengiriman_barang ?? "-",
+        barang: d.code_nama ?? "-",
+        qty: Number(d.transaksidetail_jumlah_barang ?? 0),
+        harga: Number(d.transaksidetail_harga_barang ?? 0),
+      });
+    }
+
+    return rows;
+  } catch (err) {
+    console.error("Gagal memproses row:", err);
+    return [];
+  }
+}
+
+const exportToExcel = async () => {
+  try {
+    const source = [...filteredData.value];
+
+    if (!source.length) {
+      Swal.fire({
+        title: "Tidak ada data",
+        text: "Data kosong, tidak bisa diexport.",
+        icon: "info",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Menyiapkan data…",
+      text: "Mohon tunggu sebentar",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    let allRows = [];
+
+    for (const row of source) {
+      const rows = await buildRows(row);
+      allRows.push(...rows);
+    }
+
+    if (!allRows.length) {
+      Swal.close();
+      Swal.fire("Tidak ada data detail!", "", "info");
+      return;
+    }
+
+    allRows.sort((a, b) => {
+      const kA = `${a.penerima}|||${a.alamat}`.toLowerCase();
+      const kB = `${b.penerima}|||${b.alamat}`.toLowerCase();
+      if (kA !== kB) return kA < kB ? -1 : 1;
+      return a.tgl - b.tgl;
+    });
+
+    const exportRows = allRows.map(r => ({
+      "Tanggal": r.tgl,
+      "Nama Penerima": r.penerima,
+      "Nama Akun": r.akun,
+      "Alamat": r.alamat,
+      "Kode Barang": r.barang,
+      "Qty": r.qty,
+      "Harga": r.harga,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportRows, { cellDates: true, dateNF: "dd-mmm-yyyy" });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Packaging");
+
+    const merges = [];
+    let start = 0;
+    while (start < exportRows.length) {
+      const key = `${exportRows[start]["Nama Penerima"]}|||${exportRows[start]["Alamat"]}`;
+      let end = start;
+      while (
+        end + 1 < exportRows.length &&
+        `${exportRows[end + 1]["Nama Penerima"]}|||${exportRows[end + 1]["Alamat"]}` === key
+      ) {
+        end++;
+      }
+
+      if (end > start) {
+        merges.push({ s: { r: start + 1, c: 1 }, e: { r: end + 1, c: 1 } });
+        merges.push({ s: { r: start + 1, c: 3 }, e: { r: end + 1, c: 3 } });
+      }
+
+      start = end + 1;
+    }
+
+    worksheet["!merges"] = merges;
+
+    worksheet["!cols"] = [
+      { wch: 14 },
+      { wch: 22 },
+      { wch: 22 },
+      { wch: 40 },
+      { wch: 16 },
+      { wch: 6 },
+      { wch: 12 },
+    ];
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const fileName = `Packaging_${new Date().toISOString().split("T")[0]}.xlsx`;
+    saveAs(blob, fileName);
+
+    Swal.close();
+    Swal.fire("Berhasil", "Export Excel selesai.", "success");
+
+  } catch (err) {
+    console.error(err);
+    Swal.close();
+    Swal.fire("Gagal", "Terjadi kesalahan saat export.", "error");
   }
 };
 
@@ -288,11 +408,13 @@ const formatCurrency = (val) =>
   padding: 8px;
   width: 350px;
 }
+
 .datatable th,
 .datatable td {
   padding: 10px;
   font-size: 12px;
 }
+
 .datatable th {
   background-color: #f4f4f4;
 }

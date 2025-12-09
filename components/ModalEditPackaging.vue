@@ -11,22 +11,22 @@
         <table class="w-full border border-gray-200 rounded-md mb-4 text-sm">
           <thead class="bg-gray-100">
             <tr>
-              <th class="text-center">Pilih</th>
-              <th class="text-center">Kode Barang</th>
-              <th class="text-center">Nama Barang</th>
-              <th class="text-center">Jumlah</th>
-              <th class="text-right">Harga</th>
+              <th class="px-3 py-2 text-center">Pilih</th>
+              <th class="px-3 py-2 text-center">Kode Barang</th>
+              <th class="px-3 py-2 text-center">Nama Barang</th>
+              <th class="px-3 py-2 text-center">Jumlah</th>
+              <th class="px-3 py-2 text-right">Harga</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in barang" :key="index">
-              <td class="text-center">
+              <td class="px-3 py-2 text-center">
                 <input type="checkbox" v-model="item.is_check" class="h-4 w-4" />
               </td>
-              <td class="text-center">{{ item.kode }}</td>
-              <td class="text-center">{{ item.nama }}</td>
-              <td class="text-center">{{ item.jumlah }}</td>
-              <td class="text-right">{{ formatCurrency(item.harga) }}</td>
+              <td class="px-3 py-2 text-center">{{ item.kode }}</td>
+              <td class="px-3 py-2 text-center">{{ item.nama }}</td>
+              <td class="px-3 py-2 text-center">{{ item.jumlah }}</td>
+              <td class="px-3 py-2 text-right">{{ formatCurrency(item.harga) }}</td>
             </tr>
           </tbody>
         </table>
@@ -101,7 +101,8 @@ function closeModal() {
 function formatCurrency(value) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
-    currency: "IDR"
+    currency: "IDR",
+    minimumFractionDigits: 0,
   }).format(value);
 }
 </script>
