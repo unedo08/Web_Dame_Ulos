@@ -19,11 +19,11 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in barang" :key="index">
-              <td class="px-3 py-2">
+              <td class="px-3 py-2 text-center">
                 <input type="checkbox" v-model="item.is_check" class="h-4 w-4" />
               </td>
-              <td class="px-3 py-2">{{ item.kode }}</td>
-              <td class="px-3 py-2">{{ item.nama }}</td>
+              <td class="px-3 py-2 text-center">{{ item.kode }}</td>
+              <td class="px-3 py-2 text-center">{{ item.nama }}</td>
               <td class="px-3 py-2 text-center">{{ item.jumlah }}</td>
               <td class="px-3 py-2 text-right">{{ formatCurrency(item.harga) }}</td>
             </tr>

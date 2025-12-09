@@ -846,7 +846,7 @@ select,
 textarea {
   background-color: #FDFDFF !important;
   border: 1px solid #E4E6FC !important;
-  border-radius: 8px !important;
+  /* border-radius: 8px !important; */
   font-size: 14px;
   color: #000000;
   transition: all 0.2s ease-in-out;

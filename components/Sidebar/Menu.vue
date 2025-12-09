@@ -50,23 +50,12 @@ const items = ref([
     title: "Kasir",
     path: "/kasir",
     icon: CreditCardIcon,
-    // children: [
-    //   { title: "List Transaksi", path: "/listTransaksi" },
-    //   { title: "Transaksi", path: "/kasir" },
-    //   { title: "Pre-Order", path: "/preorder" },
-    //   { title: "Online Transaksi", path: "/kasir-online" },
-    // ],
   },
   {
     title: "Packaging",
     path: "/packaging-page",
     icon: CubeIcon,
   },
-  // {
-  //   title: "Packaging - Barang",
-  //   path: "/packaging-pengiriman",
-  //   icon: CubeIcon,
-  // },
   {
     title: "Staff",
     path: "/staff",
@@ -111,7 +100,7 @@ function toggleDropdown(index) {
 </script>
 
 <template>
-  <aside class="w-56 min-h-screen fixed top-0 text-white overflow-y-auto z-50">
+  <aside class="w-56 min-h-screen text-white overflow-y-auto">
     <header class="flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer">
       <NuxtLink to="/beranda" class="flex items-center gap-2">
         <Logo />

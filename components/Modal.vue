@@ -21,8 +21,9 @@
 
       <template v-else-if="type === 'priceTag'">
         <div class="mb-4">
-          <textarea v-model="barcodeInput" @input="handleInputPriceTag" class="w-full border rounded px-3 py-2"
-            autofocus rows="4" placeholder="Scan or enter barcodes, separated by commas"></textarea>
+          <textarea ref="priceTagInput" v-model="barcodeInput" @input="handleInputPriceTag"
+            class="w-full border rounded px-3 py-2" autofocus rows="4"
+            placeholder="Scan or enter barcodes, separated by commas"></textarea>
         </div>
 
         <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
@@ -175,6 +176,7 @@ import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 
 const priceTagData = ref([]);
+const priceTagInput = ref(null);
 const url = ref("");
 const barcode = ref("");
 const barcodeInput = ref("");
@@ -406,6 +408,17 @@ const closeModal = () => {
   emit('close')
   barcodeInput.value = "";
 }
+watch(
+  () => props.show,
+  (val) => {
+    if (val && props.type === "priceTag") {
+      setTimeout(() => {
+        priceTagInput.value?.focus();
+      }, 300);
+    }
+  }
+);
+
 </script>
 
 <style scoped>
