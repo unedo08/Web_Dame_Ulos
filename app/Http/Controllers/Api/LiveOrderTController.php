@@ -11,6 +11,18 @@ use Illuminate\Support\Facades\Auth;
 
 class LiveOrderTController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     // GET all
     public function index()
     {
@@ -22,9 +34,30 @@ class LiveOrderTController extends Controller
         ], 200);
     }
 
+    public function getDataLiveOrderWithBarangId(){
+
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $data = LiveOrderT::select(
+            'live_order_t.*'
+            )
+            ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'live_order_t.live_order_barang_id')
+            ->where('live_order_t.is_check', '=', '0')
+            ->get();
+        
+        return response()->json([
+            'code'    => 200,
+            'message' => 'Live order counts retrieved successfully',
+            'data'    => $data
+        ], 200);
+        
+    }
+
     // GET by ID
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $order = LiveOrderT::find($id);
         if (!$order) {
             return response()->json([
@@ -44,12 +77,7 @@ class LiveOrderTController extends Controller
     // POST create
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'code' => 401,
-                'message' => 'Unauthorized. Please login.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $validated = $request->validate([
             'live_order_barang_id'     => 'required|integer',
@@ -96,12 +124,7 @@ class LiveOrderTController extends Controller
     // PUT update
     public function update(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'code' => 401,
-                'message' => 'Unauthorized. Please login.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $order = LiveOrderT::find($id);
         if (!$order) {
@@ -134,12 +157,7 @@ class LiveOrderTController extends Controller
     // DELETE
     public function destroy($id)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'code' => 401,
-                'message' => 'Unauthorized. Please login.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $order = LiveOrderT::find($id);
 
@@ -165,7 +183,7 @@ class LiveOrderTController extends Controller
         $barang_entry->save();
 
         // simpan delete_id
-        $order->delete_id = Auth::id();
+        $order->delete_id = 3;//Auth::id();
         $order->save();
 
         // soft delete
@@ -180,9 +198,12 @@ class LiveOrderTController extends Controller
 
     public function countByNamaAkun()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $results = LiveOrderT::select('live_order_t.live_order_nama_akun')
             ->selectRaw('COUNT(*) as jumlah')
-            ->where('is_check', false)
+            ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'live_order_t.live_order_barang_id')
+            ->where('live_order_t.is_check', false)
             ->groupBy('live_order_t.live_order_nama_akun')
             ->get();
 
@@ -195,6 +216,8 @@ class LiveOrderTController extends Controller
 
     public function getLiveOrderByNamaAkun($namaAkun)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = LiveOrderT::select(
             'live_order_t.*',
             'barangentry_m.barangentry_nama',
@@ -222,6 +245,8 @@ class LiveOrderTController extends Controller
 
     public function getDataTabelLiveOrder()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = LiveOrderT::select(
             'live_order_t.*',
             'barangentry_m.barangentry_nama',
@@ -248,6 +273,8 @@ class LiveOrderTController extends Controller
 
     public function getLiveOrderByLiveId($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = LiveOrderT::select(
             'live_order_t.*',
             'barangentry_m.barangentry_nama',
@@ -275,6 +302,8 @@ class LiveOrderTController extends Controller
 
     public function updateStatusCheck(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $liveorder = LiveOrderT::find($id);
 
         if (!$liveorder) {

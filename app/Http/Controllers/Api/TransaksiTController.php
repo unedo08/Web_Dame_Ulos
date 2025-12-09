@@ -31,12 +31,12 @@ class TransaksiTController extends Controller
 
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'User not log in',
-            ], 401);
-        }
+        // if (!Auth::check()) {
+        //     return response()->json([
+        //         'status'  => false,
+        //         'message' => 'User not log in',
+        //     ], 401);
+        // }
 
         $validated = $request->validate([
             'transaksi_id'             => 'nullable|string',

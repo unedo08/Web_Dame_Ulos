@@ -11,8 +11,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PreOrdeBarangTController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $data = PreOrdeBarangT::all();
 
         return response()->json([
@@ -24,10 +38,8 @@ class PreOrdeBarangTController extends Controller
 
     public function store(Request $request)
     {
-        // 🔐 CEK LOGIN
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         $validatedData = $request->validate([
             'preOrdeBarang_id' => 'nullable|integer|exists:preOrdeBarang_t,preOrdeBarang_id',
@@ -64,6 +76,8 @@ class PreOrdeBarangTController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         try {
             $item = PreOrdeBarangT::findOrFail($id);
             return response()->json([
@@ -82,6 +96,8 @@ class PreOrdeBarangTController extends Controller
 
     public function getPreOrderbyBarangEntryID($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id', $id)->first();
 
         return response()->json([
@@ -93,10 +109,8 @@ class PreOrdeBarangTController extends Controller
 
     public function update(Request $request, $id)
     {
-        // 🔐 CEK LOGIN
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         try {
             $item = PreOrdeBarangT::findOrFail($id);
@@ -122,10 +136,8 @@ class PreOrdeBarangTController extends Controller
 
     public function destroy($id)
     {
-        // 🔐 CEK LOGIN
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         try {
             $item = PreOrdeBarangT::findOrFail($id);
@@ -154,10 +166,8 @@ class PreOrdeBarangTController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        // 🔐 CEK LOGIN
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         $request->validate([
             'status' => 'required|string',
@@ -183,6 +193,8 @@ class PreOrdeBarangTController extends Controller
 
     public function kodePO()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         try {
             $prefix = 'PO';
             $length = 6;

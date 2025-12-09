@@ -11,8 +11,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PackagingMController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = PackagingM::all();
 
         return response()->json([
@@ -24,12 +38,7 @@ class PackagingMController extends Controller
 
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $validated = $request->validate([
             'packaging_transactiondetail_id' => 'nullable|integer',
@@ -58,6 +67,7 @@ class PackagingMController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
         $packaging = PackagingM::find($id);
 
         if (!$packaging) {
@@ -77,12 +87,7 @@ class PackagingMController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
 
@@ -114,12 +119,7 @@ class PackagingMController extends Controller
 
     public function destroy($id)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
 
@@ -147,12 +147,7 @@ class PackagingMController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
 

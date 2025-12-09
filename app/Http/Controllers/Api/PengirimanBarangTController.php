@@ -13,8 +13,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PengirimanBarangTController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = PengirimanBarangT::all();
 
         return response()->json([
@@ -26,12 +40,8 @@ class PengirimanBarangTController extends Controller
 
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         $validated = $request->validate([
             'pengirimanBarang_transaksi_id'            => 'required|integer',
@@ -90,6 +100,8 @@ class PengirimanBarangTController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         try {
             $item = PengirimanBarangT::findOrFail($id);
 
@@ -109,6 +121,8 @@ class PengirimanBarangTController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         try {
 
             if (!Auth::check()) {
@@ -178,6 +192,8 @@ class PengirimanBarangTController extends Controller
     
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         try {
 
             if (!Auth::check()) {
@@ -210,6 +226,8 @@ class PengirimanBarangTController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
 
         if (!Auth::check()) {
             return response()->json([
@@ -244,6 +262,8 @@ class PengirimanBarangTController extends Controller
     }
 
     public function getPengirimanBarangByTransaksiId($id){
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $data = TransaksiDetailT::select(
             'transaksidetail_t.*',
             'barangentry_m.barangentry_nama',
@@ -273,12 +293,20 @@ class PengirimanBarangTController extends Controller
 
     public function getPengiriman()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $data = DB::table('pengirimanBarang_t')
             ->leftJoin('transaksi_t', 'transaksi_t.transaksi_id', '=', 'pengirimanBarang_t.pengirimanBarang_transaksi_id')
             ->leftJoin('transaksidetail_t', 'transaksidetail_t.transaksidetail_transaksi_id', '=', 'transaksi_t.transaksi_id')
             ->leftJoin('packaging_m', 'packaging_m.packaging_transactiondetail_id', '=', 'transaksidetail_t.transaksidetail_id')
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
+
+            ->where(function ($q) {
+                $q->where('packaging_m.packaging_status', '!=', 'DONE')
+                ->orWhereNull('packaging_m.packaging_status');
+            })
+
             ->select(
                 'pengirimanBarang_t.pengirimanBarang_id',
                 'pengirimanBarang_t.pengirimanBarang_transaksi_id',
@@ -292,21 +320,18 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_t.pengirimanBarang_status',
                 'pengirimanBarang_t.pengirimanBarang_customer_id',
 
-                DB::raw("MAX(packaging_m.packaging_transactiondetail_id) as packaging_transactiondetail_id"),
-                DB::raw("MAX(packaging_m.packaging_nama_akun) as packaging_nama_akun"),
-                DB::raw("MAX(packaging_m.packaging_alamat) as packaging_alamat"),
-                DB::raw("MAX(packaging_m.packaging_status) as packaging_status"),
-
+                // 🔥 STATUS PER ROW
                 DB::raw("
                     CASE
-                        WHEN MAX(packaging_m.packaging_id) IS NOT NULL THEN 'PACKAGING'
-                        ELSE 'NOT PACKAGING'
+                        WHEN packaging_m.packaging_id IS NOT NULL THEN 'DONE'
+                        ELSE 'IN PROGRESS'
                     END AS status_pengiriman
                 "),
 
                 DB::raw("GROUP_CONCAT(DISTINCT barangentry_m.barangentry_id) as list_barang_id"),
                 DB::raw("GROUP_CONCAT(DISTINCT code_m.code_nama) as list_code_nama")
             )
+
             ->groupBy(
                 'pengirimanBarang_t.pengirimanBarang_id',
                 'pengirimanBarang_t.pengirimanBarang_transaksi_id',
@@ -318,8 +343,10 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_t.pengirimanBarang_alamat_pengiriman_barang',
                 'pengirimanBarang_t.pengirimanBarang_catatan',
                 'pengirimanBarang_t.pengirimanBarang_status',
-                'pengirimanBarang_t.pengirimanBarang_customer_id'
+                'pengirimanBarang_t.pengirimanBarang_customer_id',
+                'status_pengiriman'
             )
+
             ->orderBy('pengirimanBarang_t.updated_at', 'DESC')
             ->get();
 
@@ -329,14 +356,6 @@ class PengirimanBarangTController extends Controller
             return $item;
         });
 
-        if ($data->isEmpty()) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Pengiriman Barang not found',
-                'data' => null
-            ], 404);
-        }
-
         return response()->json([
             'code' => 200,
             'message' => 'Pengiriman Barang found',
@@ -344,4 +363,6 @@ class PengirimanBarangTController extends Controller
             'data' => $data
         ], 200);
     }
+
+
 }

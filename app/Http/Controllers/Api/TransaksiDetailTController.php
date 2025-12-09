@@ -9,8 +9,22 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiDetailTController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $details = TransaksiDetailT::with('transaksi')->get();
 
         if ($details->isEmpty()) {
@@ -25,6 +39,8 @@ class TransaksiDetailTController extends Controller
 
     public function store(Request $request)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $validatedData = $request->validate([
             'transaksidetail_id' => 'nullable|string',
             'transaksidetail_transaksi_id' => 'required|integer|exists:transaksi_t,transaksi_id',
@@ -48,6 +64,8 @@ class TransaksiDetailTController extends Controller
 
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
@@ -62,6 +80,8 @@ class TransaksiDetailTController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
@@ -81,6 +101,8 @@ class TransaksiDetailTController extends Controller
 
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {

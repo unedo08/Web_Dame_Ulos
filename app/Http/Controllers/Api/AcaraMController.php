@@ -24,6 +24,8 @@ class AcaraMController extends Controller
 
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         return response()->json([
             'message' => 'Data retrieved',
             'code' => 200,
@@ -39,6 +41,9 @@ class AcaraMController extends Controller
             'acara_nama' => 'required|string',
             'acara_keterangan' => 'nullable|string'
         ]);
+
+        // tambahkan create_id
+        $data['create_id'] = Auth::id();
 
         $acara = AcaraM::create($data);
 
@@ -70,7 +75,10 @@ class AcaraMController extends Controller
             ], 404);
         }
 
-        $updated->update($request->all());
+        $data = $request->all();
+        $data['update_id'] = Auth::id(); // tambahkan update_id
+
+        $updated->update($data);
 
         return response()->json([
             'message' => 'Acara updated successfully',
@@ -92,6 +100,9 @@ class AcaraMController extends Controller
             'acara_keterangan' => 'nullable|string',
             'acara_status' => 'required|string',
         ]);
+
+        // tambahkan create_id
+        $data['create_id'] = Auth::id();
 
         $acara = AcaraM::create($data);
 
@@ -130,7 +141,10 @@ class AcaraMController extends Controller
             return response()->json(['message' => 'Data not found'], 404);
         }
 
-        $acara->update($request->all());
+        $data = $request->all();
+        $data['update_id'] = Auth::id(); // tambah update_id
+
+        $acara->update($data);
 
         return response()->json([
             'message' => 'Acara updated',
@@ -153,6 +167,7 @@ class AcaraMController extends Controller
         }
 
         $acara->acara_status = $request->acara_status;
+        $acara->update_id = Auth::id(); // update_id
         $acara->save();
 
         return response()->json([
@@ -175,7 +190,7 @@ class AcaraMController extends Controller
         $acara->delete_id = Auth::id();
         $acara->save();
 
-        // update delete_id untuk detail
+        // update delete_id pada detail
         AcaradetM::where('acaradet_acara_id', $acara->acara_id)->update([
             'delete_id' => Auth::id(),
         ]);

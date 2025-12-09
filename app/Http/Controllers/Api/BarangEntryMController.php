@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BarangEntryM;
-use App\Models\BarangEntryTempM;
 use App\Models\CodeM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,20 +53,26 @@ class BarangEntryMController extends Controller
             'barangentry_status' => 'string',
         ]);
 
+        // Tambahkan create_id dan update_id
+        $data['update_id'] = Auth::id();
+
         $record = BarangEntryM::updateOrCreate(
             ['barangentry_code_id' => $data['barangentry_code_id']],
-            $data
+            array_merge($data, [
+                'create_id' => Auth::id(), // hanya jika new
+            ])
         );
 
+        // Status checker
         if ($record->barangentry_status == "PREORDER") {
             $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
         } else {
             $hasNullUkuran = is_null($record->barangentry_ukuran_mandar) && is_null($record->barangentry_ukuran_ulos);
             if (!$hasNullUkuran) {
-                $record = BarangEntryM::updateOrCreate(
-                    ['barangentry_code_id' => $data['barangentry_code_id']],
-                    ['barangentry_status' => 'READY']
-                );
+                $record->update([
+                    'barangentry_status' => 'READY',
+                    'update_id' => Auth::id()
+                ]);
             }
         }
 
@@ -91,20 +96,26 @@ class BarangEntryMController extends Controller
             'barangentry_ukuran_ulos' => 'nullable|string',
         ]);
 
+        // Tambahkan update_id
+        $data['update_id'] = Auth::id();
+
         $record = BarangEntryM::updateOrCreate(
             ['barangentry_code_id' => $data['barangentry_code_id']],
-            $data
+            array_merge($data, [
+                'create_id' => Auth::id(), // jika baru
+            ])
         );
 
+        // Status checker
         if ($record->barangentry_status == "PREORDER") {
             $hasNullUkuran = is_null($record->barangentry_nama);
         } else {
             $hasNullUkuran = is_null($record->barangentry_nama);
             if (!$hasNullUkuran) {
-                $record = BarangEntryM::updateOrCreate(
-                    ['barangentry_code_id' => $data['barangentry_code_id']],
-                    ['barangentry_status' => 'READY']
-                );
+                $record->update([
+                    'barangentry_status' => 'READY',
+                    'update_id' => Auth::id()
+                ]);
             }
         }
 
@@ -241,7 +252,10 @@ class BarangEntryMController extends Controller
             ], 404);
         }
 
-        $entry->update($request->all());
+        $data = $request->all();
+        $data['update_id'] = Auth::id();
+
+        $entry->update($data);
 
         return response()->json([
             'message' => 'Barang entry updated successfully',
@@ -266,8 +280,10 @@ class BarangEntryMController extends Controller
             ], 404);
         }
 
-        $entry->barangentry_status = $request->input('status');
-        $entry->save();
+        $entry->update([
+            'barangentry_status' => $request->status,
+            'update_id' => Auth::id()
+        ]);
 
         return response()->json([
             'message' => 'Status barang updated to ' . $request->input('status'),
@@ -316,6 +332,11 @@ class BarangEntryMController extends Controller
                 'code' => 404
             ], 404);
         }
+
+        // Set delete_id sebelum hapus
+        $entry->update([
+            'delete_id' => Auth::id()
+        ]);
 
         $entry->delete();
 

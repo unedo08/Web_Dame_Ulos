@@ -10,9 +10,22 @@ use Illuminate\Support\Facades\Auth;
 
 class JenisBarangMController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
 
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = JenisBarangM::select(
                 'jenisbarang_m.jenisbarang_id',
                 'jenisbarang_m.jenisbarang_kode',
@@ -36,6 +49,8 @@ class JenisBarangMController extends Controller
     
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $item = JenisBarangM::find($id);
         if (!$item) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -46,6 +61,8 @@ class JenisBarangMController extends Controller
     // CREATE
     public function store(Request $request)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $validated = $request->validate([
             'jenisbarang_nama' => 'required|string|max:100',
             'jenisbarang_kode' => 'required|string|max:50',
@@ -64,6 +81,8 @@ class JenisBarangMController extends Controller
     // UPDATE
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $item = JenisBarangM::find($id);
         if (!$item) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -85,6 +104,8 @@ class JenisBarangMController extends Controller
     // UPDATE JUMLAH ONLY
     public function updateJumlahAndGetBarcode(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $item = JenisBarangM::find($id);
         if (!$item) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -105,6 +126,8 @@ class JenisBarangMController extends Controller
     // DELETE (SOFT DELETE)
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $item = JenisBarangM::find($id);
         if (!$item) {
             return response()->json(['message' => 'Data not found'], 404);
@@ -121,6 +144,8 @@ class JenisBarangMController extends Controller
 
     public function getAllJenisBarangAmount()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $jumlah = JenisBarangM::count();
 
         return response()->json([

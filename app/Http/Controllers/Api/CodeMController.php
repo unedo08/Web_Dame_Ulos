@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CodeMController extends Controller
 {
-    /**
-     * Cek apakah user sudah login
-     */
     private function checkAuth()
     {
         if (!Auth::check()) {
@@ -28,6 +25,7 @@ class CodeMController extends Controller
     // PUBLIC
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
         return response()->json(CodeM::all(), 200);
     }
 
@@ -53,29 +51,27 @@ class CodeMController extends Controller
 
         $item = JenisBarangM::find($validated['code_jenisbarang_id']);
         $jumlahBarang = $validated['jumlah_barang'];
-
         $createdCodes = [];
 
         if (substr($item->jenisbarang_kode, 0, 2) !== 'PO') {
 
-            // Buat kode unik per jumlah barang dimasukkan
             for ($i = 0; $i < $jumlahBarang; $i++) {
                 $newKode = $this->generateKode($item->jenisbarang_kode, $item->jenisbarang_id);
 
                 $codeM = CodeM::create([
-                    'code_nama' => $newKode,
+                    'code_nama'           => $newKode,
                     'code_jenisbarang_id' => $item->jenisbarang_id,
+                    'create_id'           => Auth::id(),   // <<--- HERE
                 ]);
 
                 $createdCodes[] = $codeM;
             }
 
         } else {
-
-            // Jika PO → Hanya 1 kode
             $codeM = CodeM::create([
-                'code_nama' => $item->jenisbarang_kode,
+                'code_nama'           => $item->jenisbarang_kode,
                 'code_jenisbarang_id' => $item->jenisbarang_id,
+                'create_id'           => Auth::id(),     // <<--- HERE
             ]);
 
             $createdCodes[] = $codeM;
@@ -83,7 +79,8 @@ class CodeMController extends Controller
 
         // Update jumlah di jenis barang
         $item->update([
-            'jenisbarang_jumlah' => $item->jenisbarang_jumlah + $jumlahBarang
+            'jenisbarang_jumlah' => $item->jenisbarang_jumlah + $jumlahBarang,
+            'update_id'          => Auth::id(),        // <<--- HERE
         ]);
 
         return response()->json([
@@ -125,6 +122,14 @@ class CodeMController extends Controller
             return response()->json(['message' => 'Data not found'], 404);
         }
 
+        // Tandai delete_id sebelum delete
+        foreach ($items as $item) {
+            $item->update([
+                'delete_id' => Auth::id()   // <<--- HERE
+            ]);
+        }
+
+        // Hapus data
         CodeM::where('code_jenisbarang_id', $jenisbarang_id)->delete();
 
         return response()->json(['message' => 'Deleted successfully'], 200);

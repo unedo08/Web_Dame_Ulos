@@ -6,12 +6,27 @@ use App\Http\Controllers\Controller;
 
 use App\Models\CaraBayarM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CaraBayarMController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     // GET ALL
     public function index()
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         return response()->json([
             'status' => true,
             'data'   => CaraBayarM::all()
@@ -21,6 +36,8 @@ class CaraBayarMController extends Controller
     // STORE
     public function store(Request $request)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $validated = $request->validate([
             'carabayar_nama' => 'required|string|max:100',
             'carabayar_kode' => 'nullable|string|max:50',
@@ -38,6 +55,8 @@ class CaraBayarMController extends Controller
     // SHOW BY ID
     public function show($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = CaraBayarM::find($id);
 
         if (!$data) {
@@ -50,6 +69,8 @@ class CaraBayarMController extends Controller
     // UPDATE
     public function update(Request $request, $id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+
         $data = CaraBayarM::find($id);
 
         if (!$data) {
@@ -73,6 +94,8 @@ class CaraBayarMController extends Controller
     // DELETE
     public function destroy($id)
     {
+        if ($resp = $this->checkAuth()) return $resp;
+        
         $data = CaraBayarM::find($id);
 
         if (!$data) {

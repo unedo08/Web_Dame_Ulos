@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\CustomerM;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CustomerMController extends Controller
 {
-    // CEK LOGIN GLOBAL
+    
     private function checkAuth()
     {
         if (!Auth::check()) {
@@ -35,6 +36,42 @@ class CustomerMController extends Controller
             'data' => $customers
         ], 200);
     }
+
+    public function getSummaryByCustomer()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $data = DB::table('transaksidetail_t as tt')
+            ->join('transaksi_t as tt2', 'tt2.transaksi_id', '=', 'tt.transaksidetail_transaksi_id')
+            ->join('customer_m as cm', 'cm.customer_nama', '=', 'tt2.transaksi_nama_customer')
+            ->select(
+                'cm.customer_nama',
+                'cm.customer_akun',
+                'cm.customer_alamat',
+                'cm.customer_notelepon',
+                'tt2.transaksi_tipe',
+                DB::raw('COUNT(DISTINCT tt2.transaksi_id) as jumlah_transaksi'),
+                DB::raw('COUNT(tt.transaksidetail_barang_id) as jumlah_barang')
+            )
+            ->groupBy(
+                'cm.customer_nama',
+                'cm.customer_akun',
+                'cm.customer_alamat',
+                'cm.customer_notelepon',
+                'tt2.transaksi_tipe'
+            )
+            ->orderBy('cm.customer_nama', 'asc')
+            ->orderBy('tt2.transaksi_tipe', 'asc')
+            ->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Summary transaksi per customer ditemukan',
+            'count' => $data->count(),
+            'data' => $data
+        ]);
+    }
+
 
     public function show($id)
     {
