@@ -345,4 +345,218 @@ class BarangEntryMController extends Controller
             'code' => 200
         ], 200);
     }
+
+    public function getAllBarangEntryAmount()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $jumlah = BarangEntryM::count();
+
+        return response()->json([
+            'message' => 'Total jumlah barang entry',
+            'code' => 200,
+            'total' => $jumlah
+        ]);
+    }
+
+    public function getAllDataBarangWaitToEntry()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $data = BarangEntryM::where('barangentry_status', 'NOT_READY')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data with status "NOT_READY"',
+            'data' => $data
+        ]);
+    }
+
+    public function getAllDataBarangReady()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $data = BarangEntryM::where('barangentry_status', 'READY')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data with status "READY"',
+            'data' => $data
+        ]);
+    }
+
+    public function getAllDataBarangPO()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $data = BarangEntryM::where('barangentry_status', 'PREORDER')
+            ->whereDoesntHave('transaksiDetail.pengirimanBarang')
+            ->with(['transaksiDetail.pengirimanBarang'])
+            ->get();
+
+        $data = $data->map(function ($item) {
+
+            // ----------- CEK FIELD LENGKAP ----------- //
+            $fieldsToCheck = [
+                'barangentry_nama',
+                'barangentry_ukuran_mandar',
+                'barangentry_ukuran_ulos'
+            ];
+
+            $allFilled = collect($fieldsToCheck)->every(function ($field) use ($item) {
+                return !is_null($item->$field) && $item->$field !== '';
+            });
+
+            $item->barangfilled = $allFilled;
+
+            // ----------- STATUS BARANG (semua pasti PREORDER karena difilter) ----------- //
+            $item->status_barang = 'PREORDER';
+
+            return $item;
+        });
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success get data PREORDER that are NOT in pengiriman',
+            'total_data' => $data->count(),
+            'data' => $data
+        ]);
+    }
+
+
+
+    public function updateStok(Request $request, $id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $request->validate([
+            'jumlah_barang' => 'required|numeric',
+        ]);
+
+        $entry = BarangEntryM::find($id);
+        if (!$entry || $entry->barangentry_status == "NOT_READY") {
+            return response()->json([
+                'message' => 'Data not found',
+                'code' => 404
+            ], 404);
+        }
+
+        $entry->barangentry_jumlah_barang += $request->input('jumlah_barang');
+        $entry->save();
+
+        return response()->json([
+            'message' => 'Jumlah Barang is Updated',
+            'code' => 200,
+            'data' => $entry
+        ], 200);
+    }
+
+
+    public function updateReadyStockDesc(Request $request, $id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $request->validate([
+            'barangentry_nama' => 'required|string',
+            'barangentry_code_id'  => 'required|string',
+            'barangentry_warna'  => 'required|string',
+            'barangentry_nama_penenun' => 'required|string',
+            'barangentry_nama_panirat' => 'required|string',
+            'barangentry_dryer' => 'required|string',
+            'barangentry_modal' => 'required|numeric',
+            'barangentry_price_tag' => 'required|numeric',
+            'barangentry_harga_net' => 'required|numeric',
+            'barangentry_jumlah_barang' => 'required|numeric',
+            // 'barangentry_code_id'  => 'required|string',
+            'barangentry_ukuran_mandar' => 'nullable|string',
+            'barangentry_ukuran_ulos' => 'nullable|string',
+        ]);
+
+        $updated = BarangEntryM::find($id);
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Data Barang Ready Stock not found',
+                'code' => 404
+            ], 404);
+        }
+
+        $updated->update($request->all());
+
+        return response()->json([
+            'message' => 'Barang Ready Stock updated successfully',
+            'code' => 200,
+            'data' => $updated
+        ], 200);
+    }
+
+    public function updateReadyStockSize(Request $request, $id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        $request->validate([
+            // 'barangentry_nama' => 'required|string',
+            'barangentry_code_id'  => 'required|string',
+            // 'barangentry_warna'  => 'required|string',
+            // 'barangentry_nama_penenun' => 'required|string',
+            // 'barangentry_nama_panirat' => 'required|string',
+            // 'barangentry_dryer' => 'required|string',
+            // 'barangentry_modal' => 'required|numeric',
+            // 'barangentry_price_tag' => 'required|numeric',
+            // 'barangentry_harga_net' => 'required|numeric',
+            // 'barangentry_jumlah_barang' => 'required|numeric',
+            // 'barangentry_code_id'  => 'required|string',
+            'barangentry_ukuran_mandar' => 'nullable|string',
+            'barangentry_ukuran_ulos' => 'nullable|string',
+        ]);
+
+        $updated = BarangEntryM::find($id);
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Data Barang Ready Stock not found',
+                'code' => 404
+            ], 404);
+        }
+
+        $updated->update($request->all());
+
+        return response()->json([
+            'message' => 'Barang Ready Stock updated successfully',
+            'code' => 200,
+            'data' => $updated
+        ], 200);
+    }
+
+    public function updateReadyStock(Request $request, $id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $request->validate([
+            'barangentry_nama' => 'sometimes|required|string',
+            'barangentry_code_id'  => 'sometimes|required|string',
+            'barangentry_warna'  => 'sometimes|required|string',
+            'barangentry_nama_penenun' => 'sometimes|required|string',
+            'barangentry_nama_panirat' => 'sometimes|required|string',
+            'barangentry_dryer' => 'sometimes|required|string',
+            'barangentry_modal' => 'sometimes|required|numeric',
+            'barangentry_price_tag' => 'sometimes|required|numeric',
+            'barangentry_harga_net' => 'sometimes|required|numeric',
+            'barangentry_jumlah_barang' => 'sometimes|required|numeric',
+
+            // Size fields (optional)
+            'barangentry_ukuran_mandar' => 'sometimes|nullable|string',
+            'barangentry_ukuran_ulos' => 'sometimes|nullable|string',
+        ]);
+
+        $updated = BarangEntryM::find($id);
+
+        if (!$updated) {
+            return response()->json([
+                'message' => 'Data Barang Ready Stock not found',
+                'code' => 404
+            ], 404);
+        }
+
+        // Only update fields that exist in the payload
+        $updated->update($request->only(array_keys($request->all())));
+
+        return response()->json([
+            'message' => 'Barang Ready Stock updated successfully',
+            'code' => 200,
+            'data' => $updated
+        ], 200);
+    }
 }
