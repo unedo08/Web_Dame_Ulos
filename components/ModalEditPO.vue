@@ -208,10 +208,26 @@ const updateHargaNet = (e) => {
 // 🔄 loadData & submitForm tidak diubah
 const loadData = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${props.id}`)
-    const resEntry = await axios.get(`${url.value}/api/entrybarang/${props.id}`)
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${props.id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
+    const resEntry = await axios.get(`${url.value}/api/entrybarang/${props.id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
     form.value = { ...res.data.data, ...resEntry.data.data }
-    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
+    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
     form.value.code = code.data.code_nama
 
     formattedModal.value = formatNumber(form.value.preOrderBarang_uang_muka)
@@ -225,6 +241,7 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true
   try {
+    const token = sessionStorage.getItem("auth_token")
     const payload = {
       preOrdeBarang_id: form.value.preOrdeBarang_id,
       preOrderBarang_transaksi_id: '',
@@ -239,7 +256,12 @@ const submitForm = async () => {
       preOrderBarang_catatan: form.value.preOrderBarang_catatan,
       preOrderBarang_barang_entry_id: String(form.value.preOrderBarang_barang_entry_id),
     }
-    await axios.post(`${url.value}/api/pre-order-barang`, payload)
+    await axios.post(`${url.value}/api/pre-order-barang`, payload, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
     await Swal.fire('Berhasil', 'Data berhasil disimpan!', 'success')
     emit('saved')
     closeModal()

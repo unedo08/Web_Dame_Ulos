@@ -77,8 +77,13 @@ const caraBayarList = ref([]);
 onMounted(async () => {
     const config = useRuntimeConfig();
     url.value = config.public.apiBase;
-
-    const res = await axios.get(`${url.value}/api/carabayar`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/carabayar`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        }
+    });
     caraBayarList.value = res.data.data;
 });
 

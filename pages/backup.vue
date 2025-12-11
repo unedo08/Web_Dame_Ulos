@@ -212,7 +212,13 @@ const url = config.public.apiBase
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${url}/api/jenisbarang`);
+    const token = sessionStorage.getItem("auth_token")
+    const response = await axios.get(`${url}/api/jenisbarang`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        }
+    });
     const fetchedData = response.data;
     barang.value = fetchedData.map((item, index) => ({
       no: index + 1,

@@ -36,16 +36,14 @@
 
           <div>
             <label class="block text-sm font-medium mb-1">Nama Penerima <span style="color:red">*</span></label>
-            <input v-model="form.nama_penerima" type="text"
-              class="w-full border rounded-md px-3 py-2"
+            <input v-model="form.nama_penerima" type="text" class="w-full border rounded-md px-3 py-2"
               placeholder="Masukkan nama penerima" />
             <p v-if="errors.nama_penerima" class="text-red-500 text-sm mt-1">{{ errors.nama_penerima }}</p>
           </div>
 
           <div>
             <label class="block text-sm font-medium mb-1">No Telepon/WA <span style="color:red">*</span></label>
-            <input v-model="form.no_telepon" type="text"
-              class="w-full border rounded-md px-3 py-2"
+            <input v-model="form.no_telepon" type="text" class="w-full border rounded-md px-3 py-2"
               placeholder="Masukkan nomor telepon" />
             <p v-if="errors.no_telepon" class="text-red-500 text-sm mt-1">{{ errors.no_telepon }}</p>
           </div>
@@ -67,23 +65,20 @@
           <div>
             <label class="block text-sm font-medium mb-1">Biaya Pengiriman <span style="color:red">*</span></label>
             <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" type="text"
-              class="w-full border rounded-md px-3 py-2"
-              placeholder="Masukkan biaya pengiriman" />
+              class="w-full border rounded-md px-3 py-2" placeholder="Masukkan biaya pengiriman" />
             <p v-if="errors.biaya_pengiriman" class="text-red-500 text-sm mt-1">{{ errors.biaya_pengiriman }}</p>
           </div>
 
           <div>
             <label class="block text-sm font-medium mb-1">Alamat <span style="color:red">*</span></label>
-            <textarea v-model="form.alamat" rows="2"
-              class="w-full border rounded-md px-3 py-2"
+            <textarea v-model="form.alamat" rows="2" class="w-full border rounded-md px-3 py-2"
               placeholder="Masukkan alamat lengkap"></textarea>
             <p v-if="errors.alamat" class="text-red-500 text-sm mt-1">{{ errors.alamat }}</p>
           </div>
 
           <div>
             <label class="block text-sm font-medium mb-1">Pengiriman <span style="color:red">*</span></label>
-            <input v-model="form.pengiriman" type="text"
-              class="w-full border rounded-md px-3 py-2"
+            <input v-model="form.pengiriman" type="text" class="w-full border rounded-md px-3 py-2"
               placeholder="Masukkan jenis pengiriman" />
             <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">{{ errors.pengiriman }}</p>
           </div>
@@ -139,9 +134,15 @@ onMounted(async () => {
   url.value = config.public.apiBase;
 
   try {
-    const res = await axios.get(`${url.value}/api/carabayar`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/carabayar`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     caraBayarList.value = res.data.data;
-  } catch (err) {}
+  } catch (err) { }
 });
 
 const jumlahBarang = computed(() =>
@@ -192,6 +193,7 @@ async function submitForm() {
   isSubmitting.value = true;
 
   try {
+    const token = sessionStorage.getItem("auth_token")
     const trx = await axios.post(`${url.value}/api/transaksi`, {
       transaksi_nama_customer: form.value.nama_penerima,
       transaksi_nomor_telepon: form.value.no_telepon,
@@ -201,12 +203,22 @@ async function submitForm() {
       transaksi_tipe: "PREORDER",
       transaksi_status: "PREORDER",
       transaksi_catatan: "",
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     const transaksi_id = trx.data.data.transaksi_id;
 
     for (const item of barangTerpilih) {
-      const barangRes = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${item.kode}`);
+      const barangRes = await axios.get(`${url.value}/api/entrybarang/getDataByCode/${item.kode}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
       const barangData = barangRes.data;
 
       await axios.post(`${url.value}/api/transaksi-detail`, {
@@ -214,9 +226,19 @@ async function submitForm() {
         transaksidetail_barang_id: barangData.data.barangentry_id,
         transaksidetail_jumlah_barang: item.jumlah,
         transaksidetail_harga_barang: Number(item.harga),
+      }, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
       });
 
-      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`);
+      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
     }
 
     await axios.post(`${url.value}/api/pengiriman-barang`, {
@@ -229,6 +251,11 @@ async function submitForm() {
       pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
       pengirimanBarang_catatan: "",
       pengirimanBarang_status: "Proses",
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     Swal.fire("Berhasil!", "Transaksi berhasil disimpan!", "success");

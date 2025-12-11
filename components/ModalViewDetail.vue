@@ -86,25 +86,44 @@ const fetchDetail = async () => {
   detailBarang.value = [];
 
   try {
-    console.log('asdsa', props.id);
-
-    const transaksi = await axios.get(`${url}/api/transaksi/${props.id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const transaksi = await axios.get(`${url}/api/transaksi/${props.id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const detailTransaksi = transaksi.data.data.details;
 
     const detailPromises = detailTransaksi.map((detail) =>
-      axios.get(`${url}/api/transaksi-detail/${detail.transaksidetail_id}`)
+      axios.get(`${url}/api/transaksi-detail/${detail.transaksidetail_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      })
     );
     const detailResults = await Promise.all(detailPromises);
 
     const entryBarangPromises = detailResults.map((res) =>
       axios.get(
-        `${url}/api/entrybarang/${res.data.data.transaksidetail_barang_id}`
+        `${url}/api/entrybarang/${res.data.data.transaksidetail_barang_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       )
     );
     const entryBarangResults = await Promise.all(entryBarangPromises);
 
     const codeBarangPromises = entryBarangResults.map((res) =>
-      axios.get(`${url}/api/codebarang/${res.data.data.barangentry_code_id}`)
+      axios.get(`${url}/api/codebarang/${res.data.data.barangentry_code_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      })
     );
     const codeBarangResults = await Promise.all(codeBarangPromises);
 

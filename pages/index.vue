@@ -106,9 +106,7 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     });
-    console.log('zasd', response);
     
-
     const token = response.data.token;
     if (token) {
       if (rememberMe.value) {

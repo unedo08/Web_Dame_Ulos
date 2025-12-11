@@ -70,11 +70,17 @@ const submitForm = async () => {
   }
 
   try {
+    const token = sessionStorage.getItem("auth_token")
     for (const item of barangTerpilih) {
       await axios.post(`${url}/api/packaging`, {
         packaging_transactiondetail_id: item.trx_detail_id,
         packaging_nama_akun: props.pengiriman.pengirimanBarang_nama_penerima,
         packaging_alamat: props.pengiriman.pengirimanBarang_alamat_pengiriman_barang
+      }, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
       });
     }
 

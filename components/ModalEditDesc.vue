@@ -156,9 +156,20 @@ const updateHargaNet = (e) => {
 
 const loadData = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/entrybarang/${props.id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/entrybarang/${props.id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     form.value = { ...res.data.data };
-    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
+    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
     form.value.code = code.data.code_nama;
 
     formattedModal.value = formatNumber(form.value.barangentry_modal);
@@ -172,7 +183,7 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true;
   try {
-
+    const token = sessionStorage.getItem("auth_token")
     const payload = {
       barangentry_code_id: String(form.value.barangentry_code_id),
       barangentry_nama: form.value.barangentry_nama,
@@ -187,7 +198,12 @@ const submitForm = async () => {
       // barangentry_ukuran_mandar: form.value.barangentry_ukuran_mandar,
       barangentry_jumlah_barang: form.value.barangentry_jumlah_barang,
     }
-    await axios.put(`${url.value}/api/entrybarang/ready-stock-desc/${props.id}`, payload);
+    await axios.put(`${url.value}/api/entrybarang/ready-stock-desc/${props.id}`, payload, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     await Swal.fire("Berhasil", "Data berhasil disimpan!", "success");
     emit('saved');
     closeModal();

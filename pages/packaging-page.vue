@@ -65,8 +65,7 @@
                 Delete
               </button>
 
-              <button 
-                class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
+              <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
                 Selesai
               </button>
             </div>
@@ -133,7 +132,13 @@ const selectedBarang = ref([]);
 
 
 const fetchData = async () => {
-  const res = await axios.get(`${url}/api/pengiriman-barang/get-pengiriman`);
+  const token = sessionStorage.getItem("auth_token")
+  const res = await axios.get(`${url}/api/pengiriman-barang/get-pengiriman`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+  });
   pengirimanData.value = res.data.data;
 };
 
@@ -146,7 +151,13 @@ const openModalEdit = async (row) => {
   const trx_id = row.pengirimanBarang_transaksi_id;
 
   try {
-    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     if (!res.data.data || res.data.data.length === 0) {
       Swal.fire({
@@ -187,8 +198,13 @@ const deleteData = async (id) => {
   });
 
   if (!c.isConfirmed) return;
-
-  await axios.delete(`${url}/api/pengiriman-barang/${id}`);
+  const token = sessionStorage.getItem("auth_token")
+  await axios.delete(`${url}/api/pengiriman-barang/${id}`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+  });
   fetchData();
 
   Swal.fire("Berhasil", "Data terhapus", "success");
@@ -196,8 +212,14 @@ const deleteData = async (id) => {
 
 const selesaikanPackaging = async (row) => {
   try {
+    const token = sessionStorage.getItem("auth_token")
     const trxId = row.pengirimanBarang_transaksi_id;
-    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
+    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const barangList = res.data.data;
 
     if (!barangList || barangList.length === 0) {
@@ -210,6 +232,11 @@ const selesaikanPackaging = async (row) => {
         packaging_transactiondetail_id: item.transaksidetail_id,
         packaging_nama_akun: row.pengirimanBarang_nama_penerima,
         packaging_alamat: row.pengirimanBarang_alamat_pengiriman_barang,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
       });
     }
 
@@ -239,8 +266,13 @@ async function buildRows(row) {
   try {
     const trxId = row.pengirimanBarang_transaksi_id;
     if (!trxId) return [];
-
-    const { data: trx } = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
+    const token = sessionStorage.getItem("auth_token")
+    const { data: trx } = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     if (!trx.data || trx.data.length === 0) return [];
 

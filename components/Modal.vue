@@ -326,8 +326,14 @@ async function printPriceTag() {
     const results = [];
     for (const code of barcodeList.value) {
       try {
+        const token = sessionStorage.getItem("auth_token")
         const res = await axios.get(
-          `${url.value}/api/entrybarang/getDataByCode/${code}`
+          `${url.value}/api/entrybarang/getDataByCode/${code}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
         );
         if (res.data?.data) results.push({ data: res.data.data });
       } catch (err) {

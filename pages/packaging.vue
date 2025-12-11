@@ -260,11 +260,15 @@ const openModalEditPackaging = async (pengiriman) => {
 };
 
 const editPackaging = async (trx_id) => {
-  const response = await axios.get(`${url.value}//${trx_id}`);
+  const token = sessionStorage.getItem("auth_token")
+  const response = await axios.get(`${url.value}/${trx_id}`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+  });
 
   dataTransaksi = response.data.data;
-
-
 }
 const paginatedPages = computed(() => {
   const total = totalPages.value;
