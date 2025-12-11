@@ -317,7 +317,13 @@ const formatRupiah = (harga) => {
 
 async function getListAcara() {
   try {
-    const response = await axios.get(`${url.value}/api/acara`);
+    const token = sessionStorage.getItem("auth_token")
+    const response = await axios.get(`${url.value}/api/acara`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     listAcara.value = response.data.data;
   } catch (error) {
     console.error("Gagal memuat data acara:", error);
@@ -381,9 +387,15 @@ const submitAcara = async () => {
   }
 
   try {
+    const token = sessionStorage.getItem("auth_token")
     const response = await axios.post(`${url.value}/api/acara/addAcara`, {
       acara_nama: newProduct.value.acara_nama,
       acara_keterangan: newProduct.value.acara_keterangan,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     await getListAcara();
@@ -416,7 +428,13 @@ const deleteProduct = async (id, acara_nama) => {
 
   if (result.isConfirmed) {
     try {
-      const response = await axios.delete(`${url.value}/api/acara/deleteAcara/${id}`);
+      const token = sessionStorage.getItem("auth_token")
+      const response = await axios.delete(`${url.value}/api/acara/deleteAcara/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
 
       if (response.status === 200) {
         acara.value = acara.value.filter((item) => item.acara_id !== id);
@@ -445,8 +463,14 @@ const editItem = async (item) => {
   barcodeInput.value = "";
   tempBarangList.value = [];
   try {
+    const token = sessionStorage.getItem("auth_token")
     const response = await axios.get(
-      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`
+      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
 
     const data = response.data.data || [];
@@ -454,7 +478,12 @@ const editItem = async (item) => {
       data.map(async (barang) => {
         try {
           const detailResponse = await axios.get(
-            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`
+            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            }
+          }
           );
           const detail = detailResponse.data.data;
 
@@ -463,7 +492,12 @@ const editItem = async (item) => {
             const codeId = parseInt(detail.barangentry_code_id, 10);
             if (!isNaN(codeId)) {
               const codeResponse = await axios.get(
-                `${url.value}/api/codebarang/${codeId}`
+                `${url.value}/api/codebarang/${codeId}`, {
+                headers: {
+                  "Authorization": `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                }
+              }
               );
               codeData = codeResponse.data;
             } else {
@@ -514,7 +548,12 @@ const addToTempBarang = async () => {
 
   try {
     const response = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + code
+      `${url.value}/api/entrybarang/getDataByCode/` + code, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
     const barang = response.data.data;
 
@@ -526,6 +565,11 @@ const addToTempBarang = async () => {
     await axios.post(`${url.value}/api/acaradet/addDetAcara`, {
       acaradet_acara_id: editForm.value.acara_id,
       acaradet_barangentry_id: barang.barangentry_id,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     if (!tempBarangList.value.includes(code)) {
@@ -552,7 +596,12 @@ const removeFromTempBarang = async (id) => {
   if (confirm(`Anda yakin ingin menghapus data ini?`)) {
     try {
       const response = await axios.delete(
-        `${url.value}/api/acaradet/deleteDetAcara/` + id
+        `${url.value}/api/acaradet/deleteDetAcara/` + id, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
       if (response.status === 200) {
         tempBarangList.value = tempBarangList.value.filter(
@@ -592,7 +641,12 @@ const submitEdit = async () => {
         acara_hargapricetagbarang: totalPriceTag,
         acara_keterangan: "Ready To store",
         acara_status: "Ready",
+      }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
       }
+    }
     );
 
     await getListAcara();
@@ -605,7 +659,12 @@ const submitEdit = async () => {
 
 const exportItem = async (id) => {
   try {
-    const response = await axios.get(`${url.value}/api/acara/export/${id}`);
+    const response = await axios.get(`${url.value}/api/acara/export/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const acaraData = response.data.data.acara;
     const detailData = response.data.data.detail;
 

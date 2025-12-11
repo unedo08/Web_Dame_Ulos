@@ -165,7 +165,13 @@ const isSubmitting = ref(false);
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${url.value}/api/jenisbarang`);
+    const token = sessionStorage.getItem("auth_token")
+    const response = await axios.get(`${url.value}/api/jenisbarang`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     barang.value = response.data.data.map((item) => ({
       jenisbarang_id: item.jenisbarang_id,
       jenisbarang_kode: item.jenisbarang_kode,
@@ -246,10 +252,16 @@ const submitProduct = async () => {
 
   isSubmitting.value = true;
   try {
+    const token = sessionStorage.getItem("auth_token")
     const response = await axios.post(`${url.value}/api/jenisbarang`, {
       jenisbarang_kode: newProduct.value.jenisbarang_kode,
       jenisbarang_nama: newProduct.value.jenisbarang_nama,
       jenisbarang_jumlah: 0,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     if (response.status === 201) {
@@ -282,7 +294,13 @@ const deleteProduct = async (id, kode_barang) => {
 
   if (result.isConfirmed) {
     try {
-      await axios.delete(`${url.value}/api/jenisbarang/${id}`);
+      const token = sessionStorage.getItem("auth_token")
+      await axios.delete(`${url.value}/api/jenisbarang/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
       barang.value = barang.value.filter((item) => item.jenisbarang_id !== id);
       Swal.fire("Berhasil!", `"${kode_barang}" telah dihapus.`, "success");
 
@@ -328,10 +346,15 @@ const handlePrint = async () => {
 
   try {
     let barcodeData = [];
-
+    const token = sessionStorage.getItem("auth_token")
     const response = await axios.post(`${url.value}/api/codebarang`, {
       jumlah_barang: jumlah,
       code_jenisbarang_id: jenisbarang_id,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
     barcodeData = response.data.data;
 

@@ -211,7 +211,13 @@ onMounted(() => {
 });
 
 onMounted(async () => {
-  const res = await axios.get(`${url.value}/api/carabayar`);
+  const token = sessionStorage.getItem("auth_token")
+  const res = await axios.get(`${url.value}/api/carabayar`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+  });
   caraBayarList.value = res.data.data;
 });
 
@@ -262,7 +268,13 @@ const waitingList = ref([]);
 
 async function fetchHoldTransactions() {
   try {
-    const response = await axios.get(`${url.value}/api/transaksi/status/hold`);
+    const token = sessionStorage.getItem("auth_token")
+    const response = await axios.get(`${url.value}/api/transaksi/status/hold`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     waitingList.value = Array.isArray(response.data?.data) ? response.data.data : [];
     currentPage.value = 1;
   } catch (error) {
@@ -274,7 +286,13 @@ async function fetchHoldTransactions() {
 
 async function loadHoldTransaction(id) {
   try {
-    const { data } = await axios.get(`${url.value}/api/transaksi/${id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const { data } = await axios.get(`${url.value}/api/transaksi/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const transaksi = data?.data;
     if (!transaksi) {
       Swal.fire("Gagal", "Data transaksi tidak ditemukan", "error");
@@ -291,14 +309,24 @@ async function loadHoldTransaction(id) {
       detailList.map(async (detail) => {
         try {
           const resEntry = await axios.get(
-            `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+            `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            }
+          }
           );
 
           const entry = resEntry?.data?.data;
           let codeNama = "";
           if (entry?.barangentry_code_id) {
             const resCode = await axios.get(
-              `${url.value}/api/codebarang/${entry.barangentry_code_id}`
+              `${url.value}/api/codebarang/${entry.barangentry_code_id}`, {
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              }
+            }
             );
             codeNama = resCode?.data?.code_nama || "";
           }
@@ -376,7 +404,13 @@ async function deleteHoldTransaction(id) {
   if (!konfirmasi.isConfirmed) return;
 
   try {
-    await axios.delete(`${url.value}/api/transaksi/${id}`);
+    const token = sessionStorage.getItem("auth_token")
+    await axios.delete(`${url.value}/api/transaksi/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     await fetchHoldTransactions();
 
     if (currentTransaksiId.value === id) {
@@ -426,12 +460,23 @@ async function handleHold() {
   };
 
   try {
-    const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+    const token = sessionStorage.getItem("auth_token")
+    const { data } = await axios.post(`${url.value}/api/transaksi`, payload, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const transaksi_id = data.data.transaksi_id;
 
     for (const item of datatableItems.value) {
       const { data: barangResponse } = await axios.get(
-        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
 
       const barangData = barangResponse.data;
@@ -444,7 +489,12 @@ async function handleHold() {
         transaksidetail_harga_barang: item.barangentry_harga_net,
       };
 
-      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
     }
 
     Swal.fire({
@@ -520,6 +570,7 @@ async function checkoutProcess() {
   let transaksi_id = null;
 
   try {
+    const token = sessionStorage.getItem("auth_token")
     if (currentTransaksiId.value) {
       transaksi_id = currentTransaksiId.value;
       const payload_hold = {
@@ -534,14 +585,29 @@ async function checkoutProcess() {
         transaksi_catatan: processForm.value.notes,
       };
 
-      await axios.post(`${url.value}/api/transaksi`, payload_hold);
+      await axios.post(`${url.value}/api/transaksi`, payload_hold, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
     } else {
-      const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+      const { data } = await axios.post(`${url.value}/api/transaksi`, payload, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
       transaksi_id = data.data.transaksi_id;
     }
     for (const item of datatableItems.value) {
       const { data: barangResponse } = await axios.get(
-        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+        `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
 
       const barangData = barangResponse.data;
@@ -554,20 +620,40 @@ async function checkoutProcess() {
         transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
       };
 
-      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      await axios.post(`${url.value}/api/transaksi-detail`, detailPayload, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
     }
-    const { data: responsePrint } = await axios.get(`${url.value}/api/transaksi/${transaksi_id}`);
+    const { data: responsePrint } = await axios.get(`${url.value}/api/transaksi/${transaksi_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     const transaksi = responsePrint.data;
 
     const detailWithNames = await Promise.all(
       transaksi.details.map(async (detail) => {
         const barangRes = await axios.get(
-          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
         );
 
         const kodeBarang = await axios.get(
-          `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id
+          `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
         );
 
         return {
@@ -637,8 +723,14 @@ function removeItem(index) {
     if (itemCount === 1) {
       if (currentTransaksiId.value) {
         try {
+          const token = sessionStorage.getItem("auth_token")
           await axios.delete(
-            `${url.value}/api/transaksi/${currentTransaksiId.value}`
+            `${url.value}/api/transaksi/${currentTransaksiId.value}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            }
+          }
           );
           Swal.fire("Terhapus", "Transaksi berhasil dihapus.", "success");
         } catch (err) {
@@ -676,7 +768,13 @@ const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
     const baseURL = configURL.public.apiBase;
-    const { data } = await axios.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
+    const token = sessionStorage.getItem("auth_token")
+    const { data } = await axios.get(`${baseURL}/api/entrybarang/getDataKasir/` + code, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     if (!data || !Array.isArray(data.data) || data.data.length === 0) {
       Swal.fire("Tidak ditemukan", "Kode barang tidak ditemukan", "warning");

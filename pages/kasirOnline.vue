@@ -4,25 +4,15 @@
   <div class="flex items-start justify-between pt-2">
     <!-- Input Section -->
     <div class="flex flex-col flex-1 space-y-2">
-      <input
-        class="search-box p-2 border rounded-md"
-        v-model="searchQueryCustomer"
-        type="text"
-        placeholder="Nama Customer"
-      />
-      <input
-        class="search-box p-2 border rounded-md"
-        v-model="searchQueryPhone"
-        type="text"
-        placeholder="Nomor Telepon"
-      />
+      <input class="search-box p-2 border rounded-md" v-model="searchQueryCustomer" type="text"
+        placeholder="Nama Customer" />
+      <input class="search-box p-2 border rounded-md" v-model="searchQueryPhone" type="text"
+        placeholder="Nomor Telepon" />
     </div>
 
     <div class="flex space-x-2 ml-4">
-      <button
-        class="bg-green-500 text-white rounded-md hover:bg-green-600 w-[104px] h-[34px]"
-        @click="openModalOnline = true"
-      >
+      <button class="bg-green-500 text-white rounded-md hover:bg-green-600 w-[104px] h-[34px]"
+        @click="openModalOnline = true">
         Online
       </button>
     </div>
@@ -44,21 +34,12 @@
           <td>{{ index + 1 }}</td>
           <td>{{ item.barangentry_nama }}</td>
           <td>
-            <input
-              type="number"
-              v-model.number="item.quantity"
-              class="w-16 border px-2 py-1"
-              min="1"
-            />
+            <input type="number" v-model.number="item.quantity" class="w-16 border px-2 py-1" min="1" />
             <!-- {{ item.quantity }} -->
           </td>
           <td>
-            <input
-              type="number"
-              v-model.number="item.barangentry_harga_net"
-              class="w-28 border rounded px-2 py-1"
-              min="0"
-            />
+            <input type="number" v-model.number="item.barangentry_harga_net" class="w-28 border rounded px-2 py-1"
+              min="0" />
             <!-- {{ item.barangentry_harga_net }} -->
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
@@ -70,11 +51,7 @@
     </div>
   </div>
 
-  <ModalOnline
-    v-if="openModalOnline"
-    @close="openModalOnline = false"
-    @submit-online="handleSubmitOnline"
-  />
+  <ModalOnline v-if="openModalOnline" @close="openModalOnline = false" @submit-online="handleSubmitOnline" />
 </template>
 
 <script setup>
@@ -138,18 +115,29 @@ async function handleSubmitOnline(form) {
   };
 
   try {
-    const { data } = await axios.post(`${url.value}/api/transaksi`, payload);
+    const token = sessionStorage.getItem("auth_token")
+    const { data } = await axios.post(`${url.value}/api/transaksi`, payload, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const transaksi_id = data.data.transaksi_id;
 
     for (const item of datatableItems.value) {
       try {
         const { data: barangResponse } = await axios.get(
-          `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`
+          `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
         );
 
         const barangData = barangResponse.data;
         if (!barangData || !barangData.barangentry_id) {
-          console.warn(`Barang tidak ditemukan untuk kode: ${item.code_nama}`);
+          // console.warn(`Barang tidak ditemukan untuk kode: ${item.code_nama}`);
           continue;
         }
 
@@ -160,7 +148,12 @@ async function handleSubmitOnline(form) {
           transaksidetail_harga_barang: item.barangentry_harga_net,
         };
 
-        await axios.post(`${url.value}/api/transaksi-detail`, detailPayload);
+        await axios.post(`${url.value}/api/transaksi-detail`, detailPayload, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        });
       } catch (innerErr) {
         console.error("Gagal menambahkan detail transaksi:", innerErr);
       }
@@ -176,19 +169,34 @@ async function handleSubmitOnline(form) {
       pengirimanBarang_alamat_pengiriman_barang: form.alamat,
       pengirimanBarang_catatan: form.catatan,
       pengirimanBarang_status: 'Proses'
-    }    
+    }
 
-    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+    await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     const { data: responsePrint } = await axios.get(
-      `${url.value}/api/transaksi/${transaksi_id}`
+      `${url.value}/api/transaksi/${transaksi_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
 
     const transaksi = responsePrint.data;
     const detailWithNames = await Promise.all(
       transaksi.details.map(async (detail) => {
         const barangRes = await axios.get(
-          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+          `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
         );
         return {
           ...detail,
@@ -243,8 +251,14 @@ const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
     const baseURL = configURL.public.apiBase;
+    const token = sessionStorage.getItem("auth_token")
     const { data } = await axios.get(
-      `${baseURL}/api/entrybarang/getDataKasir/` + code
+      `${baseURL}/api/entrybarang/getDataKasir/` + code, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
 
     if (data && Array.isArray(data.data) && data.data.length > 0) {
@@ -389,29 +403,25 @@ function printToNewTab(data, items) {
       <p class="text-center text-sm mb-4">Terima kasih telah berbelanja!</p>
 
       <div class="mb-4 text-sm">
-        <p><strong>Nama Customer:</strong> ${
-          data.transaksi_nama_customer || "-"
-        }</p>
-        <p><strong>No Telepon:</strong> ${
-          data.transaksi_nomor_telepon || "-"
-        }</p>
-        <p><strong>Metode Pembayaran:</strong> ${
-          data.transaksi_cara_bayar || "-"
-        }</p>
-        <p><strong>Jumlah Barang:</strong> ${
-          data.transaksi_jumlah_barang ||
-          items.reduce((acc, i) => acc + i.transaksidetail_jumlah_barang, 0)
-        }</p>
+        <p><strong>Nama Customer:</strong> ${data.transaksi_nama_customer || "-"
+    }</p>
+        <p><strong>No Telepon:</strong> ${data.transaksi_nomor_telepon || "-"
+    }</p>
+        <p><strong>Metode Pembayaran:</strong> ${data.transaksi_cara_bayar || "-"
+    }</p>
+        <p><strong>Jumlah Barang:</strong> ${data.transaksi_jumlah_barang ||
+    items.reduce((acc, i) => acc + i.transaksidetail_jumlah_barang, 0)
+    }</p>
         <p><strong>Total:</strong> ${formatRupiah(
-          data.transaksi_total_harga ||
-            items.reduce(
-              (acc, i) =>
-                acc +
-                i.transaksidetail_jumlah_barang *
-                  i.transaksidetail_harga_barang,
-              0
-            )
-        )}</p>
+      data.transaksi_total_harga ||
+      items.reduce(
+        (acc, i) =>
+          acc +
+          i.transaksidetail_jumlah_barang *
+          i.transaksidetail_harga_barang,
+        0
+      )
+    )}</p>
         <p><strong>Waktu:</strong> ${formatTanggal(data.created_at)}</p>
       </div>
 
@@ -428,40 +438,40 @@ function printToNewTab(data, items) {
           </thead>
           <tbody>
             ${items
-              .map(
-                (item) => `
+      .map(
+        (item) => `
               <tr>
                 <td>${item.barangentry_nama}</td>
                 <td class="text-left">${item.transaksidetail_jumlah_barang}</td>
                 <td class="text-left">${formatRupiah(
-                  item.transaksidetail_harga_barang
-                )}</td>
+          item.transaksidetail_harga_barang
+        )}</td>
                 <td class="text-left">${formatRupiah(
-                  item.transaksidetail_jumlah_barang *
-                    item.transaksidetail_harga_barang
-                )}</td>
+          item.transaksidetail_jumlah_barang *
+          item.transaksidetail_harga_barang
+        )}</td>
               </tr>
             `
-              )
-              .join("")}
+      )
+      .join("")}
           </tbody>
         </table>
       </div>
 
       <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-top: 20px;">
   <div>Jumlah Barang: ${items.reduce(
-    (acc, i) => acc + i.transaksidetail_jumlah_barang,
-    0
-  )}</div>
-  <div>Subtotal: ${formatRupiah(
-    data.transaksi_total_harga ||
-      items.reduce(
-        (acc, i) =>
-          acc +
-          i.transaksidetail_jumlah_barang * i.transaksidetail_harga_barang,
+        (acc, i) => acc + i.transaksidetail_jumlah_barang,
         0
-      )
-  )}</div>
+      )}</div>
+  <div>Subtotal: ${formatRupiah(
+        data.transaksi_total_harga ||
+        items.reduce(
+          (acc, i) =>
+            acc +
+            i.transaksidetail_jumlah_barang * i.transaksidetail_harga_barang,
+          0
+        )
+      )}</div>
 </div>
 
     </div>

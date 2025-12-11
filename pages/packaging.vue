@@ -150,7 +150,13 @@ onMounted(() => {
 // /api/pengiriman-barang/1
 const fetchDataPengiriman = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/pengiriman-barang`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/pengiriman-barang`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     pengirimanData.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
@@ -228,7 +234,13 @@ const openModalEditPackaging = async (pengiriman) => {
   const trx_id = pengiriman.pengirimanBarang_transaksi_id;
 
   try {
-    const res = await axios.get(`${url.value}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     selected.value = {
       namaAkun: pengiriman.pengirimanBarang_akun_penerima,
       barang: res.data.data.map(item => ({
@@ -305,7 +317,13 @@ const deletepengirimanData = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const response = await axios.delete(`${url.value}/api/pengiriman-barang/${id}`);
+      const token = sessionStorage.getItem("auth_token")
+      const response = await axios.delete(`${url.value}/api/pengiriman-barang/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
 
       if (response.status === 200) {
         pengirimanData.value = pengirimanData.value.filter(

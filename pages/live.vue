@@ -392,8 +392,14 @@ onMounted(() => {
 
 const openModalEditTransaksi = async (namaAkun) => {
   try {
+    const token = sessionStorage.getItem("auth_token")
     const { data } = await axios.get(
-      `${url.value}/api/live-barang/data-live/` + namaAkun
+      `${url.value}/api/live-barang/data-live/` + namaAkun, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
     );
 
@@ -425,9 +431,15 @@ const capitalizeFirst = (str) => {
 
 const fetchBarangNames = async (data) => {
   try {
+    const token = sessionStorage.getItem("auth_token")
     const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
     const requests = ids.map((id) =>
-      axios.get(`${url.value}/api/entrybarang/${id}`)
+      axios.get(`${url.value}/api/entrybarang/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      })
     );
     const responses = await Promise.all(requests);
     responses.forEach((res, i) => {
@@ -440,13 +452,19 @@ const fetchBarangNames = async (data) => {
 
 const fetchDataPengiriman = async () => {
   try {
+    const token = sessionStorage.getItem("auth_token")
     let endpoint = "";
     if (activeTab.value === "order") {
       endpoint = "/api/live-barang";
     } else {
       endpoint = "/api/live-barang/getAmountLive";
     }
-    const res = await axios.get(`${url.value}${endpoint}`);
+    const res = await axios.get(`${url.value}${endpoint}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     // const res = await axios.get(`http://192.168.18.52:8080${endpoint}`);
     pengirimanData.value = res.data.data;
     if (activeTab.value === "order") {
@@ -534,14 +552,25 @@ const submitLiveOrder = async () => {
 
   isSubmitting.value = true;
   try {
+    const token = sessionStorage.getItem("auth_token")
     const namaBarang = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
     await axios.post(`${url.value}/api/live-barang/store-live`, {
       live_order_barang_id: namaBarang.data.data.barangentry_id,
       live_order_nama_akun: form.value.namaAkun,
       live_order_platform: form.value.platform,
       live_order_harga_terjual: form.value.hargaTotal,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
     });
 
     form.value = {
@@ -573,14 +602,30 @@ const submitLiveOrder = async () => {
 
 const editOrderLive = async (id) => {
   try {
-    const res = await axios.get(`${url.value}/api/live-barang/show-live/${id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/live-barang/show-live/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const data = res.data.data;
     const resBarang = await axios.get(
-      `${url.value}/api/entrybarang/` + data.live_order_barang_id
+      `${url.value}/api/entrybarang/` + data.live_order_barang_id, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
     const code = resBarang.data.data.barangentry_code_id;
 
-    const codeNama = await axios.get(`${url.value}/api/codebarang/` + code);
+    const codeNama = await axios.get(`${url.value}/api/codebarang/` + code, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     form.value.id = data.live_order_id;
     form.value.barang = codeNama.data.code_nama;
@@ -598,8 +643,14 @@ const submitLiveEditOrder = async () => {
 
   isSubmittingEdit.value = true;
   try {
+    const token = sessionStorage.getItem("auth_token")
     const namaBarang = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    }
     );
     await axios.put(
       `${url.value}/api/live-barang/update-live/${form.value.id}`,
@@ -608,7 +659,12 @@ const submitLiveEditOrder = async () => {
         live_order_nama_akun: form.value.namaAkun,
         live_order_platform: form.value.platform,
         live_order_harga_terjual: form.value.hargaTotal,
+      }, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
       }
+    }
     );
     isModalOpenEditOrder.value = false;
     await fetchDataPengiriman();
@@ -728,7 +784,13 @@ const deleteOrder = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      await axios.delete(`${url.value}/api/live-barang/delete-live/${id}`);
+      const token = sessionStorage.getItem("auth_token")
+      await axios.delete(`${url.value}/api/live-barang/delete-live/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
 
       await fetchDataPengiriman();
       await Swal.fire({

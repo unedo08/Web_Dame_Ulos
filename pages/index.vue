@@ -106,6 +106,8 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     });
+    console.log('zasd', response);
+    
 
     const token = response.data.token;
     if (token) {
@@ -116,8 +118,8 @@ const handleLogin = async () => {
       }
 
       sessionStorage.setItem("auth_token", token);
-      sessionStorage.setItem("email", email.value);
-      sessionStorage.setItem("password", password.value);
+      sessionStorage.setItem("email", response.data.user.email);
+      sessionStorage.setItem("role", response.data.user.name);
 
       router.push("/beranda");
     } else {

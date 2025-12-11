@@ -1,13 +1,8 @@
 <template>
   <div>
     <div class="judul text-xl font-semibold mb-4">Daftar Transaksi</div>
-    <input
-      v-model="searchQuery"
-      type="text"
-      class="search-box mb-4"
-      placeholder="Cari transaksi
-      ..."
-    />
+    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi
+      ..." />
 
     <table class="datatable">
       <thead>
@@ -40,17 +35,15 @@
           <td class="align-middle">
             <div class="flex items-center space-x-2">
               <button
-              class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-              @click="printStruk(trx.transaksi_id)"
-            >
-              Print
-            </button>
-            <button
-              class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
-              @click="deleteTransaksi(trx.transaksi_id)"
-            >
-              Delete
-            </button>
+                class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
+                @click="printStruk(trx.transaksi_id)">
+                Print
+              </button>
+              <button
+                class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
+                @click="deleteTransaksi(trx.transaksi_id)">
+                Delete
+              </button>
             </div>
           </td>
         </tr>
@@ -59,11 +52,7 @@
     <div class="flex justify-between items-center mt-4">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
-        <select
-          id="perPage"
-          v-model="itemsPerPage"
-          class="border px-2 py-1 rounded"
-        >
+        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
@@ -72,33 +61,22 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
+          @click="currentPage--">
           Sebelumnya
         </button>
 
-        <button
-          v-for="(page, index) in paginatedPages"
-          :key="index"
-          @click="typeof page === 'number' && (currentPage = page)"
-          :class="[
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
             'px-3 py-1 rounded',
             currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
             page === '...' ? 'cursor-default' : 'cursor-pointer',
-          ]"
-          :disabled="page === '...'"
-        >
+          ]" :disabled="page === '...'">
           {{ page }}
         </button>
 
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
+          @click="currentPage++">
           Selanjutnya
         </button>
       </div>
@@ -127,7 +105,13 @@ onMounted(() => {
 
 const fetchTransaksi = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/transaksi`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/transaksi`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     transaksi.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data transaksi:", error);
@@ -181,7 +165,13 @@ const formatDate = (date) => {
 const deleteTransaksi = async (id) => {
   if (confirm(`Anda yakin ingin menghapus transaksi" ini?`)) {
     try {
-      const response = await axios.delete(`${url.value}/api/transaksi/` + id);
+      const token = sessionStorage.getItem("auth_token")
+      const response = await axios.delete(`${url.value}/api/transaksi/` + id, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
 
       if (response.status === 200) {
         transaksi.value = transaksi.value.filter(

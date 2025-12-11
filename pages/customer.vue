@@ -3,12 +3,8 @@
     <title>Menu Customer</title>
     <div class="judul text-xl font-semibold mb-4">Menu Customer</div>
     <div class="flex items-center justify-between pt-2">
-      <input
-        class="search-box p-2 border rounded-md w-[385px] text-sm"
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search customer..."
-      />
+      <input class="search-box p-2 border rounded-md w-[385px] text-sm" v-model="searchQuery" type="text"
+        placeholder="Search customer..." />
 
       <!-- <button
         class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
@@ -32,11 +28,8 @@
       </thead>
 
       <tbody>
-        <tr
-          v-for="(cust, index) in pagination"
-          :key="cust.customer_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-        >
+        <tr v-for="(cust, index) in pagination" :key="cust.customer_id"
+          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">{{ cust.customer_akun }}</td>
           <td class="px-4 py-2">{{ cust.customer_nama }}</td>
@@ -45,10 +38,8 @@
           <td class="px-4 py-2">{{ cust.customer_platform }}</td>
 
           <td class="px-4 py-2">
-            <button
-              class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
-              @click="deleteCustomer(cust.customer_id, cust.customer_nama)"
-            >
+            <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
+              @click="deleteCustomer(cust.customer_id, cust.customer_nama)">
               Delete
             </button>
           </td>
@@ -69,42 +60,28 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
+          @click="currentPage--">
           Sebelumnya
         </button>
 
-        <button
-          v-for="(page, index) in paginatedPages"
-          :key="index"
-          @click="typeof page === 'number' && (currentPage = page)"
-          :class="[
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
             'px-3 py-1 rounded',
             currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
             page === '...' ? 'cursor-default' : 'cursor-pointer'
-          ]"
-          :disabled="page === '...'"
-        >
+          ]" :disabled="page === '...'">
           {{ page }}
         </button>
 
-        <button
-          class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
+          @click="currentPage++">
           Selanjutnya
         </button>
       </div>
     </div>
 
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
-    >
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div class="bg-white p-6 rounded-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Customer</h3>
 
@@ -113,12 +90,9 @@
             <label class="block text-sm font-medium text-gray-700">
               Akun <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model="newCustomer.customer_akun"
-              type="text"
+            <input v-model="newCustomer.customer_akun" type="text"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Isikan username / akun pelanggan"
-            />
+              placeholder="Isikan username / akun pelanggan" />
             <p v-if="errors.customer_akun" class="text-red-500 text-xs">{{ errors.customer_akun }}</p>
           </div>
 
@@ -126,36 +100,24 @@
             <label class="block text-sm font-medium text-gray-700">
               Nama Customer <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model="newCustomer.customer_nama"
-              type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Nama customer"
-            />
+            <input v-model="newCustomer.customer_nama" type="text"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Nama customer" />
             <p v-if="errors.customer_nama" class="text-red-500 text-xs">{{ errors.customer_nama }}</p>
           </div>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">
               Alamat <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model="newCustomer.customer_alamat"
-              type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Alamat customer"
-            />
+            <input v-model="newCustomer.customer_alamat" type="text"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Alamat customer" />
             <p v-if="errors.customer_alamat" class="text-red-500 text-xs">{{ errors.customer_alamat }}</p>
           </div>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">
               Nomor HP <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model="newCustomer.customer_notelpon"
-              type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Nomor telepon"
-            />
+            <input v-model="newCustomer.customer_notelpon" type="text"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Nomor telepon" />
             <p v-if="errors.customer_notelpon" class="text-red-500 text-xs">
               {{ errors.customer_notelpon }}
             </p>
@@ -163,26 +125,18 @@
 
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">Platform</label>
-            <input
-              v-model="newCustomer.customer_platform"
-              type="text"
+            <input v-model="newCustomer.customer_platform" type="text"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Contoh: Instagram, Tiktok, Shopee"
-            />
+              placeholder="Contoh: Instagram, Tiktok, Shopee" />
           </div>
           <div class="flex justify-end">
-            <button
-              type="button"
-              @click="closeModal"
-              class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-            >
+            <button type="button" @click="closeModal"
+              class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
               Cancel
             </button>
 
-            <button
-              type="submit"
-              class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400"
-            >
+            <button type="submit"
+              class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400">
               Save
             </button>
           </div>
@@ -205,7 +159,6 @@ const url = ref("");
 const isModalOpen = ref(false);
 const itemsPerPage = ref(10);
 const currentPage = ref(1);
-
 const newCustomer = ref({
   customer_akun: "",
   customer_nama: "",
@@ -224,7 +177,13 @@ onMounted(async () => {
 
 const fetchData = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/customer`);
+    const token = sessionStorage.getItem('auth_token')
+    const res = await axios.get(`${url.value}/api/customer`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     customer.value = res.data.data
       .map((item) => ({
@@ -319,7 +278,13 @@ const submitCustomer = async () => {
     return;
   }
   try {
-    await axios.post(`${url.value}/api/customer/addCustomer`, newCustomer.value);
+    const token = sessionStorage.getItem('auth_token')
+    await axios.post(`${url.value}/api/customer/addCustomer`, newCustomer.value, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     Swal.fire("Berhasil!", "Customer berhasil ditambahkan.", "success");
 
@@ -343,7 +308,12 @@ const deleteCustomer = async (id, nama) => {
   if (!confirm.isConfirmed) return;
 
   try {
-    await axios.delete(`${url.value}/api/customer/deleteCustomer/${id}`);
+    await axios.delete(`${url.value}/api/customer/deleteCustomer/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     customer.value = customer.value.filter((c) => c.customer_id !== id);
 

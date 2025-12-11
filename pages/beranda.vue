@@ -40,12 +40,23 @@ onMounted(async () => {
   const config = useRuntimeConfig()
   url.value = config.public.apiBase
   try {
-    const response = await axios.get(`${url.value}/api/codebarang`)
+    const token = sessionStorage.getItem("auth_token")
+    const response = await axios.get(`${url.value}/api/codebarang`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
     const data = response.data
 
     totalBarang.value = data.length
 
-    const responseStatistik = await axios.get(`${url.value}/api/codebarang`);
+    const responseStatistik = await axios.get(`${url.value}/api/codebarang`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const dataStatisktik = responseStatistik.data;
 
     const monthlyCounts = {};

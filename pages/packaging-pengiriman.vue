@@ -112,7 +112,13 @@ onMounted(() => {
 // 🔹 Fetch Data
 const fetchDataPengiriman = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/packaging`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/packaging`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     pengirimanData.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
@@ -195,10 +201,16 @@ const selesaiPackaging = async (id) => {
 
   if (result.isConfirmed) {
     try {
+      const token = sessionStorage.getItem("auth_token")
       const payload = { packaging_status: "Done" };
       const response = await axios.post(
         `${url.value}/api/packaging/update-status/${id}`,
-        payload
+        payload, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
 
       if (response.status === 200) {
@@ -257,22 +269,43 @@ const selesaiPackaging = async (id) => {
 async function buildRowsForPackaging(pkg) {
   try {
     // 1) Get packaging → ambil transaksi_id
-    const { data: pkgDetailResp } = await axios.get(`${url.value}/api/packaging/${pkg.packaging_id}`);
+    const token = sessionStorage.getItem("auth_token")
+    const { data: pkgDetailResp } = await axios.get(`${url.value}/api/packaging/${pkg.packaging_id}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     const transaksiId = pkgDetailResp?.data?.packaging_transactiondetail_id;
     if (!transaksiId) return [];
 
-    const { data: trxResp } = await axios.get(`${url.value}/api/transaksi/${transaksiId}`);
+    const { data: trxResp } = await axios.get(`${url.value}/api/transaksi/${transaksiId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
 
     const details = Array.isArray(trxResp?.data?.details) ? trxResp.data.details : [];
 
     const rows = [];
     for (const d of details) {
-      const { data: ebResp } = await axios.get(`${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`);
+      const { data: ebResp } = await axios.get(`${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
       const entry = ebResp?.data || {};
 
       let codeNama = "-";
       if (entry.barangentry_code_id) {
-        const { data: codeResp } = await axios.get(`${url.value}/api/codebarang/${entry.barangentry_code_id}`);
+        const { data: codeResp } = await axios.get(`${url.value}/api/codebarang/${entry.barangentry_code_id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        });
         codeNama = codeResp?.code_nama ?? "-";
       }
 

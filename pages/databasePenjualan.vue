@@ -134,7 +134,13 @@ onMounted(() => {
 
 const fetchTransaksi = async () => {
   try {
-    const res = await axios.get(`${url.value}/api/transaksi`);
+    const token = sessionStorage.getItem("auth_token")
+    const res = await axios.get(`${url.value}/api/transaksi`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    });
     transaksi.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data transaksi:", error);
@@ -266,7 +272,13 @@ const deleteTransaksi = async (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const response = await axios.delete(`${url.value}/api/transaksi/${id}`);
+        const token = sessionStorage.getItem("auth_token")
+        const response = await axios.delete(`${url.value}/api/transaksi/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        });
 
         if (response.status === 200) {
           transaksi.value = transaksi.value.filter(
@@ -295,18 +307,34 @@ const deleteTransaksi = async (id) => {
 };
 
 async function handlePrint(transaksi_id) {
+  const token = sessionStorage.getItem("auth_token")
   const { data: responsePrint } = await axios.get(
-    `${url.value}/api/transaksi/${transaksi_id}`
+    `${url.value}/api/transaksi/${transaksi_id}`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+  }
   );
 
   const transaksi = responsePrint.data;
   const detailWithNames = await Promise.all(
     transaksi.details.map(async (detail) => {
       const barangRes = await axios.get(
-        `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`
+        `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
       const kodeBarang = await axios.get(
-        `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id
+        `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      }
       );
 
       return {
