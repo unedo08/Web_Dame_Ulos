@@ -73,11 +73,12 @@ const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
   if (item === "Logout") {
     try {
+      const token = sessionStorage.getItem("auth_token")
       await axios.post(
-        `${url.value}/api/logout`,
+        `${url.value}/api/logout`,{},
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("auth_token")}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );

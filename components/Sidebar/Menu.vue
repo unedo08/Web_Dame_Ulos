@@ -1,6 +1,6 @@
 <script setup>
 import { defineNuxtLink } from "nuxt/app";
-import Logo from "../ui/Logo";
+import Logo from "../../components/ui/Logo";
 import {
   UserIcon,
   HomeIcon,
@@ -20,6 +20,7 @@ import {
   ChevronUpIcon,
 } from "@heroicons/vue/24/outline";
 
+const role = sessionStorage.getItem("role")?.toLowerCase();
 const items = ref([
   {
     title: "Akun Pembeli",
@@ -92,6 +93,66 @@ const items = ref([
     icon: ClipboardDocumentIcon,
   },
 ]);
+
+const roleAccess = {
+  "super-admin": "all",
+
+  admin: [
+    "Akun Pembeli",
+    "Beranda",
+    "Code",
+    "Barang Masuk",
+    "Live",
+    "Kasir",
+    "Inventory",
+    "Acara",
+    "Database Penjualan",
+    "Database Inventory",
+  ],
+
+  marketing: [
+    "Akun Pembeli",
+    "Beranda",
+    "Barang Masuk",
+    "Live",
+    "Kasir",
+    "Packaging",
+    "Acara",
+    "Database Penjualan",
+    "Database Inventory",
+  ],
+
+  "quality-control": [
+    "Code",
+    "Barang Masuk",
+    "Kasir",
+    "Inventory",
+    "Database Penjualan",
+    "Database Inventory",
+  ],
+
+  packaging: [
+    "Akun Pembeli",
+    "Live",
+    "Kasir",
+    "Packaging",
+    "Inventory",
+    "Database Penjualan",
+    "Database Inventory",
+  ],
+
+  "pewarna-alam": ["Pewarna Alam", "Beranda"],
+
+  "sosial-media": ["Kasir", "Acara"],
+};
+const filteredMenu = computed(() => {
+  if (roleAccess[role] === "all") return items.value;
+
+  return items.value.filter(item =>
+    roleAccess[role]?.includes(item.title)
+  );
+});
+
 const activeDropdown = ref(null);
 
 function toggleDropdown(index) {
@@ -109,15 +170,13 @@ function toggleDropdown(index) {
 
     <div class="grow">
       <div class="grid gap-2 text-left">
-        <div v-for="(item, index) in items" :key="index">
-          <!-- Jika tidak punya children (biasa) -->
+        <div v-for="(item, index) in filteredMenu" :key="index">
           <NuxtLink v-if="!item.children" :to="item.path"
             class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
             <component :is="item.icon" class="w-5 h-5 text-white" />
             <span class="truncate">{{ item.title }}</span>
           </NuxtLink>
 
-          <!-- Jika punya submenu (dropdown) -->
           <div v-else>
             <div @click="toggleDropdown(index)"
               class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer">
@@ -125,7 +184,6 @@ function toggleDropdown(index) {
                 <component :is="item.icon" class="w-5 h-5 text-white" />
                 <span class="truncate">{{ item.title }}</span>
               </div>
-              <!-- Dropdown Icon -->
               <component :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon" class="w-4 h-4 text-white" />
             </div>
             <div v-if="activeDropdown === index" class="ml-4">

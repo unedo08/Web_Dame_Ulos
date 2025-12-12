@@ -12,7 +12,7 @@
 
       <button @click="activeTab = 'transaction'" class="pb-1 text-sm relative"
         :class="activeTab === 'transaction' ? 'text-red-900 font-semibold' : 'text-gray-500'">
-        Transcation
+        Transaction
         <span v-if="activeTab === 'transaction'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 90%"></span>
       </button>
@@ -402,6 +402,17 @@ const openModalEditTransaksi = async (namaAkun) => {
     }
       //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
     );
+
+    const barangBelumPackaging = data.data.filter(item => item.is_check === 0);
+    if (barangBelumPackaging.length === 0) {
+      Swal.fire({
+        icon: "info",
+        title: "Semua Barang Sudah di Packaging",
+        text: "Tidak ada barang tersisa untuk diproses.",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
 
     if (data.data && data.data.length > 0) {
       selected.value = {

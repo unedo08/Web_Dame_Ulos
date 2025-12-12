@@ -21,7 +21,6 @@
           <th>Jenis</th>
           <th>Alamat</th>
           <th>Status Kirim</th>
-          <th>Status Packaging</th>
           <th>Barang</th>
           <th>Aksi</th>
         </tr>
@@ -39,16 +38,16 @@
           <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
 
           <td>
-            <span :class="row.status_pengiriman === 'NOT PACKAGING' ? 'text-red-600' : 'text-blue-600'">
-              {{ row.status_pengiriman }}
+            <span class="px-2 py-1 rounded-full text-xs font-semibold" :class="statusChipClass(row.status_pengiriman)">
+              {{ row.status_pengiriman || '-' }}
             </span>
           </td>
-
+<!-- 
           <td>
             <span :class="row.packaging_status === 'Done' ? 'text-green-600' : 'text-gray-500'">
               {{ row.packaging_status ?? '-' }}
             </span>
-          </td>
+          </td> -->
 
           <td>
             <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
@@ -441,6 +440,19 @@ const paginatedPages = computed(() => {
 
   return [1, "...", current - 1, current, current + 1, "...", total];
 });
+
+const statusChipClass = (status) => {
+  switch (status) {
+    case "DONE":
+      return "bg-green-100 text-green-700 border border-green-300";
+
+    case "IN PROGRESS":
+      return "bg-yellow-100 text-yellow-700 border border-yellow-300";
+
+    default:
+      return "bg-gray-100 text-gray-600 border border-gray-300";
+  }
+};
 
 watch(currentPage, (v) => {
   if (v < 1) currentPage.value = 1;

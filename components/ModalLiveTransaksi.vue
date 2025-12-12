@@ -233,7 +233,7 @@ async function submitForm() {
         }
       });
 
-      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {
+      await axios.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {}, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
