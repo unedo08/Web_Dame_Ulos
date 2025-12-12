@@ -2,69 +2,59 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
 
-  // ----------------------------
-  // 🔥 WAJIB UNTUK DEPLOY SUBFOLDER
-  // ----------------------------
   app: {
-    baseURL: '/dame-ulos/',              // path folder tempat kamu deploy
-    buildAssetsDir: '_nuxt/',            // default Nuxt asset folder
+    baseURL: '/dame-ulos/',
+    buildAssetsDir: '_nuxt/',
+    cdnURL: '/dame-ulos/',
     head: {
       link: [
-        { rel: "icon", type: "image/x-icon", href: "/dame-ulos/favicon.ico" }
+        { rel: 'icon', type: 'image/x-icon', href: '/dame-ulos/favicon.ico' }
       ]
     }
   },
 
-  // ----------------------------
-  // MODULES
-  // ----------------------------
+  router: {
+    middleware: ['auth'],
+    options: {
+      base: '/dame-ulos/'
+    }
+  },
+
+  imports: {
+    dirs: [] // FIX shadcn auto-import issue in subfolder deployment
+  },
+
   modules: ['shadcn-nuxt'],
 
   shadcn: {
-    prefix: '',
-    componentDir: './components/ui',
+    componentDir: './components/ui'
   },
 
-  // ----------------------------
-  // GLOBAL CSS
-  // ----------------------------
   css: [
     '~/assets/css/tailwind.css',
-    '~/assets/css/print.css',
+    '~/assets/css/print.css'
   ],
 
-  // ----------------------------
-  // VITE CONFIG
-  // ----------------------------
   vite: {
     plugins: [
-      tailwindcss(),
+      tailwindcss()
     ],
+    build: {
+      rollupOptions: {
+        output: {
+          // memastikan semua chunk memakai prefix baseURL
+          assetFileNames: '_nuxt/[hash][extname]',
+          chunkFileNames: '_nuxt/[hash].js',
+        }
+      }
+    }
   },
 
-  // ----------------------------
-  // ROUTER AUTH MIDDLEWARE
-  // ----------------------------
-  router: {
-    middleware: ['auth']
-  },
-
-  // ----------------------------
-  // PINIA
-  // ----------------------------
-  plugins: ['~/plugins/pinia.ts'],
-
-  // ----------------------------
-  // API CONFIG
-  // ----------------------------
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL
     }
   },
 
-  // ----------------------------
-  // NUXT BUILD COMPATIBILITY
-  // ----------------------------
-  compatibilityDate: '2025-04-02',
+  compatibilityDate: '2025-04-02'
 })
