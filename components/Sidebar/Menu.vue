@@ -1,6 +1,6 @@
 <script setup>
 import { defineNuxtLink } from "nuxt/app";
-import Logo from "../../components/ui/Logo";
+import Logo from "../../components/Logo";
 import {
   UserIcon,
   HomeIcon,
