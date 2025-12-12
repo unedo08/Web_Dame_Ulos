@@ -4,6 +4,6 @@ const loading = ref(false)
 
 <template>
     <div class="overflow-hidden rounded-lg w-[161] h-[102]">
-        <img src="/assets/image/DameUlosLogo 2.png" alt="logo" />
+        <img src="/assets/image/DameUlosLogo2.png" alt="logo" />
     </div>
 </template>

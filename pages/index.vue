@@ -6,7 +6,7 @@
     >
       <div class="image-container mb-10">
         <img
-          src="assets/image/DameUlosLogo 2.png"
+          src="assets/image/DameUlosLogo2.png"
           alt="Dame Ulos Logo"
           class="w-[220px] md:w-[290px] h-auto"
         />

@@ -8,7 +8,7 @@
     >
 
       <div class="text-center mb-4">
-        <img src="../assets/image/DameUlosLogo 2.png" alt="Logo" class="w-24 h-auto mx-auto mb-2" />
+        <img src="../assets/image/DameUlosLogo2.png" alt="Logo" class="w-24 h-auto mx-auto mb-2" />
         <h2 class="text-xl font-bold">Dame Ulos Tarutung</h2>
       </div>
 

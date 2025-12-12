@@ -15,7 +15,7 @@
             <!-- Right Side (Login Form) -->
             <div class="w-4/12 bg-[#FFFFF0] p-6 flex-col justify-center items-center">
                 <div class="image-container mb-50">
-                    <img src="assets/image/DameUlosLogo 2.png" alt="Dame Ulos Logo" class="w-[290px] h-[184px]">
+                    <img src="assets/image/DameUlosLogo2.png" alt="Dame Ulos Logo" class="w-[290px] h-[184px]">
                 </div>
                 <h4 class="text-2xl font-semibold text-gray-900">Welcome Back!</h4>
                 <h6 class="text-black-600 opacity-50 mb-6">Sign in to Continue to Dame Ulos Application</h6>
