@@ -1,32 +1,53 @@
-export default defineNuxtConfig({
-  ssr: false, // ⬅️ PENTING untuk sessionStorage
+import tailwindcss from '@tailwindcss/vite'
 
-  modules: [
-    '@nuxtjs/tailwindcss',
-    'shadcn-nuxt'
-  ],
+export default defineNuxtConfig({
+  modules: ['shadcn-nuxt'],
+
+  shadcn: {
+    prefix: '',
+    componentDir: './components/ui'
+  },
 
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/print.css'
   ],
 
-  nitro: {
-    preset: 'static'
+  vite: {
+    plugins: [tailwindcss()],
+    build: {
+      sourcemap: false
+    }
   },
 
-  app: {
-    baseURL: '/',          // ⬅️ HOSTINGER ROOT
-    buildAssetsDir: '_nuxt/'
+  nitro: {
+    preset: 'static',
+    prerender: {
+      crawlLinks: true,
+      ignore: [
+        '/acara',
+        '/about',
+        '/backup',
+        '/staff',
+        '/code',
+        '/live',
+        '/kasir',
+        '/entry'
+      ]
+    }
   },
 
   router: {
     middleware: ['auth']
   },
 
+  plugins: ['~/plugins/pinia.ts'],
+
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL
     }
-  }
+  },
+
+  compatibilityDate: '2025-04-02'
 })
