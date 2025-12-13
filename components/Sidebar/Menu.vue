@@ -20,18 +20,23 @@ import {
   ChevronUpIcon,
 } from "@heroicons/vue/24/outline";
 
-/* ===============================
-   ROLE (CLIENT ONLY)
-================================ */
 const role = ref(null);
 
+const roleMap = {
+  "1": "super-admin",
+  "2": "admin",
+  "3": "marketing",
+  "4": "quality-control",
+  "5": "packaging",
+  "6": "pewarna-alam",
+  "7": "sosial-media",
+};
+
 onMounted(() => {
-  role.value = sessionStorage.getItem("role")?.toLowerCase() || null;
+  const storedRole = sessionStorage.getItem("role");
+  role.value = roleMap[storedRole] || null
 });
 
-/* ===============================
-   MENU LIST
-================================ */
 const items = ref([
   { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
   { title: "Beranda", path: "/beranda", icon: HomeIcon },
@@ -49,9 +54,7 @@ const items = ref([
   { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
 ]);
 
-/* ===============================
-   ROLE ACCESS
-================================ */
+
 const roleAccess = {
   "super-admin": "all",
 
@@ -105,7 +108,7 @@ const roleAccess = {
 };
 
 const filteredMenu = computed(() => {
-  if (!role.value) return []; // ⛔ tunggu sampai client
+  if (!role.value) return [];
   if (roleAccess[role.value] === "all") return items.value;
 
   return items.value.filter(item =>

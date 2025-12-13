@@ -4,7 +4,7 @@
       <div class="text-right">
         <div class="user-info" @click="toggleDropdown">
           <img src="@/assets/image/avatar.png" alt="avatar" class="avatar" />
-          <span class="username">{{ userEmail }}</span>
+          <span class="username">{{ name}}</span>
           <img
             src="@/assets/image/arrow_drop_down.png"
             alt="arrow_dropdown"
@@ -56,13 +56,13 @@ import axios from "axios";
 
 const router = useRouter();
 const dropdownVisible = ref(false);
-const userEmail = ref("User");
 const url = ref("");
+const name = ref("");
 
 onMounted(async () => {
   const config = useRuntimeConfig();
-  userEmail.value = localStorage.getItem("user_email") || "User";
   url.value = config.public.apiBase;
+  name.value = sessionStorage.getItem("name") || "User";
 });
 
 const toggleDropdown = () => {
