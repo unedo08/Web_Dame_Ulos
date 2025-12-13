@@ -1,38 +1,26 @@
-import tailwindcss from '@tailwindcss/vite'
-
+// nuxt.config.ts
 export default defineNuxtConfig({
-  // ...
-  modules: ['shadcn-nuxt'],
-  shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
-    prefix: '',
-    /**
-     * Directory that the component lives in.
-     * @default "./components/ui"
-     */
-    componentDir: './components/ui'
+  ssr: false,
+
+  app: {
+    // karena deploy di:
+    // domains/databasedameulos.com/public_html/dame-ulos
+    baseURL: '/dame-ulos/',
+    buildAssetsDir: '_nuxt/',
   },
 
-  // css: ['bootstrap/dist/css/bootstrap.css', 'assets/css/tailwind.css'],
-  css: ['~/assets/css/tailwind.css', '~/assets/css/print.css'],
-  vite: {
-    plugins: [
-      tailwindcss(),
-    ],
-  },
-   nitro: {
+  nitro: {
     preset: 'static'
   },
-  router: {
-    middleware: ['auth']
-  },
-  plugins: ['~/plugins/pinia.ts'],
-  runtimeConfig: {
-    public:{
-      apiBase: process.env.API_BASE_URL
+
+  css: [
+    '~/assets/css/tailwind.css',
+    '~/assets/css/print.css',
+  ],
+
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1600
     }
-  },
-  compatibilityDate: '2025-04-02',
+  }
 })
