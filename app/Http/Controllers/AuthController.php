@@ -176,4 +176,26 @@ class AuthController extends Controller
             'message' => 'User berhasil dihapus (soft delete)'
         ]);
     }
+
+    public function getActiveUsers()
+    {
+        try {
+            $users = User::with('role')
+                ->whereNull('deleted_at')   // ⬅️ hanya user aktif
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'List active users',
+                'data' => $users
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal mengambil data user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
