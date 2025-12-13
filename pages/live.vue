@@ -554,7 +554,7 @@ function validate() {
   errors.namaAkun = !form.value.namaAkun ? "Nama akun wajib diisi" : "";
   errors.platform = !form.value.platform ? "Platform selesai wajib diisi" : "";
   errors.hargaTotal = !form.value.hargaTotal ? "Harga Total wajib diisi" : "";
-  console.log('xc', errors.barang);
+  // console.log('xc', errors.barang);
 
   return Object.values(errors).every((err) => !err);
 }

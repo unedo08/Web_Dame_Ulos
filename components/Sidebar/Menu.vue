@@ -39,6 +39,7 @@ onMounted(() => {
 
 const items = ref([
   { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
+  { title: "Staff", path: "/staff", icon: UserIcon },
   { title: "Beranda", path: "/beranda", icon: HomeIcon },
   { title: "Code", path: "/code", icon: CodeBracketIcon },
   { title: "Barang Masuk", path: "/entry", icon: ArrowDownTrayIcon },
