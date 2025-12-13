@@ -1,26 +1,38 @@
-// nuxt.config.ts
-export default defineNuxtConfig({
-  ssr: false,
+import tailwindcss from '@tailwindcss/vite'
 
-  app: {
-    // karena deploy di:
-    // domains/databasedameulos.com/public_html/dame-ulos
-    baseURL: '/dame-ulos/',
-    buildAssetsDir: '_nuxt/',
+export default defineNuxtConfig({
+  // ...
+  modules: ['shadcn-nuxt'],
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
   },
 
-  nitro: {
+  // css: ['bootstrap/dist/css/bootstrap.css', 'assets/css/tailwind.css'],
+  css: ['~/assets/css/tailwind.css', '~/assets/css/print.css'],
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+  },
+   nitro: {
     preset: 'static'
   },
-
-  css: [
-    '~/assets/css/tailwind.css',
-    '~/assets/css/print.css',
-  ],
-
-  vite: {
-    build: {
-      chunkSizeWarningLimit: 1600
+  router: {
+    middleware: ['auth']
+  },
+  plugins: ['~/plugins/pinia.ts'],
+  runtimeConfig: {
+    public:{
+      apiBase: process.env.API_BASE_URL
     }
-  }
+  },
+  compatibilityDate: '2025-04-02',
 })
