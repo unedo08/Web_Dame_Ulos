@@ -1,5 +1,5 @@
 <script setup>
-import { defineNuxtLink } from "nuxt/app";
+import { ref, computed, onMounted } from "vue";
 import Logo from "../../components/Logo";
 import {
   UserIcon,
@@ -20,80 +20,38 @@ import {
   ChevronUpIcon,
 } from "@heroicons/vue/24/outline";
 
-const role = sessionStorage.getItem("role")?.toLowerCase();
+/* ===============================
+   ROLE (CLIENT ONLY)
+================================ */
+const role = ref(null);
+
+onMounted(() => {
+  role.value = sessionStorage.getItem("role")?.toLowerCase() || null;
+});
+
+/* ===============================
+   MENU LIST
+================================ */
 const items = ref([
-  {
-    title: "Akun Pembeli",
-    path: "/customer",
-    icon: UserIcon,
-  },
-  {
-    title: "Beranda",
-    path: "/beranda",
-    icon: HomeIcon,
-  },
-  {
-    title: "Code",
-    path: "/code",
-    icon: CodeBracketIcon,
-  },
-  {
-    title: "Barang Masuk",
-    path: "/entry",
-    icon: ArrowDownTrayIcon,
-  },
-  {
-    title: "Live",
-    path: "/live",
-    icon: TvIcon,
-  },
-  {
-    title: "Kasir",
-    path: "/kasir",
-    icon: CreditCardIcon,
-  },
-  {
-    title: "Packaging",
-    path: "/packaging-page",
-    icon: CubeIcon,
-  },
-  {
-    title: "Staff",
-    path: "/staff",
-    icon: UserGroupIcon,
-  },
-  {
-    title: "Inventory",
-    path: "/inventory",
-    icon: ArchiveBoxIcon,
-  },
-  {
-    title: "Acara",
-    path: "/acara",
-    icon: CalendarDaysIcon,
-  },
-  {
-    title: "Pewarna Alam",
-    path: "/pewarnaAlam",
-    icon: PaintBrushIcon,
-  },
-  {
-    title: "Statistik",
-    path: "/statistik",
-    icon: ChartPieIcon,
-  },
-  {
-    title: "Database Penjualan",
-    path: "/databasePenjualan",
-    icon: DocumentChartBarIcon,
-  },
-  {
-    title: "Database Inventory",
-    path: "/databaseInventory",
-    icon: ClipboardDocumentIcon,
-  },
+  { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
+  { title: "Beranda", path: "/beranda", icon: HomeIcon },
+  { title: "Code", path: "/code", icon: CodeBracketIcon },
+  { title: "Barang Masuk", path: "/entry", icon: ArrowDownTrayIcon },
+  { title: "Live", path: "/live", icon: TvIcon },
+  { title: "Kasir", path: "/kasir", icon: CreditCardIcon },
+  { title: "Packaging", path: "/packaging-page", icon: CubeIcon },
+  { title: "Staff", path: "/staff", icon: UserGroupIcon },
+  { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
+  { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
+  { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
+  { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
+  { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
+  { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
 ]);
 
+/* ===============================
+   ROLE ACCESS
+================================ */
 const roleAccess = {
   "super-admin": "all",
 
@@ -145,11 +103,13 @@ const roleAccess = {
 
   "sosial-media": ["Kasir", "Acara"],
 };
+
 const filteredMenu = computed(() => {
-  if (roleAccess[role] === "all") return items.value;
+  if (!role.value) return []; // ⛔ tunggu sampai client
+  if (roleAccess[role.value] === "all") return items.value;
 
   return items.value.filter(item =>
-    roleAccess[role]?.includes(item.title)
+    roleAccess[role.value]?.includes(item.title)
   );
 });
 

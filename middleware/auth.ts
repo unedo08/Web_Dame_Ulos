@@ -1,19 +1,10 @@
-import { defineStore } from 'pinia'
+export default defineNuxtRouteMiddleware(() => {
+  // ⛔ JANGAN AKSES sessionStorage DI SERVER
+  if (process.server) return
 
-export const useAuthStore = defineStore('auth', () => {
-  const isAuthenticated = useState<boolean>('isAuthenticated', () => false)
+  const token = sessionStorage.getItem('auth_token')
 
-  const login = () => {
-    isAuthenticated.value = true
-  }
-
-  const logout = () => {
-    isAuthenticated.value = false
-  }
-
-  return {
-    isAuthenticated,
-    login,
-    logout
+  if (!token) {
+    return navigateTo('/')
   }
 })

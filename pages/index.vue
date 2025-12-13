@@ -3,7 +3,7 @@
     <!-- Left Side: 4/12 -->
     <div class="flex-[4] bg-[#FFFFF0] flex flex-col justify-center items-center p-6">
       <div class="image-container mb-10">
-        <img src='/image/DameUlosLogo2.png' alt="Dame Ulos Logo" class="w-[220px] md:w-[290px] h-auto" />
+        <img src='/assets/image/DameUlosLogo2.png' alt="Dame Ulos Logo" class="w-[220px] md:w-[290px] h-auto" />
       </div>
       <h4 class="text-2xl font-semibold text-gray-900 mb-1">Welcome Back!</h4>
       <h6 class="text-black-600 opacity-50 mb-6 text-center text-sm">
