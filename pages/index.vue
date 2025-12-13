@@ -1,15 +1,9 @@
 <template>
   <div class="flex flex-col md:flex-row min-h-screen">
     <!-- Left Side: 4/12 -->
-    <div
-      class="flex-[4] bg-[#FFFFF0] flex flex-col justify-center items-center p-6"
-    >
+    <div class="flex-[4] bg-[#FFFFF0] flex flex-col justify-center items-center p-6">
       <div class="image-container mb-10">
-        <img
-          src="assets/image/DameUlosLogo2.png"
-          alt="Dame Ulos Logo"
-          class="w-[220px] md:w-[290px] h-auto"
-        />
+        <img :src="`${base}image/DameUlosLogo2.png`" alt="Dame Ulos Logo" class="w-[220px] md:w-[290px] h-auto" />
       </div>
       <h4 class="text-2xl font-semibold text-gray-900 mb-1">Welcome Back!</h4>
       <h6 class="text-black-600 opacity-50 mb-6 text-center text-sm">
@@ -17,46 +11,22 @@
       </h6>
       <form @submit.prevent="handleLogin" class="w-full max-w-sm space-y-4">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Email:</label
-          >
-          <input
-            type="email"
-            id="email"
-            v-model="email"
-            required
-            placeholder="Enter Your Email"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-gray-500"
-          />
+          <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+          <input type="email" id="email" v-model="email" required placeholder="Enter Your Email"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-gray-500" />
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Password:</label
-          >
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            required
-            placeholder="Enter Your Password"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-gray-500"
-          />
+          <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
+          <input type="password" id="password" v-model="password" required placeholder="Enter Your Password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-gray-500" />
         </div>
         <div class="flex items-center">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            v-model="rememberMe"
-            class="h-4 w-4 border-gray-300 rounded focus:ring-2 focus:ring-gray-500"
-          />
-          <label for="rememberMe" class="ml-2 text-sm text-gray-600 font-bold"
-            >Remember Me</label
-          >
+          <input type="checkbox" id="rememberMe" v-model="rememberMe"
+            class="h-4 w-4 border-gray-300 rounded focus:ring-2 focus:ring-gray-500" />
+          <label for="rememberMe" class="ml-2 text-sm text-gray-600 font-bold">Remember Me</label>
         </div>
-        <button
-          type="submit"
-          class="w-full bg-[#BD9E77] text-white py-2 rounded-lg font-semibold hover:bg-[#a08c6a] focus:outline-none"
-        >
+        <button type="submit"
+          class="w-full bg-[#BD9E77] text-white py-2 rounded-lg font-semibold hover:bg-[#a08c6a] focus:outline-none">
           Sign in
         </button>
       </form>
@@ -66,9 +36,7 @@
     </div>
 
     <!-- Right Side: 8/12 -->
-    <div
-      class="flex-[8] bg-[#8E775E] text-white p-6 flex items-center justify-center"
-    >
+    <div class="flex-[8] bg-[#8E775E] text-white p-6 flex items-center justify-center">
       <p class="text-center max-w-3xl px-4">
         "Dame Ulos is a local brand from Silindung (Tarutung) which focuses on
         preserving “Intangible Cultural Heritage” namely “Ulos and Mandar
@@ -86,6 +54,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useRuntimeConfig } from "#imports";
+const base = useRuntimeConfig().app.baseURL
 
 const email = ref("");
 const password = ref("");
@@ -106,7 +75,7 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     });
-    
+
     const token = response.data.token;
     if (token) {
       if (rememberMe.value) {
