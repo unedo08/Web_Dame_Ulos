@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  ssr: false, // ⬅️ PENTING untuk sessionStorage
+  ssr: false,
 
   modules: [
     '@nuxtjs/tailwindcss',
@@ -16,12 +16,8 @@ export default defineNuxtConfig({
   },
 
   app: {
-    baseURL: '/',          // ⬅️ HOSTINGER ROOT
+    baseURL: '/',
     buildAssetsDir: '_nuxt/'
-  },
-
-  router: {
-    middleware: ['auth']
   },
 
   runtimeConfig: {
