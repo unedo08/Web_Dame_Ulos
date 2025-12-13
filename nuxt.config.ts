@@ -1,23 +1,38 @@
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
-  ssr: false,
-
-  app: {
-    baseURL: '/dame-ulos/',
-    buildAssetsDir: '_nuxt/',
+  // ...
+  modules: ['shadcn-nuxt'],
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
   },
 
-  nitro: {
-    preset: 'static',
-    prerender: {
-      routes: ['/', '/login'], // ⬅️ PENTING
-    },
+  // css: ['bootstrap/dist/css/bootstrap.css', 'assets/css/tailwind.css'],
+  css: ['~/assets/css/tailwind.css', '~/assets/css/print.css'],
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
   },
-
+   nitro: {
+    preset: 'static'
+  },
+  router: {
+    middleware: ['auth']
+  },
   plugins: ['~/plugins/pinia.ts'],
-
   runtimeConfig: {
-    public: {
-      apiBase: process.env.API_BASE_URL,
-    },
+    public:{
+      apiBase: process.env.API_BASE_URL
+    }
   },
+  compatibilityDate: '2025-04-02',
 })
