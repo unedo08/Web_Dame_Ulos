@@ -1,23 +1,26 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  ssr: true,
-  app: {
-    baseURL: '/',
-  },
-  modules: ['shadcn-nuxt'],
+  ssr: false,
 
-  shadcn: {
-    prefix: '',
-    componentDir: './components/ui',
+  app: {
+    baseURL: '/dame-ulos/',
+    buildAssetsDir: '_nuxt/',
   },
+
+  modules: ['shadcn-nuxt'],
 
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/print.css',
   ],
+
   vite: {
     plugins: [tailwindcss()],
+  },
+
+  nitro: {
+    preset: 'static',
   },
 
   plugins: ['~/plugins/pinia.ts'],
@@ -27,6 +30,4 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
-
-  compatibilityDate: '2025-04-02',
 })
