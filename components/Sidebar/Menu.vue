@@ -16,8 +16,6 @@ import {
   DocumentChartBarIcon,
   ClipboardDocumentIcon,
   ChartPieIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
 } from "@heroicons/vue/24/outline";
 
 const role = ref(null);
@@ -33,8 +31,7 @@ const roleMap = {
 };
 
 onMounted(() => {
-  const storedRole = sessionStorage.getItem("role");
-  role.value = roleMap[storedRole] || null
+  role.value = roleMap[sessionStorage.getItem("role")] || null;
 });
 
 const items = ref([
@@ -46,7 +43,6 @@ const items = ref([
   { title: "Live", path: "/live", icon: TvIcon },
   { title: "Kasir", path: "/kasir", icon: CreditCardIcon },
   { title: "Packaging", path: "/packaging-page", icon: CubeIcon },
-  { title: "Staff", path: "/staff", icon: UserGroupIcon },
   { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
   { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
   { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
@@ -55,73 +51,23 @@ const items = ref([
   { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
 ]);
 
-
 const roleAccess = {
   "super-admin": "all",
-
-  admin: [
-    "Akun Pembeli",
-    "Beranda",
-    "Code",
-    "Barang Masuk",
-    "Live",
-    "Kasir",
-    "Inventory",
-    "Acara",
-    "Database Penjualan",
-    "Database Inventory",
-  ],
-
-  marketing: [
-    "Akun Pembeli",
-    "Beranda",
-    "Barang Masuk",
-    "Live",
-    "Kasir",
-    "Packaging",
-    "Acara",
-    "Database Penjualan",
-    "Database Inventory",
-  ],
-
-  "quality-control": [
-    "Code",
-    "Barang Masuk",
-    "Kasir",
-    "Inventory",
-    "Database Penjualan",
-    "Database Inventory",
-  ],
-
-  packaging: [
-    "Akun Pembeli",
-    "Live",
-    "Kasir",
-    "Packaging",
-    "Inventory",
-    "Database Penjualan",
-    "Database Inventory",
-  ],
-
-  "pewarna-alam": ["Pewarna Alam", "Beranda"],
-
-  "sosial-media": ["Kasir", "Acara"],
+  admin: ["Akun Pembeli","Beranda","Code","Barang Masuk","Live","Kasir","Inventory","Acara","Database Penjualan","Database Inventory"],
+  marketing: ["Akun Pembeli","Beranda","Barang Masuk","Live","Kasir","Packaging","Acara","Database Penjualan","Database Inventory"],
+  "quality-control": ["Code","Barang Masuk","Kasir","Inventory","Database Penjualan","Database Inventory"],
+  packaging: ["Akun Pembeli","Live","Kasir","Packaging","Inventory","Database Penjualan","Database Inventory"],
+  "pewarna-alam": ["Pewarna Alam","Beranda"],
+  "sosial-media": ["Kasir","Acara"],
 };
 
 const filteredMenu = computed(() => {
   if (!role.value) return [];
   if (roleAccess[role.value] === "all") return items.value;
-
   return items.value.filter(item =>
     roleAccess[role.value]?.includes(item.title)
   );
 });
-
-const activeDropdown = ref(null);
-
-function toggleDropdown(index) {
-  activeDropdown.value = activeDropdown.value === index ? null : index;
-}
 </script>
 
 <template>
@@ -135,24 +81,37 @@ function toggleDropdown(index) {
     <div class="grow">
       <div class="grid gap-2 text-left">
         <div v-for="(item, index) in filteredMenu" :key="index">
-          <NuxtLink v-if="!item.children" :to="item.path"
-            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
+          <NuxtLink
+            v-if="!item.children"
+            :to="item.path"
+            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
+          >
             <component :is="item.icon" class="w-5 h-5 text-white" />
             <span class="truncate">{{ item.title }}</span>
           </NuxtLink>
 
           <div v-else>
-            <div @click="toggleDropdown(index)"
-              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer">
+            <div
+              @click="toggleDropdown(index)"
+              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer"
+            >
               <div class="flex items-center gap-2">
                 <component :is="item.icon" class="w-5 h-5 text-white" />
                 <span class="truncate">{{ item.title }}</span>
               </div>
-              <component :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon" class="w-4 h-4 text-white" />
+              <component
+                :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon"
+                class="w-4 h-4 text-white"
+              />
             </div>
+
             <div v-if="activeDropdown === index" class="ml-4">
-              <NuxtLink v-for="(child, idx) in item.children" :key="idx" :to="child.path"
-                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
+              <NuxtLink
+                v-for="(child, idx) in item.children"
+                :key="idx"
+                :to="child.path"
+                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
+              >
                 <span class="truncate">{{ child.title }}</span>
               </NuxtLink>
             </div>

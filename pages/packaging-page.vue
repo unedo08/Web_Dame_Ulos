@@ -42,31 +42,26 @@
               {{ row.status_pengiriman || '-' }}
             </span>
           </td>
-<!-- 
-          <td>
-            <span :class="row.packaging_status === 'Done' ? 'text-green-600' : 'text-gray-500'">
-              {{ row.packaging_status ?? '-' }}
-            </span>
-          </td> -->
-
           <td>
             <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
           </td>
 
           <td>
             <div class="flex gap-2">
-              <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
-                Edit
-              </button>
-
               <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
                 @click="deleteData(row.pengirimanBarang_id)">
                 Delete
               </button>
 
-              <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
-                Selesai
-              </button>
+              <template v-if="row.status_pengiriman !== 'DONE'">
+                <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
+                  Edit
+                </button>
+
+                <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
+                  Selesai
+                </button>
+              </template>
             </div>
           </td>
         </tr>
@@ -240,7 +235,7 @@ const selesaikanPackaging = async (row) => {
     }
 
     await axios.post(`${url}/api/packaging/update-status/${row.pengirimanBarang_id}`, {
-      packaging_status: "Done"
+      packaging_status: "DONE"
     });
 
     setTimeout(() => {

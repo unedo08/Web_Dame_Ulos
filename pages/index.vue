@@ -76,10 +76,12 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     });
-
+    const expiresAt = Date.now() + res.data.expires_in * 1000;
+    
     sessionStorage.setItem("name", res.data.user.name);
     sessionStorage.setItem("role", res.data.user.role.id);
     sessionStorage.setItem("auth_token", res.data.token);
+    sessionStorage.setItem("expired_at", expiresAt);
 
     router.push("/beranda");
   } catch (err) {
