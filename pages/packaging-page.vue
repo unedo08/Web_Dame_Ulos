@@ -234,7 +234,7 @@ const selesaikanPackaging = async (row) => {
       });
     }
 
-    await axios.post(`${url}/api/packaging/update-status/${row.pengirimanBarang_id}`, {
+    await axios.post(`${url}/api/packaging/update-status/${row.pengirimanBarang_id}`, {}, {
       packaging_status: "DONE"
     });
 
