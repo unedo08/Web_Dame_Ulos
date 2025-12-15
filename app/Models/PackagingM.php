@@ -11,6 +11,7 @@ class PackagingM extends Model
     use SoftDeletes;
     use HasFactory;
 
+    protected $dates = ['deleted_at'];
     protected $table = 'packaging_m';
     protected $primaryKey = 'packaging_id';
 

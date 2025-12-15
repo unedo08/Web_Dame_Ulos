@@ -41,7 +41,7 @@ class PengirimanBarangTController extends Controller
     public function store(Request $request)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
 
         $validated = $request->validate([
             'pengirimanBarang_transaksi_id'            => 'required|integer',
@@ -50,7 +50,7 @@ class PengirimanBarangTController extends Controller
             'pengirimanBarang_no_telepon'              => 'nullable|string|max:20',
             'pengirimanBarang_harga_kirim_barang'      => 'required|numeric',
             'pengirimanBarang_jenis_pengiriman_barang' => 'required|string|max:100',
-            'pengirimanBarang_alamat_pengiriman_barang'=> 'required|string',
+            'pengirimanBarang_alamat_pengiriman_barang' => 'required|string',
             'pengirimanBarang_catatan'                 => 'nullable|string',
             'pengirimanBarang_status'                  => 'nullable|string|max:50',
         ]);
@@ -87,7 +87,6 @@ class PengirimanBarangTController extends Controller
                     'pengiriman' => $pengiriman,
                 ],
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => false,
@@ -101,7 +100,7 @@ class PengirimanBarangTController extends Controller
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         try {
             $item = PengirimanBarangT::findOrFail($id);
 
@@ -122,7 +121,7 @@ class PengirimanBarangTController extends Controller
     public function update(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         try {
 
             if (!Auth::check()) {
@@ -157,7 +156,7 @@ class PengirimanBarangTController extends Controller
             ) {
                 $item->customer->update([
                     'customer_nama'   => $validated['pengirimanBarang_nama_penerima'],
-                    'customer_alamat' => $validated['pengirimanBarang_alamat_pengiriman_barang'] 
+                    'customer_alamat' => $validated['pengirimanBarang_alamat_pengiriman_barang']
                         ?? $item->customer->customer_alamat,
                 ]);
             }
@@ -171,7 +170,6 @@ class PengirimanBarangTController extends Controller
                     'customer'   => $item->customer,
                 ],
             ], 200);
-
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status'  => false,
@@ -179,7 +177,6 @@ class PengirimanBarangTController extends Controller
                 'message' => 'Pengiriman Barang not found.',
                 'data'    => null,
             ], 404);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => false,
@@ -189,11 +186,11 @@ class PengirimanBarangTController extends Controller
             ], 500);
         }
     }
-    
+
     public function destroy($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         try {
 
             if (!Auth::check()) {
@@ -227,7 +224,7 @@ class PengirimanBarangTController extends Controller
     public function updateStatus(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
 
         if (!Auth::check()) {
             return response()->json([
@@ -235,7 +232,7 @@ class PengirimanBarangTController extends Controller
                 'message' => 'Unauthorized: Please login first.'
             ], 401);
         }
-        
+
         $request->validate([
             'pengirimanBarang_status' => 'required|string|max:50',
         ]);
@@ -261,21 +258,22 @@ class PengirimanBarangTController extends Controller
         ], 200);
     }
 
-    public function getPengirimanBarangByTransaksiId($id){
+    public function getPengirimanBarangByTransaksiId($id)
+    {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $data = TransaksiDetailT::select(
             'transaksidetail_t.*',
             'barangentry_m.barangentry_nama',
             'code_m.code_nama'
-            )
+        )
             ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->join('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->where('transaksidetail_t.transaksidetail_transaksi_id', $id)
             ->where('transaksidetail_status_penjualan', "0")
             ->get();
 
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json([
                 'code'    => 404,
                 'message' => 'Pengiriman order not found',
@@ -288,23 +286,22 @@ class PengirimanBarangTController extends Controller
             'message' => 'Data Pengiriman',
             'data'    => $data
         ], 200);
-
     }
 
     public function getPengiriman()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $data = DB::table('pengirimanBarang_t')
             ->leftJoin('transaksi_t', 'transaksi_t.transaksi_id', '=', 'pengirimanBarang_t.pengirimanBarang_transaksi_id')
             ->leftJoin('transaksidetail_t', 'transaksidetail_t.transaksidetail_transaksi_id', '=', 'transaksi_t.transaksi_id')
             ->leftJoin('packaging_m', 'packaging_m.packaging_transactiondetail_id', '=', 'transaksidetail_t.transaksidetail_id')
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
-
+            ->whereNull('pengirimanBarang_t.deleted_at')
             ->where(function ($q) {
                 $q->where('packaging_m.packaging_status', '!=', 'DONE')
-                ->orWhereNull('packaging_m.packaging_status');
+                    ->orWhereNull('packaging_m.packaging_status');
             })
 
             ->select(
@@ -363,6 +360,4 @@ class PengirimanBarangTController extends Controller
             'data' => $data
         ], 200);
     }
-
-
 }
