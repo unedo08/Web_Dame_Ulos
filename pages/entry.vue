@@ -819,7 +819,6 @@ async function openSendModal(id) {
 
   if (result.isDenied) {
     pengirimanStatus.value = "Dijemput";
-    console.log('sad', selectedId.value);
     
     // await updatePengiriman(
     //   selectedId.value,
