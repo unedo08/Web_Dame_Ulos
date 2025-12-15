@@ -105,18 +105,17 @@ onUnmounted(() => {
         <Sidebar />
       </div>
 
-      <div class="flex-1 p-8 bg-white">
+      <div class="flex-1 bg-white">
         <Topbar />
-        <div class="mt-6">
-          <slot />
+        <div class="mt-2 px-6">
+          <div class="max-w-screen-xl mx-auto">
+            <slot />
+          </div>
         </div>
       </div>
     </div>
 
-    <div
-      v-if="showWarning"
-      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-    >
+    <div v-if="showWarning" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-xl p-6 w-[360px]">
         <h3 class="text-lg font-semibold mb-2 text-red-600">
           Session akan habis
@@ -130,17 +129,11 @@ onUnmounted(() => {
         </p>
 
         <div class="flex justify-end gap-3">
-          <button
-            class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300"
-            @click="logoutNow"
-          >
+          <button class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300" @click="logoutNow">
             Logout sekarang
           </button>
 
-          <button
-            class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-            @click="extendSession"
-          >
+          <button class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700" @click="extendSession">
             Tetap Login
           </button>
         </div>

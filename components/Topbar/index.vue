@@ -3,7 +3,7 @@
     <div class="topbar-content">
       <div class="text-right">
         <div class="user-info" @click="toggleDropdown">
-          <img src="@/assets/image/avatar.png" alt="avatar" class="avatar" />
+          <img src="@/assets/image/avatar-account.png" alt="avatar" class="avatar" />
           <span class="username">{{ name}}</span>
           <img
             src="@/assets/image/arrow_drop_down.png"
@@ -95,16 +95,14 @@ const onMenuItemClick = async (item) => {
 <style scoped>
 .topbar {
   background-color: #fff;
-  color: #424242;
-  padding: 15px;
   border-bottom: 2px solid #cfcfcf;
+  width: 100%;
 }
 
 .topbar-content {
   display: flex;
   justify-content: flex-end;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 12px 16px;
 }
 
 .text-right {
@@ -115,7 +113,7 @@ const onMenuItemClick = async (item) => {
 }
 
 .username {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .avatar {

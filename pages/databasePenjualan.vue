@@ -2,13 +2,13 @@
   <div>
     <title>Menu Database Penjualan</title>
     <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi
-      ..." />
+    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi penjualan..." />
 
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
           <th class="px-4 py-2 text-left">No.</th>
+          <th class="px-4 py-2 text-left">Tanggal</th>
           <th class="px-4 py-2 text-left">Nama Customer</th>
           <th class="px-4 py-2 text-left">No. Telepon</th>
           <th class="px-4 py-2 text-left">Jumlah Barang</th>
@@ -17,7 +17,6 @@
           <th class="px-4 py-2 text-left">Tipe</th>
           <th class="px-4 py-2 text-left">Status</th>
           <th class="px-4 py-2 text-left">Catatan</th>
-          <th class="px-4 py-2 text-left">Tanggal</th>
           <th class="px-4 py-2 text-left">Aksi</th>
         </tr>
       </thead>
@@ -29,15 +28,11 @@
               {{ gIndex + 1 }}
             </td>
             <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top font-semibold">
+              {{ formatDate(group.tanggal) }}
+            </td>
+            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top font-semibold">
               {{ trx.transaksi_nama_customer }}
             </td>
-            <!-- <td
-              v-if="tIndex === 0"
-              :rowspan="group.items.length"
-              class="px-4 py-2 align-top"
-            >
-              {{ group.telepon }}
-            </td> -->
             <td class="px-4 py-2">{{ trx.transaksi_nomor_telepon }}</td>
             <td class="px-4 py-2">{{ trx.transaksi_jumlah_barang }}</td>
             <td class="px-4 py-2">
@@ -47,7 +42,6 @@
             <td class="px-4 py-2">{{ trx.transaksi_tipe }}</td>
             <td class="px-4 py-2">{{ trx.transaksi_status }}</td>
             <td class="px-4 py-2">{{ trx.transaksi_catatan }}</td>
-            <td class="px-4 py-2">{{ formatDate(trx.created_at) }}</td>
             <td class="px-4 py-2">
               <div class="flex space-x-2">
                 <button
@@ -170,6 +164,11 @@ const listTransaksi = computed(() => {
   });
 });
 
+const getDateOnly = (date) => {
+  const d = new Date(date);
+  return d.toISOString().split("T")[0];
+};
+
 // nomor telepon saja
 const groupedTransaksi = computed(() => {
   const groups = [];
@@ -180,14 +179,19 @@ const groupedTransaksi = computed(() => {
   );
 
   sortedList.forEach((trx) => {
-    if (!map[trx.transaksi_nama_customer]) {
-      map[trx.transaksi_nama_customer] = {
+    const tanggal = getDateOnly(trx.created_at);
+    const key = `${trx.transaksi_nama_customer}__${tanggal}`;
+
+    if (!map[key]) {
+      map[key] = {
         nama: trx.transaksi_nama_customer,
+        tanggal,
         items: [],
       };
-      groups.push(map[trx.transaksi_nama_customer]);
+      groups.push(map[key]);
     }
-    map[trx.transaksi_nama_customer].items.push(trx);
+
+    map[key].items.push(trx);
   });
 
   return groups;

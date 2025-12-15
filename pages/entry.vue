@@ -809,14 +809,34 @@ async function openSendModal(id) {
     showDenyButton: true,
     showCancelButton: true,
     confirmButtonText: "DIKIRIM",
-    denyButtonText: "DIJEMPUT"
+    denyButtonText: "DIJEMPUT",
   });
 
-  if (!result.isConfirmed && !result.isDenied) return;
-  pengirimanStatus.value = result.isConfirmed ? "Dikirim" : "Dijemput";
+  if (result.isConfirmed) {
+    pengirimanStatus.value = "Dikirim";
+    showSendModal.value = true;
+  }
 
-  showSendModal.value = true;
+  if (result.isDenied) {
+    pengirimanStatus.value = "Dijemput";
+    console.log('sad', selectedId.value);
+    
+    // await updatePengiriman(
+    //   selectedId.value,
+    //   "-",
+    //   "Dijemput"
+    // );
+
+    Swal.fire({
+      icon: "success",
+      title: "Penjemputan Berhasil",
+      text: "Barang siap dijemput oleh pembeli",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
 }
+
 
 async function handleSend(data) {
 
