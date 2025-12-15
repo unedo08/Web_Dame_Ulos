@@ -299,6 +299,7 @@ class PengirimanBarangTController extends Controller
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->whereNull('pengirimanBarang_t.deleted_at')
+            ->where('pengirimanBarang_t.pengirimanBarang_is_export_excel', '=', 0)
             ->where(function ($q) {
                 $q->where('packaging_m.packaging_status', '!=', 'DONE')
                     ->orWhereNull('packaging_m.packaging_status');
@@ -359,5 +360,73 @@ class PengirimanBarangTController extends Controller
             'count' => $data->count(),
             'data' => $data
         ], 200);
+    }
+
+    public function exportPengirimanBarang()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        DB::beginTransaction();
+
+        try {
+            // 1️⃣ GET DATA
+            $data = DB::table('transaksidetail_t as tt')
+                ->join('pengirimanBarang_t as pbt', 'pbt.pengirimanBarang_transaksi_id', '=', 'tt.transaksidetail_transaksi_id')
+                ->join('packaging_m as pm', 'pm.packaging_transactiondetail_id', '=', 'tt.transaksidetail_id')
+                ->join('barangentry_m as bm', 'bm.barangentry_id', '=', 'tt.transaksidetail_barang_id')
+                ->join('code_m as cm', 'cm.code_id', '=', 'bm.barangentry_code_id')
+                ->whereNull('pbt.deleted_at')
+                ->where('pbt.pengirimanBarang_is_export_excel', 0)
+                ->select(
+                    'pbt.created_at',
+                    'pbt.pengirimanBarang_id',
+                    'pbt.pengirimanBarang_nama_penerima',
+                    'pbt.pengirimanBarang_akun_penerima',
+                    'pbt.pengirimanBarang_alamat_pengiriman_barang',
+                    'cm.code_nama',
+                    'tt.transaksidetail_jumlah_barang',
+                    'tt.transaksidetail_harga_barang'
+                )
+                ->get();
+
+           
+            if ($data->isEmpty()) {
+                return response()->json([
+                    'code' => 200,
+                    'message' => 'No data to export',
+                    'count' => 0,
+                    'data' => []
+                ]);
+            }
+
+            
+            $pengirimanIds = $data->pluck('pengirimanBarang_id')->unique();
+
+           
+            DB::table('pengirimanBarang_t')
+                ->whereIn('pengirimanBarang_id', $pengirimanIds)
+                ->update([
+                    'pengirimanBarang_is_export_excel' => 1,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Export data success',
+                'count' => $data->count(),
+                'data' => $data
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'code' => 500,
+                'message' => 'Export failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
