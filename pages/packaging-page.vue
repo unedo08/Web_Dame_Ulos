@@ -57,6 +57,10 @@
                   Selesai
                 </button>
               </template>
+              <button v-if="row.status_pengiriman === 'DONE'" class="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
+                @click="printLabel(row)">
+                Print
+              </button>
             </div>
           </td>
         </tr>
@@ -412,6 +416,89 @@ const statusChipClass = (status) => {
     default:
       return "bg-gray-100 text-gray-600 border border-gray-300";
   }
+};
+
+const printLabel = (row) => {
+  const printWindow = window.open("", "_blank");
+
+  const headerImg = `${window.location.origin}/image/Background-PrintPengiriman.png`;
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Label Pengiriman</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #541B1A;
+    }
+
+    .label-box {
+      width: 1244px;
+      height: 439px;
+      border: 1px dashed #000;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: flex;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .label {
+      width: 280px;
+      font-weight: bold;
+    }
+
+    .header-img {
+      margin-top: 40px;
+    }
+
+    .header-img img {
+      width: 520px;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-box">
+    <div class="row">
+      <div class="label">Nama Penerima</div>
+      <div>: ${row.pengirimanBarang_nama_penerima}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Nomor Telepon / Hp</div>
+      <div>: ${row.pengirimanBarang_no_telepon || "-"}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Alamat</div>
+      <div>: ${row.pengirimanBarang_alamat_pengiriman_barang}</div>
+    </div>
+
+    <!-- 🔥 HEADER DAME ULOS (GAMBAR) -->
+    <div class="header-img">
+      <img src="${headerImg}" alt="Dame Ulos" />
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      window.print();
+      window.onafterprint = () => window.close();
+    };
+  <\/script>
+</body>
+</html>
+`);
+
+  printWindow.document.close();
 };
 
 watch(currentPage, (v) => {
