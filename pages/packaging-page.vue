@@ -1,11 +1,9 @@
 <template>
   <div>
     <title>Packaging</title>
-
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
       <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari Pengiriman Barang..." />
-
       <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
         Export Excel
       </button>
@@ -25,7 +23,6 @@
           <th>Aksi</th>
         </tr>
       </thead>
-
       <tbody>
         <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
           :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
@@ -36,7 +33,6 @@
           <td>{{ formatCurrency(row.pengirimanBarang_harga_kirim_barang) }}</td>
           <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
           <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
-
           <td>
             <span class="px-2 py-1 rounded-full text-xs font-semibold" :class="statusChipClass(row.status_pengiriman)">
               {{ row.status_pengiriman || '-' }}
@@ -45,7 +41,6 @@
           <td>
             <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
           </td>
-
           <td>
             <div class="flex gap-2">
               <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
@@ -138,12 +133,9 @@ const fetchData = async () => {
 
 onMounted(fetchData);
 
-
 const openModalEdit = async (row) => {
   selectedPengiriman.value = row;
-
   const trx_id = row.pengirimanBarang_transaksi_id;
-
   try {
     const token = sessionStorage.getItem("auth_token")
     const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`, {
@@ -234,10 +226,6 @@ const selesaikanPackaging = async (row) => {
       });
     }
 
-    await axios.post(`${url}/api/packaging/update-status/${row.pengirimanBarang_id}`, {}, {
-      packaging_status: "DONE"
-    });
-
     setTimeout(() => {
       fetchData();
     }, 50);
@@ -256,54 +244,9 @@ const selesaikanPackaging = async (row) => {
   }
 };
 
-async function buildRows(row) {
-  try {
-    const trxId = row.pengirimanBarang_transaksi_id;
-    if (!trxId) return [];
-    const token = sessionStorage.getItem("auth_token")
-    const { data: trx } = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
-
-    if (!trx.data || trx.data.length === 0) return [];
-
-    const rows = [];
-
-    for (const d of trx.data) {
-      rows.push({
-        tgl: new Date(row.created_at),
-        penerima: row.pengirimanBarang_nama_penerima ?? "-",
-        akun: row.pengirimanBarang_akun_penerima ?? "-",
-        alamat: row.pengirimanBarang_alamat_pengiriman_barang ?? "-",
-        barang: d.code_nama ?? "-",
-        qty: Number(d.transaksidetail_jumlah_barang ?? 0),
-        harga: Number(d.transaksidetail_harga_barang ?? 0),
-      });
-    }
-
-    return rows;
-  } catch (err) {
-    console.error("Gagal memproses row:", err);
-    return [];
-  }
-}
-
 const exportToExcel = async () => {
   try {
-    const source = [...filteredData.value];
-
-    if (!source.length) {
-      Swal.fire({
-        title: "Tidak ada data",
-        text: "Data kosong, tidak bisa diexport.",
-        icon: "info",
-      });
-      return;
-    }
-
+    const token = sessionStorage.getItem("auth_token")
     Swal.fire({
       title: "Menyiapkan data…",
       text: "Mohon tunggu sebentar",
@@ -311,45 +254,59 @@ const exportToExcel = async () => {
       didOpen: () => Swal.showLoading(),
     });
 
-    let allRows = [];
+    const res = await axios.get(`${url}/api/pengiriman-barang/export-data`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
-    for (const row of source) {
-      const rows = await buildRows(row);
-      allRows.push(...rows);
-    }
-
-    if (!allRows.length) {
+    const data = res.data.data;
+    if (!data || !data.length) {
       Swal.close();
-      Swal.fire("Tidak ada data detail!", "", "info");
+      Swal.fire("Tidak ada data", "Data kosong", "info");
       return;
     }
 
-    allRows.sort((a, b) => {
-      const kA = `${a.penerima}|||${a.alamat}`.toLowerCase();
-      const kB = `${b.penerima}|||${b.alamat}`.toLowerCase();
-      if (kA !== kB) return kA < kB ? -1 : 1;
-      return a.tgl - b.tgl;
+    data.sort((a, b) => {
+      const keyA =
+        `${a.pengirimanBarang_nama_penerima}|||${a.pengirimanBarang_alamat_pengiriman_barang}`.toLowerCase();
+      const keyB =
+        `${b.pengirimanBarang_nama_penerima}|||${b.pengirimanBarang_alamat_pengiriman_barang}`.toLowerCase();
+
+      if (keyA !== keyB) return keyA < keyB ? -1 : 1;
+      return new Date(a.created_at) - new Date(b.created_at);
     });
 
-    const exportRows = allRows.map(r => ({
-      "Tanggal": r.tgl,
-      "Nama Penerima": r.penerima,
-      "Nama Akun": r.akun,
-      "Alamat": r.alamat,
-      "Kode Barang": r.barang,
-      "Qty": r.qty,
-      "Harga": r.harga,
+
+    const exportRows = data.map((r) => ({
+      Tanggal: new Date(r.created_at),
+      "Nama Penerima": r.pengirimanBarang_nama_penerima,
+      "Nama Akun": r.pengirimanBarang_akun_penerima,
+      Alamat: r.pengirimanBarang_alamat_pengiriman_barang,
+      "Kode Barang": r.code_nama,
+      Qty: r.transaksidetail_jumlah_barang,
+      Harga: Number(r.transaksidetail_harga_barang),
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet(exportRows, { cellDates: true, dateNF: "dd-mmm-yyyy" });
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Packaging");
+    const worksheet = XLSX.utils.json_to_sheet(exportRows, {
+      cellDates: true,
+      dateNF: "dd-mmm-yyyy",
+    });
+
+    Object.keys(worksheet).forEach((cell) => {
+      if (cell.startsWith("G") && cell !== "G1") {
+        worksheet[cell].z = '"Rp" #,##0';
+      }
+    });
 
     const merges = [];
     let start = 0;
+
     while (start < exportRows.length) {
-      const key = `${exportRows[start]["Nama Penerima"]}|||${exportRows[start]["Alamat"]}`;
+      const key =
+        `${exportRows[start]["Nama Penerima"]}|||${exportRows[start]["Alamat"]}`;
       let end = start;
+
       while (
         end + 1 < exportRows.length &&
         `${exportRows[end + 1]["Nama Penerima"]}|||${exportRows[end + 1]["Alamat"]}` === key
@@ -374,20 +331,28 @@ const exportToExcel = async () => {
       { wch: 40 },
       { wch: 16 },
       { wch: 6 },
-      { wch: 12 },
+      { wch: 14 },
     ];
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], {
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Packaging");
+
+    const buffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const blob = new Blob([buffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
-    const fileName = `Packaging_${new Date().toISOString().split("T")[0]}.xlsx`;
-    saveAs(blob, fileName);
-
+    saveAs(
+      blob,
+      `Packaging_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
     Swal.close();
     Swal.fire("Berhasil", "Export Excel selesai.", "success");
-
+    fetchData();
   } catch (err) {
     console.error(err);
     Swal.close();
