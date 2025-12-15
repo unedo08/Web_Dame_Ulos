@@ -5,6 +5,10 @@
         <div class="flex items-center justify-between pt-2">
             <input class="search-box p-2 border rounded-md w-[385px] text-sm" v-model="searchQuery" type="text"
                 placeholder="Search staff..." />
+            <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
+                @click="openAddModal">
+                + Tambah Staff
+            </button>
         </div>
 
         <table class="datatable w-full rounded-md overflow-hidden mt-4">
@@ -100,6 +104,71 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="isAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div class="bg-white p-6 rounded-lg w-[420px]">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Tambah User Baru</h3>
+                    <button @click="closeAddModal">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            Nama <span class="text-red-500">*</span>
+                        </label>
+                        <input v-model="addForm.name" type="text" class="w-full border rounded p-2 text-sm"
+                            placeholder="Masukkan nama" />
+                        <p v-if="errors.name" class="text-red-500 text-xs mt-1">
+                            {{ errors.name }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            Email <span class="text-red-500">*</span>
+                        </label>
+                        <input v-model="addForm.email" type="email" class="w-full border rounded p-2 text-sm"
+                            placeholder="Masukkan email" />
+                        <p v-if="errors.email" class="text-red-500 text-xs mt-1">
+                            {{ errors.email }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            Password <span class="text-red-500">*</span>
+                        </label>
+                        <input v-model="addForm.password" type="password" class="w-full border rounded p-2 text-sm"
+                            placeholder="Masukkan password" />
+                        <p v-if="errors.password" class="text-red-500 text-xs mt-1">
+                            {{ errors.password }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            Role <span class="text-red-500">*</span>
+                        </label>
+                        <select v-model="addForm.role_id" class="w-full border rounded p-2 text-sm">
+                            <option value="">Pilih Role</option>
+                            <option v-for="r in roles" :key="r.id" :value="r.id">
+                                {{ r.name }}
+                            </option>
+                        </select>
+                        <p v-if="errors.role_id" class="text-red-500 text-xs mt-1">
+                            {{ errors.role_id }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-6">
+                    <button class="px-4 py-2 bg-gray-300 rounded" @click="closeAddModal">
+                        Batal
+                    </button>
+
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" @click="submitAddUser">
+                        Tambah
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -118,10 +187,19 @@ const isPasswordModal = ref(false);
 const selectedUser = ref(null);
 const currentPassword = ref("");
 const newPassword = ref("");
+const isAddModal = ref(false);
+const errors = ref({});
 
 onMounted(() => {
     url.value = useRuntimeConfig().public.apiBase;
     fetchUsers();
+});
+
+const addForm = ref({
+    name: "",
+    email: "",
+    password: "",
+    role_id: "",
 });
 
 const fetchUsers = async () => {
@@ -148,7 +226,6 @@ const filteredUsers = computed(() => {
     );
 });
 
-/* PAGINATION */
 const pagination = computed(() => {
     if (itemsPerPage.value === "all") return filteredUsers.value;
     const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -169,7 +246,6 @@ const paginatedPages = computed(() => {
     return [1, "...", current - 1, current, current + 1, "...", total];
 });
 
-/* PASSWORD */
 const openPasswordModal = (user) => {
     selectedUser.value = user;
     currentPassword.value = "";
@@ -215,7 +291,82 @@ const updatePassword = async () => {
     }
 };
 
-/* DELETE */
+const roles = ref([
+    { id: 1, name: "Super Admin" },
+    { id: 2, name: "Admin" },
+    { id: 3, name: "Marketing" },
+    { id: 4, name: "Quality Control" },
+    { id: 5, name: "Packaging" },
+    { id: 6, name: "Pewarna Alam" },
+    { id: 7, name: "Social Media" },
+]);
+
+const openAddModal = () => {
+    addForm.value = {
+        name: "",
+        email: "",
+        password: "",
+        role_id: "",
+    };
+    isAddModal.value = true;
+};
+
+const closeAddModal = () => {
+    isAddModal.value = false;
+};
+
+const submitAddUser = async () => {
+    resetErrors();
+
+    const { name, email, password, role_id } = addForm.value;
+
+    if (!name) setError("name", "Nama wajib diisi");
+    if (!email) setError("email", "Email wajib diisi");
+    if (!password) setError("password", "Password wajib diisi");
+    if (!role_id) setError("role_id", "Role wajib dipilih");
+
+    if (Object.keys(errors.value).length > 0) {
+        Swal.fire("Gagal", "Mohon lengkapi semua data", "warning");
+        return;
+    }
+
+    try {
+        const token = sessionStorage.getItem("auth_token");
+        await axios.post(
+            `${url.value}/api/register`,
+            {
+                name,
+                email,
+                password,
+                password_confirmation: password,
+                role_id,
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        Swal.fire("Berhasil", "Staff berhasil ditambahkan", "success");
+        closeAddModal();
+        fetchUsers();
+    } catch (err) {
+        Swal.fire(
+            "Gagal",
+            err.response?.data?.message || "Gagal menambah user",
+            "error"
+        );
+    }
+};
+
+const resetErrors = () => {
+    errors.value = {};
+};
+
+const setError = (field, message) => {
+    errors.value[field] = message;
+};
+
 const deleteUser = async (id, name) => {
     const confirm = await Swal.fire({
         title: "Hapus Staff?",
@@ -258,5 +409,17 @@ const deleteUser = async (id, name) => {
 .datatable th,
 .datatable td {
     font-size: 12px;
+}
+
+.btn-add {
+    background-color: #3d8bfd;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-add:hover {
+    background-color: #3d8bfd;
 }
 </style>
