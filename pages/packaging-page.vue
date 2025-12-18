@@ -43,11 +43,6 @@
           </td>
           <td>
             <div class="flex gap-2">
-              <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                @click="deleteData(row.pengirimanBarang_id)">
-                Delete
-              </button>
-
               <template v-if="row.status_pengiriman !== 'DONE'">
                 <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
                   Edit
@@ -57,6 +52,10 @@
                   Selesai
                 </button>
               </template>
+              <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                @click="deleteData(row.pengirimanBarang_id)">
+                Delete
+              </button>
               <button v-if="row.status_pengiriman === 'DONE'" class="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
                 @click="printLabel(row)">
                 Print

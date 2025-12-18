@@ -59,6 +59,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useRuntimeConfig } from "#imports";
+import Swal from "sweetalert2";
 
 const email = ref("");
 const password = ref("");
@@ -77,7 +78,7 @@ const handleLogin = async () => {
       password: password.value,
     });
     const expiresAt = Date.now() + res.data.expires_in * 1000;
-    
+
     sessionStorage.setItem("name", res.data.user.name);
     sessionStorage.setItem("role", res.data.user.role.id);
     sessionStorage.setItem("auth_token", res.data.token);
@@ -85,7 +86,11 @@ const handleLogin = async () => {
 
     router.push("/beranda");
   } catch (err) {
-    alert("Login gagal");
+    Swal.fire({
+      title: "Gagal!",
+      text: "Terjadi kesalahan saat menambahkan order.",
+      icon: "error",
+    });
   }
 };
 

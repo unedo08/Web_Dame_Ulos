@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto w-full">
+      <div class="w-full">
         <table class="datatable w-full rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
@@ -152,7 +152,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto w-full">
+      <div class="w-full">
         <table class="datatable w-full rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
@@ -275,7 +275,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto w-full">
+      <div class="w-full">
         <table class="datatable w-full rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
@@ -425,59 +425,59 @@
             <label class="block text-gray-700 mb-1">Nama Ulos <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Nama Ulos" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Warna Ulos <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_warna" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Warna Ulos" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Penenun <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama_penenun" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Nama Penenun" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Nama Panirat <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_nama_panirat" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Nama Panirat" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Dyer <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_dryer" type="text"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Dyer" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
               @input="updateModal($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga" />
+              placeholder="Masukkan Harga Modal" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
               @input="updatePriceTag($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga" />
+              placeholder="Masukkan Harga Price Taf" />
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span></label>
             <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
               @input="updateHargaNet($event.target.value)"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan harga" />
+              placeholder="Masukkan Harga Net" />
           </div>
 
           <div>
             <label class="block text-gray-700 mb-1">Jumlah <span style="color:red">*</span></label>
             <input v-model="selectedBarang.barangentry_jumlah_barang" type="number" min="1"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 autofocus"
-              placeholder="..." />
+              placeholder="Masukkan Jumlah" />
           </div>
         </div>
 
@@ -525,7 +525,7 @@
             <div class="flex items-center gap-2">
               <input v-model="selectedBarang.ukuran_ulos" type="text"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                placeholder="Masukkan ukuran" />
+                placeholder="Masukkan Ukuran Ulos" />
               <span class="text-gray-700 text-sm">cm</span>
             </div>
           </div>
@@ -536,7 +536,7 @@
             <div class="flex items-center gap-2">
               <input v-model="selectedBarang.ukuran_mandar" type="text"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                placeholder="Masukkan ukuran" />
+                placeholder="Masukkan Ukuran Mandar" />
               <span class="text-gray-700 text-sm">cm</span>
             </div>
           </div>
@@ -810,6 +810,9 @@ async function openSendModal(id) {
     showCancelButton: true,
     confirmButtonText: "DIKIRIM",
     denyButtonText: "DIJEMPUT",
+    confirmButtonColor: "#3B82F6",
+    denyButtonColor: "#FBBF24",
+    cancelButtonColor: "#9CA3AF",
   });
 
   if (result.isConfirmed) {
@@ -819,7 +822,7 @@ async function openSendModal(id) {
 
   if (result.isDenied) {
     pengirimanStatus.value = "Dijemput";
-    
+
     // await updatePengiriman(
     //   selectedId.value,
     //   "-",
@@ -1905,6 +1908,7 @@ watch(activeTab, () => {
 .datatable {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   margin-top: 20px;
 }
 
@@ -1914,6 +1918,8 @@ watch(activeTab, () => {
   /* border: 1px solid #ddd; */
   text-align: left;
   font-size: 12px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .datatable th {
