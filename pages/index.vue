@@ -1,55 +1,51 @@
 <template>
-  <div class="h-screen bg-gray-100 flex justify-center font-nunito">
-    <div class="w-full max-w-[1200px] h-full bg-white rounded-xl shadow-xl overflow-hidden flex">
-      <div class="w-full md:w-1/3 bg-[#FFFFF0] flex flex-col justify-center items-center px-10">
-        <img src="/assets/image/DameUlosLogo2.png" alt="Dame Ulos Logo" class="w-[220px] mb-8" />
+  <div class="min-h-screen bg-gray-100 flex items-center justify-center font-nunito">
+    <div class="bg-white rounded-xl shadow-xl flex overflow-hidden" style="width: 1100px; height: 727px;">
+      <div class="w-[420px] bg-[#FFFFF0] px-10 py-12">
+        <img src="/assets/image/DameUlosLogo2.png" class="w-[180px] mb-8" />
 
-        <h2 class="text-2xl font-bold mb-1 text-black">
-          Welcome Back!
-        </h2>
-
-        <p class="text-sm text-gray-500 mb-8 text-center">
+        <h2 class="text-2xl font-bold mb-1">Welcome Back!</h2>
+        <p class="text-sm text-gray-500 mb-6">
           Sign in to Continue to Dame Ulos Application
         </p>
 
-        <form @submit.prevent="handleLogin" class="w-full max-w-sm space-y-5">
+        <form @submit.prevent="handleLogin" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
-            <input v-model="email" type="email" placeholder="Enter Your Email" required
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#BD9E77]" />
+            <label class="text-sm font-medium block mb-1">Email</label>
+            <input v-model="email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Password</label>
-            <input v-model="password" type="password" placeholder="Enter Your Password" required
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#BD9E77]" />
+            <label class="text-sm font-medium block mb-1">Password</label>
+            <input v-model="password" type="password" class="w-full border border-gray-300 rounded-md px-3 py-2" />
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 text-sm mt-2">
             <input type="checkbox" v-model="rememberMe" />
-            <span class="text-sm font-semibold">Remember Me</span>
+            Remember me
           </div>
 
-          <button type="submit"
-            class="w-full bg-[#BD9E77] text-white py-2 rounded-lg font-semibold hover:bg-[#a08c6a] transition">
-            Sign in
+          <button class="mt-4 w-full bg-[#BD9E77] text-white py-2 rounded-md
+                   hover:bg-[#a08c6a] transition">
+            Sign In
           </button>
         </form>
       </div>
-      <div class="hidden md:block w-2/3 relative bg-cover bg-center"
-        style="background-image: url('/image/Background-Login.png')">
-        <div class="absolute inset-0 bg-[#8E775E]/70 flex items-center justify-center px-16">
-          <p class="text-white text-center max-w-3xl text-lg leading-relaxed">
+
+      <div class="relative" style="width: 680px; height: 727px;">
+        <img src="/image/Background-Login.png" class="w-full h-full object-cover border border-black" />
+
+        <div class="absolute inset-0 flex items-center justify-center px-14">
+          <p class="text-white text-center text-sm leading-relaxed max-w-md italic">
             “Dame Ulos is a local brand from Silindung (Tarutung) which focuses on
-            preserving <b>Intangible Cultural Heritage</b> namely
-            <b>Ulos and Mandar Tarutung</b>. Each ulos and mandar is made with the
-            concept of <b>Revitalization</b> using natural dyes and preserving the
-            traditional weaving tradition (gedog) by following the original motif
-            so that the philosophical values contained in the cloth are maintained.”
+            preserving Intangible Cultural Heritage namely Ulos and Mandar Tarutung.
+            Each ulos and mandar is made with the concept of Revitalization using
+            natural dyes and preserving the traditional weaving tradition (gedog)
+            by following the original motif so that the philosophical values
+            contained in the cloth are maintained.”
           </p>
         </div>
       </div>
-
     </div>
   </div>
 </template>

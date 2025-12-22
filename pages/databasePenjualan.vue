@@ -2,7 +2,7 @@
   <div>
     <title>Menu Database Penjualan</title>
     <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi penjualan..." />
+    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari transaksi penjualan..." />
 
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
@@ -65,7 +65,7 @@
         </template>
       </tbody>
     </table>
-    <div class="flex justify-between items-center mt-4">
+    <div class="flex justify-between items-center mt-6 mb-10">
       <div class="flex items-center space-x-2 text-sm">
         <label for="perPage">Tampilkan:</label>
         <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">

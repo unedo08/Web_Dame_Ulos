@@ -337,11 +337,21 @@ const deleteCustomer = async (id, nama) => {
   font-size: 12px;
 }
 
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
 .datatable th,
 .datatable td {
   padding: 10px;
   text-align: left;
   font-size: 12px;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
 }
 
 .btn-add {

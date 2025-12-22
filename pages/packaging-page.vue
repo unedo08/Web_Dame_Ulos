@@ -3,7 +3,7 @@
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari Pengiriman Barang..." />
+      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
       <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
         Export Excel
       </button>
@@ -12,11 +12,10 @@
       <thead class="bg-blue-100">
         <tr>
           <th>No</th>
-          <th>Nama Penerima</th>
           <th>Nama Akun</th>
+          <th>Nama Penerima</th>
           <th>Telepon</th>
-          <th>Harga Kirim</th>
-          <th>Jenis</th>
+          <th>Ekspedisi</th>
           <th>Alamat</th>
           <th>Status Kirim</th>
           <th>Barang</th>
@@ -27,14 +26,13 @@
         <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
           :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td>{{ index + 1 }}</td>
-          <td>{{ row.pengirimanBarang_nama_penerima }}</td>
           <td>{{ row.pengirimanBarang_akun_penerima }}</td>
+          <td>{{ row.pengirimanBarang_nama_penerima }}</td>
           <td>{{ row.pengirimanBarang_no_telepon }}</td>
-          <td>{{ formatCurrency(row.pengirimanBarang_harga_kirim_barang) }}</td>
           <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
           <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
           <td>
-            <span class="px-2 py-1 rounded-full text-xs font-semibold" :class="statusChipClass(row.status_pengiriman)">
+            <span class="text-status px-2 py-1 rounded-full font-semibold" :class="statusChipClass(row.status_pengiriman)">
               {{ row.status_pengiriman || '-' }}
             </span>
           </td>
@@ -66,7 +64,7 @@
       </tbody>
     </table>
 
-    <div class="flex justify-between items-center mt-4 text-xs">
+    <div class="flex justify-between items-center mt-6 mb-10 text-xs">
       <div>
         <label>Tampilkan:</label>
         <select v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
@@ -526,5 +524,9 @@ const formatCurrency = (val) =>
 
 .datatable th {
   background-color: #f4f4f4;
+}
+
+.text-status{
+  font-size: 10px !important;
 }
 </style>

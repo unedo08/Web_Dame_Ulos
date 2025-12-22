@@ -146,7 +146,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="flex justify-between items-center mt-4 text-xs">
+      <div class="flex justify-between items-center mt-6 mb-10 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
           <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">

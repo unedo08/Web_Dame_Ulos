@@ -6,7 +6,7 @@
     </div>
 
     <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box" placeholder="Cari Pengiriman Barang..." />
+      <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari Pengiriman Barang..." />
 
       <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
         Export Excel
@@ -52,7 +52,7 @@
     </table>
 
     <!-- Pagination -->
-    <div class="flex justify-between items-center mt-4 text-xs">
+    <div class="flex justify-between items-center mt-6 mb-10 text-xs">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
         <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">

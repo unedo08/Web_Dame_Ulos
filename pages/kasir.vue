@@ -105,9 +105,12 @@
           Tidak ada transaksi hold saat ini.
         </div>
         <div v-else class="space-y-2 transition-slide">
-          <div v-for="(item, index) in paginatedList" :key="item.transaksi_id"
-            class="relative p-3 border border-gray-300 rounded-md bg-[#F7F7F7] flex justify-between items-center"
-            @click="loadHoldTransaction(item.transaksi_id)">
+          <div v-for="(item, index) in paginatedList" :key="item.transaksi_id" :class="[
+            'relative p-3 border rounded-md flex justify-between items-center cursor-pointer transition-all duration-200',
+            item.transaksi_id === currentTransaksiId
+              ? 'bg-blue-100 border-blue-500'
+              : 'bg-[#F7F7F7] border-gray-300 hover:bg-blue-50 hover:border-blue-400'
+          ]" @click="loadHoldTransaction(item.transaksi_id)">
             <div class="pr-8">
               <div class="font-semibold">
                 {{ item.transaksi_nama_customer || "Tanpa Nama" }}

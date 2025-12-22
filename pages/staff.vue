@@ -406,9 +406,21 @@ const deleteUser = async (id, name) => {
     font-size: 12px;
 }
 
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
 .datatable th,
 .datatable td {
-    font-size: 12px;
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
 }
 
 .btn-add {

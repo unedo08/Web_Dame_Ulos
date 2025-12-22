@@ -453,24 +453,39 @@
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span></label>
-            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
-              @input="updateModal($event.target.value)"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan Harga Modal" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
+                @input="updateModal($event.target.value)"
+                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan Harga Modal" />
+            </div>
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span></label>
-            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
-              @input="updatePriceTag($event.target.value)"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan Harga Price Taf" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
+                @input="updatePriceTag($event.target.value)"
+                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan Harga Price Taf" />
+            </div>
           </div>
           <div>
             <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span></label>
-            <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
-              @input="updateHargaNet($event.target.value)"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan Harga Net" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
+                @input="updateHargaNet($event.target.value)"
+                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                placeholder="Masukkan Harga Net" />
+            </div>
           </div>
 
           <div>
@@ -519,28 +534,29 @@
               ]" placeholder="Scan atau ketik kode barang..." />
           </div>
 
-          <!-- Ukuran Ulos -->
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Ulos</label>
-            <div class="flex items-center gap-2">
+            <div class="flex">
               <input v-model="selectedBarang.ukuran_ulos" type="text"
-                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Ulos" />
-              <span class="text-gray-700 text-sm">cm</span>
+              <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
+                Cm
+              </div>
             </div>
           </div>
 
-          <!-- Ukuran Mandar -->
           <div>
             <label class="block text-gray-700 mb-1">Ukuran Mandar</label>
-            <div class="flex items-center gap-2">
+            <div class="flex">
               <input v-model="selectedBarang.ukuran_mandar" type="text"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Mandar" />
-              <span class="text-gray-700 text-sm">cm</span>
+              <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
+                Cm
+              </div>
             </div>
           </div>
-
         </div>
 
         <div class="flex justify-end space-x-3 mt-6">
@@ -554,7 +570,6 @@
         </div>
       </div>
     </div>
-
 
     <div ref="printContent" class="hidden print:block p-8 text-sm leading-relaxed">
       <div v-for="item in priceTagData" :key="item.data.barangentry_id"
@@ -572,9 +587,7 @@
           <hr style="border: none; border-top: 1px solid #bbb; margin-top: 6px; margin-bottom: 14px;" />
         </div>
 
-        <!-- KONTEN UTAMA -->
         <div style="display: flex; gap: 40px;">
-          <!-- KIRI -->
           <div style="flex: 1;">
             <p style="margin: 0; font-weight: 600;">Horas!</p>
             <p style="margin: 6px 0;">
@@ -625,7 +638,6 @@
               </tbody>
             </table>
 
-            <!-- Harga -->
             <p style="margin-top: 22px; font-weight: 700; font-size: 18px;">
               Rp {{ Number(item.data.barangentry_harga).toLocaleString("id-ID") }}
             </p>
@@ -671,8 +683,6 @@
       </div>
     </div>
 
-
-    <!-- Modal Search -->
     <div v-if="showModalSearch" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
         <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
@@ -689,7 +699,6 @@
       </div>
     </div>
 
-    <!-- Modal Edit Stock -->
     <div v-if="showModalEditStock" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white p-6 rounded-md w-80 shadow-md">
         <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
@@ -719,7 +728,6 @@
 
     <SendOrderModal :visible="showSendModal" @close="showSendModal = false" @submitted="handleSend" />
 
-    <!-- </div> -->
   </div>
 </template>
 
@@ -1248,8 +1256,6 @@ async function sendOrder(barangentry_id, formData) {
 
     return dataPengiriman.pengiriman.pengirimanBarang_id;
   } catch (err) {
-    // console.error('sad', err);
-
     Swal.fire({
       title: "Gagal!",
       text: "Silahkan lengkapi preorder",
@@ -1258,12 +1264,10 @@ async function sendOrder(barangentry_id, formData) {
       timer: 3000,
       timerProgressBar: true,
     });
-
   }
 }
 
 async function submitBarang() {
-
   const requiredFields = [
     'code_id',
     'barangentry_nama',
@@ -1620,7 +1624,6 @@ async function printPreOrder(id) {
   });
 
   const data = response.data.data;
-
   const resEntry = await axios.get(`${url.value}/api/entrybarang/${id}`, {
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -1915,7 +1918,6 @@ watch(activeTab, () => {
 .datatable th,
 .datatable td {
   padding: 10px;
-  /* border: 1px solid #ddd; */
   text-align: left;
   font-size: 12px;
   word-wrap: break-word;

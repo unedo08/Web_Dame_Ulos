@@ -2,7 +2,7 @@
   <div>
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Packaging</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari Pengiriman Barang..." />
+    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
@@ -73,7 +73,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="flex justify-between items-center mt-4 text-xs">
+    <div class="flex justify-between items-center mt-6 mb-10 text-xs">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>
         <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
