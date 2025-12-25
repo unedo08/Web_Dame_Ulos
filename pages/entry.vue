@@ -24,7 +24,7 @@
           style="width: 100%"></span>
       </button>
     </div>
-    <div class="mx-auto" v-show="activeTab === 'wait'">
+    <div class="w-full" v-show="activeTab === 'wait'">
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
           <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
@@ -98,7 +98,7 @@
           </tbody>
         </table>
 
-        <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
             <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
@@ -133,7 +133,7 @@
         </div>
       </div>
     </div>
-    <div class="mx-auto" v-show="activeTab === 'ready'">
+    <div class="w-full" v-show="activeTab === 'ready'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
@@ -224,7 +224,7 @@
           </tbody>
         </table>
 
-        <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
             <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
@@ -260,7 +260,7 @@
       </div>
     </div>
 
-    <div class="mx-auto" v-show="activeTab === 'po'">
+    <div class="w-full" v-show="activeTab === 'po'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
@@ -366,7 +366,7 @@
           </tbody>
         </table>
 
-        <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
           <div class="flex items-center space-x-2">
             <label for="perPage">Tampilkan:</label>
             <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
@@ -1911,8 +1911,9 @@ watch(activeTab, () => {
 .datatable {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
   margin-top: 20px;
+  margin-left: 0 !important;
 }
 
 .datatable th,

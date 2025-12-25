@@ -12,12 +12,12 @@
         <form @submit.prevent="handleLogin" class="space-y-4">
           <div>
             <label class="text-sm font-medium block mb-1">Email</label>
-            <input v-model="email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            <input v-model="email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Email" />
           </div>
 
           <div>
             <label class="text-sm font-medium block mb-1">Password</label>
-            <input v-model="password" type="password" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            <input v-model="password" type="password" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Password" />
           </div>
 
           <div class="flex items-center gap-2 text-sm mt-2">

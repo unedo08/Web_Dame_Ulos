@@ -65,7 +65,7 @@
         </template>
       </tbody>
     </table>
-    <div class="flex justify-between items-center mt-6 mb-10">
+    <div class="flex justify-between items-center mt-8 mb-4">
       <div class="flex items-center space-x-2 text-sm">
         <label for="perPage">Tampilkan:</label>
         <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">

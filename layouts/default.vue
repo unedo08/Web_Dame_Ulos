@@ -108,7 +108,7 @@ onUnmounted(() => {
       <div class="flex-1 bg-white">
         <Topbar />
         <div class="mt-2 px-6">
-          <div class="max-w-screen-xl mx-auto">
+          <div class="w-full max-w-full">
             <slot />
           </div>
         </div>

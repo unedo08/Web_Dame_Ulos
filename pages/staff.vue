@@ -45,7 +45,7 @@
             </tbody>
         </table>
 
-        <div class="flex justify-between items-center mt-4 text-xs">
+        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
             <div class="flex items-center space-x-2">
                 <label>Tampilkan:</label>
                 <select v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
