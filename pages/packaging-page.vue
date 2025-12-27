@@ -3,7 +3,7 @@
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
+      <input v-model="searchQuery" type="text" class="search-box p-2 border rounded-md w-[385px] text-sm" placeholder="Cari Pengiriman Barang..." />
       <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
         Export Excel
       </button>
@@ -512,8 +512,10 @@ const formatCurrency = (val) =>
 <style scoped>
 .search-box {
   border: 1px solid #ccc;
-  padding: 8px;
-  width: 350px;
+  padding: 10px;
+  width: 385px;
+  height: 25px;
+  font-size: 12px;
 }
 
 .datatable th,
