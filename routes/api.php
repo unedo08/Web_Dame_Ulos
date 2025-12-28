@@ -20,6 +20,7 @@ Route::middleware('jwt')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     // Route::put('/user', [AuthController::class, 'updateUser']);
     Route::get('/getUser', [AuthController::class, 'getActiveUsers']);
+    Route::get('/user/{id}', [AuthController::class, 'getUserById']);
     Route::put('/user/{id}', [AuthController::class, 'update']);
 
     Route::post('/user/update-password', [AuthController::class, 'updatePassword']);

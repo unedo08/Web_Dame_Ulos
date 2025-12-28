@@ -220,4 +220,33 @@ class AuthController extends Controller
             'user'    => $user->load('role'),
         ], 200);
     }
+
+    public function getUserById($id)
+    {
+        try {
+            $user = User::with('role')
+                ->where('id', $id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User retrieved successfully',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to get user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
