@@ -198,4 +198,26 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role_id' => 'required|integer',
+        ]);
+
+        $user->update([
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'role_id' => $request->role_id,
+        ]);
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user'    => $user->load('role'),
+        ], 200);
+    }
 }
