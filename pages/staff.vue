@@ -32,8 +32,8 @@
 
                     <td class="px-4 py-2 flex gap-2">
                         <button class="px-2 py-1 bg-yellow-500 text-white rounded text-xs hover:bg-yellow-600"
-                            @click="openPasswordModal(user)">
-                            Update Password
+                            @click="openEditModal(user)">
+                            Update
                         </button>
 
                         <button class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
@@ -79,27 +79,35 @@
             </div>
         </div>
 
-        <div v-if="isPasswordModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div class="bg-white p-6 rounded-lg w-[420px]">
-                <h3 class="text-lg font-semibold mb-4">
-                    Update Password – {{ selectedUser?.name }}
-                </h3>
-
-                <div class="space-y-3">
-                    <input v-model="currentPassword" type="password" placeholder="Password Saat Ini"
-                        class="w-full border rounded p-2" />
-
-                    <input v-model="newPassword" type="password" placeholder="Password Baru"
-                        class="w-full border rounded p-2" />
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Update User</h3>
+                    <button @click="closeEditModal">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Name</label>
+                        <input v-model="editForm.name" type="text" class="w-full border rounded p-2 text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Email</label>
+                        <input v-model="editForm.email" type="email" disabled
+                            class="w-full border rounded p-2 text-sm bg-gray-100" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">User Role</label>
+                        <select v-model="editForm.role_id" class="w-full border rounded p-2 text-sm">
+                            <option v-for="r in roles" :key="r.id" :value="r.id">{{ r.name }}</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="flex justify-end gap-2 mt-4">
-                    <button class="px-4 py-2 bg-gray-300 rounded" @click="closePasswordModal">
-                        Batal
-                    </button>
-
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" @click="updatePassword">
-                        Simpan
+                <div class="flex justify-end gap-2 mt-6">
+                    <button class="px-4 py-2 bg-gray-300 rounded" @click="closeEditModal">Close</button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        @click="submitUpdateUser">
+                        Save
                     </button>
                 </div>
             </div>
@@ -157,12 +165,10 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="flex justify-end gap-2 mt-6">
                     <button class="px-4 py-2 bg-gray-300 rounded" @click="closeAddModal">
                         Batal
                     </button>
-
                     <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" @click="submitAddUser">
                         Tambah
                     </button>
@@ -189,6 +195,7 @@ const currentPassword = ref("");
 const newPassword = ref("");
 const isAddModal = ref(false);
 const errors = ref({});
+const isEditModal = ref(false);
 
 onMounted(() => {
     url.value = useRuntimeConfig().public.apiBase;
@@ -200,6 +207,13 @@ const addForm = ref({
     email: "",
     password: "",
     role_id: "",
+});
+
+const editForm = ref({
+  id: "",
+  name: "",
+  email: "",
+  role_id: "",
 });
 
 const fetchUsers = async () => {
@@ -214,6 +228,50 @@ const fetchUsers = async () => {
     } catch (err) {
         console.error(err);
     }
+};
+
+const openEditModal = (user) => {
+  editForm.value = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role_id: user.role?.id || "",
+  };
+  isEditModal.value = true;
+};
+
+const closeEditModal = () => {
+  isEditModal.value = false;
+};
+
+const submitUpdateUser = async () => {
+  try {
+    const token = sessionStorage.getItem("auth_token");
+
+    await axios.put(
+      `${url.value}/api/user/${editForm.value.id}`,
+      {
+        name: editForm.value.name,
+        email: editForm.value.email,
+        role_id: editForm.value.role_id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    Swal.fire("Berhasil", "User berhasil diperbarui", "success");
+    isEditModal.value = false;
+    fetchUsers();
+  } catch (err) {
+    Swal.fire(
+      "Gagal",
+      err.response?.data?.message || "Update user gagal",
+      "error"
+    );
+  }
 };
 
 const filteredUsers = computed(() => {
@@ -340,11 +398,11 @@ const submitAddUser = async () => {
                 password,
                 password_confirmation: password,
                 role_id,
-            },{
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
         );
 
         Swal.fire("Berhasil", "Staff berhasil ditambahkan", "success");
@@ -407,20 +465,20 @@ const deleteUser = async (id, name) => {
 }
 
 .datatable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .datatable th,
 .datatable td {
-  padding: 10px;
-  text-align: left;
-  font-size: 12px;
+    padding: 10px;
+    text-align: left;
+    font-size: 12px;
 }
 
 .datatable th {
-  background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }
 
 .btn-add {

@@ -2,61 +2,75 @@
   <div>
     <title>Menu Database Penjualan</title>
     <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari transaksi penjualan..." />
+    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
+      placeholder="Cari transaksi penjualan..." />
 
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
-          <th class="px-4 py-2 text-left">No.</th>
-          <th class="px-4 py-2 text-left">Tanggal</th>
-          <th class="px-4 py-2 text-left">Nama Customer</th>
-          <th class="px-4 py-2 text-left">No. Telepon</th>
-          <th class="px-4 py-2 text-left">Jumlah Barang</th>
-          <th class="px-4 py-2 text-left">Total Harga</th>
-          <th class="px-4 py-2 text-left">Cara Bayar</th>
-          <th class="px-4 py-2 text-left">Tipe</th>
+          <th class="px-4 py-2 text-left">Tanggal Transaksi</th>
+          <th class="px-4 py-2 text-left">Nama Akun</th>
+          <th class="px-4 py-2 text-left">Jenis Transaksi</th>
+          <th class="px-4 py-2 text-left">Acara</th>
+          <th class="px-4 py-2 text-left">Platform</th>
+          <th class="px-4 py-2 text-left">Kode Barang</th>
+          <th class="px-4 py-2 text-left">Nama Barang</th>
+          <th class="px-4 py-2 text-left">Jumlah</th>
+          <th class="px-4 py-2 text-left">Harga</th>
+          <th class="px-4 py-2 text-left">Subtotal</th>
           <th class="px-4 py-2 text-left">Status</th>
+          <th class="px-4 py-2 text-left">Pembayaran</th>
           <th class="px-4 py-2 text-left">Catatan</th>
           <th class="px-4 py-2 text-left">Aksi</th>
         </tr>
       </thead>
+
       <tbody>
         <template v-for="(group, gIndex) in paginatedGroups" :key="gIndex">
-          <tr v-for="(trx, tIndex) in group.items" :key="trx.transaksi_id"
-            :class="tIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top text-center">
-              {{ gIndex + 1 }}
-            </td>
-            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top font-semibold">
+          <tr v-for="(item, i) in group.details" :key="item.transaksidetail_id"
+            :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top font-semibold">
               {{ formatDate(group.tanggal) }}
             </td>
-            <td v-if="tIndex === 0" :rowspan="group.items.length" class="px-4 py-2 align-top font-semibold">
-              {{ trx.transaksi_nama_customer }}
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top font-semibold">
+              {{ group.nama }}
             </td>
-            <td class="px-4 py-2">{{ trx.transaksi_nomor_telepon }}</td>
-            <td class="px-4 py-2">{{ trx.transaksi_jumlah_barang }}</td>
-            <td class="px-4 py-2">
-              {{ formatCurrency(trx.transaksi_total_harga) }}
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
+              {{ group.jenis }}
             </td>
-            <td class="px-4 py-2">{{ trx.transaksi_cara_bayar }}</td>
-            <td class="px-4 py-2">{{ trx.transaksi_tipe }}</td>
-            <td class="px-4 py-2">{{ trx.transaksi_status }}</td>
-            <td class="px-4 py-2">{{ trx.transaksi_catatan }}</td>
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
+              {{ group.acara || '-' }}
+            </td>
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
+              {{ group.platform || '-' }}
+            </td>
+            <td class="px-4 py-2">{{ item.kode_barang || '-' }}</td>
+            <td class="px-4 py-2">{{ item.nama_barang || '-' }}</td>
+            <td class="px-4 py-2">{{ item.transaksidetail_jumlah_barang }}</td>
             <td class="px-4 py-2">
+              {{ formatCurrency(item.transaksidetail_harga_barang) }}
+            </td>
+            <td class="px-4 py-2">
+              {{ formatCurrency(item.subtotal) }}
+            </td>
+            <td class="px-4 py-2">
+              {{ item.transaksidetail_status_penjualan ?? group.status }}
+            </td>
+            <td class="px-4 py-2">
+              {{ group.cara_bayar }}
+            </td>
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
+              {{ group.catatan || '-' }}
+            </td>
+            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
               <div class="flex space-x-2">
-                <button
-                  class="flex items-center gap-1 px-2 py-1 bg-[#FBBF24] text-white hover:bg-[#FFD15A] rounded-md text-s"
-                  @click="openViewDetail(trx.transaksi_id)">
+                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(group.id)">
                   View
                 </button>
-                <button
-                  class="flex items-center gap-1 px-2 py-2 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-sm"
-                  @click="handlePrint(trx.transaksi_id)">
+                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(group.id)">
                   Print
                 </button>
-                <button
-                  class="flex items-center gap-1 px-2 py-2 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-sm"
-                  @click="deleteTransaksi(trx.transaksi_id)">
+                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(group.id)">
                   Delete
                 </button>
               </div>
@@ -65,37 +79,21 @@
         </template>
       </tbody>
     </table>
-    <div class="flex justify-between items-center mt-8 mb-4">
-      <div class="flex items-center space-x-2 text-sm">
-        <label for="perPage">Tampilkan:</label>
-        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded">
+
+    <div class="flex justify-between items-center mt-6">
+      <div>
+        <select v-model="itemsPerPage" class="border px-2 py-1 rounded">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
-          <option :value="50">50</option>
           <option value="all">All</option>
         </select>
       </div>
 
-      <div class="flex items-center space-x-1 text-sm">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
-          :disabled="currentPage === 1" @click="currentPage--">
-          Prev
-        </button>
-
-        <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default text-gray-500' : 'cursor-pointer'
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
-          :disabled="currentPage === totalPages" @click="currentPage++">
-          Next
-        </button>
+      <div class="space-x-1">
+        <button @click="currentPage--" :disabled="currentPage === 1">Prev</button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button @click="currentPage++" :disabled="currentPage === totalPages">Next</button>
       </div>
     </div>
 
@@ -104,7 +102,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -112,7 +110,6 @@ import ViewDetailModal from "../components/ModalViewDetail.vue";
 
 const config = useRuntimeConfig();
 const url = ref(config.public.apiBase);
-
 const transaksi = ref([]);
 const searchQuery = ref("");
 const showDetailModal = ref(false);
@@ -121,146 +118,111 @@ const currentPage = ref(1);
 const itemsPerPage = ref(10);
 
 onMounted(() => {
-  const config = useRuntimeConfig();
-  url.value = config.public.apiBase;
   fetchTransaksi();
 });
 
 const fetchTransaksi = async () => {
-  try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/transaksi`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
-    transaksi.value = res.data.data;
-  } catch (error) {
-    console.error("Gagal fetch data transaksi:", error);
-  }
-};
-
-const openViewDetail = (id) => {
-  trx_id.value = id;
-  showDetailModal.value = true;
-};
-
-const listTransaksi = computed(() => {
-  const sorted = [...transaksi.value].sort((a, b) => {
-    return new Date(b.created_at) - new Date(a.created_at);
+  const token = sessionStorage.getItem("auth_token");
+  const res = await axios.get(`${url.value}/api/transaksi`, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!searchQuery.value) return sorted;
+  transaksi.value = await Promise.all(
+    res.data.data.map(async (trx) => {
+      const details = await Promise.all(
+        trx.details.map(async (d) => {
+          const token = sessionStorage.getItem("auth_token");
 
-  const q = searchQuery.value.toLowerCase();
-  return sorted.filter((trx) => {
-    return (
-      trx.transaksi_nama_customer?.toLowerCase().includes(q) ||
-      trx.transaksi_nomor_telepon?.toLowerCase().includes(q) ||
-      trx.transaksi_tipe?.toLowerCase().includes(q) ||
-      trx.transaksi_status?.toLowerCase().includes(q)
-    );
-  });
-});
+          const barang = await axios.get(
+            `${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
-const getDateOnly = (date) => {
-  const d = new Date(date);
-  return d.toISOString().split("T")[0];
-};
+          const kode = await axios.get(
+            `${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
-// nomor telepon saja
-const groupedTransaksi = computed(() => {
-  const groups = [];
-  const map = {};
-
-  const sortedList = [...listTransaksi.value].sort(
-    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          return {
+            ...d,
+            nama_barang: barang.data.data.barangentry_nama,
+            kode_barang: kode.data.code_nama,
+            subtotal:
+              d.transaksidetail_harga_barang *
+              d.transaksidetail_jumlah_barang,
+          };
+        })
+      );
+      return { ...trx, details };
+    })
   );
+};
 
-  sortedList.forEach((trx) => {
-    const tanggal = getDateOnly(trx.created_at);
-    const key = `${trx.transaksi_nama_customer}__${tanggal}`;
+const groupedTransaksi = computed(() => {
+  const groups = {};
 
-    if (!map[key]) {
-      map[key] = {
+  transaksi.value.forEach(trx => {
+    const dateOnly = new Date(trx.created_at).toISOString().split("T")[0];
+    const key = [
+      dateOnly,
+      trx.transaksi_nama_customer || "",
+      trx.transaksi_tipe || "",
+      trx.transaksi_acara || "",
+      trx.transaksi_platform || ""
+    ].join("__");
+
+    if (!groups[key]) {
+      groups[key] = {
+        tanggal: dateOnly,
         nama: trx.transaksi_nama_customer,
-        tanggal,
-        items: [],
+        jenis: trx.transaksi_tipe,
+        acara: trx.transaksi_acara || "-",
+        platform: trx.transaksi_platform || "-",
+        status: trx.transaksi_status,
+        cara_bayar: trx.transaksi_cara_bayar,
+        catatan: trx.transaksi_catatan,
+        id: trx.transaksi_id,
+        details: []
       };
-      groups.push(map[key]);
     }
-
-    map[key].items.push(trx);
+    groups[key].details.push(...trx.details);
   });
 
-  return groups;
+  return Object.values(groups);
 });
-
-// nama customer dan nomor telepon merge
-// const groupedTransaksi = computed(() => {
-//   const groups = {};
-//   transaksi.value.forEach((trx) => {
-//     const key = `${trx.transaksi_nama_customer}-${trx.transaksi_nomor_telepon}`;
-//     if (!groups[key]) {
-//       groups[key] = {
-//         nama: trx.transaksi_nama_customer,
-//         telepon: trx.transaksi_nomor_telepon,
-//         items: [],
-//       };
-//     }
-//     groups[key].items.push(trx);
-//   });
-//   return Object.values(groups);
-// });
 
 const paginatedGroups = computed(() => {
   if (itemsPerPage.value === "all") return groupedTransaksi.value;
-
   const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return groupedTransaksi.value.slice(start, end);
+  return groupedTransaksi.value.slice(start, start + itemsPerPage.value);
 });
-
 
 const totalPages = computed(() => {
   if (itemsPerPage.value === "all") return 1;
   return Math.ceil(groupedTransaksi.value.length / itemsPerPage.value);
 });
 
-const paginatedPages = computed(() => {
-  if (itemsPerPage.value === "all") return [1];
-
-  const total = totalPages.value;
-  const current = currentPage.value;
-  const pages = [];
-
-  if (total <= 5) {
-    for (let i = 1; i <= total; i++) pages.push(i);
-  } else {
-    if (current <= 3) pages.push(1, 2, 3, "...", total);
-    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
-    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
-  }
-
-  return pages;
+watch(searchQuery, () => {
+  currentPage.value = 1;
 });
 
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("id-ID", {
+const formatCurrency = (v) =>
+  new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
-  }).format(value);
-};
+  }).format(v);
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("id-ID", {
-    year: "numeric",
+const formatDate = (d) =>
+  new Date(d).toLocaleDateString("id-ID", {
+    day: "2-digit",
     month: "short",
-    day: "numeric",
+    year: "numeric",
   });
+
+const openViewDetail = (id) => {
+  trx_id.value = id;
+  showDetailModal.value = true;
 };
 
 const deleteTransaksi = async (id) => {

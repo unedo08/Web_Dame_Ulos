@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-100 flex items-center justify-center font-nunito">
     <div class="bg-white rounded-xl shadow-xl flex overflow-hidden" style="width: 1100px; height: 727px;">
+      <title>Login</title>
       <div class="w-[420px] bg-[#FFFFF0] px-10 py-12">
         <img src="/assets/image/DameUlosLogo2.png" class="w-[180px] mb-8" />
 
