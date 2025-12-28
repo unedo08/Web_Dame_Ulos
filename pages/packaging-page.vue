@@ -418,82 +418,128 @@ const statusChipClass = (status) => {
 const printLabel = (row) => {
   const printWindow = window.open("", "_blank");
 
-  const headerImg = `${window.location.origin}/image/Background-PrintPengiriman.png`;
+  const logoPath = `/image/DameUlosLogo2.png`;
 
   printWindow.document.write(`
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Label Pengiriman</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      color: #541B1A;
-    }
+<meta charset="UTF-8" />
+<title>Label Pengiriman</title>
 
-    .label-box {
-      width: 1244px;
-      height: 439px;
-      border: 1px dashed #000;
-      padding: 24px;
-      box-sizing: border-box;
-    }
+<style>
+  @page{
+    size: 100mm 150mm;
+    margin: 0;
+  }
 
-    .row {
-      display: flex;
-      font-size: 18px;
-      margin-bottom: 14px;
-    }
+  body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding: 14mm 10mm;
+  }
 
-    .label {
-      width: 280px;
-      font-weight: bold;
-    }
+  .container{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
 
-    .header-img {
-      margin-top: 40px;
-    }
+  .logo{
+    text-align:center;
+    margin-bottom: 8px;
+  }
 
-    .header-img img {
-      width: 520px;
-    }
-  </style>
+  .logo img{
+    width:130px;
+  }
+
+  .section{
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  .label{
+    font-weight:bold;
+  }
+
+  .value{
+    margin-top:2px;
+    margin-bottom:8px;
+  }
+
+  .divider{
+    border-top:2px solid #000;
+    margin:10px 0;
+  }
+
+  .store{
+    font-size: 13px;
+  }
+
+  .quote{
+    margin-top: 10px;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .courier{
+    text-align:right;
+    font-weight:bold;
+    font-size:16px;
+    margin-top: 8px;
+  }
+</style>
 </head>
+
 <body>
-  <div class="label-box">
-    <div class="row">
-      <div class="label">Nama Penerima</div>
-      <div>: ${row.pengirimanBarang_nama_penerima}</div>
-    </div>
 
-    <div class="row">
-      <div class="label">Nomor Telepon / Hp</div>
-      <div>: ${row.pengirimanBarang_no_telepon || "-"}</div>
-    </div>
+<div class="container">
 
-    <div class="row">
-      <div class="label">Alamat</div>
-      <div>: ${row.pengirimanBarang_alamat_pengiriman_barang}</div>
-    </div>
-
-    <!-- 🔥 HEADER DAME ULOS (GAMBAR) -->
-    <div class="header-img">
-      <img src="${headerImg}" alt="Dame Ulos" />
-    </div>
+  <div class="logo">
+    <img src="${logoPath}" />
   </div>
 
-  <script>
-    window.onload = function () {
-      window.print();
-      window.onafterprint = () => window.close();
-    };
-  <\/script>
+  <div class="section">
+    <div class="label">Nama :</div>
+    <div class="value">${row.pengirimanBarang_nama_penerima || "-"}</div>
+
+    <div class="label">Nomor HP :</div>
+    <div class="value">${row.pengirimanBarang_no_telepon || "-"}</div>
+
+    <div class="label">Alamat :</div>
+    <div class="value">${row.pengirimanBarang_alamat_pengiriman_barang || "-"}</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="store">
+    <b>Galeri Dame Ulos</b><br>
+    081262804500<br>
+    Jl. Gereja HKBP Dame, Desa Lumban Matio, Saitnihuta, Kec. Tarutung, Kab. Tapanuli Utara
+  </div>
+
+  <div class="quote">
+    “Terima kasih telah memilih Dame Ulos. Semoga ulos ini menjadi simbol kasih, kehangatan, dan doa baik dalam setiap kesempatan istimewa.”
+  </div>
+
+  <div class="courier">
+    ${row.pengirimanBarang_jenis_pengiriman_barang || ""}
+  </div>
+
+</div>
+
+<script>
+  window.onload = function(){
+    window.print();
+    window.onafterprint = () => window.close();
+  }
+<\/script>
+
 </body>
 </html>
-`);
+  `);
 
   printWindow.document.close();
 };
