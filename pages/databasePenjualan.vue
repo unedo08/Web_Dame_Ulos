@@ -62,15 +62,15 @@
             <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
               {{ group.catatan || '-' }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
+            <td class="px-4 py-2">
               <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(group.id)">
+                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(item.transaksidetail_id)">
                   View
                 </button>
-                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(group.id)">
+                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(item.transaksidetail_id)">
                   Print
                 </button>
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(group.id)">
+                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(item.transaksidetail_id)">
                   Delete
                 </button>
               </div>
