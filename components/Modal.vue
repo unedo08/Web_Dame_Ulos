@@ -66,7 +66,7 @@
                   <!-- <pre>{{ item.data }}</pre> -->
                   <tbody>
                     <tr>
-                      <td style="padding: 3px 8px 3px 0;">Tanggal Cetak</td>
+                      <td style="padding: 3px 8px 3px 0;">Tahun Pembuatan</td>
                       <td>: {{ new Date().toLocaleDateString('id-ID', {
                         day: '2-digit',
                         month: 'long',
