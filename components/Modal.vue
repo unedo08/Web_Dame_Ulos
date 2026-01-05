@@ -66,11 +66,7 @@
                   <tbody>
                     <tr>
                       <td style="padding: 3px 8px 3px 0;">Tahun</td>
-                      <td>: {{ new Date().toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                        }) }}</td>
+                      <td>: {{ new Date().getFullYear() }}</td>
                     </tr>
                     <tr>
                       <td style="padding: 3px 8px 3px 0;">Ukuran Tenun</td>

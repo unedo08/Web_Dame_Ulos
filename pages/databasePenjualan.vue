@@ -14,7 +14,7 @@
           <th class="px-4 py-2 text-left">Acara</th>
           <th class="px-4 py-2 text-left">Platform</th>
           <th class="px-4 py-2 text-left">Kode Barang</th>
-          <th class="px-4 py-2 text-left">Nama Barang</th>
+          <th class="px-4 py-2 text-left">Nama Ulos</th>
           <th class="px-4 py-2 text-left">Jumlah</th>
           <th class="px-4 py-2 text-left">Harga</th>
           <th class="px-4 py-2 text-left">Subtotal</th>
@@ -53,8 +53,11 @@
             <td class="px-4 py-2">
               {{ formatCurrency(item.subtotal) }}
             </td>
-            <td class="px-4 py-2">
-              {{ item.transaksidetail_status_penjualan == 1 ? 'Closed Bill' : 'Open Bill' }}
+            <td>
+              <span class="text-status px-2 py-1"
+                :class="statusChipClass(item.transaksidetail_status_penjualan)">
+                {{ item.transaksidetail_status_penjualan == 1 ? 'Closed' : 'Open' }}
+              </span>
             </td>
             <td class="px-4 py-2">
               {{ group.cara_bayar }}
@@ -64,13 +67,15 @@
             </td>
             <td class="px-4 py-2">
               <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(item.transaksidetail_id)">
+                <button class="px-2 py-1 bg-yellow-500 text-white rounded"
+                  @click="openViewDetail(item.transaksidetail_id)">
                   View
                 </button>
                 <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(item.transaksidetail_id)">
                   Print
                 </button>
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(item.transaksidetail_id)">
+                <button class="px-2 py-1 bg-red-500 text-white rounded"
+                  @click="deleteTransaksi(item.transaksidetail_id)">
                   Delete
                 </button>
               </div>
@@ -287,6 +292,16 @@ const deleteTransaksi = async (id) => {
       }
     }
   });
+};
+
+const statusChipClass = (status) => {
+  switch (status) {
+    case 1:
+      return "bg-green-100 text-green-700 border border-green-300 rounded";
+
+    default:
+      return "bg-yellow-100 text-yellow-700 border border-yellow-300 rounded"
+  }
 };
 
 async function handlePrint(transaksi_id) {
@@ -603,5 +618,9 @@ const paginatedPages = computed(() => {
 
 .search-box::placeholder {
   color: #888;
+}
+
+.text-status{
+  font-size: 10px !important;
 }
 </style>

@@ -11,15 +11,15 @@
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
-          <th>No</th>
-          <th>Nama Akun</th>
-          <th>Nama Penerima</th>
-          <th>Telepon</th>
-          <th>Ekspedisi</th>
-          <th>Alamat</th>
-          <th>Status Kirim</th>
-          <th>Barang</th>
-          <th>Aksi</th>
+          <th class="text-left">No</th>
+          <th class="text-left">Nama Akun</th>
+          <th class="text-left">Nama Penerima</th>
+          <th class="text-left">Telepon</th>
+          <th class="text-left">Ekspedisi</th>
+          <th class="text-left">Alamat</th>
+          <th class="text-left">Status Kirim</th>
+          <th class="text-left">Barang</th>
+          <th class="text-left">Aksi</th>
         </tr>
       </thead>
       <tbody>

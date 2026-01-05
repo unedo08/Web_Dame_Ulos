@@ -550,7 +550,7 @@
             <label class="block text-gray-700 mb-1">Ukuran Mandar</label>
             <div class="flex">
               <input v-model="selectedBarang.ukuran_mandar" type="text"
-                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-1-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Mandar" />
               <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
                 cm
