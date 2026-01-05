@@ -54,7 +54,7 @@
               {{ formatCurrency(item.subtotal) }}
             </td>
             <td class="px-4 py-2">
-              {{ item.transaksidetail_status_penjualan ?? group.status }}
+              {{ item.transaksidetail_status_penjualan == 1 ? 'Closed Bill' : 'Open Bill' }}
             </td>
             <td class="px-4 py-2">
               {{ group.cara_bayar }}
@@ -80,20 +80,37 @@
       </tbody>
     </table>
 
-    <div class="flex justify-between items-center mt-6">
-      <div>
-        <select v-model="itemsPerPage" class="border px-2 py-1 rounded">
+    <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+      <div class="flex items-center space-x-2">
+        <label for="perPage">Tampilkan:</label>
+        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
+          <option :value="50">50</option>
           <option value="all">All</option>
         </select>
       </div>
 
-      <div class="space-x-1">
-        <button @click="currentPage--" :disabled="currentPage === 1">Prev</button>
-        <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button @click="currentPage++" :disabled="currentPage === totalPages">Next</button>
+      <div class="flex items-center space-x-2">
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
+          @click="currentPage--">
+          Sebelumnya
+        </button>
+
+        <button v-for="(page, index) in paginatedPages" :key="index"
+          @click="typeof page === 'number' && (currentPage = page)" :class="[
+            'px-3 py-1 rounded',
+            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+            page === '...' ? 'cursor-default' : 'cursor-pointer'
+          ]" :disabled="page === '...'">
+          {{ page }}
+        </button>
+
+        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
+          @click="currentPage++">
+          Selanjutnya
+        </button>
       </div>
     </div>
 
@@ -540,18 +557,18 @@ function printToNewTab(data, items) {
   printWindow.document.close();
 }
 
-watch(searchQuery, () => {
-  currentPage.value = 1;
+const paginatedPages = computed(() => {
+  if (itemsPerPage.value === "all") return [1];
+
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+  if (current <= 3) return [1, 2, 3, "...", total];
+  if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
+  return [1, "...", current - 1, current, current + 1, "...", total];
 });
 
-watch(itemsPerPage, () => {
-  currentPage.value = 1;
-});
-
-watch(currentPage, (val) => {
-  if (val < 1) currentPage.value = 1;
-  if (val > totalPages.value) currentPage.value = totalPages.value;
-});
 </script>
 
 <style scoped>

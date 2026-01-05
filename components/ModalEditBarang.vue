@@ -43,19 +43,35 @@
 
           <div>
             <label>Modal <span style="color:red">*</span></label>
-            <input v-model="formattedModal" @input="updateModal" type="text" required class="form-control text-right" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input :value="formattedModal" @input="updateModal" type="text"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <div>
             <label>Harga Price Tag <span style="color:red">*</span></label>
-            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
-              class="form-control text-right" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input :value="formattedPriceTag" @input="updatePriceTag" type="text"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <div>
             <label>Harga Net <span style="color:red">*</span></label>
-            <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
-              class="form-control text-right" />
+            <div class="flex">
+              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input :value="formattedHargaNet" @input="updateHargaNet" type="text"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <div>
@@ -129,7 +145,7 @@ const formatNumber = (value) => {
 };
 
 const parseNumber = (val) => {
-  return Number(String(val).replace(/\./g, '')) || 0;
+  return Number(String(val).replace(/\D/g, '')) || 0;
 };
 
 const formattedModal = ref('');
@@ -183,7 +199,8 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true;
   try {
-    const token = sessionStorage.getItem("token")
+    const token = sessionStorage.getItem("auth_token")
+    
     const payload = {
       barangentry_code_id: String(form.value.barangentry_code_id),
       barangentry_nama: form.value.barangentry_nama,

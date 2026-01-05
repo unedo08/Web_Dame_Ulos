@@ -63,10 +63,9 @@
                   font-size: 13px;
                   line-height: 1.4;
                 ">
-                  <!-- <pre>{{ item.data }}</pre> -->
                   <tbody>
                     <tr>
-                      <td style="padding: 3px 8px 3px 0;">Tahun Pembuatan</td>
+                      <td style="padding: 3px 8px 3px 0;">Tahun</td>
                       <td>: {{ new Date().toLocaleDateString('id-ID', {
                         day: '2-digit',
                         month: 'long',
@@ -110,11 +109,10 @@
                     font-weight: 800;
                     letter-spacing: 1px;
                   ">
-                  Rp {{ Number(item.data.barangentry_harga_net).toLocaleString("id-ID") }}
+                  Rp {{ Number(item.data.barangentry_price_tag).toLocaleString("id-ID") }}
                 </p>
               </div>
 
-              <!-- RIGHT COLUMN -->
               <div style="flex: 1; font-size: 13px; line-height: 1.5;">
                 <p style="
                   font-weight: 700;

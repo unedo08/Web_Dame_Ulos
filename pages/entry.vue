@@ -206,15 +206,15 @@
                 <div class="flex space-x-3">
                   <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button v-if="barang.barangentry_jumlah_barang > 0"
-                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[45px]"
+                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[40px]"
                     @click="openModalEditBarang(barang.barangentry_id)">
                     Edit
                   </button>
                   <button v-else disabled
-                    class="bg-gray-400 text-white text-xs rounded-md px-2 py-1 h-[30px] w-[45px] cursor-not-allowed">
+                    class="bg-gray-400 text-white text-xs rounded-md px-2 py-1 h-[25px] w-[40px] cursor-not-allowed">
                     Edit
                   </button>
-                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[25px] w-[60px]"
                     @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
@@ -472,7 +472,7 @@
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
                 @input="updatePriceTag($event.target.value)"
                 class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                placeholder="Masukkan Harga Price Taf" />
+                placeholder="Masukkan Harga Price Tag" />
             </div>
           </div>
           <div>
@@ -541,7 +541,7 @@
                 class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Ulos" />
               <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
-                Cm
+                cm
               </div>
             </div>
           </div>
@@ -553,7 +553,7 @@
                 class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Mandar" />
               <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
-                Cm
+                cm
               </div>
             </div>
           </div>
