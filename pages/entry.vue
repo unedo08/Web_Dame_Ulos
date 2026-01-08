@@ -71,7 +71,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -179,7 +179,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -303,7 +303,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barangMap[barang.barangentry_id] }}</td>
+              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -985,9 +985,7 @@ async function getListBarangTemp() {
         "Content-Type": "application/json",
       }
     });
-    // const response = await axios.get(`http://192.168.18.52:8080${endpoint}`);
     listBarang.value = response.data.data;
-    await fetchCodeBarang(listBarang.value);
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }
@@ -1123,7 +1121,14 @@ const searchFilterData = computed(() => {
   return sorted.filter((barang) => {
     return (
       barang.barangentry_nama?.toLowerCase().includes(q) ||
-      barang.barangentry_warna?.toLowerCase().includes(q)
+      barang.barangentry_warna?.toLowerCase().includes(q) ||
+      barang.code.code_nama?.toLowerCase().includes(q) ||
+      barang.barangentry_nama_penenun?.toLowerCase().includes(q) ||
+      barang.barangentry_nama_panirat?.toLowerCase().includes(q) ||
+      barang.barangentry_dryer?.toLowerCase().includes(q) ||
+      barang.barangentry_modal?.toLowerCase().includes(q) ||
+      barang.barangentry_price_tag?.toLowerCase().includes(q) ||
+      barang.barangentry_harga_net?.toLowerCase().includes(q) 
     );
   });
 });
