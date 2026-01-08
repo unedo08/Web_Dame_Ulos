@@ -362,7 +362,9 @@ class BarangEntryMController extends Controller
     public function getAllDataBarangWaitToEntry()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $data = BarangEntryM::where('barangentry_status', 'NOT_READY')->get();
+        $data = BarangEntryM::with('code')
+            ->where('barangentry_status', 'NOT_READY')
+            ->get();
 
         return response()->json([
             'code' => 200,
@@ -374,7 +376,10 @@ class BarangEntryMController extends Controller
     public function getAllDataBarangReady()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $data = BarangEntryM::where('barangentry_status', 'READY')->get();
+        $data = BarangEntryM::with('code')
+            ->where('barangentry_status', 'READY')
+            ->get();
+        // $data = BarangEntryM::where('barangentry_status', 'READY')->get();
 
         return response()->json([
             'code' => 200,
