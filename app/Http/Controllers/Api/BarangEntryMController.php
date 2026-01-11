@@ -391,7 +391,7 @@ class BarangEntryMController extends Controller
     public function getAllDataBarangPO()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $data = BarangEntryM::where('barangentry_status', 'PREORDER')
+        $data = BarangEntryM::with('code')->where('barangentry_status', 'PREORDER')
             ->whereDoesntHave('transaksiDetail.pengirimanBarang')
             ->with(['transaksiDetail.pengirimanBarang'])
             ->get();
