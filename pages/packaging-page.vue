@@ -32,7 +32,7 @@
           <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
           <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
           <td>
-            <span class="text-status px-2 py-1 rounded-full font-semibold" :class="statusChipClass(row.status_pengiriman)">
+            <span class="text-status px-1 py-1 rounded-full font-semibold" :class="statusChipClass(row.status_pengiriman)">
               {{ row.status_pengiriman || '-' }}
             </span>
           </td>
@@ -575,6 +575,6 @@ const formatCurrency = (val) =>
 }
 
 .text-status{
-  font-size: 10px !important;
+  font-size: 8px !important;
 }
 </style>

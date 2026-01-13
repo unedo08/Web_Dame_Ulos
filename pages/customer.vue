@@ -34,8 +34,8 @@
           <td class="px-4 py-2">{{ cust.customer_akun }}</td>
           <td class="px-4 py-2">{{ cust.customer_nama }}</td>
           <td class="px-4 py-2">{{ cust.customer_alamat }}</td>
-          <td class="px-4 py-2">{{ cust.customer_notelpon }}</td>
-          <td class="px-4 py-2">{{ cust.customer_platform }}</td>
+          <td class="px-4 py-2">{{ cust.customer_notelepon }}</td>
+          <td class="px-4 py-2">{{ cust.transaksi_tipe }}</td>
 
           <td class="px-4 py-2">
             <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
@@ -163,8 +163,8 @@ const newCustomer = ref({
   customer_akun: "",
   customer_nama: "",
   customer_alamat: "",
-  customer_notelpon: "",
-  customer_platform: "-"
+  customer_notelepon: "",
+  transaksi_tipe: "-"
 });
 
 const errors = ref({});
@@ -191,8 +191,8 @@ const fetchData = async () => {
         customer_akun: item.customer_akun,
         customer_nama: item.customer_nama,
         customer_alamat: item.customer_alamat,
-        customer_notelpon: item.customer_notelpon,
-        customer_platform: item.customer_platform,
+        customer_notelepon: item.customer_notelepon,
+        transaksi_tipe: item.transaksi_tipe,
         created_at: item.created_at
       }))
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // SORT BARU
@@ -209,8 +209,8 @@ const listCustomer = computed(() => {
       cust.customer_nama?.toLowerCase().includes(q) ||
       cust.customer_akun?.toLowerCase().includes(q) ||
       cust.customer_alamat?.toLowerCase().includes(q) ||
-      cust.customer_notelpon?.toLowerCase().includes(q) ||
-      cust.customer_platform?.toLowerCase().includes(q)
+      cust.customer_notelepon?.toLowerCase().includes(q) ||
+      cust.transaksi_tipe?.toLowerCase().includes(q)
     );
   });
 });

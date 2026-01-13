@@ -330,33 +330,33 @@
                 <div class="flex space-x-3">
                   <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button
-                    class="text-center rounded-md bg-[#FBBF24] text-white hover:bg-[#FFD15A] px-2 py-1 h-[30px] w-[90px]"
+                    class="text-center rounded-md bg-[#FBBF24] text-white hover:bg-[#FFD15A] px-2 py-1 h-[25px] w-[50px]"
                     @click="printPreOrder(barang.barangentry_id)">
                     Print
                   </button>
                   <button
-                    class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                    class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 text-xs h-[25px] w-[50px]"
                     @click="openModalEditPO(barang.barangentry_id)">
                     Edit
                   </button>
                   <button v-if="barang.barangfilled"
-                    class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[30px] w-[90px]"
+                    class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[25px] w-[50px]"
                     @click="handleSendClick(barang)">
                     {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
                   </button>
                   <template v-else>
                     <button
-                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[60px]"
                       @click="openModalDesc(barang.barangentry_id)">
                       Desc +
                     </button>
                     <button
-                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[30px] w-[60px]"
+                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[60px]"
                       @click="openModalSize(barang.barangentry_id)">
                       Size +
                     </button>
                   </template>
-                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[30px] w-[50px]"
+                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[25px] w-[60px]"
                     @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>

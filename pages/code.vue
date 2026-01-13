@@ -87,7 +87,7 @@
             <label class="block text-sm font-medium text-gray-700">
               Kode Barang <span style="color:red">*</span>
             </label>
-            <input v-model="newProduct.jenisbarang_kode" type="text" maxlength="5"
+            <input ref="kodebarang" v-model="newProduct.jenisbarang_kode" type="text" maxlength="5"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan kode barang" />
             <p v-if="errors.jenisbarang_kode" class="text-red-500 text-xs mt-1">
               {{ errors.jenisbarang_kode }}
@@ -141,11 +141,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 
+const kodebarang = ref(null);
 const searchQuery = ref("");
 const barang = ref([]);
 const newProduct = ref({
@@ -437,6 +438,13 @@ const closePrintModal = () => {
   isModalPrintOpen.value = false;
   selectedProduct.value = null;
 };
+
+watch(isModalOpen, async (val) => {
+  if (val) {
+    await nextTick();
+    kodebarang.value.focus();
+  }
+});
 </script>
 
 <style scoped>

@@ -191,9 +191,9 @@
           <label for="barang" class="block text-sm font-medium text-gray-700 mb-1">
             Barang<span class="text-red-500">*</span>
           </label>
-          <input type="text" id="barang" v-model="form.barang" placeholder="Masukkan nama barang"
+          <input ref="barangInput" type="text" id="barang" v-model="form.barang" placeholder="Masukkan nama barang"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required />
+            required/>
           <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
             {{ errors.barang }}
           </p>
@@ -345,7 +345,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, computed } from "vue";
+import { reactive, ref, onMounted, computed, nextTick } from "vue";
 import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
@@ -383,6 +383,8 @@ const form = ref({
   platform: "",
   hargaTotal: "",
 });
+
+const barangInput = ref(null);
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -842,6 +844,13 @@ const paginatedPages = computed(() => {
   }
 
   return pages;
+});
+
+watch(isModalOpenAddOrder, async (val) => {
+  if (val) {
+    await nextTick();
+    barangInput.value.focus();
+  }
 });
 
 watch(searchQuery, () => {

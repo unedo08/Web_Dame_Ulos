@@ -48,13 +48,13 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const allowedRoles =
     to.meta.roles || routeRoleMap[to.path];
-  if (!allowedRoles) {
-    return role === "super-admin"
-      ? true
-      : navigateTo("/403");
-  }
+  // if (!allowedRoles) {
+  //   return role === "super-admin"
+  //     ? true
+  //     : navigateTo("/403");
+  // }
 
-  if (!allowedRoles.includes(role)) {
-    return navigateTo("/403");
-  }
+  // if (!allowedRoles.includes(role)) {
+  //   return navigateTo("/403");
+  // }
 });

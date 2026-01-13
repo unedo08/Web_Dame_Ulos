@@ -33,7 +33,7 @@
                     <td class="px-4 py-2 flex gap-2">
                         <button class="px-2 py-1 bg-yellow-500 text-white rounded text-xs hover:bg-yellow-600"
                             @click="openEditModal(user)">
-                            Update
+                            Edit
                         </button>
 
                         <button class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
@@ -82,7 +82,7 @@
         <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div class="bg-white p-6 rounded-lg w-[420px]">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Update User</h3>
+                    <h3 class="text-lg font-semibold">Edit User</h3>
                     <button @click="closeEditModal">✕</button>
                 </div>
                 <div class="space-y-4">

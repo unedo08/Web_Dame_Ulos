@@ -22,8 +22,8 @@
           </div>
 
           <div>
-            <label>Ukuran Mandar <span style="color:red">*</span></label>
-            <input v-model="form.barangentry_ukuran_mandar" type="text" required class="form-control" />
+            <label>Ukuran Mandar</label>
+            <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
           </div>
         </div>
 
@@ -128,12 +128,6 @@ const submitForm = async () => {
     const token = sessionStorage.getItem("auth_token")
     if (!form.value.barangentry_ukuran_ulos || form.value.barangentry_ukuran_ulos.trim() === "") {
       Swal.fire("Gagal!", "Ukuran Ulos wajib diisi.", "error");
-      isSubmittingEdit.value = false;
-      return;
-    }
-
-    if (!form.value.barangentry_ukuran_mandar || form.value.barangentry_ukuran_mandar.trim() === "") {
-      Swal.fire("Gagal!", "Ukuran Mandar wajib diisi.", "error");
       isSubmittingEdit.value = false;
       return;
     }
