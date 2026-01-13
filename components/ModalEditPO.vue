@@ -132,13 +132,12 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useRuntimeConfig } from '#imports'
 
 const url = ref('')
 const isSubmittingEdit = ref(false)
-
+const { $api } = useNuxtApp();
 onMounted(async () => {
   const config = useRuntimeConfig()
   url.value = config.public.apiBase
@@ -179,7 +178,6 @@ const form = ref({
   preOrderBarang_barang_entry_id: 0,
 })
 
-// ⚙️ Logic format angka & kirim API tetap sama
 const formatNumber = (value) => Number(value || 0).toLocaleString('id-ID')
 const parseNumber = (val) => Number(String(val).replace(/\./g, '')) || 0
 
@@ -205,29 +203,12 @@ const updateHargaNet = (e) => {
   formattedHargaNet.value = formatNumber(raw)
 }
 
-// 🔄 loadData & submitForm tidak diubah
 const loadData = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${props.id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
-    const resEntry = await axios.get(`${url.value}/api/entrybarang/${props.id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
+    const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${props.id}`)
+    const resEntry = await $api.get(`${url.value}/api/entrybarang/${props.id}`)
     form.value = { ...res.data.data, ...resEntry.data.data }
-    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
+    const code = await $api.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
     form.value.code = code.data.code_nama
 
     formattedModal.value = formatNumber(form.value.preOrderBarang_uang_muka)
@@ -241,7 +222,6 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true
   try {
-    const token = sessionStorage.getItem("auth_token")
     const payload = {
       preOrdeBarang_id: form.value.preOrdeBarang_id,
       preOrderBarang_transaksi_id: '',
@@ -256,12 +236,7 @@ const submitForm = async () => {
       preOrderBarang_catatan: form.value.preOrderBarang_catatan,
       preOrderBarang_barang_entry_id: String(form.value.preOrderBarang_barang_entry_id),
     }
-    await axios.post(`${url.value}/api/pre-order-barang`, payload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
+    await $api.post(`${url.value}/api/pre-order-barang`, payload)
     await Swal.fire('Berhasil', 'Data berhasil disimpan!', 'success')
     emit('saved')
     closeModal()

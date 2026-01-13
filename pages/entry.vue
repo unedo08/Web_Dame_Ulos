@@ -739,11 +739,11 @@ import EditBarangDesc from "../components/ModalEditDesc.vue";
 import EditBarangSize from "../components/ModalEditSize.vue";
 import EditBarangPO from "../components/ModalEditPO.vue";
 import SendOrderModal from "../components/ModalSendOrder.vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
 
+const { $api } = useNuxtApp();
 const router = useRouter();
 const modalOpen = ref(false);
 const modalType = ref("desc");
@@ -784,14 +784,8 @@ const inputKodeSize = ref(null);
 onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
-  try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(`${url.value}/api/codebarang`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+  try {    
+    const response = await $api.get(`${url.value}/api/codebarang`);
     barangDatabase.value = response.data;
     await getListBarangTemp();
   } catch (error) {
@@ -859,15 +853,10 @@ async function handleSend(data) {
 }
 
 async function updatePengiriman(pengiriman_id, namaAkun, status) {
-  const token = sessionStorage.getItem("auth_token")
-  await axios.put(`${url.value}/api/pengiriman-barang/${pengiriman_id}`, {
+  
+  await $api.put(`${url.value}/api/pengiriman-barang/${pengiriman_id}`, {
     pengirimanBarang_nama_penerima: namaAkun,
     pengirimanBarang_status: status
-  }, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
   })
 
   Swal.fire({
@@ -938,25 +927,15 @@ const updateHargaNet = (val) => {
 
 const fetchCodeBarang = async (data) => {
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     const ids = [...new Set(data.map((item) => item.barangentry_id))];
     const requests = ids.map((id) =>
-      axios.get(`${url.value}/api/entrybarang/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      })
+      $api.get(`${url.value}/api/entrybarang/${id}`)
     );
     const responses = await Promise.all(requests);
 
     const codeBarangPromises = responses.map((res) =>
-      axios.get(`${url.value}/api/codebarang/${res.data.data.barangentry_code_id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      })
+      $api.get(`${url.value}/api/codebarang/${res.data.data.barangentry_code_id}`)
     );
     const codeBarangResults = await Promise.all(codeBarangPromises);
 
@@ -970,7 +949,7 @@ const fetchCodeBarang = async (data) => {
 
 async function getListBarangTemp() {
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     let endpoint = "";
     if (activeTab.value === "wait") {
       endpoint = "/api/entrybarang/getDataWaitForEntry";
@@ -979,12 +958,7 @@ async function getListBarangTemp() {
     } else {
       endpoint = "/api/entrybarang/getDataPO";
     }
-    const response = await axios.get(`${url.value}${endpoint}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const response = await $api.get(`${url.value}${endpoint}`);
     listBarang.value = response.data.data;
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
@@ -999,15 +973,9 @@ async function handleBarcodeDesc() {
     if (!selectedBarang.value.code_nama) return;
 
     try {
-      const token = sessionStorage.getItem("auth_token")
-      const response = await axios.get(
-        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.code_nama}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+      
+      const response = await $api.get(
+        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.code_nama}`);
       const data = response.data.data;
 
       if (!data) {
@@ -1043,15 +1011,9 @@ async function handleBarcodeSize() {
     if (!selectedBarang.value.kode_barang) return;
 
     try {
-      const token = sessionStorage.getItem("auth_token")
-      const response = await axios.get(
-        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.kode_barang}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+      
+      const response = await $api.get(
+        `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.kode_barang}`);
       const data = response.data.data;
 
       if (!data) {
@@ -1089,14 +1051,14 @@ function handleSendClick(barang) {
 
 async function getListBarangPreOrder() {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const responseEntry = await axios.get(`${url.value}/api/preOrderEntry/$`, {
+    
+    const responseEntry = await $api.get(`${url.value}/api/preOrderEntry/$`, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       }
     })
-    const response = await axios.get(`${url.value}${endpoint}`);
+    const response = await $api.get(`${url.value}${endpoint}`);
     listBarang.value = response.data.data;
     await fetchCodeBarang(listBarang.value);
   } catch (error) {
@@ -1168,13 +1130,8 @@ function formatRupiah(value) {
 
 async function sendOrder(barangentry_id, formData) {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    
+    const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
 
     const dataPreOrder = res.data.data;
     const payloadTransaksi = {
@@ -1188,39 +1145,17 @@ async function sendOrder(barangentry_id, formData) {
       transaksi_catatan: "",
     };
 
-    const { data } = await axios.post(
+    const { data } = await $api.post(
       `${url.value}/api/transaksi`,
-      payloadTransaksi, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+      payloadTransaksi);
     const transaksi_id = data.data.transaksi_id;
 
-    const barang = await axios.get(`${url.value}/api/entrybarang/${barangentry_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
+    const barang = await $api.get(`${url.value}/api/entrybarang/${barangentry_id}`)
 
-    const code = await axios.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const code = await $api.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
 
-    const { data: barangResponse } = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+    const { data: barangResponse } = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`);
     const barangData = barangResponse.data;
 
     const detailPayload = {
@@ -1229,12 +1164,7 @@ async function sendOrder(barangentry_id, formData) {
       transaksidetail_jumlah_barang: 1,
       transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
     };
-    await axios.post(`${url.value}/api/transaksi-detail`, detailPayload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
 
     const pengirimanPayload = {
       pengirimanBarang_transaksi_id: transaksi_id,
@@ -1248,12 +1178,7 @@ async function sendOrder(barangentry_id, formData) {
       pengirimanBarang_status: "Proses",
     };
 
-    const resPengiriman = await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const resPengiriman = await $api.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
     const dataPengiriman = resPengiriman.data.data;
 
     await getListBarangTemp();
@@ -1304,7 +1229,7 @@ async function submitBarang() {
 
   isSubmitting.value = true;
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
       barangentry_nama: selectedBarang.value.barangentry_nama,
@@ -1318,12 +1243,7 @@ async function submitBarang() {
       barangentry_jumlah_barang: selectedBarang.value.barangentry_jumlah_barang,
     };
 
-    await axios.post(`${url.value}/api/entrybarang/storeDescription`, payload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.post(`${url.value}/api/entrybarang/storeDescription`, payload);
     await getListBarangTemp();
 
     selectedBarang.value = {};
@@ -1396,19 +1316,14 @@ async function submitSizeBarang() {
   }
   isSubmittingSize.value = true;
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
       barangentry_ukuran_mandar: String(selectedBarang.value.ukuran_mandar),
       barangentry_ukuran_ulos: String(selectedBarang.value.ukuran_ulos),
     };
 
-    await axios.post(`${url.value}/api/entrybarang/storeSize`, payload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.post(`${url.value}/api/entrybarang/storeSize`, payload);
 
     const index = listBarang.value.findIndex(
       (item) => item.barangentry_code_id === selectedBarang.value.code_id
@@ -1468,15 +1383,9 @@ async function handleSearch() {
   if (!keyword) return;
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/${keyword}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+    
+    const response = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/${keyword}`);
     const code = response.data.data.barangentry_code_id;
 
     if (!code) {
@@ -1522,16 +1431,10 @@ const editStockSubmit = async () => {
   if (!selectedBarang.value) return;
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const responseEdit = await axios.post(
+    
+    const responseEdit = await $api.post(
       `${url.value}/api/entrybarang/${selectedBarang.value}/updateStok`,
-      { jumlah_barang: editJumlah.value }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+      { jumlah_barang: editJumlah.value });
 
     if (responseEdit.data.code == 200) {
       showModalEditStock.value = false;
@@ -1568,16 +1471,10 @@ const deleteBarang = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const token = sessionStorage.getItem("auth_token")
-      const response = await axios.post(
+      
+      const response = await $api.post(
         `${url.value}/api/entrybarang/${id}/deleteBarangEntry`,
-        { status: "DELETED" }, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+        { status: "DELETED" });
 
       if (response.data.code === 200) {
         Swal.fire({
@@ -1620,29 +1517,14 @@ const paginatedPages = computed(() => {
 
 
 async function printPreOrder(id) {
-  const token = sessionStorage.getItem("auth_token")
-  const response = await axios.get(`${url.value}/api/pre-order-barang/preOrderEntry/${id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  
+  const response = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${id}`);
 
   const data = response.data.data;
-  const resEntry = await axios.get(`${url.value}/api/entrybarang/${id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  const resEntry = await $api.get(`${url.value}/api/entrybarang/${id}`);
   const barangEntry = resEntry.data.data;
 
-  const code = await axios.get(`${url.value}/api/codebarang/${barangEntry.barangentry_code_id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  })
+  const code = await $api.get(`${url.value}/api/codebarang/${barangEntry.barangentry_code_id}`)
   const code_nama = code.data.code_nama;
 
   printData(data, barangEntry, code_nama);

@@ -26,7 +26,6 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { useRuntimeConfig } from '#imports'
 import { CubeIcon } from '@heroicons/vue/24/solid'
@@ -35,33 +34,19 @@ import dayjs from "dayjs";
 const totalBarang = ref(0)
 const url = ref('')
 const dataPerMonth = ref(null);
+const { $api } = useNuxtApp();
 
 onMounted(async () => {
   const config = useRuntimeConfig()
   url.value = config.public.apiBase
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(`${url.value}/api/codebarang`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
-    const data = response.data
+    const response = await $api.get(`${url.value}/api/codebarang`)
+    const data = response.data;
 
-    totalBarang.value = data.length
-
-    const responseStatistik = await axios.get(`${url.value}/api/codebarang`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
-    const dataStatisktik = responseStatistik.data;
+    totalBarang.value = data.length;
 
     const monthlyCounts = {};
-
-    dataStatisktik.forEach((item) => {
+    data.forEach((item) => {
       const month = dayjs(item.created_at).format("MMMM YYYY");
       monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
     });

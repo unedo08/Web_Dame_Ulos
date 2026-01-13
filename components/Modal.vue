@@ -169,10 +169,10 @@
 
 <script setup>
 import { ref, watch, computed, nextTick, onMounted } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 
+const { $api } = useNuxtApp();
 const priceTagData = ref([]);
 const priceTagInput = ref(null);
 const url = ref("");
@@ -324,15 +324,8 @@ async function printPriceTag() {
     const results = [];
     for (const code of barcodeList.value) {
       try {
-        const token = sessionStorage.getItem("auth_token")
-        const res = await axios.get(
-          `${url.value}/api/entrybarang/getDataByCode/${code}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          }
-        }
-        );
+        const res = await $api.get(
+          `${url.value}/api/entrybarang/getDataByCode/${code}`);
         if (res.data?.data) results.push({ data: res.data.data });
       } catch (err) {
         console.error(`Gagal ambil data untuk ${code}`, err);

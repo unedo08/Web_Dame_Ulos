@@ -119,7 +119,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from '../components/ModalViewDetail.vue'
@@ -140,7 +139,7 @@ const selected = ref({ namaAkun: "", barang: [] });
 const showPreview = ref(false);
 const previewData = ref({});
 const selectedPengiriman = ref(null);
-
+const { $api } = useNuxtApp();
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -150,13 +149,7 @@ onMounted(() => {
 // /api/pengiriman-barang/1
 const fetchDataPengiriman = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/pengiriman-barang`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url.value}/api/pengiriman-barang`);
     pengirimanData.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
@@ -234,13 +227,8 @@ const openModalEditPackaging = async (pengiriman) => {
   const trx_id = pengiriman.pengirimanBarang_transaksi_id;
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    
+    const res = await $api.get(`${url.value}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
     selected.value = {
       namaAkun: pengiriman.pengirimanBarang_akun_penerima,
       barang: res.data.data.map(item => ({
@@ -260,13 +248,8 @@ const openModalEditPackaging = async (pengiriman) => {
 };
 
 const editPackaging = async (trx_id) => {
-  const token = sessionStorage.getItem("auth_token")
-  const response = await axios.get(`${url.value}/${trx_id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  
+  const response = await $api.get(`${url.value}/${trx_id}`);
 
   dataTransaksi = response.data.data;
 }
@@ -321,13 +304,8 @@ const deletepengirimanData = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const token = sessionStorage.getItem("auth_token")
-      const response = await axios.delete(`${url.value}/api/pengiriman-barang/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      });
+      
+      const response = await $api.delete(`${url.value}/api/pengiriman-barang/${id}`);
 
       if (response.status === 200) {
         pengirimanData.value = pengirimanData.value.filter(

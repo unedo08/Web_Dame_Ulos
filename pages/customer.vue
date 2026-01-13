@@ -148,10 +148,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
-
+const { $api } = useNuxtApp();
 const searchQuery = ref("");
 const customer = ref([]);
 const url = ref("");
@@ -177,13 +176,7 @@ onMounted(async () => {
 
 const fetchData = async () => {
   try {
-    const token = sessionStorage.getItem('auth_token')
-    const res = await axios.get(`${url.value}/api/customer`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url.value}/api/customer`);
 
     customer.value = res.data.data
       .map((item) => ({
@@ -195,7 +188,7 @@ const fetchData = async () => {
         transaksi_tipe: item.transaksi_tipe,
         created_at: item.created_at
       }))
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // SORT BARU
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   } catch (error) {
     console.error("Error fetching customer:", error);
   }
@@ -278,13 +271,7 @@ const submitCustomer = async () => {
     return;
   }
   try {
-    const token = sessionStorage.getItem('auth_token')
-    await axios.post(`${url.value}/api/customer/addCustomer`, newCustomer.value, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.post(`${url.value}/api/customer/addCustomer`, newCustomer.value);
 
     Swal.fire("Berhasil!", "Customer berhasil ditambahkan.", "success");
 
@@ -308,12 +295,7 @@ const deleteCustomer = async (id, nama) => {
   if (!confirm.isConfirmed) return;
 
   try {
-    await axios.delete(`${url.value}/api/customer/deleteCustomer/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.delete(`${url.value}/api/customer/deleteCustomer/${id}`);
 
     customer.value = customer.value.filter((c) => c.customer_id !== id);
 

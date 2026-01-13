@@ -180,9 +180,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
+const { $api } = useNuxtApp();
 
 const url = ref("");
 const searchQuery = ref("");
@@ -218,12 +218,7 @@ const editForm = ref({
 
 const fetchUsers = async () => {
     try {
-        const token = sessionStorage.getItem("auth_token");
-        const res = await axios.get(`${url.value}/api/getUser`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const res = await $api.get(`${url.value}/api/getUser`);
         users.value = res.data.data || res.data;
     } catch (err) {
         console.error(err);
@@ -246,21 +241,13 @@ const closeEditModal = () => {
 
 const submitUpdateUser = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token");
-
-    await axios.put(
+    await $api.put(
       `${url.value}/api/user/${editForm.value.id}`,
       {
         name: editForm.value.name,
         email: editForm.value.email,
         role_id: editForm.value.role_id
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+      });
 
     Swal.fire("Berhasil", "User berhasil diperbarui", "success");
     isEditModal.value = false;
@@ -322,21 +309,12 @@ const updatePassword = async () => {
     }
 
     try {
-        const token = sessionStorage.getItem("auth_token");
-        console.log('sadsa');
-
-        await axios.post(
+        await $api.post(
             `${url.value}/api/user/update-password`,
             {
                 current_password: currentPassword.value,
                 new_password: newPassword.value,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+            });
 
         Swal.fire("Berhasil", "Password berhasil diperbarui", "success");
         closePasswordModal();
@@ -389,8 +367,7 @@ const submitAddUser = async () => {
     }
 
     try {
-        const token = sessionStorage.getItem("auth_token");
-        await axios.post(
+        await $api.post(
             `${url.value}/api/register`,
             {
                 name,
@@ -398,12 +375,7 @@ const submitAddUser = async () => {
                 password,
                 password_confirmation: password,
                 role_id,
-            }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-        );
+            });
 
         Swal.fire("Berhasil", "Staff berhasil ditambahkan", "success");
         closeAddModal();
@@ -438,12 +410,8 @@ const deleteUser = async (id, name) => {
     if (!confirm.isConfirmed) return;
 
     try {
-        const token = sessionStorage.getItem("auth_token");
-        await axios.delete(`${url.value}/api/users/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        
+        await $api.delete(`${url.value}/api/users/${id}`);
 
         users.value = users.value.filter((u) => u.id !== id);
         Swal.fire("Berhasil", "Staff berhasil dihapus", "success");

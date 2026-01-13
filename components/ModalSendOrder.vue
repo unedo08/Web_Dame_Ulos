@@ -65,9 +65,8 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
-
+const { $api } = useNuxtApp();
 const props = defineProps({ visible: Boolean });
 const emit = defineEmits(["close", "submitted"]);
 
@@ -77,13 +76,7 @@ const caraBayarList = ref([]);
 onMounted(async () => {
     const config = useRuntimeConfig();
     url.value = config.public.apiBase;
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/carabayar`, {
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        }
-    });
+    const res = await $api.get(`${url.value}/api/carabayar`);
     caraBayarList.value = res.data.data;
 });
 

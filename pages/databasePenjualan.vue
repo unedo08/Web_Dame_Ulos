@@ -54,8 +54,7 @@
               {{ formatCurrency(item.subtotal) }}
             </td>
             <td>
-              <span class="text-status px-2 py-1"
-                :class="statusChipClass(item.transaksidetail_status_penjualan)">
+              <span class="text-status px-2 py-1" :class="statusChipClass(item.transaksidetail_status_penjualan)">
                 {{ item.transaksidetail_status_penjualan == 1 ? 'Closed' : 'Open' }}
               </span>
             </td>
@@ -125,7 +124,6 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from "../components/ModalViewDetail.vue";
@@ -138,46 +136,44 @@ const showDetailModal = ref(false);
 const trx_id = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+const { $api } = useNuxtApp();
 
 onMounted(() => {
   fetchTransaksi();
 });
 
 const fetchTransaksi = async () => {
-  const token = sessionStorage.getItem("auth_token");
-  const res = await axios.get(`${url.value}/api/transaksi`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  try {
+    const res = await $api.get(`${url.value}/api/transaksi`);
+    transaksi.value = await Promise.all(
+      res.data.data.map(async (trx) => {
+        const details = await Promise.all(
+          trx.details.map(async (d) => {
 
-  transaksi.value = await Promise.all(
-    res.data.data.map(async (trx) => {
-      const details = await Promise.all(
-        trx.details.map(async (d) => {
-          const token = sessionStorage.getItem("auth_token");
 
-          const barang = await axios.get(
-            `${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
+            const barang = await $api.get(
+              `${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`);
 
-          const kode = await axios.get(
-            `${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
+            const kode = await $api.get(
+              `${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
 
-          return {
-            ...d,
-            nama_barang: barang.data.data.barangentry_nama,
-            kode_barang: kode.data.code_nama,
-            subtotal:
-              d.transaksidetail_harga_barang *
-              d.transaksidetail_jumlah_barang,
-          };
-        })
-      );
-      return { ...trx, details };
-    })
-  );
+            return {
+              ...d,
+              nama_barang: barang.data.data.barangentry_nama,
+              kode_barang: kode.data.code_nama,
+              subtotal:
+                d.transaksidetail_harga_barang *
+                d.transaksidetail_jumlah_barang,
+            };
+          })
+        );
+        return { ...trx, details };
+      })
+    )
+  } catch (error) {
+    console.error("Gagal mengambil transaksi:", error);
+    Swal.fire("Gagal", "Tidak dapat memuat data transaksi", "error");
+  }
 };
 
 const groupedTransaksi = computed(() => {
@@ -260,13 +256,7 @@ const deleteTransaksi = async (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const token = sessionStorage.getItem("auth_token")
-        const response = await axios.delete(`${url.value}/api/transaksi/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          }
-        });
+        const response = await $api.delete(`${url.value}/api/transaksi/${id}`);
 
         if (response.status === 200) {
           transaksi.value = transaksi.value.filter(
@@ -305,35 +295,16 @@ const statusChipClass = (status) => {
 };
 
 async function handlePrint(transaksi_id) {
-  const token = sessionStorage.getItem("auth_token")
-  const { data: responsePrint } = await axios.get(
-    `${url.value}/api/transaksi/${transaksi_id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  }
-  );
+  const { data: responsePrint } = await $api.get(
+    `${url.value}/api/transaksi/${transaksi_id}`);
 
   const transaksi = responsePrint.data;
   const detailWithNames = await Promise.all(
     transaksi.details.map(async (detail) => {
-      const barangRes = await axios.get(
-        `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
-      const kodeBarang = await axios.get(
-        `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+      const barangRes = await $api.get(
+        `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
+      const kodeBarang = await $api.get(
+        `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id);
 
       return {
         ...detail,
@@ -620,7 +591,7 @@ const paginatedPages = computed(() => {
   color: #888;
 }
 
-.text-status{
+.text-status {
   font-size: 10px !important;
 }
 </style>

@@ -141,10 +141,9 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-
+const { $api } = useNuxtApp();
 const props = defineProps({
   visible: Boolean,
 });
@@ -167,13 +166,7 @@ onMounted(async () => {
   kodeBarangInput.value?.focus();
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/carabayar`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url.value}/api/carabayar`);
     caraBayarList.value = res.data.data;
   } catch (err) {
     console.error("Gagal fetch cara bayar:", err);
@@ -254,16 +247,10 @@ async function submitForm() {
   }
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const entry = await axios.get(`${url.value}/api/entrybarang/getDataKasir/${form.code_barang}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const entry = await $api.get(`${url.value}/api/entrybarang/getDataKasir/${form.code_barang}`);
     const barangData = entry.data.data[0];
 
-    const transaksi = await axios.post(`${url.value}/api/transaksi`, {
+    const transaksi = await $api.post(`${url.value}/api/transaksi`, {
       transaksi_nama_customer: form.namaPenerima,
       transaksi_nomor_telepon: form.nomor_telepon,
       transaksi_jumlah_barang: 1,
@@ -272,28 +259,18 @@ async function submitForm() {
       transaksi_tipe: "Online",
       transaksi_status: "Pending",
       transaksi_catatan: form.catatan,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     const transaksi_id = transaksi.data.data.transaksi_id;
 
-    await axios.post(`${url.value}/api/transaksi-detail`, {
+    await $api.post(`${url.value}/api/transaksi-detail`, {
       transaksidetail_transaksi_id: transaksi_id,
       transaksidetail_barang_id: barangData.barangentry_id,
       transaksidetail_jumlah_barang: 1,
       transaksidetail_harga_barang: barangData.barangentry_harga_net,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
-    await axios.post(`${url.value}/api/pengiriman-barang`, {
+    await $api.post(`${url.value}/api/pengiriman-barang`, {
       pengirimanBarang_transaksi_id: transaksi_id,
       pengirimanBarang_nama_penerima: form.namaPenerima,
       pengirimanBarang_akun_penerima: form.namaAkun,
@@ -303,11 +280,6 @@ async function submitForm() {
       pengirimanBarang_alamat_pengiriman_barang: form.alamat,
       pengirimanBarang_catatan: form.catatan,
       pengirimanBarang_status: "Proses",
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     Swal.fire({

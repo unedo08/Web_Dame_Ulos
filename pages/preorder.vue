@@ -167,7 +167,6 @@
 
 <script setup>
 import { reactive, ref, onMounted } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 
@@ -175,6 +174,7 @@ const kodeBarangInput = ref(null);
 const url = ref("");
 const platformInput = ref(null);
 const errors = reactive({});
+const { $api } = useNuxtApp();
 
 onMounted(() => {
   const config = useRuntimeConfig();
@@ -297,12 +297,12 @@ async function submitForm() {
   // };
 
   try {
-    // const responseData = await axios.get(
+    // const responseData = await $api.get(
     //   `${url.value}/api/entrybarang/getDataKasir/` + form.code_barang
     // );
     // const dataEntry = responseData.data.data[0];
 
-    // const transaksiData = await axios.post(
+    // const transaksiData = await $api.post(
     //   `${url.value}/api/transaksi`,
     //   payloadTransaksi
     // );
@@ -315,11 +315,10 @@ async function submitForm() {
     //   transaksidetail_harga_barang: dataEntry.barangentry_harga_net,
     // };
 
-    // await axios.post(
+    // await $api.post(
     //   `${url.value}/api/transaksi-detail`,
     //   payloadTransaksiDetail
     // );
-    const token = sessionStorage.getItem("auth_token")
     const formData = new FormData();
     formData.append("preOrderBarang_transaksi_id", "");
     formData.append("preOrderBarang_nama_barang", form.namaUlos);
@@ -336,12 +335,7 @@ async function submitForm() {
     formData.append("preOrderBarang_catatan", form.catatan);
     formData.append("preOrderBarang_path_gambar", "test");
 
-    await axios.post(`${url.value}/api/pre-order-barang`, formData, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    await $api.post(`${url.value}/api/pre-order-barang`, formData);
 
     Swal.fire({
       title: "Sukses!",
@@ -364,7 +358,7 @@ async function submitForm() {
     //   pengirimanBarang_status: "Proses",
     // };
 
-    // await axios.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
+    // await $api.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
     // } catch (err) {
     //   console.error("Error melakukan transaksi", err);
     // }

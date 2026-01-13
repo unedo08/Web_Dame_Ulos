@@ -8,10 +8,10 @@
 </template>
 <script setup>
 import PieChart from "~/components/PieChart.vue";
-import axios from "axios";
 import dayjs from "dayjs";
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#imports";
+const { $api } = useNuxtApp();
 
 const dataPerMonth = ref(null);
 const url = ref('')
@@ -19,13 +19,7 @@ onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(`${url.value}/api/codebarang`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const response = await $api.get(`${url.value}/api/codebarang`);
     const data = response.data;
 
     const monthlyCounts = {};

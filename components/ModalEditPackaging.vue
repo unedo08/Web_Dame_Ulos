@@ -47,13 +47,12 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 
 const config = useRuntimeConfig();
 const url = config.public.apiBase;
-
+const { $api } = useNuxtApp();
 const props = defineProps({
   show: Boolean,
   barang: Array,
@@ -70,17 +69,11 @@ const submitForm = async () => {
   }
 
   try {
-    const token = sessionStorage.getItem("auth_token")
     for (const item of barangTerpilih) {
-      await axios.post(`${url}/api/packaging`, {
+      await $api.post(`${url}/api/packaging`, {
         packaging_transactiondetail_id: item.trx_detail_id,
         packaging_nama_akun: props.pengiriman.pengirimanBarang_nama_penerima,
         packaging_alamat: props.pengiriman.pengirimanBarang_alamat_pengiriman_barang
-      }, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
       });
     }
 

@@ -43,12 +43,12 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRuntimeConfig } from "#imports";
 
 const url = ref("");
 const isSubmittingEdit = ref(false);
+const { $api } = useNuxtApp();
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -101,20 +101,9 @@ const updateHargaNet = (e) => {
 
 const loadData = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/entrybarang/${props.id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url.value}/api/entrybarang/${props.id}`);
     form.value = { ...res.data.data };
-    const code = await axios.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    })
+    const code = await $api.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
     form.value.code = code.data.code_nama;
 
   } catch (err) {
@@ -125,7 +114,6 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true;
   try {
-    const token = sessionStorage.getItem("auth_token")
     if (!form.value.barangentry_ukuran_ulos || form.value.barangentry_ukuran_ulos.trim() === "") {
       Swal.fire("Gagal!", "Ukuran Ulos wajib diisi.", "error");
       isSubmittingEdit.value = false;
@@ -137,12 +125,7 @@ const submitForm = async () => {
       barangentry_ukuran_ulos: form.value.barangentry_ukuran_ulos,
       barangentry_ukuran_mandar: form.value.barangentry_ukuran_mandar,
     }
-    await axios.put(`${url.value}/api/entrybarang/ready-stock-size/${props.id}`, payload, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    await $api.put(`${url.value}/api/entrybarang/ready-stock-size/${props.id}`, payload);
     await Swal.fire("Berhasil", "Data berhasil disimpan!", "success");
     emit('saved');
     closeModal();

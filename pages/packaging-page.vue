@@ -101,7 +101,6 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 import ModalEditPackaging from "../components/ModalEditPackaging.vue";
@@ -110,7 +109,7 @@ import { saveAs } from "file-saver";
 
 const config = useRuntimeConfig();
 const url = config.public.apiBase;
-
+const { $api } = useNuxtApp();
 const pengirimanData = ref([]);
 const searchQuery = ref("");
 const currentPage = ref(1);
@@ -122,13 +121,7 @@ const selectedBarang = ref([]);
 
 
 const fetchData = async () => {
-  const token = sessionStorage.getItem("auth_token")
-  const res = await axios.get(`${url}/api/pengiriman-barang/get-pengiriman`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  const res = await $api.get(`${url}/api/pengiriman-barang/get-pengiriman`);
   pengirimanData.value = res.data.data;
 };
 
@@ -138,13 +131,8 @@ const openModalEdit = async (row) => {
   selectedPengiriman.value = row;
   const trx_id = row.pengirimanBarang_transaksi_id;
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    
+    const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
 
     if (!res.data.data || res.data.data.length === 0) {
       Swal.fire({
@@ -185,13 +173,8 @@ const deleteData = async (id) => {
   });
 
   if (!c.isConfirmed) return;
-  const token = sessionStorage.getItem("auth_token")
-  await axios.delete(`${url}/api/pengiriman-barang/${id}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  
+  await $api.delete(`${url}/api/pengiriman-barang/${id}`);
   fetchData();
 
   Swal.fire("Berhasil", "Data terhapus", "success");
@@ -199,14 +182,9 @@ const deleteData = async (id) => {
 
 const selesaikanPackaging = async (row) => {
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     const trxId = row.pengirimanBarang_transaksi_id;
-    const res = await axios.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
     const barangList = res.data.data;
 
     if (!barangList || barangList.length === 0) {
@@ -215,15 +193,10 @@ const selesaikanPackaging = async (row) => {
     }
 
     for (const item of barangList) {
-      await axios.post(`${url}/api/packaging`, {
+      await $api.post(`${url}/api/packaging`, {
         packaging_transactiondetail_id: item.transaksidetail_id,
         packaging_nama_akun: row.pengirimanBarang_nama_penerima,
         packaging_alamat: row.pengirimanBarang_alamat_pengiriman_barang,
-      }, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
       });
     }
 
@@ -247,7 +220,7 @@ const selesaikanPackaging = async (row) => {
 
 const exportToExcel = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
+    
     Swal.fire({
       title: "Menyiapkan data…",
       text: "Mohon tunggu sebentar",
@@ -255,11 +228,7 @@ const exportToExcel = async () => {
       didOpen: () => Swal.showLoading(),
     });
 
-    const res = await axios.get(`${url}/api/pengiriman-barang/export-data`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const res = await $api.get(`${url}/api/pengiriman-barang/export-data`);
 
     const data = res.data.data;
     if (!data || !data.length) {

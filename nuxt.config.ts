@@ -37,10 +37,6 @@ export default defineNuxtConfig({
     }
   },
 
-  router: {
-    middleware: ['auth']
-  },
-
   plugins: ['~/plugins/pinia.ts'],
 
   runtimeConfig: {

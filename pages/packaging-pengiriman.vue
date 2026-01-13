@@ -90,7 +90,6 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
@@ -98,7 +97,7 @@ import { saveAs } from "file-saver";
 
 const config = useRuntimeConfig();
 const url = ref("");
-
+const { $api } = useNuxtApp();
 const pengirimanData = ref([]);
 const searchQuery = ref("");
 const currentPage = ref(1);
@@ -112,13 +111,7 @@ onMounted(() => {
 // 🔹 Fetch Data
 const fetchDataPengiriman = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/packaging`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const res = await $api.get(`${url.value}/api/packaging`);
     pengirimanData.value = res.data.data;
   } catch (error) {
     console.error("Gagal fetch data pengiriman:", error);
@@ -201,17 +194,11 @@ const selesaiPackaging = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const token = sessionStorage.getItem("auth_token")
+      
       const payload = { packaging_status: "Done" };
-      const response = await axios.post(
+      const response = await $api.post(
         `${url.value}/api/packaging/update-status/${id}`,
-        payload, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+        payload);
 
       if (response.status === 200) {
         await fetchDataPengiriman();
@@ -269,43 +256,23 @@ const selesaiPackaging = async (id) => {
 async function buildRowsForPackaging(pkg) {
   try {
     // 1) Get packaging → ambil transaksi_id
-    const token = sessionStorage.getItem("auth_token")
-    const { data: pkgDetailResp } = await axios.get(`${url.value}/api/packaging/${pkg.packaging_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    
+    const { data: pkgDetailResp } = await $api.get(`${url.value}/api/packaging/${pkg.packaging_id}`);
     const transaksiId = pkgDetailResp?.data?.packaging_transactiondetail_id;
     if (!transaksiId) return [];
 
-    const { data: trxResp } = await axios.get(`${url.value}/api/transaksi/${transaksiId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const { data: trxResp } = await $api.get(`${url.value}/api/transaksi/${transaksiId}`);
 
     const details = Array.isArray(trxResp?.data?.details) ? trxResp.data.details : [];
 
     const rows = [];
     for (const d of details) {
-      const { data: ebResp } = await axios.get(`${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      });
+      const { data: ebResp } = await $api.get(`${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`);
       const entry = ebResp?.data || {};
 
       let codeNama = "-";
       if (entry.barangentry_code_id) {
-        const { data: codeResp } = await axios.get(`${url.value}/api/codebarang/${entry.barangentry_code_id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          }
-        });
+        const { data: codeResp } = await $api.get(`${url.value}/api/codebarang/${entry.barangentry_code_id}`);
         codeNama = codeResp?.code_nama ?? "-";
       }
 

@@ -174,10 +174,9 @@
 
 <script setup>
 import { reactive, ref, computed, watch, onMounted } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-
+const { $api } = useNuxtApp();
 const props = defineProps({ visible: Boolean });
 const emit = defineEmits(["close"]);
 
@@ -187,14 +186,8 @@ const caraBayarList = ref([]);
 onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
-  const token = sessionStorage.getItem("auth_token")
 
-  const res = await axios.get(`${url.value}/api/carabayar`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  const res = await $api.get(`${url.value}/api/carabayar`);
   caraBayarList.value = res.data.data;
 });
 
@@ -219,13 +212,7 @@ const imagePreview = ref(null);
 const uploadProgress = ref(0);
 
 async function kode_generator() {
-  const token = sessionStorage.getItem("auth_token")
-  const kodePO = await axios.get(`${url.value}/api/pre-order-barang/kode-generator`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  });
+  const kodePO = await $api.get(`${url.value}/api/pre-order-barang/kode-generator`);
   form.code_barang = kodePO.data.data.code_nama;
 }
 
@@ -324,29 +311,18 @@ async function submitForm() {
   }
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const jenis = await axios.post(`${url.value}/api/jenisbarang`, {
+    const jenis = await $api.post(`${url.value}/api/jenisbarang`, {
       jenisbarang_kode: form.code_barang,
       jenisbarang_nama: "PO Barang",
       jenisbarang_jumlah: 0,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
-    const kode = await axios.post(`${url.value}/api/codebarang`, {
+    const kode = await $api.post(`${url.value}/api/codebarang`, {
       jumlah_barang: 1,
       code_jenisbarang_id: jenis.data.jenisbarang_id,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
-    const entry = await axios.post(`${url.value}/api/entrybarang/storeDescription`, {
+    const entry = await $api.post(`${url.value}/api/entrybarang/storeDescription`, {
       barangentry_code_id: String(kode.data.data[0].code_id),
       barangentry_nama: form.namaUlos,
       barangentry_warna: "PO",
@@ -358,11 +334,6 @@ async function submitForm() {
       barangentry_harga_net: 0,
       barangentry_jumlah_barang: 1,
       barangentry_status: "PREORDER",
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     form.barangentryID = entry.data.data.barangentry_id;
@@ -390,11 +361,7 @@ async function submitForm() {
       formData.append("preOrderBarang_path_gambar", form.gambarCompressed.name);
     }
 
-    await axios.post(`${url.value}/api/pre-order-barang`, formData, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
+    await $api.post(`${url.value}/api/pre-order-barang`, formData, {
       onUploadProgress: (e) => {
         uploadProgress.value = Math.round((e.loaded / e.total) * 100);
       },

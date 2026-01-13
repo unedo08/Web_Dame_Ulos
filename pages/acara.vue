@@ -238,8 +238,8 @@ import {
 } from "@heroicons/vue/24/solid";
 import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
-import axios from "axios";
 import Swal from "sweetalert2";
+const { $api } = useNuxtApp();
 
 const url = ref("");
 const acara = ref([]);
@@ -317,13 +317,7 @@ const formatRupiah = (harga) => {
 
 async function getListAcara() {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(`${url.value}/api/acara`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const response = await $api.get(`${url.value}/api/acara`);
     listAcara.value = response.data.data;
   } catch (error) {
     console.error("Gagal memuat data acara:", error);
@@ -387,15 +381,9 @@ const submitAcara = async () => {
   }
 
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.post(`${url.value}/api/acara/addAcara`, {
+    await $api.post(`${url.value}/api/acara/addAcara`, {
       acara_nama: newProduct.value.acara_nama,
       acara_keterangan: newProduct.value.acara_keterangan,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     await getListAcara();
@@ -428,16 +416,12 @@ const deleteProduct = async (id, acara_nama) => {
 
   if (result.isConfirmed) {
     try {
-      const token = sessionStorage.getItem("auth_token")
-      const response = await axios.delete(`${url.value}/api/acara/deleteAcara/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      });
+      const response = await $api.delete(`${url.value}/api/acara/deleteAcara/${id}`);
 
       if (response.status === 200) {
-        acara.value = acara.value.filter((item) => item.acara_id !== id);
+        listAcara.value = listAcara.value.filter(
+          (item) => item.acara_id !== id
+        );
         await Swal.fire({
           title: "Berhasil!",
           text: `"${acara_nama}" telah dihapus.`,
@@ -463,42 +447,23 @@ const editItem = async (item) => {
   barcodeInput.value = "";
   tempBarangList.value = [];
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const response = await axios.get(
-      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+    const response = await $api.get(
+      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`);
 
     const data = response.data.data || [];
     const detailedBarangList = await Promise.all(
       data.map(async (barang) => {
         try {
-          const detailResponse = await axios.get(
-            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`, {
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            }
-          }
-          );
+          const detailResponse = await $api.get(
+            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`);
           const detail = detailResponse.data.data;
 
           let codeData = null;
           try {
             const codeId = parseInt(detail.barangentry_code_id, 10);
             if (!isNaN(codeId)) {
-              const codeResponse = await axios.get(
-                `${url.value}/api/codebarang/${codeId}`, {
-                headers: {
-                  "Authorization": `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                }
-              }
-              );
+              const codeResponse = await $api.get(
+                `${url.value}/api/codebarang/${codeId}`);
               codeData = codeResponse.data;
             } else {
               console.warn(
@@ -547,14 +512,8 @@ const addToTempBarang = async () => {
   if (!code) return;
 
   try {
-    const response = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + code, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+    const response = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + code);
     const barang = response.data.data;
 
     if (!barang || !barang.barangentry_id) {
@@ -562,14 +521,9 @@ const addToTempBarang = async () => {
       return;
     }
 
-    await axios.post(`${url.value}/api/acaradet/addDetAcara`, {
+    await $api.post(`${url.value}/api/acaradet/addDetAcara`, {
       acaradet_acara_id: editForm.value.acara_id,
       acaradet_barangentry_id: barang.barangentry_id,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     if (!tempBarangList.value.includes(code)) {
@@ -595,14 +549,8 @@ const addToTempBarang = async () => {
 const removeFromTempBarang = async (id) => {
   if (confirm(`Anda yakin ingin menghapus data ini?`)) {
     try {
-      const response = await axios.delete(
-        `${url.value}/api/acaradet/deleteDetAcara/` + id, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-      );
+      const response = await $api.delete(
+        `${url.value}/api/acaradet/deleteDetAcara/` + id);
       if (response.status === 200) {
         tempBarangList.value = tempBarangList.value.filter(
           (item) => item.acaradet_id !== id
@@ -630,7 +578,7 @@ const submitEdit = async () => {
       0
     );
 
-    await axios.put(
+    await $api.put(
       `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
       {
         acara_nama: editForm.value.acara_nama,
@@ -641,13 +589,7 @@ const submitEdit = async () => {
         acara_hargapricetagbarang: totalPriceTag,
         acara_keterangan: "Ready To store",
         acara_status: "Ready",
-      }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+      });
 
     await getListAcara();
     closeEditModal();
@@ -659,12 +601,7 @@ const submitEdit = async () => {
 
 const exportItem = async (id) => {
   try {
-    const response = await axios.get(`${url.value}/api/acara/export/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const response = await $api.get(`${url.value}/api/acara/export/${id}`);
     const acaraData = response.data.data.acara;
     const detailData = response.data.data.detail;
 
@@ -725,9 +662,11 @@ const closePrintModal = () => {
 };
 
 const handlePrint = () => {
+  if (!selectedProduct.value) return;
   alert("Simulasi print acara: " + selectedProduct.value.nama_acara);
   closePrintModal();
 };
+
 </script>
 
 <style scoped>

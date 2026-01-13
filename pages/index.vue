@@ -70,6 +70,7 @@ onMounted(() => {
 
 const handleLogin = async () => {
   try {
+    sessionStorage.clear();
     const res = await axios.post(`${url.value}/api/login`, {
       email: email.value,
       password: password.value,

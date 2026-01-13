@@ -346,14 +346,13 @@
 
 <script setup>
 import { reactive, ref, onMounted, computed, nextTick } from "vue";
-import axios from "axios";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ModalLiveTransaksi from "../components/ModalLiveTransaksi.vue";
 
 const config = useRuntimeConfig();
 const url = ref(config.public.apiBase);
-
+const { $api } = useNuxtApp();
 const pengirimanData = ref([]);
 const searchQuery = ref("");
 const activeTab = ref("order");
@@ -394,16 +393,8 @@ onMounted(() => {
 
 const openModalEditTransaksi = async (namaAkun) => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const { data } = await axios.get(
-      `${url.value}/api/live-barang/data-live/` + namaAkun, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-      //  `http://192.168.18.52:8080/api/live-barang/data-live/` + namaAkun
-    );
+    const { data } = await $api.get(
+      `${url.value}/api/live-barang/data-live/` + namaAkun);
 
     const barangBelumPackaging = data.data.filter(item => item.is_check === 0);
     if (barangBelumPackaging.length === 0) {
@@ -444,15 +435,10 @@ const capitalizeFirst = (str) => {
 
 const fetchBarangNames = async (data) => {
   try {
-    const token = sessionStorage.getItem("auth_token")
+  
     const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
     const requests = ids.map((id) =>
-      axios.get(`${url.value}/api/entrybarang/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      })
+      $api.get(`${url.value}/api/entrybarang/${id}`)
     );
     const responses = await Promise.all(requests);
     responses.forEach((res, i) => {
@@ -465,20 +451,15 @@ const fetchBarangNames = async (data) => {
 
 const fetchDataPengiriman = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token")
+  
     let endpoint = "";
     if (activeTab.value === "order") {
       endpoint = "/api/live-barang";
     } else {
       endpoint = "/api/live-barang/getAmountLive";
     }
-    const res = await axios.get(`${url.value}${endpoint}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
-    // const res = await axios.get(`http://192.168.18.52:8080${endpoint}`);
+    const res = await $api.get(`${url.value}${endpoint}`);
+    // const res = await $api.get(`http://192.168.18.52:8080${endpoint}`);
     pengirimanData.value = res.data.data;
     if (activeTab.value === "order") {
       await fetchBarangNames(pengirimanData.value);
@@ -565,16 +546,10 @@ const submitLiveOrder = async () => {
 
   isSubmitting.value = true;
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const namaBarang = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
-    await axios.post(`${url.value}/api/live-barang/store-live`, {
+  
+    const namaBarang = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang);
+    await $api.post(`${url.value}/api/live-barang/store-live`, {
       live_order_barang_id: namaBarang.data.data.barangentry_id,
       live_order_nama_akun: form.value.namaAkun,
       live_order_platform: form.value.platform,
@@ -615,30 +590,14 @@ const submitLiveOrder = async () => {
 
 const editOrderLive = async (id) => {
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const res = await axios.get(`${url.value}/api/live-barang/show-live/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+  
+    const res = await $api.get(`${url.value}/api/live-barang/show-live/${id}`);
     const data = res.data.data;
-    const resBarang = await axios.get(
-      `${url.value}/api/entrybarang/` + data.live_order_barang_id, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+    const resBarang = await $api.get(
+      `${url.value}/api/entrybarang/` + data.live_order_barang_id);
     const code = resBarang.data.data.barangentry_code_id;
 
-    const codeNama = await axios.get(`${url.value}/api/codebarang/` + code, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
+    const codeNama = await $api.get(`${url.value}/api/codebarang/` + code);
 
     form.value.id = data.live_order_id;
     form.value.barang = codeNama.data.code_nama;
@@ -656,29 +615,16 @@ const submitLiveEditOrder = async () => {
 
   isSubmittingEdit.value = true;
   try {
-    const token = sessionStorage.getItem("auth_token")
-    const namaBarang = await axios.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
-    await axios.put(
+    const namaBarang = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang);
+    await $api.put(
       `${url.value}/api/live-barang/update-live/${form.value.id}`,
       {
         live_order_barang_id: namaBarang.data.data.barangentry_id,
         live_order_nama_akun: form.value.namaAkun,
         live_order_platform: form.value.platform,
         live_order_harga_terjual: form.value.hargaTotal,
-      }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    );
+      });
     isModalOpenEditOrder.value = false;
     await fetchDataPengiriman();
     Swal.fire({
@@ -797,13 +743,8 @@ const deleteOrder = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      const token = sessionStorage.getItem("auth_token")
-      await axios.delete(`${url.value}/api/live-barang/delete-live/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      });
+    
+      await $api.delete(`${url.value}/api/live-barang/delete-live/${id}`);
 
       await fetchDataPengiriman();
       await Swal.fire({
