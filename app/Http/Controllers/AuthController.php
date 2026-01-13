@@ -249,4 +249,24 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function refresh()
+    {
+        try {
+            $newToken = JWTAuth::refresh(JWTAuth::getToken());
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Token refreshed successfully',
+                'token' => $newToken,
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
+            ]);
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Token refresh failed',
+                'error' => $e->getMessage()
+            ], 401);
+        }
+    }
 }
