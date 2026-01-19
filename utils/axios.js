@@ -1,4 +1,6 @@
+// utils/axios.js
 import axios from "axios";
+import refreshApi from "./refreshApi";
 import { authState } from "./authState";
 import { getToken, setToken, clearToken } from "./token";
 
@@ -28,10 +30,8 @@ api.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
+
       if (authState.isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
@@ -48,15 +48,10 @@ api.interceptors.response.use(
       authState.isRefreshing = true;
 
       try {
-        const token = getToken();
-
-        const res = await axios.post(
-          "/api/refresh",
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await refreshApi.post("/api/refresh");
 
         setToken(res.data.token, res.data.expires_in);
+
         api.defaults.headers.common.Authorization =
           `Bearer ${res.data.token}`;
 

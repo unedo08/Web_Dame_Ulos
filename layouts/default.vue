@@ -8,6 +8,7 @@ import {
   setToken,
   clearToken
 } from "~/utils/token";
+import refreshApi from "~/utils/refreshApi";
 
 const { $api } = useNuxtApp();
 const router = useRouter();
@@ -36,8 +37,7 @@ const preRefresh = async () => {
   authState.isRefreshing = true;
 
   try {
-    const res = await $api.post("/api/refresh");
-
+    const res = await refreshApi.post("/api/refresh");
     setToken(res.data.token, res.data.expires_in);
     console.info("[AUTH] Token pre-refresh berhasil");
   } catch (err) {
