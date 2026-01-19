@@ -79,7 +79,6 @@ class TransaksiTController extends Controller
                 'customer' => $customer,
                 'data'     => $record,
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'code'    => 500,
@@ -129,8 +128,8 @@ class TransaksiTController extends Controller
             ], 404);
         }
 
-        $transaksi->transaksi_status = $request->status;  
-        $transaksi->update_id = Auth::id();              
+        $transaksi->transaksi_status = $request->status;
+        $transaksi->update_id = Auth::id();
         $transaksi->save();
 
         return response()->json([
@@ -151,7 +150,7 @@ class TransaksiTController extends Controller
             ], 401);
         }
 
-        $userId = Auth::id(); 
+        $userId = Auth::id();
 
         $transaksi = TransaksiT::find($id);
 
@@ -163,7 +162,7 @@ class TransaksiTController extends Controller
             ], 404);
         }
 
-        
+
         $transaksi->delete_id = $userId;
         $transaksi->save();
 
@@ -189,7 +188,7 @@ class TransaksiTController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'message' => 'Transactions with status hold retrieved successfully.',
             'data' => $transactions
@@ -205,12 +204,13 @@ class TransaksiTController extends Controller
             'details.barang',
             'details.pengiriman'
         ])
-        ->get()
-        ->groupBy(function($item) {
-            return $item->transaksi_id;
-        });
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->transaksi_id;
+            });
 
         $result = [];
+
 
         foreach ($transaksi as $key => $group) {
             $first = $group->first();
@@ -221,15 +221,18 @@ class TransaksiTController extends Controller
                 'transaksi_tipe' => $first->transaksi_tipe,
                 'cara_bayar' => $first->caraBayar?->carabayar_nama,
                 'user' => $first->user?->name,
-                'items' => $group->flatMap(function($trans) {
-                    return $trans->details->map(function($d) {
+                'items' => $group->flatMap(function ($trans) {
+                    return $trans->details->map(function ($d) {
                         return [
                             'code_nama' => $d->barang->code->code_nama ?? null,
+                            'jumlah_barang' => $d->transaksidetail_jumlah_barang,
+                            'harga_barang' => $d->transaksidetail_harga_barang,
                             'barang_modal' => $d->barang->barangentry_modal ?? null,
                             'barang_price_tag' => $d->barang->barangentry_price_tag ?? null,
                             'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
-                            'transaksi_status' => $d->transaksi_status ?? null
+                            'transaksi_status' => $d->transaksi_status ?? null,
+
                         ];
                     });
                 })
@@ -242,5 +245,4 @@ class TransaksiTController extends Controller
             'data' => $result
         ]);
     }
-
 }
