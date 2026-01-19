@@ -1295,7 +1295,6 @@ async function submitSizeBarang() {
 
   const requiredFields = [
     'code_id',
-    'ukuran_mandar',
     'ukuran_ulos'
   ];
 
@@ -1319,8 +1318,8 @@ async function submitSizeBarang() {
     
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
-      barangentry_ukuran_mandar: String(selectedBarang.value.ukuran_mandar),
-      barangentry_ukuran_ulos: String(selectedBarang.value.ukuran_ulos),
+      barangentry_ukuran_mandar: selectedBarang.value.ukuran_mandar ? String(selectedBarang.value.ukuran_mandar) : "",
+      barangentry_ukuran_ulos: selectedBarang.value.ukuran_ulos ? String(selectedBarang.value.ukuran_ulos) : "",
     };
 
     await $api.post(`${url.value}/api/entrybarang/storeSize`, payload);

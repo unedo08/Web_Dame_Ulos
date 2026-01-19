@@ -537,7 +537,6 @@ function validate() {
   errors.namaAkun = !form.value.namaAkun ? "Nama akun wajib diisi" : "";
   errors.platform = !form.value.platform ? "Platform selesai wajib diisi" : "";
   errors.hargaTotal = !form.value.hargaTotal ? "Harga Total wajib diisi" : "";
-  // console.log('xc', errors.barang);
 
   return Object.values(errors).every((err) => !err);
 }
@@ -554,11 +553,6 @@ const submitLiveOrder = async () => {
       live_order_nama_akun: form.value.namaAkun,
       live_order_platform: form.value.platform,
       live_order_harga_terjual: form.value.hargaTotal,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
     });
 
     form.value = {

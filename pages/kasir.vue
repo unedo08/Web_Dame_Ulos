@@ -42,6 +42,7 @@
       <thead class="bg-blue-100">
         <tr>
           <th class="px-4 py-2 text-left">No</th>
+          <th class="px-4 py-2 text-left">Kode Barang</th>
           <th class="px-4 py-2 text-left">Nama Item</th>
           <th class="px-4 py-2 text-left">Jumlah</th>
           <th class="px-4 py-2 text-left">Harga</th>
@@ -53,6 +54,7 @@
       <tbody>
         <tr v-for="(item, index) in datatableItems" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td class="px-4 py-2">{{ index + 1 }}</td>
+          <td class="px-4 py-2">{{ item.code_nama }}</td>
           <td class="px-4 py-2">{{ item.barangentry_nama }}</td>
           <td class="px-4 py-2">
             <template v-if="item.barangentry_jumlah_barang > 1">
@@ -63,11 +65,8 @@
             </template>
           </td>
           <td class="px-4 py-2">
-            <input type="text" v-model="item.barangentry_harga_net"
-              @input="item.barangentry_harga_net = $event.target.value.replace(/\D/g, '')"
-              class="w-28 border rounded px-2 py-1 text-right" />
-
-
+            <input type="text" :value="formatRupiahInput(item.barangentry_harga_net)"
+              @input="updateHargaNet($event, item)" class="w-28 border rounded px-2 py-1 text-right" />
           </td>
           <td class="hidden">{{ item.code_nama }}</td>
           <td class="hidden">{{ item.transaksi_id }}</td>
@@ -217,7 +216,7 @@ onMounted(() => {
 });
 
 onMounted(async () => {
-  const res = await $.get(`${url.value}/api/carabayar`);
+  const res = await $api.get(`${url.value}/api/carabayar`);
   caraBayarList.value = res.data.data;
 });
 
@@ -268,8 +267,8 @@ const waitingList = ref([]);
 
 async function fetchHoldTransactions() {
   try {
-    
-    const response = await $.get(`${url.value}/api/transaksi/status/hold`);
+
+    const response = await $api.get(`${url.value}/api/transaksi/status/hold`);
     waitingList.value = Array.isArray(response.data?.data) ? response.data.data : [];
     currentPage.value = 1;
   } catch (error) {
@@ -280,7 +279,7 @@ async function fetchHoldTransactions() {
 
 async function loadHoldTransaction(id) {
   try {
-    const { data } = await $.get(`${url.value}/api/transaksi/${id}`);
+    const { data } = await $api.get(`${url.value}/api/transaksi/${id}`);
     const transaksi = data?.data;
     if (!transaksi) {
       Swal.fire("Gagal", "Data transaksi tidak ditemukan", "error");
@@ -296,13 +295,13 @@ async function loadHoldTransaction(id) {
     const mapped = await Promise.all(
       detailList.map(async (detail) => {
         try {
-          const resEntry = await $.get(
+          const resEntry = await $api.get(
             `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
 
           const entry = resEntry?.data?.data;
           let codeNama = "";
           if (entry?.barangentry_code_id) {
-            const resCode = await $.get(
+            const resCode = await $api.get(
               `${url.value}/api/codebarang/${entry.barangentry_code_id}`);
             codeNama = resCode?.data?.code_nama || "";
           }
@@ -380,7 +379,7 @@ async function deleteHoldTransaction(id) {
   if (!konfirmasi.isConfirmed) return;
 
   try {
-    await $.delete(`${url.value}/api/transaksi/${id}`);
+    await $api.delete(`${url.value}/api/transaksi/${id}`);
     await fetchHoldTransactions();
 
     if (currentTransaksiId.value === id) {
@@ -430,11 +429,11 @@ async function handleHold() {
   };
 
   try {
-    const { data } = await $.post(`${url.value}/api/transaksi`, payload);
+    const { data } = await $api.post(`${url.value}/api/transaksi`, payload);
     const transaksi_id = data.data.transaksi_id;
 
     for (const item of datatableItems.value) {
-      const { data: barangResponse } = await $.get(
+      const { data: barangResponse } = await $api.get(
         `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`);
 
       const barangData = barangResponse.data;
@@ -447,7 +446,7 @@ async function handleHold() {
         transaksidetail_harga_barang: item.barangentry_harga_net,
       };
 
-      await $.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
     }
 
     Swal.fire({
@@ -537,13 +536,13 @@ async function checkoutProcess() {
         transaksi_catatan: processForm.value.notes,
       };
 
-      await $.post(`${url.value}/api/transaksi`, payload_hold);
+      await $api.post(`${url.value}/api/transaksi`, payload_hold);
     } else {
-      const { data } = await $.post(`${url.value}/api/transaksi`, payload);
+      const { data } = await $api.post(`${url.value}/api/transaksi`, payload);
       transaksi_id = data.data.transaksi_id;
     }
     for (const item of datatableItems.value) {
-      const { data: barangResponse } = await $.get(
+      const { data: barangResponse } = await $api.get(
         `${url.value}/api/entrybarang/getDataByCode/${item.code_nama}`);
 
       const barangData = barangResponse.data;
@@ -556,18 +555,18 @@ async function checkoutProcess() {
         transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
       };
 
-      await $.post(`${url.value}/api/transaksi-detail`, detailPayload);
+      await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
     }
-    const { data: responsePrint } = await $.get(`${url.value}/api/transaksi/${transaksi_id}`);
+    const { data: responsePrint } = await $api.get(`${url.value}/api/transaksi/${transaksi_id}`);
 
     const transaksi = responsePrint.data;
 
     const detailWithNames = await Promise.all(
       transaksi.details.map(async (detail) => {
-        const barangRes = await $.get(
+        const barangRes = await $api.get(
           `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
 
-        const kodeBarang = await $.get(
+        const kodeBarang = await $api.get(
           `${url.value}/api/codebarang/` + barangRes.data.data.barangentry_code_id);
 
         return {
@@ -637,8 +636,8 @@ function removeItem(index) {
     if (itemCount === 1) {
       if (currentTransaksiId.value) {
         try {
-          
-          await $.delete(
+
+          await $api.delete(
             `${url.value}/api/transaksi/${currentTransaksiId.value}`);
           Swal.fire("Terhapus", "Transaksi berhasil dihapus.", "success");
         } catch (err) {
@@ -676,8 +675,8 @@ const fetchDataByBarcode = async (code) => {
   try {
     const configURL = useRuntimeConfig();
     const baseURL = configURL.public.apiBase;
-    
-    const { data } = await $.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
+
+    const { data } = await $api.get(`${baseURL}/api/entrybarang/getDataKasir/` + code);
 
     if (!data || !Array.isArray(data.data) || data.data.length === 0) {
       Swal.fire("Tidak ditemukan", "Kode barang tidak ditemukan", "warning");

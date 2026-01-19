@@ -1,25 +1,15 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { useRuntimeConfig } from "#imports";
 
 const { $api } = useNuxtApp();
 const router = useRouter();
 
-const IDLE_LIMIT = 15 * 60 * 1000;
-const WARNING_TIME = 60 * 1000;
 const CHECK_INTERVAL = 5000;
+const REFRESH_BEFORE = 60 * 1000;
 
-let idleTimer = null;
 let sessionChecker = null;
-
-const showWarning = ref(false);
-const remainingSeconds = ref(60);
-const url = ref("");
-
-onMounted(() => {
-  url.value = useRuntimeConfig().public.apiBase;
-});
+let isRefreshing = false;
 
 const logout = async () => {
   try {
@@ -35,47 +25,10 @@ const logout = async () => {
   }
 };
 
-const resetIdleTimer = () => {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    console.warn("Logout karena idle");
-    logout();
-  }, IDLE_LIMIT);
-};
+const refreshToken = async () => {
+  if (isRefreshing) return;
+  isRefreshing = true;
 
-const activityEvents = [
-  "mousemove",
-  "mousedown",
-  "keydown",
-  "scroll",
-  "touchstart",
-];
-
-const checkSessionExpired = () => {
-  const expiredAt = Number(sessionStorage.getItem("expired_at"));
-  if (!expiredAt) {
-    logout();
-    return;
-  }
-
-  const now = Date.now();
-  const diff = expiredAt - now;
-
-  if (diff <= WARNING_TIME && diff > 0 && !showWarning.value) {
-    showWarning.value = true;
-    remainingSeconds.value = Math.ceil(diff / 1000);
-  }
-
-  if (showWarning.value && diff > 0) {
-    remainingSeconds.value = Math.ceil(diff / 1000);
-  }
-  if (diff <= 0) {
-    logout();
-  }
-};
-
-const logoutNow = () => logout();
-const extendSession = async () => {
   try {
     const res = await $api.post("/api/refresh");
 
@@ -85,31 +38,40 @@ const extendSession = async () => {
     sessionStorage.setItem("auth_token", newToken);
     sessionStorage.setItem("expired_at", newExpiredAt);
 
-    showWarning.value = false;
-    resetIdleTimer();
-
-    console.info("Session diperpanjang");
+    console.info("Token berhasil di-refresh");
   } catch (err) {
     console.error("Refresh token gagal", err);
+    logout();
+  } finally {
+    isRefreshing = false;
+  }
+};
+
+const checkSession = () => {
+  const expiredAt = Number(sessionStorage.getItem("expired_at"));
+
+  if (!expiredAt) {
+    logout();
+    return;
+  }
+
+  const now = Date.now();
+  const diff = expiredAt - now;
+
+  if (diff <= REFRESH_BEFORE && diff > 0) {
+    refreshToken();
+  }
+
+  if (diff <= 0) {
     logout();
   }
 };
 
 onMounted(() => {
-  activityEvents.forEach(e =>
-    window.addEventListener(e, resetIdleTimer)
-  );
-
-  resetIdleTimer();
-  sessionChecker = setInterval(checkSessionExpired, CHECK_INTERVAL);
+  sessionChecker = setInterval(checkSession, CHECK_INTERVAL);
 });
 
 onUnmounted(() => {
-  activityEvents.forEach(e =>
-    window.removeEventListener(e, resetIdleTimer)
-  );
-
-  clearTimeout(idleTimer);
   clearInterval(sessionChecker);
 });
 </script>
@@ -125,40 +87,6 @@ onUnmounted(() => {
         <Topbar />
         <div class="mt-2 px-6">
           <slot />
-        </div>
-      </div>
-    </div>
-
-    <div
-      v-if="showWarning"
-      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-lg shadow-xl p-6 w-[360px]">
-        <h3 class="text-lg font-semibold mb-2 text-red-600">
-          Session akan habis
-        </h3>
-
-        <p class="text-sm text-gray-700 mb-4">
-          Anda akan logout otomatis dalam
-          <span class="font-bold text-red-600">
-            {{ remainingSeconds }} detik
-          </span>.
-        </p>
-
-        <div class="flex justify-end gap-3">
-          <button
-            class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300"
-            @click="logoutNow"
-          >
-            Logout sekarang
-          </button>
-
-          <button
-            class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-            @click="extendSession"
-          >
-            Tetap Login
-          </button>
         </div>
       </div>
     </div>

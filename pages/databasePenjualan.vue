@@ -1,7 +1,9 @@
 <template>
   <div>
     <title>Menu Database Penjualan</title>
-    <div class="judul text-xl font-semibold mb-4">Database Penjualan</div>
+    <div class="judul text-xl font-semibold mb-4">
+      Database Penjualan
+    </div>
     <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
       placeholder="Cari transaksi penjualan..." />
 
@@ -26,55 +28,59 @@
       </thead>
 
       <tbody>
-        <template v-for="(group, gIndex) in paginatedGroups" :key="gIndex">
-          <tr v-for="(item, i) in group.details" :key="item.transaksidetail_id"
-            :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top font-semibold">
-              {{ formatDate(group.tanggal) }}
+        <template v-for="(trx, trxIndex) in paginatedTransaksi" :key="trx.transaksi_id">
+          <tr v-for="(item, i) in trx.items" :key="item.transaksidetail_id" :class="[
+            trxIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50',
+            i === 0 ? 'group-start' : ''
+          ]">
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ formatDate(trx.created_at) }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top font-semibold">
-              {{ group.nama }}
+
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ trx.customer_nama }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
-              {{ group.jenis }}
+
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ trx.transaksi_tipe }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
-              {{ group.acara || '-' }}
+
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ trx.transaksi_acara || "-" }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
-              {{ group.platform || '-' }}
+
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ trx.transaksi_platform || "-" }}
             </td>
-            <td class="px-4 py-2">{{ item.kode_barang || '-' }}</td>
-            <td class="px-4 py-2">{{ item.nama_barang || '-' }}</td>
-            <td class="px-4 py-2">{{ item.transaksidetail_jumlah_barang }}</td>
-            <td class="px-4 py-2">
-              {{ formatCurrency(item.transaksidetail_harga_barang) }}
-            </td>
-            <td class="px-4 py-2">
-              {{ formatCurrency(item.subtotal) }}
-            </td>
+            <td>{{ item.code_nama || "-" }}</td>
+            <td>{{ item.barang_nama || "-" }}</td>
+            <td>{{ item.jumlah_barang }}</td>
+            <td>{{ formatCurrency(Number(item.harga_barang)) }}</td>
+            <td>{{ formatCurrency(Number(item.harga_barang) * item.jumlah_barang) }}</td>
+
             <td>
-              <span class="text-status px-2 py-1" :class="statusChipClass(item.transaksidetail_status_penjualan)">
-                {{ item.transaksidetail_status_penjualan == 1 ? 'Closed' : 'Open' }}
+              <span class="text-status px-2 py-1" :class="statusChipClass(item.transaksi_status)">
+                {{ item.transaksi_status === 1 ? "Closed" : "Open" }}
               </span>
             </td>
-            <td class="px-4 py-2">
-              {{ group.cara_bayar }}
+
+            <td>{{ trx.cara_bayar }}</td>
+
+            <td v-if="i === 0" :rowspan="trx.items.length">
+              {{ trx.catatan || "-" }}
             </td>
-            <td v-if="i === 0" :rowspan="group.details.length" class="px-4 py-2 align-top">
-              {{ group.catatan || '-' }}
-            </td>
-            <td class="px-4 py-2">
+
+            <td>
               <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-yellow-500 text-white rounded"
-                  @click="openViewDetail(item.transaksidetail_id)">
+                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(trx.transaksi_id)">
                   View
                 </button>
-                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(item.transaksidetail_id)">
+
+                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(trx.transaksi_id)">
                   Print
                 </button>
-                <button class="px-2 py-1 bg-red-500 text-white rounded"
-                  @click="deleteTransaksi(item.transaksidetail_id)">
+
+                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(trx.transaksi_id)">
                   Delete
                 </button>
               </div>
@@ -85,34 +91,34 @@
     </table>
 
     <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-      <div class="flex items-center space-x-2">
-        <label for="perPage">Tampilkan:</label>
-        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-          <option :value="5">5</option>
+      <div class="flex items-center space-x-2 text-xs mb-4">
+        <div>
+          Menampilkan {{ startItem }}–{{ endItem }} dari {{ totalTransaksi }} transaksi
+        </div>
+        <span>| Tampilkan</span>
+
+        <select v-model="itemsPerPage" class="border rounded px-2 py-1">
           <option :value="10">10</option>
           <option :value="20">20</option>
           <option :value="50">50</option>
           <option value="all">All</option>
         </select>
+
+        <span>data</span>
       </div>
 
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-          @click="currentPage--">
+      <div class="pagination">
+        <button class="nav-btn" :disabled="currentPage === 1" @click="currentPage--">
           Sebelumnya
         </button>
 
-        <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer'
-          ]" :disabled="page === '...'">
-          {{ page }}
+        <button v-for="p in paginatedPages" :key="p" class="page-btn"
+          :class="{ active: p === currentPage, dots: p === '...' }" :disabled="p === '...'"
+          @click="typeof p === 'number' && (currentPage = p)">
+          {{ p }}
         </button>
 
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-          @click="currentPage++">
+        <button class="nav-btn" :disabled="currentPage === totalPages" @click="currentPage++">
           Selanjutnya
         </button>
       </div>
@@ -144,81 +150,91 @@ onMounted(() => {
 
 const fetchTransaksi = async () => {
   try {
-    const res = await $api.get(`${url.value}/api/transaksi`);
-    transaksi.value = await Promise.all(
-      res.data.data.map(async (trx) => {
-        const details = await Promise.all(
-          trx.details.map(async (d) => {
-
-
-            const barang = await $api.get(
-              `${url.value}/api/entrybarang/${d.transaksidetail_barang_id}`);
-
-            const kode = await $api.get(
-              `${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
-
-            return {
-              ...d,
-              nama_barang: barang.data.data.barangentry_nama,
-              kode_barang: kode.data.code_nama,
-              subtotal:
-                d.transaksidetail_harga_barang *
-                d.transaksidetail_jumlah_barang,
-            };
-          })
-        );
-        return { ...trx, details };
-      })
-    )
-  } catch (error) {
-    console.error("Gagal mengambil transaksi:", error);
+    const res = await $api.get(`${url.value}/api/transaksi/grouped`);
+    transaksi.value = res.data.data;
+  } catch (e) {
     Swal.fire("Gagal", "Tidak dapat memuat data transaksi", "error");
   }
 };
+
+const filteredTransaksi = computed(() => {
+  if (!searchQuery.value) return groupedTransaksi.value;
+
+  const q = searchQuery.value.toLowerCase();
+
+  return groupedTransaksi.value.filter(trx =>
+    trx.customer_nama.toLowerCase().includes(q) ||
+    trx.items.some(i =>
+      (i.code_nama || "").toLowerCase().includes(q)
+    )
+  );
+});
 
 const groupedTransaksi = computed(() => {
   const groups = {};
 
   transaksi.value.forEach(trx => {
     const dateOnly = new Date(trx.created_at).toISOString().split("T")[0];
-    const key = [
-      dateOnly,
-      trx.transaksi_nama_customer || "",
-      trx.transaksi_tipe || "",
-      trx.transaksi_acara || "",
-      trx.transaksi_platform || ""
-    ].join("__");
+    const key = `${dateOnly}__${trx.customer_nama}__${trx.cara_bayar}`;
 
     if (!groups[key]) {
       groups[key] = {
-        tanggal: dateOnly,
-        nama: trx.transaksi_nama_customer,
-        jenis: trx.transaksi_tipe,
-        acara: trx.transaksi_acara || "-",
-        platform: trx.transaksi_platform || "-",
-        status: trx.transaksi_status,
-        cara_bayar: trx.transaksi_cara_bayar,
-        catatan: trx.transaksi_catatan,
-        id: trx.transaksi_id,
-        details: []
+        created_at: dateOnly,
+        customer_nama: trx.customer_nama,
+        transaksi_tipe: trx.transaksi_tipe,
+        transaksi_acara: trx.transaksi_acara,
+        transaksi_platform: trx.transaksi_platform,
+        cara_bayar: trx.cara_bayar,
+        catatan: trx.catatan,
+        transaksi_id: trx.transaksi_id,
+        items: []
       };
     }
-    groups[key].details.push(...trx.details);
+
+    trx.items.forEach(item => {
+      const harga = Number(item.barang_price_tag || 0);
+      const jumlah = 1; // ⬅️ PENTING: karena API tidak punya qty
+
+      groups[key].items.push({
+        ...item,
+        harga,
+        jumlah,
+        subtotal: harga * jumlah
+      });
+    });
   });
 
   return Object.values(groups);
 });
 
-const paginatedGroups = computed(() => {
-  if (itemsPerPage.value === "all") return groupedTransaksi.value;
+const paginatedTransaksi = computed(() => {
+  if (itemsPerPage.value === "all") return filteredTransaksi.value;
+
   const start = (currentPage.value - 1) * itemsPerPage.value;
-  return groupedTransaksi.value.slice(start, start + itemsPerPage.value);
+  return filteredTransaksi.value.slice(start, start + itemsPerPage.value);
 });
 
-const totalPages = computed(() => {
+const totalTransaksi = computed(() => filteredTransaksi.value.length);
+
+const startItem = computed(() => {
   if (itemsPerPage.value === "all") return 1;
-  return Math.ceil(groupedTransaksi.value.length / itemsPerPage.value);
+  if (totalTransaksi.value === 0) return 0;
+  return (currentPage.value - 1) * Number(itemsPerPage.value) + 1;
 });
+
+const endItem = computed(() => {
+  if (itemsPerPage.value === "all") return totalTransaksi.value;
+  return Math.min(
+    currentPage.value * Number(itemsPerPage.value),
+    totalTransaksi.value
+  );
+});
+
+const totalPages = computed(() =>
+  itemsPerPage.value === "all"
+    ? 1
+    : Math.ceil(totalTransaksi.value / itemsPerPage.value)
+);
 
 watch(searchQuery, () => {
   currentPage.value = 1;
@@ -285,13 +301,9 @@ const deleteTransaksi = async (id) => {
 };
 
 const statusChipClass = (status) => {
-  switch (status) {
-    case 1:
-      return "bg-green-100 text-green-700 border border-green-300 rounded";
-
-    default:
-      return "bg-yellow-100 text-yellow-700 border border-yellow-300 rounded"
-  }
+  return status === 1
+    ? "bg-green-100 text-green-700 border border-green-300 rounded"
+    : "bg-yellow-100 text-yellow-700 border border-yellow-300 rounded";
 };
 
 async function handlePrint(transaksi_id) {
@@ -555,6 +567,14 @@ const paginatedPages = computed(() => {
   return [1, "...", current - 1, current, current + 1, "...", total];
 });
 
+watch(itemsPerPage, () => {
+  currentPage.value = 1;
+});
+
+watch(itemsPerPage, () => {
+  currentPage.value = 1;
+});
+
 </script>
 
 <style scoped>
@@ -583,6 +603,14 @@ const paginatedPages = computed(() => {
   font-size: 12px;
 }
 
+.datatable tbody tr:first-child td {
+  border-top: 1px solid #e5e7eb;
+}
+
+.group-start td {
+  border-top: 2px solid #d1d5db;
+}
+
 .datatable th {
   background-color: #f4f4f4;
 }
@@ -593,5 +621,47 @@ const paginatedPages = computed(() => {
 
 .text-status {
   font-size: 10px !important;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-btn,
+.nav-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.page-btn:hover,
+.nav-btn:hover {
+  background: #f3f4f6;
+}
+
+.page-btn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+  font-weight: 600;
+}
+
+.page-btn.dots {
+  cursor: default;
+  border: none;
+  background: transparent;
+}
+
+.page-btn:disabled,
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
