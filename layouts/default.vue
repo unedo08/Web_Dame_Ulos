@@ -1,15 +1,16 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { authState } from "~/utils/authState";
 
 const { $api } = useNuxtApp();
 const router = useRouter();
 
 const CHECK_INTERVAL = 5000;
 const REFRESH_BEFORE = 60 * 1000;
+const GRACE_PERIOD = 5000;
 
 let sessionChecker = null;
-let isRefreshing = false;
 
 const logout = async () => {
   try {
@@ -26,8 +27,9 @@ const logout = async () => {
 };
 
 const refreshToken = async () => {
-  if (isRefreshing) return;
-  isRefreshing = true;
+  if (authState.isRefreshing) return;
+
+  authState.isRefreshing = true;
 
   try {
     const res = await $api.post("/api/refresh");
@@ -38,36 +40,35 @@ const refreshToken = async () => {
     sessionStorage.setItem("auth_token", newToken);
     sessionStorage.setItem("expired_at", newExpiredAt);
 
-    console.info("Token berhasil di-refresh");
+    console.info("Token berhasil di-refresh (layout)");
   } catch (err) {
-    console.error("Refresh token gagal", err);
+    console.error("Refresh token gagal (layout)", err);
     logout();
   } finally {
-    isRefreshing = false;
+    authState.isRefreshing = false;
   }
 };
 
 const checkSession = () => {
+  if (authState.isRefreshing) return;
+
   const expiredAt = Number(sessionStorage.getItem("expired_at"));
+  if (!expiredAt) return;
 
-  if (!expiredAt) {
-    logout();
-    return;
-  }
-
-  const now = Date.now();
-  const diff = expiredAt - now;
+  const diff = expiredAt - Date.now();
 
   if (diff <= REFRESH_BEFORE && diff > 0) {
     refreshToken();
+    return;
   }
 
-  if (diff <= 0) {
+  if (diff <= -GRACE_PERIOD) {
     logout();
   }
 };
 
 onMounted(() => {
+  checkSession();
   sessionChecker = setInterval(checkSession, CHECK_INTERVAL);
 });
 

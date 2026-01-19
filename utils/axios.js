@@ -1,8 +1,8 @@
 import axios from "axios";
+import { authState } from "./authState";
 
 const api = axios.create();
 
-let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
@@ -31,7 +31,7 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry
     ) {
-      if (isRefreshing) {
+      if (authState.isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
             resolve: (token) => {
@@ -44,7 +44,7 @@ api.interceptors.response.use(
       }
 
       originalRequest._retry = true;
-      isRefreshing = true;
+      authState.isRefreshing = true;
 
       try {
         const token = sessionStorage.getItem("auth_token");
@@ -52,9 +52,7 @@ api.interceptors.response.use(
         const res = await axios.post(
           "/api/refresh",
           {},
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const newToken = res.data.token;
@@ -73,7 +71,7 @@ api.interceptors.response.use(
         window.location.href = "/";
         return Promise.reject(err);
       } finally {
-        isRefreshing = false;
+        authState.isRefreshing = false;
       }
     }
 
