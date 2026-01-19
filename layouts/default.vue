@@ -2,63 +2,63 @@
 import { onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { authState } from "~/utils/authState";
+import {
+  getExpiredAt,
+  isTokenStillValid,
+  setToken,
+  clearToken
+} from "~/utils/token";
 
 const { $api } = useNuxtApp();
 const router = useRouter();
 
 const CHECK_INTERVAL = 5000;
 const REFRESH_BEFORE = 60 * 1000;
-const GRACE_PERIOD = 5000;
+const GRACE_PERIOD = 3000;
 
-let sessionChecker = null;
+let timer = null;
 
 const logout = async () => {
   try {
-    const token = sessionStorage.getItem("auth_token");
-    if (token) {
-      await $api.post("/api/logout");
-    }
-  } catch (err) {
-    console.warn("Logout API error (ignored)", err);
+    await $api.post("/api/logout");
+  } catch {
+
   } finally {
-    sessionStorage.clear();
+    clearToken();
     router.replace("/");
   }
 };
 
-const refreshToken = async () => {
+const preRefresh = async () => {
   if (authState.isRefreshing) return;
+  if (!isTokenStillValid()) return;
 
   authState.isRefreshing = true;
 
   try {
     const res = await $api.post("/api/refresh");
 
-    const newToken = res.data.token;
-    const newExpiredAt = Date.now() + res.data.expires_in * 1000;
-
-    sessionStorage.setItem("auth_token", newToken);
-    sessionStorage.setItem("expired_at", newExpiredAt);
-
-    console.info("Token berhasil di-refresh (layout)");
+    setToken(res.data.token, res.data.expires_in);
+    console.info("[AUTH] Token pre-refresh berhasil");
   } catch (err) {
-    console.error("Refresh token gagal (layout)", err);
-    logout();
+    console.warn("[AUTH] Pre-refresh gagal, menunggu interceptor");
   } finally {
     authState.isRefreshing = false;
   }
 };
 
 const checkSession = () => {
+  if (document.visibilityState !== "visible") return;
+
   if (authState.isRefreshing) return;
 
-  const expiredAt = Number(sessionStorage.getItem("expired_at"));
+  const expiredAt = getExpiredAt();
   if (!expiredAt) return;
 
   const diff = expiredAt - Date.now();
 
   if (diff <= REFRESH_BEFORE && diff > 0) {
-    refreshToken();
+    preRefresh();
     return;
   }
 
@@ -69,11 +69,11 @@ const checkSession = () => {
 
 onMounted(() => {
   checkSession();
-  sessionChecker = setInterval(checkSession, CHECK_INTERVAL);
+  timer = setInterval(checkSession, CHECK_INTERVAL);
 });
 
 onUnmounted(() => {
-  clearInterval(sessionChecker);
+  clearInterval(timer);
 });
 </script>
 

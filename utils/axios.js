@@ -1,21 +1,22 @@
 import axios from "axios";
 import { authState } from "./authState";
+import { getToken, setToken, clearToken } from "./token";
 
 const api = axios.create();
 
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
-    error ? prom.reject(error) : prom.resolve(token);
-  });
+  failedQueue.forEach(p =>
+    error ? p.reject(error) : p.resolve(token)
+  );
   failedQueue = [];
 };
 
 api.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
 
-  const token = sessionStorage.getItem("auth_token");
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,8 +24,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  res => res,
+  async error => {
     const originalRequest = error.config;
 
     if (
@@ -34,7 +35,7 @@ api.interceptors.response.use(
       if (authState.isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
-            resolve: (token) => {
+            resolve: token => {
               originalRequest.headers.Authorization = `Bearer ${token}`;
               resolve(api(originalRequest));
             },
@@ -47,7 +48,7 @@ api.interceptors.response.use(
       authState.isRefreshing = true;
 
       try {
-        const token = sessionStorage.getItem("auth_token");
+        const token = getToken();
 
         const res = await axios.post(
           "/api/refresh",
@@ -55,19 +56,15 @@ api.interceptors.response.use(
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const newToken = res.data.token;
-        const newExpiredAt = Date.now() + res.data.expires_in * 1000;
+        setToken(res.data.token, res.data.expires_in);
+        api.defaults.headers.common.Authorization =
+          `Bearer ${res.data.token}`;
 
-        sessionStorage.setItem("auth_token", newToken);
-        sessionStorage.setItem("expired_at", newExpiredAt);
-
-        api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-        processQueue(null, newToken);
-
+        processQueue(null, res.data.token);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        sessionStorage.clear();
+        clearToken();
         window.location.href = "/";
         return Promise.reject(err);
       } finally {
