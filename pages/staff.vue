@@ -263,12 +263,17 @@ const submitUpdateUser = async () => {
 
 const filteredUsers = computed(() => {
     const q = searchQuery.value.toLowerCase();
-    return users.value.filter(
-        (u) =>
-            u.name?.toLowerCase().includes(q) ||
-            u.email?.toLowerCase().includes(q) ||
-            u.role?.name?.toLowerCase().includes(q)
-    );
+
+    return [...users.value]
+        .filter(
+            (u) =>
+                u.name?.toLowerCase().includes(q) ||
+                u.email?.toLowerCase().includes(q) ||
+                u.role?.name?.toLowerCase().includes(q)
+        )
+        .sort((a, b) => {
+            return new Date(b.created_at) - new Date(a.created_at);
+        });
 });
 
 const pagination = computed(() => {

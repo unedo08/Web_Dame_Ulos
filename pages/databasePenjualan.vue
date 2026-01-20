@@ -33,23 +33,23 @@
             trxIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50',
             i === 0 ? 'group-start' : ''
           ]">
-            <td v-if="i === 0" :rowspan="trx.items.length">
+            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
               {{ formatDate(trx.created_at) }}
             </td>
 
-            <td v-if="i === 0" :rowspan="trx.items.length">
+            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
               {{ trx.customer_nama }}
             </td>
 
-            <td v-if="i === 0" :rowspan="trx.items.length">
+            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
               {{ trx.transaksi_tipe }}
             </td>
 
-            <td v-if="i === 0" :rowspan="trx.items.length">
+            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
               {{ trx.transaksi_acara || "-" }}
             </td>
 
-            <td v-if="i === 0" :rowspan="trx.items.length">
+            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
               {{ trx.transaksi_platform || "-" }}
             </td>
             <td>{{ item.code_nama || "-" }}</td>
@@ -170,16 +170,32 @@ const filteredTransaksi = computed(() => {
   );
 });
 
+const formatDateKey = (dateStr) => {
+  const d = new Date(dateStr);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+};
+
+
+const sortedTransaksi = computed(() => {
+  return [...transaksi.value].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
+});
+
+
 const groupedTransaksi = computed(() => {
   const groups = {};
 
-  transaksi.value.forEach(trx => {
-    const dateOnly = new Date(trx.created_at).toISOString().split("T")[0];
-    const key = `${dateOnly}__${trx.customer_nama}__${trx.cara_bayar}`;
+  sortedTransaksi.value.forEach(trx => {
+    const dateKey = formatDateKey(trx.created_at);
+    const key = `${dateKey}__${trx.customer_nama}__${trx.cara_bayar}`;
 
     if (!groups[key]) {
       groups[key] = {
-        created_at: dateOnly,
+        created_at: trx.created_at,
         customer_nama: trx.customer_nama,
         transaksi_tipe: trx.transaksi_tipe,
         transaksi_acara: trx.transaksi_acara,
@@ -193,7 +209,7 @@ const groupedTransaksi = computed(() => {
 
     trx.items.forEach(item => {
       const harga = Number(item.barang_price_tag || 0);
-      const jumlah = 1; // ⬅️ PENTING: karena API tidak punya qty
+      const jumlah = 1;
 
       groups[key].items.push({
         ...item,

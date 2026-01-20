@@ -469,9 +469,15 @@ const fetchDataPengiriman = async () => {
   }
 };
 
+const sortedPengirimanData = computed(() => {
+  return [...pengirimanData.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+});
+
 const groupedData = computed(() => {
   const groups = {};
-  pengirimanData.value.forEach((item) => {
+  sortedPengirimanData.value.forEach((item) => {
     if (!groups[item.live_order_nama_akun]) {
       groups[item.live_order_nama_akun] = [];
     }

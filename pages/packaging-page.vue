@@ -335,10 +335,16 @@ const handleSave = () => {
   fetchData();
 };
 
+const sortedPengirimanData = computed(() => {
+  return [...pengirimanData.value].sort(
+    (a, b) => b.pengirimanBarang_id - a.pengirimanBarang_id
+  );
+});
+
 const filteredData = computed(() => {
   const q = searchQuery.value.toLowerCase();
 
-  return pengirimanData.value.filter((x) =>
+  return sortedPengirimanData.value.filter((x) =>
     x.pengirimanBarang_nama_penerima?.toLowerCase().includes(q) ||
     x.pengirimanBarang_akun_penerima?.toLowerCase().includes(q) ||
     x.pengirimanBarang_alamat_pengiriman_barang?.toLowerCase().includes(q)

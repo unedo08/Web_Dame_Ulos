@@ -280,14 +280,20 @@ onMounted(async () => {
   isModalPrintOpen.value = false;
 });
 
+const sortedListAcara = computed(() => {
+  return [...listAcara.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+});
+
 const pagination = computed(() => {
   if (itemsPerPage.value === "all") {
-    return listAcara.value;
+    return sortedListAcara.value;
   }
 
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return listAcara.value.slice(start, end);
+  return sortedListAcara.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
