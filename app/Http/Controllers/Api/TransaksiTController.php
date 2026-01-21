@@ -225,6 +225,7 @@ class TransaksiTController extends Controller
                     return $trans->details->map(function ($d) {
                         return [
                             'code_nama' => $d->barang->code->code_nama ?? null,
+                            'barang_nama' => $d->barang->barangentry_nama ?? null,
                             'jumlah_barang' => $d->transaksidetail_jumlah_barang,
                             'harga_barang' => $d->transaksidetail_harga_barang,
                             'barang_modal' => $d->barang->barangentry_modal ?? null,
