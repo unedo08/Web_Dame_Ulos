@@ -158,7 +158,8 @@
 
     <!-- Modal Edit Acara -->
     <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full
+         max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-semibold mb-4">
           Edit Acara - {{ editForm.acara_nama }}
         </h3>
@@ -176,44 +177,45 @@
           </button>
         </div>
 
-        <table class="datatable w-full mb-4 rounded-md overflow-hidden">
-          <thead class="bg-blue-100">
-            <tr>
-              <th class="px-4 py-2 text-left">Kode Barang</th>
-              <th class="px-4 py-2 text-left">Status</th>
-              <th class="hide-col px-4 py-2 text-left">Acara ID</th>
-              <th class="hide-col px-4 py-2 text-left">Barang Entry ID</th>
-              <th class="hide-col px-4 py-2 text-left">Harga Modal</th>
-              <th class="hide-col px-4 py-2 text-left">Harga Net</th>
-              <th class="hide-col px-4 py-2 text-left">Harga Price tag</th>
-              <th class="hide-col px-4 py-2 text-left">Status</th>
-              <th class="px-4 py-2 text-left">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(barang, index) in tempBarangList" :key="index"
-              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-              <td class="px-4 py-2">{{ barang.code }}</td>
-              <td class="px-4 py-2"></td>
-              <td class="hide-col px-4 py-2">{{ barang.acara_id }}</td>
-              <td class="hide-col px-4 py-2">{{ barang.barangentry_id }}</td>
-              <td class="hide-col px-4 py-2">{{ barang.acara_modalbarang }}</td>
-              <td class="hide-col px-4 py-2">
-                {{ barang.acara_harganetbarang }}
-              </td>
-              <td class="hide-col px-4 py-2">
-                {{ barang.acara_hargapricetagbarang }}
-              </td>
-              <td class="hide-col px-4 py-2">{{ barang.acara_status }}</td>
-              <td class="px-4 py-2">
-                <button @click="removeFromTempBarang(barang.acaradet_id)" class="text-red-500 hover:text-red-700">
-                  <TrashIcon class="w-5 h-5" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
+        <div class="max-h-[300px] overflow-y-auto mb-4">
+          <table class="datatable w-full mb-4 rounded-md overflow-hidden">
+            <thead class="bg-blue-100">
+              <tr>
+                <th class="px-4 py-2 text-left">Kode Barang</th>
+                <th class="px-4 py-2 text-left">Status</th>
+                <th class="hide-col px-4 py-2 text-left">Acara ID</th>
+                <th class="hide-col px-4 py-2 text-left">Barang Entry ID</th>
+                <th class="hide-col px-4 py-2 text-left">Harga Modal</th>
+                <th class="hide-col px-4 py-2 text-left">Harga Net</th>
+                <th class="hide-col px-4 py-2 text-left">Harga Price tag</th>
+                <th class="hide-col px-4 py-2 text-left">Status</th>
+                <th class="px-4 py-2 text-left">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(barang, index) in tempBarangList" :key="index"
+                :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+                <td class="px-4 py-2">{{ barang.code }}</td>
+                <td class="px-4 py-2"></td>
+                <td class="hide-col px-4 py-2">{{ barang.acara_id }}</td>
+                <td class="hide-col px-4 py-2">{{ barang.barangentry_id }}</td>
+                <td class="hide-col px-4 py-2">{{ barang.acara_modalbarang }}</td>
+                <td class="hide-col px-4 py-2">
+                  {{ barang.acara_harganetbarang }}
+                </td>
+                <td class="hide-col px-4 py-2">
+                  {{ barang.acara_hargapricetagbarang }}
+                </td>
+                <td class="hide-col px-4 py-2">{{ barang.acara_status }}</td>
+                <td class="px-4 py-2">
+                  <button @click="removeFromTempBarang(barang.acaradet_id)" class="text-red-500 hover:text-red-700">
+                    <TrashIcon class="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="flex justify-end">
           <button @click="closeEditModal" class="mr-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
             Batal
