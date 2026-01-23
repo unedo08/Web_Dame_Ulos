@@ -156,74 +156,66 @@
       </div>
     </div>
 
-    <!-- Modal Edit Acara -->
     <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full
-         max-h-[90vh] overflow-y-auto">
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-semibold mb-4">
           Edit Acara - {{ editForm.acara_nama }}
         </h3>
-
-        <!-- Input Scan Barcode -->
-        <div class="flex space-x-2 items-end mb-4">
-          <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700">Scan Barcode / Kode Barang</label>
-            <input v-model="barcodeInput" @keyup.enter="addToTempBarang" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Scan atau ketik kode barang" />
-          </div>
-          <button @click="addToTempBarang" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        <div class="flex gap-2 mb-3">
+          <input v-model="barcodeInput" @keyup.enter="addToTemp" type="text" class="flex-1 border rounded-md px-3 py-2"
+            placeholder="Scan / ketik barcode" />
+          <button @click="addToTemp" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Tambah
           </button>
         </div>
 
-        <div class="max-h-[300px] overflow-y-auto mb-4">
-          <table class="datatable w-full mb-4 rounded-md overflow-hidden">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="px-4 py-2 text-left">Kode Barang</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="hide-col px-4 py-2 text-left">Acara ID</th>
-                <th class="hide-col px-4 py-2 text-left">Barang Entry ID</th>
-                <th class="hide-col px-4 py-2 text-left">Harga Modal</th>
-                <th class="hide-col px-4 py-2 text-left">Harga Net</th>
-                <th class="hide-col px-4 py-2 text-left">Harga Price tag</th>
-                <th class="hide-col px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(barang, index) in tempBarangList" :key="index"
-                :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-                <td class="px-4 py-2">{{ barang.code }}</td>
-                <td class="px-4 py-2"></td>
-                <td class="hide-col px-4 py-2">{{ barang.acara_id }}</td>
-                <td class="hide-col px-4 py-2">{{ barang.barangentry_id }}</td>
-                <td class="hide-col px-4 py-2">{{ barang.acara_modalbarang }}</td>
-                <td class="hide-col px-4 py-2">
-                  {{ barang.acara_harganetbarang }}
-                </td>
-                <td class="hide-col px-4 py-2">
-                  {{ barang.acara_hargapricetagbarang }}
-                </td>
-                <td class="hide-col px-4 py-2">{{ barang.acara_status }}</td>
-                <td class="px-4 py-2">
-                  <button @click="removeFromTempBarang(barang.acaradet_id)" class="text-red-500 hover:text-red-700">
-                    <TrashIcon class="w-5 h-5" />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="mb-3">
+          <div class="text-xs text-gray-600 mb-1">Barcode siap dikirim:</div>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="(code, i) in scannedCodes" :key="i" class="bg-gray-200 px-2 py-1 rounded text-xs">
+              {{ code }}
+            </span>
+          </div>
         </div>
-        <div class="flex justify-end">
-          <button @click="closeEditModal" class="mr-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+
+        <button @click="addListBarangAcara" class="mb-4 px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+          Tambah ke List
+        </button>
+
+        <table class="datatable w-full mb-4">
+          <thead class="bg-blue-100">
+            <tr>
+              <th>Kode</th>
+              <th>Modal</th>
+              <th>Harga Net</th>
+              <th>Price Tag</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in listBarangAcara" :key="item.barangentry_id">
+              <td>{{ item.code_nama }}</td>
+              <td>{{ formatRupiah(item.barangentry_modal) }}</td>
+              <td>{{ formatRupiah(item.barangentry_harga_net) }}</td>
+              <td>{{ formatRupiah(item.barangentry_price_tag) }}</td>
+              <td>
+                <button class="text-red-500" @click="removeItem(item.barangentry_id)">
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-end gap-2">
+          <button @click="closeEditModal" class="px-4 py-2 bg-gray-300 rounded">
             Batal
           </button>
           <button @click="submitEdit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
             Submit
           </button>
         </div>
+
       </div>
     </div>
   </div>
@@ -242,6 +234,8 @@ import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 const { $api } = useNuxtApp();
+const scannedCodes = ref([])
+const listBarangAcara = ref([])
 
 const url = ref("");
 const acara = ref([]);
@@ -350,6 +344,125 @@ const paginatedPages = computed(() => {
   return pages;
 });
 
+const editItem = async (item) => {
+  isEditModalOpen.value = true
+  editForm.value = { ...item }
+  scannedCodes.value = []
+
+  try {
+    const res = await $api.get(
+      `${url.value}/api/acaradet/getListBarangAcara/${item.acara_id}`
+    )
+    listBarangAcara.value = res.data.data || []
+  } catch {
+    listBarangAcara.value = []
+  }
+}
+
+const addToTemp = () => {
+  const code = barcodeInput.value.trim()
+  if (!code) return
+
+  if (scannedCodes.value.includes(code)) {
+    Swal.fire("Duplikat", "Kode sudah ada", "warning")
+    return
+  }
+
+  scannedCodes.value.push(code)
+  barcodeInput.value = ""
+}
+
+const addListBarangAcara = async () => {
+  if (scannedCodes.value.length === 0) {
+    Swal.fire("Kosong", "Tidak ada barcode", "warning")
+    return
+  }
+
+  try {
+    const res = await $api.post(
+      `${url.value}/api/acaradet/addListBarangAcara`,
+      { code_nama: scannedCodes.value }
+    )
+    const newItems = res.data.data || []
+    const map = new Map()
+
+    ;[...listBarangAcara.value, ...newItems].forEach(item => {
+      map.set(item.barangentry_id, item)
+    })
+
+    listBarangAcara.value = Array.from(map.values())
+    scannedCodes.value = []
+
+  } catch (err) {
+    Swal.fire("Gagal", "Gagal tambah ke list", "error")
+  }
+}
+
+const removeItem = (id) => {
+  listBarangAcara.value =
+    listBarangAcara.value.filter(i => i.barangentry_id !== id)
+}
+
+const submitEdit = async () => {
+  if (listBarangAcara.value.length === 0) {
+    Swal.fire("Kosong", "Tidak ada barang", "warning")
+    return
+  }
+
+  try {
+    const ids = listBarangAcara.value.map(i => i.barangentry_id)
+    await $api.post(
+      `${url.value}/api/acaradet/addDetAcara`,
+      {
+        acaradet_acara_id: editForm.value.acara_id,
+        acaradet_barangentry_id: ids
+      }
+    )
+
+    const jumlahBarang = listBarangAcara.value.length
+    const totalModal = listBarangAcara.value.reduce(
+      (sum, i) => sum + Number(i.barangentry_modal || 0),
+      0
+    )
+    const totalHargaNet = listBarangAcara.value.reduce(
+      (sum, i) => sum + Number(i.barangentry_harga_net || 0),
+      0
+    )
+    const totalPriceTag = listBarangAcara.value.reduce(
+      (sum, i) => sum + Number(i.barangentry_price_tag || 0),
+      0
+    )
+
+    await $api.put(
+      `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
+      {
+        acara_jumlahbarang: jumlahBarang,
+        acara_modalbarang: totalModal,
+        acara_harganetbarang: totalHargaNet,
+        acara_hargapricetagbarang: totalPriceTag,
+        acara_keterangan: "Ready To store",
+        acara_status: "Ready"
+      }
+    )
+
+    Swal.fire("Berhasil", "Acara berhasil diupdate", "success")
+    closeEditModal()
+    getListAcara()
+
+  } catch (err) {
+    console.error(err)
+    Swal.fire("Gagal", "Gagal menyimpan acara", "error")
+  }
+}
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false
+  barcodeInput.value = ""
+  scannedCodes.value = []
+  listBarangAcara.value = []
+}
+
+
 watch(currentPage, (val) => {
   if (val < 1) currentPage.value = 1;
   if (val > totalPages.value) currentPage.value = totalPages.value;
@@ -449,110 +562,77 @@ const deleteProduct = async (id, acara_nama) => {
   }
 };
 
-const editItem = async (item) => {
-  isEditModalOpen.value = true;
-  editForm.value = { ...item };
-  barcodeInput.value = "";
-  tempBarangList.value = [];
-  try {
-    const response = await $api.get(
-      `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`);
+// const editItem = async (item) => {
+//   isEditModalOpen.value = true;
+//   editForm.value = { ...item };
+//   barcodeInput.value = "";
+//   tempBarangList.value = [];
+//   try {
+//     const response = await $api.get(
+//       `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`);
 
-    const data = response.data.data || [];
-    const detailedBarangList = await Promise.all(
-      data.map(async (barang) => {
-        try {
-          const detailResponse = await $api.get(
-            `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`);
-          const detail = detailResponse.data.data;
+//     const data = response.data.data || [];
+//     const detailedBarangList = await Promise.all(
+//       data.map(async (barang) => {
+//         try {
+//           const detailResponse = await $api.get(
+//             `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`);
+//           const detail = detailResponse.data.data;
 
-          let codeData = null;
-          try {
-            const codeId = parseInt(detail.barangentry_code_id, 10);
-            if (!isNaN(codeId)) {
-              const codeResponse = await $api.get(
-                `${url.value}/api/codebarang/${codeId}`);
-              codeData = codeResponse.data;
-            } else {
-              console.warn(
-                "Code ID bukan angka yang valid:",
-                detail.barangentry_code_id
-              );
-            }
-          } catch (codeErr) {
-            console.error("Gagal ambil data codebarang:", codeErr);
-          }
+//           let codeData = null;
+//           try {
+//             const codeId = parseInt(detail.barangentry_code_id, 10);
+//             if (!isNaN(codeId)) {
+//               const codeResponse = await $api.get(
+//                 `${url.value}/api/codebarang/${codeId}`);
+//               codeData = codeResponse.data;
+//             } else {
+//               console.warn(
+//                 "Code ID bukan angka yang valid:",
+//                 detail.barangentry_code_id
+//               );
+//             }
+//           } catch (codeErr) {
+//             console.error("Gagal ambil data codebarang:", codeErr);
+//           }
 
-          return {
-            code: codeData.code_nama,
-            acara_id: item.acara_id,
-            acaradet_id: barang.acaradet_id,
-            barangentry_id: detail.barangentry_id,
-            acara_modalbarang: detail.barangentry_modal,
-            acara_harganetbarang: detail.barangentry_harga_net,
-            acara_hargapricetagbarang: detail.barangentry_price_tag,
-            acara_status: detail.barangentry_status,
-          };
-        } catch (err) {
-          console.error("Gagal ambil detail barangentry:", err);
-          return null;
-        }
-      })
-    );
+//           return {
+//             code: codeData.code_nama,
+//             acara_id: item.acara_id,
+//             acaradet_id: barang.acaradet_id,
+//             barangentry_id: detail.barangentry_id,
+//             acara_modalbarang: detail.barangentry_modal,
+//             acara_harganetbarang: detail.barangentry_harga_net,
+//             acara_hargapricetagbarang: detail.barangentry_price_tag,
+//             acara_status: detail.barangentry_status,
+//           };
+//         } catch (err) {
+//           console.error("Gagal ambil detail barangentry:", err);
+//           return null;
+//         }
+//       })
+//     );
 
-    // Filter out null (gagal ambil data)
-    tempBarangList.value = detailedBarangList.filter(Boolean);
-  } catch (error) {
-    console.error("Gagal mengambil data barang acara:", error);
-    tempBarangList.value = [];
+//     // Filter out null (gagal ambil data)
+//     tempBarangList.value = detailedBarangList.filter(Boolean);
+//   } catch (error) {
+//     console.error("Gagal mengambil data barang acara:", error);
+//     tempBarangList.value = [];
+//   }
+// };
+
+const addToTempBarang = () => {
+  const code = barcodeInput.value.trim()
+  if (!code) return
+
+  if (scannedCodes.value.includes(code)) {
+    Swal.fire("Duplikat", "Kode sudah ada di list", "warning")
+    return
   }
-};
 
-// Tutup modal edit
-const closeEditModal = () => {
-  isEditModalOpen.value = false;
-  barcodeInput.value = "";
-  tempBarangList.value = [];
-};
-
-const addToTempBarang = async () => {
-  const code = barcodeInput.value.trim();
-  if (!code) return;
-
-  try {
-    const response = await $api.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + code);
-    const barang = response.data.data;
-
-    if (!barang || !barang.barangentry_id) {
-      Swal.fire("Gagal", "Barang tidak ditemukan", "error");
-      return;
-    }
-
-    await $api.post(`${url.value}/api/acaradet/addDetAcara`, {
-      acaradet_acara_id: editForm.value.acara_id,
-      acaradet_barangentry_id: barang.barangentry_id,
-    });
-
-    if (!tempBarangList.value.includes(code)) {
-      tempBarangList.value.push({
-        code: code,
-        acara_id: editForm.value.acara_id,
-        barangentry_id: barang.barangentry_id,
-        acara_modalbarang: barang.barangentry_modal,
-        acara_harganetbarang: barang.barangentry_harga_net,
-        acara_hargapricetagbarang: barang.barangentry_price_tag,
-        acara_status: barang.barangentry_status,
-      });
-    }
-
-    barcodeInput.value = "";
-  } catch (error) {
-    Swal.fire("Gagal", "Barcode tidak ditemukan", "error");
-    barcodeInput.value = "";
-    console.error("Data tidak ditemukan: ", error);
-  }
-};
+  scannedCodes.value.push(code)
+  barcodeInput.value = ""
+}
 
 const removeFromTempBarang = async (id) => {
   if (confirm(`Anda yakin ingin menghapus data ini?`)) {
@@ -570,42 +650,42 @@ const removeFromTempBarang = async (id) => {
   }
 };
 
-const submitEdit = async () => {
-  try {
-    const jumlahBarang = tempBarangList.value.length;
-    const totalModal = tempBarangList.value.reduce(
-      (acc, curr) => acc + (Number(curr.acara_modalbarang) || 0),
-      0
-    );
-    const totalHargaNet = tempBarangList.value.reduce(
-      (acc, curr) => acc + (Number(curr.acara_harganetbarang) || 0),
-      0
-    );
-    const totalPriceTag = tempBarangList.value.reduce(
-      (acc, curr) => acc + (Number(curr.acara_hargapricetagbarang) || 0),
-      0
-    );
+// const submitEdit = async () => {
+//   try {
+//     const jumlahBarang = tempBarangList.value.length;
+//     const totalModal = tempBarangList.value.reduce(
+//       (acc, curr) => acc + (Number(curr.acara_modalbarang) || 0),
+//       0
+//     );
+//     const totalHargaNet = tempBarangList.value.reduce(
+//       (acc, curr) => acc + (Number(curr.acara_harganetbarang) || 0),
+//       0
+//     );
+//     const totalPriceTag = tempBarangList.value.reduce(
+//       (acc, curr) => acc + (Number(curr.acara_hargapricetagbarang) || 0),
+//       0
+//     );
 
-    await $api.put(
-      `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
-      {
-        acara_nama: editForm.value.acara_nama,
-        acara_keterangan: editForm.value.acara_keterangan,
-        acara_jumlahbarang: jumlahBarang,
-        acara_modalbarang: totalModal,
-        acara_harganetbarang: totalHargaNet,
-        acara_hargapricetagbarang: totalPriceTag,
-        acara_keterangan: "Ready To store",
-        acara_status: "Ready",
-      });
+//     await $api.put(
+//       `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
+//       {
+//         acara_nama: editForm.value.acara_nama,
+//         acara_keterangan: editForm.value.acara_keterangan,
+//         acara_jumlahbarang: jumlahBarang,
+//         acara_modalbarang: totalModal,
+//         acara_harganetbarang: totalHargaNet,
+//         acara_hargapricetagbarang: totalPriceTag,
+//         acara_keterangan: "Ready To store",
+//         acara_status: "Ready",
+//       });
 
-    await getListAcara();
-    closeEditModal();
-  } catch (error) {
-    console.error("Gagal mengupdate acara:", error);
-    Swal.fire("Gagal", "Gagal menyimpan perubahan.", "error");
-  }
-};
+//     await getListAcara();
+//     closeEditModal();
+//   } catch (error) {
+//     console.error("Gagal mengupdate acara:", error);
+//     Swal.fire("Gagal", "Gagal menyimpan perubahan.", "error");
+//   }
+// };
 
 const exportItem = async (id) => {
   try {

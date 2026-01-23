@@ -21,20 +21,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'static',
-    prerender: {
-      crawlLinks: true,
-      ignore: [
-        '/acara',
-        '/about',
-        '/backup',
-        '/staff',
-        '/code',
-        '/live',
-        '/kasir',
-        '/entry'
-      ]
-    }
+    preset: 'node'
   },
 
   plugins: ['~/plugins/pinia.ts'],
