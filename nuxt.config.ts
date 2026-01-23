@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node'
+    preset: 'static'
   },
 
   plugins: ['~/plugins/pinia.ts'],
