@@ -259,6 +259,7 @@ async function submitForm() {
       transaksi_tipe: "Online",
       transaksi_status: "Pending",
       transaksi_catatan: form.catatan,
+      transaksi_platform: form.platform
     });
 
     const transaksi_id = transaksi.data.data.transaksi_id;

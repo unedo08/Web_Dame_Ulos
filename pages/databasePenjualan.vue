@@ -50,7 +50,7 @@
             </td>
 
             <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ trx.transaksi_platform || "-" }}
+              {{ trx.transaksi_tipe === 'Online' ? trx.transaksi_platform : "Offline" }}
             </td>
             <td>{{ item.code_nama || "-" }}</td>
             <td>{{ item.barang_nama || "-" }}</td>
