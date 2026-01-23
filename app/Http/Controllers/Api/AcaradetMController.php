@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AcaradetM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BarangEntryM;
+use Illuminate\Support\Facades\DB;
 
 class AcaradetMController extends Controller
 {
@@ -58,15 +60,48 @@ class AcaradetMController extends Controller
 
         $request->validate([
             'acaradet_acara_id' => 'required|exists:acara_m,acara_id',
-            'acaradet_barangentry_id' => 'required|exists:barangentry_m,barangentry_id',
+            'acaradet_barangentry_id' => 'required|array|min:1',
+            'acaradet_barangentry_id.*' => 'exists:barangentry_m,barangentry_id',
         ]);
 
-        $acaradet = AcaradetM::create($request->all());
+        $inserted = [];
+
+        DB::transaction(function () use ($request, &$inserted) {
+
+            // 1️⃣ normalize input (anti duplicate di request)
+            $inputIds = array_unique($request->acaradet_barangentry_id);
+
+            // 2️⃣ LOCK rows for this acara
+            $existing = DB::table('acaradet_m')
+                ->where('acaradet_acara_id', $request->acaradet_acara_id)
+                ->whereIn('acaradet_barangentry_id', $inputIds)
+                ->lockForUpdate()
+                ->pluck('acaradet_barangentry_id')
+                ->toArray();
+
+            // 3️⃣ ambil yang belum ada di acara tsb
+            $newIds = array_diff($inputIds, $existing);
+
+            foreach ($newIds as $barangentryId) {
+                $inserted[] = [
+                    'acaradet_acara_id' => $request->acaradet_acara_id,
+                    'acaradet_barangentry_id' => $barangentryId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            if (!empty($inserted)) {
+                DB::table('acaradet_m')->insert($inserted);
+            }
+        });
 
         return response()->json([
-            'message' => 'Acaradet created successfully',
+            'message' => empty($inserted)
+                ? 'Semua barang entry sudah terdaftar di acara ini'
+                : 'Acaradet created successfully',
             'code' => 201,
-            'data' => $acaradet
+            'data' => $inserted
         ]);
     }
 
@@ -138,5 +173,84 @@ class AcaradetMController extends Controller
             'message' => 'Data deleted successfully',
             'code' => 200
         ]);
+    }
+
+    public function addListCodeAcara(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $request->validate([
+            'code_nama' => 'required|array|min:1',
+            'code_nama.*' => 'exists:code_m,code_nama'
+        ]);
+
+        $items = BarangEntryM::join(
+            'code_m',
+            'barangentry_m.barangentry_code_id',
+            '=',
+            'code_m.code_id'
+        )
+            ->whereIn('code_m.code_nama', $request->code_nama)
+            ->orderBy('code_m.code_nama', 'asc')
+            ->select(
+                'barangentry_m.*',
+                'code_m.code_nama'
+            )
+            ->get();
+
+        if ($items->isEmpty()) {
+            return response()->json([
+                'message' => 'Barang entry tidak ditemukan',
+                'code' => 404
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Data ditemukan',
+            'code' => 200,
+            'data' => $items
+        ], 200);
+    }
+
+    public function getBarangEntryByAcara($acara_id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $data = BarangEntryM::join(
+            'acaradet_m',
+            'barangentry_m.barangentry_id',
+            '=',
+            'acaradet_m.acaradet_barangentry_id'
+        )
+            ->join(
+                'code_m',
+                'barangentry_m.barangentry_code_id',
+                '=',
+                'code_m.code_id'
+            )
+            ->where('acaradet_m.acaradet_acara_id', $acara_id)
+            ->whereNull('acaradet_m.deleted_at')
+            ->orderBy('code_m.code_nama', 'asc')
+            ->select(
+                'barangentry_m.*',
+                'acaradet_m.acaradet_id',
+                'acaradet_m.acaradet_acara_id',
+                'code_m.code_id',
+                'code_m.code_nama'
+            )
+            ->get();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'message' => 'Barang entry tidak ditemukan',
+                'code' => 404
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Data ditemukan',
+            'code' => 200,
+            'data' => $data
+        ], 200);
     }
 }

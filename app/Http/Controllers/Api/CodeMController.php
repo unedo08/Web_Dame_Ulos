@@ -66,7 +66,6 @@ class CodeMController extends Controller
 
                 $createdCodes[] = $codeM;
             }
-
         } else {
             $codeM = CodeM::create([
                 'code_nama'           => $item->jenisbarang_kode,
@@ -88,6 +87,7 @@ class CodeMController extends Controller
             'data' => $createdCodes
         ], 201);
     }
+
 
     // Generate kode unik
     public function generateKode($prefix_code, $jenisbarang_id)
