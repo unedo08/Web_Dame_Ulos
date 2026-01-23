@@ -31,13 +31,6 @@ class TransaksiTController extends Controller
 
     public function store(Request $request)
     {
-        // if (!Auth::check()) {
-        //     return response()->json([
-        //         'status'  => false,
-        //         'message' => 'User not log in',
-        //     ], 401);
-        // }
-
         $validated = $request->validate([
             'transaksi_id'             => 'nullable|string',
             'transaksi_nama_customer'  => 'required|string|max:255',
@@ -48,9 +41,11 @@ class TransaksiTController extends Controller
             'transaksi_tipe'           => 'nullable|string',
             'transaksi_status'         => 'nullable|string',
             'transaksi_catatan'        => 'nullable|string',
+            'transaksi_platform'       => 'nullable|string', // khusus customer
         ]);
 
         try {
+            /** ---------------- CUSTOMER ---------------- */
             $customer = CustomerM::firstOrCreate(
                 [
                     'customer_notelepon' => $validated['transaksi_nomor_telepon'],
@@ -59,16 +54,29 @@ class TransaksiTController extends Controller
                     'customer_nama'     => $validated['transaksi_nama_customer'],
                     'customer_alamat'   => '-',
                     'customer_akun'     => null,
-                    'customer_platform' => '-',
+                    'customer_platform' => $validated['transaksi_platform'] ?? '-',
                 ]
             );
 
+            // Optional: update platform jika customer sudah ada
+            if (!empty($validated['transaksi_platform'])) {
+                $customer->update([
+                    'customer_platform' => $validated['transaksi_platform']
+                ]);
+            }
+
+            /** ---------------- TRANSAKSI ---------------- */
+            // Buang transaksi_platform sebelum simpan transaksi
+            $transaksiData = collect($validated)
+                ->except(['transaksi_platform'])
+                ->toArray();
+
             $record = TransaksiT::updateOrCreate(
                 ['transaksi_id' => $validated['transaksi_id'] ?? null],
-                array_merge($validated, [
+                array_merge($transaksiData, [
                     'transaksi_customer_id' => $customer->customer_id,
                     'transaksi_status'      => $validated['transaksi_status'] ?? 'pending',
-                    'create_id'             => Auth::id(),   // ← Set user login
+                    'create_id'             => Auth::id(),
                 ])
             );
 
@@ -87,6 +95,7 @@ class TransaksiTController extends Controller
             ], 500);
         }
     }
+
 
 
     public function show($id)
