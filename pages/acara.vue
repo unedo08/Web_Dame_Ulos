@@ -200,7 +200,7 @@
               <td>{{ formatRupiah(item.barangentry_price_tag) }}</td>
               <td>
                 <button class="text-red-500" @click="removeItem(item.barangentry_id)">
-                  Hapus
+                  <TrashIcon class="w-5 h-5" />
                 </button>
               </td>
             </tr>
