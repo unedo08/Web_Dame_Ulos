@@ -26,6 +26,7 @@ class TransaksiT extends Model
         'transaksi_status',
         'transaksi_catatan',
         'transaksi_customer_id',
+        'transaksi_platform',
         'create_id',
         'update_id',
         'delete_id'

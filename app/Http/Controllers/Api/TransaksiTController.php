@@ -66,14 +66,9 @@ class TransaksiTController extends Controller
             }
 
             /** ---------------- TRANSAKSI ---------------- */
-            // Buang transaksi_platform sebelum simpan transaksi
-            $transaksiData = collect($validated)
-                ->except(['transaksi_platform'])
-                ->toArray();
-
             $record = TransaksiT::updateOrCreate(
                 ['transaksi_id' => $validated['transaksi_id'] ?? null],
-                array_merge($transaksiData, [
+                array_merge($validated, [
                     'transaksi_customer_id' => $customer->customer_id,
                     'transaksi_status'      => $validated['transaksi_status'] ?? 'pending',
                     'create_id'             => Auth::id(),
@@ -242,7 +237,7 @@ class TransaksiTController extends Controller
                             'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
                             'transaksi_status' => $d->transaksi_status ?? null,
-                            'transaksi_platform' => $d->customer->customer_platform ?? null,
+                            'transaksi_platform' => $d->transaksi_platform ?? null,
 
                         ];
                     });
