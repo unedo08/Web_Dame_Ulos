@@ -574,6 +574,7 @@ class BarangEntryMController extends Controller
 
         $entry->update([
             'barangentry_status' => 'DELETED',
+            'delete_id' => Auth::id()
         ]);
 
         $entry->delete();
