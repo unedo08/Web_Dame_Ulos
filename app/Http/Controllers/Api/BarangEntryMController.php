@@ -564,4 +564,23 @@ class BarangEntryMController extends Controller
             'data' => $updated
         ], 200);
     }
+
+    public function deleteBarangEntry(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+        $entry = BarangEntryM::findOrFail($id);
+
+        $entry->update([
+            'barangentry_status' => 'DELETED',
+        ]);
+
+        $entry->delete();
+
+        return response()->json([
+            'message' => 'Deleted successfully',
+            'code'    => 200
+        ], 200);
+    }
 }
