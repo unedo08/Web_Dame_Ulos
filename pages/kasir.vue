@@ -175,7 +175,7 @@
     </button>
   </ModalKasir>
 
-  <ModalLive :visible="openModalLive" @close="openModalLive = false" />
+  <ModalLive :visible="openModalLive" :items="datatableItems" @close="openModalLive = false" @success="handleOnlineSuccess"/>
 
   <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
 </template>
@@ -275,6 +275,13 @@ async function fetchHoldTransactions() {
     console.error("Gagal mengambil data hold:", error);
     waitingList.value = [];
   }
+}
+
+function handleOnlineSuccess() {
+  datatableItems.value = [];
+  searchQueryCustomer.value = "";
+  searchQueryPhone.value = "";
+  currentTransaksiId.value = null;
 }
 
 async function loadHoldTransaction(id) {
