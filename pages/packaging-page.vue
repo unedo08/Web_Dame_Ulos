@@ -12,6 +12,7 @@
       <thead class="bg-blue-100">
         <tr>
           <th class="text-left">No</th>
+          <th class="text-left">Tanggal</th>
           <th class="text-left">Nama Akun</th>
           <th class="text-left">Nama Penerima</th>
           <th class="text-left">Telepon</th>
@@ -26,6 +27,7 @@
         <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
           :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
           <td>{{ index + 1 }}</td>
+          <td>{{ formatTanggal(row.created_at) }}</td>
           <td>{{ row.pengirimanBarang_akun_penerima }}</td>
           <td>{{ row.pengirimanBarang_nama_penerima }}</td>
           <td>{{ row.pengirimanBarang_no_telepon }}</td>
@@ -126,6 +128,15 @@ const fetchData = async () => {
 };
 
 onMounted(fetchData);
+
+function formatTanggal(tanggal) {
+  const date = new Date(tanggal);
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
 
 const openModalEdit = async (row) => {
   selectedPengiriman.value = row;

@@ -7,6 +7,16 @@
     <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
       placeholder="Cari transaksi penjualan..." />
 
+    <div class="flex items-center gap-3 mb-4">
+      <input type="date" v-model="startDate" class="border rounded px-2 py-1 text-sm" />
+
+      <input type="date" v-model="endDate" class="border rounded px-2 py-1 text-sm" />
+
+      <button class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm" @click="exportExcel">
+        Export Excel
+      </button>
+    </div>
+
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
@@ -133,6 +143,11 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from "../components/ModalViewDetail.vue";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+const today = new Date().toISOString().slice(0, 10);
+const startDate = ref(today);
+const endDate = ref(today);
 
 const config = useRuntimeConfig();
 const url = ref(config.public.apiBase);
@@ -314,6 +329,122 @@ const deleteTransaksi = async (id) => {
       }
     }
   });
+};
+
+const exportExcel = async () => {
+  try {
+    const res = await $api.get(
+      `${url.value}/api/transaksi/report`,
+      {
+        params: {
+          start_date: startDate.value,
+          end_date: endDate.value,
+        },
+      }
+    );
+
+    if (!res.data.success || !res.data.data.length) {
+      Swal.fire("Info", "Data tidak tersedia", "info");
+      return;
+    }
+
+    const rows = res.data.data;
+
+    const excelData = rows.map((r, i) => ({
+      No: i + 1,
+      "Tanggal Transaksi": r.created_at,
+      "Nama Customer": r.customer_nama,
+      "Jenis Transaksi": r.transaksi_tipe,
+      Platform: r.transaksi_platform || "-",
+      "Kode Barang": r.code_nama,
+      "Nama Barang": r.barangentry_nama,
+      "Harga Modal": Number(r.barangentry_modal),
+      "Price Tag": Number(r.barangentry_price_tag),
+      "Harga Net": Number(r.barangentry_harga_net),
+      Jumlah: Number(r.transaksidetail_jumlah_barang),
+      "Harga Jual": Number(r.transaksidetail_harga_barang),
+      Subtotal: Number(r.subtotal),
+      Pembayaran: r.carabayar_nama,
+      Catatan: r.transaksi_catatan || "-",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(excelData);
+    const headerCells = Object.keys(excelData[0]).length;
+    for (let C = 0; C < headerCells; C++) {
+      const cell = XLSX.utils.encode_cell({ r: 0, c: C });
+      ws[cell].s = { font: { bold: true } };
+    }
+
+    const rupiahFormat = '"Rp" #,##0';
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+
+    const COL_RUPIAH = [6, 7, 8, 10, 11];
+
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+      COL_RUPIAH.forEach((C) => {
+        const cell = XLSX.utils.encode_cell({ r: R, c: C });
+        if (ws[cell]) {
+          ws[cell].t = "n";
+          ws[cell].z = rupiahFormat;
+        }
+      });
+    }
+
+    const totalRow = range.e.r + 1;
+    ws[`A${totalRow + 1}`] = { v: "TOTAL", t: "s" };
+    ws[`L${totalRow + 1}`] = {
+      f: `SUM(L2:L${totalRow})`,
+      t: "n",
+      z: rupiahFormat,
+    };
+
+    ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+    ws["!cols"] = [
+      { wch: 5 },
+      { wch: 18 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 10 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 10 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 18 },
+      { wch: 25 },
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Report Penjualan");
+
+    const buffer = XLSX.write(wb, {
+      bookType: "xlsx",
+      type: "array",
+      cellStyles: true,
+    });
+
+    saveAs(
+      new Blob([buffer], {
+        type:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      }),
+      `Report_Penjualan_${startDate.value}_${endDate.value}.xlsx`
+    );
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil",
+      text: "File Excel berhasil diunduh",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Gagal export Excel", "error");
+  }
 };
 
 const statusChipClass = (status) => {
