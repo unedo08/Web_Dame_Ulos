@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\TransaksiDetailT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\BarangEntryM;
 
 class TransaksiDetailTController extends Controller
 {
@@ -24,7 +26,7 @@ class TransaksiDetailTController extends Controller
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $details = TransaksiDetailT::with('transaksi')->get();
 
         if ($details->isEmpty()) {
@@ -40,7 +42,7 @@ class TransaksiDetailTController extends Controller
     public function store(Request $request)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $validatedData = $request->validate([
             'transaksidetail_id' => 'nullable|string',
             'transaksidetail_transaksi_id' => 'required|integer|exists:transaksi_t,transaksi_id',
@@ -49,23 +51,43 @@ class TransaksiDetailTController extends Controller
             'transaksidetail_harga_barang' => 'required|numeric|min:0',
         ]);
 
-        $validatedData['create_id'] = Auth::id(); // ⬅️ Save who created
+        return DB::transaction(function () use ($validatedData) {
 
-        $detail = TransaksiDetailT::updateOrCreate(
-            ['transaksidetail_id' => $validatedData['transaksidetail_id'] ?? null],
-            $validatedData
-        );
+            $barang = BarangEntryM::lockForUpdate()->findOrFail(
+                $validatedData['transaksidetail_barang_id']
+            );
 
-        return response()->json([
-            'message' => 'Transaction detail created successfully.',
-            'data' => $detail
-        ], 201);
+            // 🚫 Cek stok cukup
+            if ($barang->barangentry_stok < $validatedData['transaksidetail_jumlah_barang']) {
+                return response()->json([
+                    'message' => 'Stok barang tidak mencukupi'
+                ], 422);
+            }
+
+            // ➖ Kurangi stok
+            $barang->decrement(
+                'barangentry_stok',
+                $validatedData['transaksidetail_jumlah_barang']
+            );
+
+            $validatedData['create_id'] = Auth::id();
+
+            $detail = TransaksiDetailT::updateOrCreate(
+                ['transaksidetail_id' => $validatedData['transaksidetail_id'] ?? null],
+                $validatedData
+            );
+
+            return response()->json([
+                'message' => 'Transaction detail created successfully.',
+                'data' => $detail
+            ], 201);
+        });
     }
 
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
@@ -81,7 +103,7 @@ class TransaksiDetailTController extends Controller
     public function update(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
@@ -102,7 +124,7 @@ class TransaksiDetailTController extends Controller
     public function destroy($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
+
         $detail = TransaksiDetailT::find($id);
 
         if (!$detail) {
