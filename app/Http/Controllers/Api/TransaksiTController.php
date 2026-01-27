@@ -8,6 +8,7 @@ use App\Models\TransaksiDetailT;
 use App\Models\CustomerM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class TransaksiTController extends Controller
 {
@@ -222,11 +223,11 @@ class TransaksiTController extends Controller
                 'transaksi_id' => $first->transaksi_id,
                 'created_at' => $first->created_at,
                 'customer_nama' => $first->customer->customer_nama ?? 'Unknown',
-                'transaksi_tipe' => $first->transaksi_tipe,
+                'transaksi_tipe' => Str::ucfirst($first->transaksi_tipe),
                 'cara_bayar' => $first->caraBayar?->carabayar_nama,
                 'user' => $first->user?->name,
-                'items' => $group->flatMap(function ($trans) {
-                    return $trans->details->map(function ($d) {
+                'items' => $group->flatMap(function ($trans) use ($first) {
+                    return $trans->details->map(function ($d) use ($first) {
                         return [
                             'code_nama' => $d->barang->code->code_nama ?? null,
                             'barang_nama' => $d->barang->barangentry_nama ?? null,
@@ -237,7 +238,7 @@ class TransaksiTController extends Controller
                             'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
                             'transaksi_status' => $d->transaksi_status ?? null,
-                            'transaksi_platform' => $d->transaksi_platform ?? null,
+                            'transaksi_platform' => $first->transaksi_platform ?? null,
 
                         ];
                     });
