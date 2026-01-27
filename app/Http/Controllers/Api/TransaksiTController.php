@@ -9,9 +9,22 @@ use App\Models\CustomerM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiTController extends Controller
 {
+    private function checkAuth()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'code'    => 401,
+                'message' => 'Unauthorized. Please login.',
+                'data'    => null
+            ], 401);
+        }
+        return null;
+    }
+
     public function index()
     {
         $transaksis = TransaksiT::with('details')->get();
@@ -251,6 +264,68 @@ class TransaksiTController extends Controller
             'code' => 200,
             'message' => 'Data berhasil diambil',
             'data' => $result
+        ]);
+    }
+
+    public function getexportDataTransaksi(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+        // ✅ validasi request date
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        $data = DB::table('transaksidetail_t as tdt')
+            ->join('transaksi_t as tt', 'tt.transaksi_id', '=', 'tdt.transaksidetail_transaksi_id')
+            ->join('customer_m as cm2', 'cm2.customer_id', '=', 'tt.transaksi_customer_id')
+            ->join('barangentry_m as bm', 'bm.barangentry_id', '=', 'tdt.transaksidetail_barang_id')
+            ->join('code_m as cm', 'bm.barangentry_code_id', '=', 'cm.code_id')
+            ->join('carabayar_m as cm3', 'cm3.carabayar_kode', '=', 'tt.transaksi_cara_bayar')
+            ->select([
+                'cm.code_nama',
+                'bm.barangentry_nama',
+                'bm.barangentry_warna',
+                'bm.barangentry_nama_penenun',
+                'bm.barangentry_nama_panirat',
+                'bm.barangentry_dryer',
+                'bm.barangentry_modal',
+                'bm.barangentry_price_tag',
+                'bm.barangentry_harga_net',
+                'bm.barangentry_ukuran_mandar',
+                'bm.barangentry_ukuran_ulos',
+                'tt.created_at',
+                'cm2.customer_nama',
+                'tt.transaksi_tipe',
+                'tt.transaksi_platform',
+                'bm.barangentry_acara_id',
+                'tdt.transaksidetail_jumlah_barang',
+                'tdt.transaksidetail_harga_barang',
+                DB::raw('tdt.transaksidetail_jumlah_barang * tdt.transaksidetail_harga_barang AS subtotal'),
+                'tdt.transaksidetail_status_penjualan',
+                'cm3.carabayar_nama',
+                'tt.transaksi_catatan'
+            ])
+
+            ->whereNull('tdt.deleted_at')
+            // ✅ filter tanggal transaksi
+            ->when($request->start_date, function ($q) use ($request) {
+                $q->whereDate('tt.created_at', '>=', $request->start_date);
+            })
+            ->when($request->end_date, function ($q) use ($request) {
+                $q->whereDate('tt.created_at', '<=', $request->end_date);
+            })
+
+            ->orderBy('tt.created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'filters' => [
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+            ],
+            'data' => $data
         ]);
     }
 }

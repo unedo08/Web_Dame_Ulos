@@ -317,6 +317,7 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_t.pengirimanBarang_catatan',
                 'pengirimanBarang_t.pengirimanBarang_status',
                 'pengirimanBarang_t.pengirimanBarang_customer_id',
+                'pengirimanBarang_t.created_at',
 
                 // 🔥 STATUS PER ROW
                 DB::raw("
@@ -342,6 +343,7 @@ class PengirimanBarangTController extends Controller
                 'pengirimanBarang_t.pengirimanBarang_catatan',
                 'pengirimanBarang_t.pengirimanBarang_status',
                 'pengirimanBarang_t.pengirimanBarang_customer_id',
+                'pengirimanBarang_t.created_at',
                 'status_pengiriman'
             )
 
@@ -389,7 +391,7 @@ class PengirimanBarangTController extends Controller
                 )
                 ->get();
 
-           
+
             if ($data->isEmpty()) {
                 return response()->json([
                     'code' => 200,
@@ -399,10 +401,10 @@ class PengirimanBarangTController extends Controller
                 ]);
             }
 
-            
+
             $pengirimanIds = $data->pluck('pengirimanBarang_id')->unique();
 
-           
+
             DB::table('pengirimanBarang_t')
                 ->whereIn('pengirimanBarang_id', $pengirimanIds)
                 ->update([
@@ -418,7 +420,6 @@ class PengirimanBarangTController extends Controller
                 'count' => $data->count(),
                 'data' => $data
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
 
