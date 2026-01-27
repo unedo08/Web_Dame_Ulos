@@ -226,6 +226,7 @@ class TransaksiTController extends Controller
                 'transaksi_tipe' => Str::ucfirst($first->transaksi_tipe),
                 'cara_bayar' => $first->caraBayar?->carabayar_nama,
                 'user' => $first->user?->name,
+                'transaksi_platform' => $first->transaksi_platform ?? null,
                 'items' => $group->flatMap(function ($trans) use ($first) {
                     return $trans->details->map(function ($d) use ($first) {
                         return [
