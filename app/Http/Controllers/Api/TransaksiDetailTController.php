@@ -58,7 +58,7 @@ class TransaksiDetailTController extends Controller
             );
 
             // 🚫 Cek stok cukup
-            if ($barang->barangentry_stok < $validatedData['transaksidetail_jumlah_barang']) {
+            if ($barang->barangentry_jumlah_barang < $validatedData['transaksidetail_jumlah_barang']) {
                 return response()->json([
                     'message' => 'Stok barang tidak mencukupi'
                 ], 422);
@@ -66,7 +66,7 @@ class TransaksiDetailTController extends Controller
 
             // ➖ Kurangi stok
             $barang->decrement(
-                'barangentry_stok',
+                'barangentry_jumlah_barang',
                 $validatedData['transaksidetail_jumlah_barang']
             );
 
