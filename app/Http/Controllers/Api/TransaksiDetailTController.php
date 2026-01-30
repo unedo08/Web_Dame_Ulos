@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\BarangEntryM;
+use App\Models\LiveOrderT;
 
 class TransaksiDetailTController extends Controller
 {
@@ -57,18 +58,26 @@ class TransaksiDetailTController extends Controller
                 $validatedData['transaksidetail_barang_id']
             );
 
-            // 🚫 Cek stok cukup
-            if ($barang->barangentry_jumlah_barang < $validatedData['transaksidetail_jumlah_barang']) {
-                return response()->json([
-                    'message' => 'Stok barang tidak mencukupi'
-                ], 422);
-            }
+            // 🔎 CEK: apakah transaksi ini berasal dari LIVE
+            $isFromLive = LiveOrderT::where(
+                'live_order_transaksi_id',
+                $validatedData['transaksidetail_transaksi_id']
+            )->exists();
 
-            // ➖ Kurangi stok
-            $barang->decrement(
-                'barangentry_jumlah_barang',
-                $validatedData['transaksidetail_jumlah_barang']
-            );
+            // ❌ Kurangi stok HANYA jika BUKAN dari live
+            if (!$isFromLive) {
+
+                if ($barang->barangentry_jumlah_barang < $validatedData['transaksidetail_jumlah_barang']) {
+                    return response()->json([
+                        'message' => 'Stok barang tidak mencukupi'
+                    ], 422);
+                }
+
+                $barang->decrement(
+                    'barangentry_jumlah_barang',
+                    $validatedData['transaksidetail_jumlah_barang']
+                );
+            }
 
             $validatedData['create_id'] = Auth::id();
 
