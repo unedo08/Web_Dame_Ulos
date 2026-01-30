@@ -60,8 +60,8 @@ class TransaksiDetailTController extends Controller
 
             // 🔎 CEK: apakah transaksi ini berasal dari LIVE
             $isFromLive = LiveOrderT::where(
-                'live_order_transaksi_id',
-                $validatedData['transaksidetail_transaksi_id']
+                'live_order_barang_id',
+                $validatedData['transaksidetail_barang_id']
             )->exists();
 
             // ❌ Kurangi stok HANYA jika BUKAN dari live
