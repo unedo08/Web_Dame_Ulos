@@ -56,7 +56,7 @@ class CodeMController extends Controller
 
             $jumlahBarang = $validated['jumlah_barang'];
             $insertData = [];
-            $createdCodes = [];
+            $createdCodes = collect();
 
             // =============================
             // CASE PREFIX BUKAN PO
@@ -87,25 +87,31 @@ class CodeMController extends Controller
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];
-
-                    $createdCodes[] = $newKode;
                 }
 
+                // bulk insert
                 CodeM::insert($insertData);
-            } else {
 
-                $newKode = $item->jenisbarang_kode;
+                // ambil ulang data hasil insert
+                $createdCodes = CodeM::where('code_jenisbarang_id', $item->jenisbarang_id)
+                    ->whereIn('code_nama', array_column($insertData, 'code_nama'))
+                    ->get();
+            }
+            // =============================
+            // CASE PREFIX PO
+            // =============================
+            else {
 
-                CodeM::create([
-                    'code_nama' => $newKode,
+                $codeM = CodeM::create([
+                    'code_nama' => $item->jenisbarang_kode,
                     'code_jenisbarang_id' => $item->jenisbarang_id,
                     'create_id' => Auth::id(),
                 ]);
 
-                $createdCodes[] = $newKode;
+                $createdCodes = collect([$codeM]);
             }
 
-            // Update jumlah barang
+            // update jumlah barang
             $item->update([
                 'jenisbarang_jumlah' => $item->jenisbarang_jumlah + $jumlahBarang,
                 'update_id' => Auth::id(),
