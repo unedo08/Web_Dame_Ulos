@@ -7,6 +7,7 @@ use App\Models\CodeM;
 use App\Models\JenisBarangM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CodeMController extends Controller
 {
@@ -39,76 +40,82 @@ class CodeMController extends Controller
         return response()->json($item, 200);
     }
 
-    // LOGIN REQUIRED
     public function store(Request $request)
     {
         if ($auth = $this->checkAuth()) return $auth;
 
         $validated = $request->validate([
-            'jumlah_barang' => 'required|integer',
+            'jumlah_barang' => 'required|integer|min:1',
             'code_jenisbarang_id' => 'required|exists:jenisbarang_m,jenisbarang_id',
         ]);
 
-        $item = JenisBarangM::find($validated['code_jenisbarang_id']);
-        $jumlahBarang = $validated['jumlah_barang'];
-        $createdCodes = [];
+        return DB::transaction(function () use ($validated) {
 
-        if (substr($item->jenisbarang_kode, 0, 2) !== 'PO') {
+            $item = JenisBarangM::lockForUpdate()
+                ->findOrFail($validated['code_jenisbarang_id']);
 
-            for ($i = 0; $i < $jumlahBarang; $i++) {
-                $newKode = $this->generateKode($item->jenisbarang_kode, $item->jenisbarang_id);
+            $jumlahBarang = $validated['jumlah_barang'];
+            $insertData = [];
+            $createdCodes = [];
 
-                $codeM = CodeM::create([
-                    'code_nama'           => $newKode,
+            // =============================
+            // CASE PREFIX BUKAN PO
+            // =============================
+            if (substr($item->jenisbarang_kode, 0, 2) !== 'PO') {
+
+                $lastCode = CodeM::where('code_jenisbarang_id', $item->jenisbarang_id)
+                    ->where('code_nama', 'like', $item->jenisbarang_kode . '%')
+                    ->max('code_nama');
+
+                $lastNumber = $lastCode
+                    ? (int) substr($lastCode, strlen($item->jenisbarang_kode))
+                    : 0;
+
+                $now = now();
+
+                for ($i = 1; $i <= $jumlahBarang; $i++) {
+
+                    $lastNumber++;
+
+                    $newKode = $item->jenisbarang_kode .
+                        str_pad($lastNumber, 5, '0', STR_PAD_LEFT);
+
+                    $insertData[] = [
+                        'code_nama' => $newKode,
+                        'code_jenisbarang_id' => $item->jenisbarang_id,
+                        'create_id' => Auth::id(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+
+                    $createdCodes[] = $newKode;
+                }
+
+                CodeM::insert($insertData);
+            } else {
+
+                $newKode = $item->jenisbarang_kode;
+
+                CodeM::create([
+                    'code_nama' => $newKode,
                     'code_jenisbarang_id' => $item->jenisbarang_id,
-                    'create_id'           => Auth::id(),   // <<--- HERE
+                    'create_id' => Auth::id(),
                 ]);
 
-                $createdCodes[] = $codeM;
+                $createdCodes[] = $newKode;
             }
-        } else {
-            $codeM = CodeM::create([
-                'code_nama'           => $item->jenisbarang_kode,
-                'code_jenisbarang_id' => $item->jenisbarang_id,
-                'create_id'           => Auth::id(),     // <<--- HERE
+
+            // Update jumlah barang
+            $item->update([
+                'jenisbarang_jumlah' => $item->jenisbarang_jumlah + $jumlahBarang,
+                'update_id' => Auth::id(),
             ]);
 
-            $createdCodes[] = $codeM;
-        }
-
-        // Update jumlah di jenis barang
-        $item->update([
-            'jenisbarang_jumlah' => $item->jenisbarang_jumlah + $jumlahBarang,
-            'update_id'          => Auth::id(),        // <<--- HERE
-        ]);
-
-        return response()->json([
-            'message' => 'Codes generated successfully',
-            'data' => $createdCodes
-        ], 201);
-    }
-
-
-    // Generate kode unik
-    public function generateKode($prefix_code, $jenisbarang_id)
-    {
-        $maxRetries = 10000;
-
-        for ($i = 1; $i <= $maxRetries; $i++) {
-
-            $nextCode = str_pad($i, 5, '0', STR_PAD_LEFT);
-            $newKode = $prefix_code . $nextCode;
-
-            $exists = CodeM::where('code_nama', $newKode)
-                ->where('code_jenisbarang_id', $jenisbarang_id)
-                ->exists();
-
-            if (!$exists) {
-                return $newKode;
-            }
-        }
-
-        throw new \Exception("Unable to generate unique code after $maxRetries attempts.");
+            return response()->json([
+                'message' => 'Codes generated successfully',
+                'data' => $createdCodes
+            ], 201);
+        });
     }
 
     // LOGIN REQUIRED
