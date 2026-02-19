@@ -299,6 +299,8 @@ class PengirimanBarangTController extends Controller
             ->leftJoin('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->leftJoin('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->whereNull('pengirimanBarang_t.deleted_at')
+            ->whereNull('transaksi_t.deleted_at')
+            ->whereNull('transaksidetail_t.deleted_at')
             ->where('pengirimanBarang_t.pengirimanBarang_is_export_excel', '=', 0)
             ->where(function ($q) {
                 $q->where('packaging_m.packaging_status', '!=', 'DONE')
