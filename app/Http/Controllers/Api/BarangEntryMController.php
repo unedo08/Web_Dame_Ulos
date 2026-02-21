@@ -135,23 +135,14 @@ class BarangEntryMController extends Controller
 
         $entries = BarangEntryM::whereHas('barangentry_code_id', function ($query) use ($codeNama) {
             $query->where('code_nama', $codeNama);
-        })->with('barangentry_code_id')->get();
+        })
+            ->where('barangentry_status', 'READY')
+            ->with('barangentry_code_id')->get();
 
         if ($entries->isEmpty()) {
             return response()->json([
                 "code" => 404,
                 "message" => "No entries found for code_nama: {$codeNama}"
-            ], 404);
-        }
-
-        $incomplete = $entries->filter(function ($entry) {
-            return is_null($entry->barangentry_nama) || is_null($entry->barangentry_ukuran_mandar);
-        });
-
-        if ($incomplete->isNotEmpty()) {
-            return response()->json([
-                "code" => 404,
-                "message" => "Please fill the data: 'barangentry_nama' or 'barangentry_ukuran_mandar' is missing."
             ], 404);
         }
 
@@ -174,17 +165,6 @@ class BarangEntryMController extends Controller
             return response()->json([
                 "code" => 404,
                 "message" => "No entries found for code_nama: {$codeNama}"
-            ], 404);
-        }
-
-        $incomplete = $entries->filter(function ($entry) {
-            return is_null($entry->barangentry_nama) || is_null($entry->barangentry_ukuran_mandar);
-        });
-
-        if ($incomplete->isNotEmpty()) {
-            return response()->json([
-                "code" => 404,
-                "message" => "Please fill the data: 'barangentry_nama' or 'barangentry_ukuran_mandar' is missing."
             ], 404);
         }
 
