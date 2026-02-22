@@ -459,6 +459,8 @@ const fetchDataPengiriman = async () => {
       endpoint = "/api/live-barang/getAmountLive";
     }
     const res = await $api.get(`${url.value}${endpoint}`);
+    
+    console.log('sadsad', res.data.data);
     // const res = await $api.get(`http://192.168.18.52:8080${endpoint}`);
     pengirimanData.value = res.data.data;
     if (activeTab.value === "order") {

@@ -6,31 +6,43 @@
 
 <script setup>
 import { Pie } from "vue-chartjs";
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 import { computed } from "vue";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement);
+ChartJS.register(Tooltip, Legend, ArcElement);
 
 const props = defineProps({
-  dataPerMonth: {
+  dataPlatform: {
     type: Object,
     required: true,
   },
 });
 
 const chartData = computed(() => ({
-  labels: Object.keys(props.dataPerMonth),
+  labels: Object.keys(props.dataPlatform),
   datasets: [
     {
-      label: "Jumlah Barang per Bulan",
-      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-      data: Object.values(props.dataPerMonth),
+      data: Object.values(props.dataPlatform),
+      backgroundColor: [
+        "#22c55e",
+        "#ef4444",
+        "#3b82f6",
+        "#a855f7",
+        "#f59e0b",
+        "#14b8a6",
+      ],
     },
   ],
 }));
 
 const chartOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       position: "bottom",
@@ -38,6 +50,7 @@ const chartOptions = {
   },
 };
 </script>
+
 <style scoped>
 .chart-wrapper {
   width: 280px;

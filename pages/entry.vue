@@ -59,10 +59,9 @@
               <th class="px-4 py-2 text-left">Price Tag</th>
               <th class="px-4 py-2 text-left">Harga Net</th>
               <th class="px-4 py-2 text-left">Jumlah</th>
-              <th class="px-4 py-2 text-left">Acara</th>
               <th class="px-4 py-2 text-left">Ukuran Mandar</th>
               <th class="px-4 py-2 text-left">Ukuran Ulos</th>
-              <!-- <th class="px-4 py-2 text-left">Aksi</th> -->
+              <th class="px-4 py-2 text-left">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -71,7 +70,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
+              <td class="px-4 py-2">{{ barang.code_nama }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -89,11 +88,18 @@
               <td class="px-4 py-2">
                 {{ barang.barangentry_jumlah_barang }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
               <td class="px-4 py-2">
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+              <td class="px-4 py-2">
+                <div class="flex space-x-3">
+                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[25px] w-[60px]"
+                    @click="deleteBarang(barang.barangentry_id)">
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -179,7 +185,7 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
+              <td class="px-4 py-2">{{ barang.code_nama }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -197,7 +203,7 @@
               <td class="px-4 py-2">
                 {{ barang.barangentry_jumlah_barang }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
+              <td class="px-4 py-2">{{ barang.acara_nama ?? '-' }}</td>
               <td class="px-4 py-2">
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
@@ -281,6 +287,7 @@
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
               <th class="px-4 py-2 text-left">Kode Barang</th>
+              <th class="px-4 py-2 text-left">Nama Akun</th>
               <th class="px-4 py-2 text-left">Nama Ulos</th>
               <th class="px-4 py-2 text-left">Warna Ulos</th>
               <th class="px-4 py-2 text-left">Nama Penenun</th>
@@ -290,7 +297,6 @@
               <th class="px-4 py-2 text-left">Price Tag</th>
               <th class="px-4 py-2 text-left">Harga Net</th>
               <th class="px-4 py-2 text-left">Jumlah</th>
-              <th class="px-4 py-2 text-left">Acara</th>
               <th class="px-4 py-2 text-left">Ukuran Mandar</th>
               <th class="px-4 py-2 text-left">Ukuran Ulos</th>
               <th class="px-4 py-2 text-left">Aksi</th>
@@ -303,7 +309,8 @@
               <td class="px-4 py-2">
                 {{ formatTanggal(barang.created_at) }}
               </td>
-              <td class="px-4 py-2">{{ barang.code.code_nama }}</td>
+              <td class="px-4 py-2">{{ barang.code_nama }}</td>
+              <td class="px-4 py-2">{{ barang.nama_akun_po ?? "" }}</td>
               <td class="px-4 py-2">{{ (barang.barangentry_nama || "") }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_warna }}</td>
               <td class="px-4 py-2">{{ barang.barangentry_nama_penenun }}</td>
@@ -321,7 +328,6 @@
               <td class="px-4 py-2">
                 {{ barang.barangentry_jumlah_barang }}
               </td>
-              <td class="px-4 py-2">{{ barang.barangentry_acara }}</td>
               <td class="px-4 py-2">
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
@@ -784,7 +790,7 @@ const inputKodeSize = ref(null);
 onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
-  try {    
+  try {
     const response = await $api.get(`${url.value}/api/codebarang`);
     barangDatabase.value = response.data;
     await getListBarangTemp();
@@ -853,7 +859,7 @@ async function handleSend(data) {
 }
 
 async function updatePengiriman(pengiriman_id, namaAkun, status) {
-  
+
   await $api.put(`${url.value}/api/pengiriman-barang/${pengiriman_id}`, {
     pengirimanBarang_nama_penerima: namaAkun,
     pengirimanBarang_status: status
@@ -927,7 +933,7 @@ const updateHargaNet = (val) => {
 
 const fetchCodeBarang = async (data) => {
   try {
-    
+
     const ids = [...new Set(data.map((item) => item.barangentry_id))];
     const requests = ids.map((id) =>
       $api.get(`${url.value}/api/entrybarang/${id}`)
@@ -949,7 +955,7 @@ const fetchCodeBarang = async (data) => {
 
 async function getListBarangTemp() {
   try {
-    
+
     let endpoint = "";
     if (activeTab.value === "wait") {
       endpoint = "/api/entrybarang/getDataWaitForEntry";
@@ -959,7 +965,12 @@ async function getListBarangTemp() {
       endpoint = "/api/entrybarang/getDataPO";
     }
     const response = await $api.get(`${url.value}${endpoint}`);
-    listBarang.value = response.data.data;
+    listBarang.value = response.data.data.map(item => ({
+      ...item,
+      code_nama: item.code_nama || item.code?.code_nama || "",
+      nama_akun_po: item.pre_order_barang?.preOrderBarang_nama_akun || "-"
+    }));
+
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }
@@ -973,7 +984,7 @@ async function handleBarcodeDesc() {
     if (!selectedBarang.value.code_nama) return;
 
     try {
-      
+
       const response = await $api.get(
         `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.code_nama}`);
       const data = response.data.data;
@@ -1011,7 +1022,7 @@ async function handleBarcodeSize() {
     if (!selectedBarang.value.kode_barang) return;
 
     try {
-      
+
       const response = await $api.get(
         `${url.value}/api/codebarang/getDataByCode/${selectedBarang.value.kode_barang}`);
       const data = response.data.data;
@@ -1051,7 +1062,7 @@ function handleSendClick(barang) {
 
 async function getListBarangPreOrder() {
   try {
-    
+
     const responseEntry = await $api.get(`${url.value}/api/preOrderEntry/$`, {
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -1080,17 +1091,27 @@ const searchFilterData = computed(() => {
   if (!searchQuery.value) return sorted;
 
   const q = searchQuery.value.toLowerCase();
+
   return sorted.filter((barang) => {
+    const kodeNama =
+      barang.code_nama ||
+      barang.code?.code_nama ||
+      "";
+
+    const namaAkunPO =
+      barang.pre_order_barang?.preOrderBarang_nama_akun || "";
+
     return (
       barang.barangentry_nama?.toLowerCase().includes(q) ||
       barang.barangentry_warna?.toLowerCase().includes(q) ||
-      barang.code.code_nama?.toLowerCase().includes(q) ||
+      kodeNama.toLowerCase().includes(q) ||
       barang.barangentry_nama_penenun?.toLowerCase().includes(q) ||
       barang.barangentry_nama_panirat?.toLowerCase().includes(q) ||
       barang.barangentry_dryer?.toLowerCase().includes(q) ||
-      barang.barangentry_modal?.toLowerCase().includes(q) ||
-      barang.barangentry_price_tag?.toLowerCase().includes(q) ||
-      barang.barangentry_harga_net?.toLowerCase().includes(q) 
+      String(barang.barangentry_modal || "").includes(q) ||
+      String(barang.barangentry_price_tag || "").includes(q) ||
+      String(barang.barangentry_harga_net || "").includes(q) ||
+      namaAkunPO.toLowerCase().includes(q)
     );
   });
 });
@@ -1107,7 +1128,12 @@ const pagination = computed(() => {
 
 const totalPages = computed(() => {
   if (itemsPerPage.value === "all") return 1;
-  return Math.ceil(listBarang.value.length / itemsPerPage.value);
+
+  const dataLength = isSearchActive.value
+    ? filteredBarang.value.length
+    : searchFilterData.value.length;
+
+  return Math.ceil(dataLength / itemsPerPage.value);
 });
 
 function openModal(type) {
@@ -1130,7 +1156,6 @@ function formatRupiah(value) {
 
 async function sendOrder(barangentry_id, formData) {
   try {
-    
     const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
 
     const dataPreOrder = res.data.data;
@@ -1229,7 +1254,6 @@ async function submitBarang() {
 
   isSubmitting.value = true;
   try {
-    
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
       barangentry_nama: selectedBarang.value.barangentry_nama,
@@ -1315,7 +1339,7 @@ async function submitSizeBarang() {
   }
   isSubmittingSize.value = true;
   try {
-    
+
     const payload = {
       barangentry_code_id: String(selectedBarang.value.code_id),
       barangentry_ukuran_mandar: selectedBarang.value.ukuran_mandar ? String(selectedBarang.value.ukuran_mandar) : "",
@@ -1382,7 +1406,7 @@ async function handleSearch() {
   if (!keyword) return;
 
   try {
-    
+
     const response = await $api.get(
       `${url.value}/api/entrybarang/getDataByCode/${keyword}`);
     const code = response.data.data.barangentry_code_id;
@@ -1430,7 +1454,6 @@ const editStockSubmit = async () => {
   if (!selectedBarang.value) return;
 
   try {
-    
     const responseEdit = await $api.post(
       `${url.value}/api/entrybarang/${selectedBarang.value}/updateStok`,
       { jumlah_barang: editJumlah.value });
@@ -1470,7 +1493,7 @@ const deleteBarang = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      
+
       const response = await $api.post(
         `${url.value}/api/entrybarang/${id}/deleteBarangEntry`,
         { status: "DELETED" });
@@ -1516,7 +1539,7 @@ const paginatedPages = computed(() => {
 
 
 async function printPreOrder(id) {
-  
+
   const response = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${id}`);
 
   const data = response.data.data;
