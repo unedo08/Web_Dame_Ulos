@@ -42,5 +42,8 @@ class BarangEntryM extends Model
         return $this->hasOne(CodeM::class, 'code_id', 'barangentry_code_id');
     }
 
-
+    public function preOrderBarang()
+    {
+        return $this->hasOne(PreOrdeBarangT::class, 'preOrderBarang_barang_entry_id', 'barangentry_id');
+    }
 }

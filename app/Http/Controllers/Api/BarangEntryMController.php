@@ -7,6 +7,7 @@ use App\Models\BarangEntryM;
 use App\Models\CodeM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BarangEntryMController extends Controller
 {
@@ -356,10 +357,17 @@ class BarangEntryMController extends Controller
     public function getAllDataBarangReady()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $data = BarangEntryM::with('code')
-            ->where('barangentry_status', 'READY')
+
+        $data = BarangEntryM::leftJoin('acaradet_m', 'barangentry_m.barangentry_id', '=', 'acaradet_m.acaradet_barangentry_id')
+            ->leftJoin('code_m', 'barangentry_m.barangentry_code_id', '=', 'code_m.code_id') // kalau sebelumnya pakai with('code')
+            ->leftJoin('acara_m', 'acara_m.acara_id', '=', 'acaradet_m.acaradet_acara_id')
+            ->where('barangentry_m.barangentry_status', 'READY')
+            ->select(
+                'barangentry_m.*',
+                'code_m.code_nama',
+                'acara_m.acara_nama'
+            )
             ->get();
-        // $data = BarangEntryM::where('barangentry_status', 'READY')->get();
 
         return response()->json([
             'code' => 200,
@@ -371,27 +379,53 @@ class BarangEntryMController extends Controller
     public function getAllDataBarangPO()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $data = BarangEntryM::with('code')->where('barangentry_status', 'PREORDER')
+
+        $data = BarangEntryM::query()
+            ->with([
+                'code',
+                'preOrderBarang', // 🔥 tambah ini
+            ])
+            ->where('barangentry_status', 'PREORDER')
+            ->whereNull('deleted_at')
             ->whereDoesntHave('transaksiDetail.pengirimanBarang')
-            ->with(['transaksiDetail.pengirimanBarang'])
+            ->select([
+                'barangentry_id',
+                'barangentry_code_id',
+                'barangentry_nama',
+                'barangentry_warna',
+                'barangentry_nama_penenun',
+                'barangentry_nama_panirat',
+                'barangentry_dryer',
+                'barangentry_modal',
+                'barangentry_price_tag',
+                'barangentry_harga_net',
+                'barangentry_acara_id',
+                'barangentry_ukuran_mandar',
+                'barangentry_ukuran_ulos',
+                'barangentry_jumlah_barang',
+                'barangentry_status',
+                'created_at',
+                'updated_at',
+                'create_id',
+                'update_id',
+                'delete_id',
+                'deleted_at'
+            ])
+            ->orderByDesc('barangentry_id')
             ->get();
 
         $data = $data->map(function ($item) {
 
-            // ----------- CEK FIELD LENGKAP ----------- //
             $fieldsToCheck = [
                 'barangentry_nama',
                 'barangentry_ukuran_mandar',
                 'barangentry_ukuran_ulos'
             ];
 
-            $allFilled = collect($fieldsToCheck)->every(function ($field) use ($item) {
+            $item->barangfilled = collect($fieldsToCheck)->every(function ($field) use ($item) {
                 return !is_null($item->$field) && $item->$field !== '';
             });
 
-            $item->barangfilled = $allFilled;
-
-            // ----------- STATUS BARANG (semua pasti PREORDER karena difilter) ----------- //
             $item->status_barang = 'PREORDER';
 
             return $item;
