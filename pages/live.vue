@@ -439,7 +439,7 @@ const fetchBarangNames = async (data) => {
     const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
     const requests = ids.map((id) =>
       $api.get(`${url.value}/api/entrybarang/${id}`)
-    );
+    );  
     const responses = await Promise.all(requests);
     responses.forEach((res, i) => {
       barangMap.value[ids[i]] = res.data.data.barangentry_nama;
@@ -459,8 +459,6 @@ const fetchDataPengiriman = async () => {
       endpoint = "/api/live-barang/getAmountLive";
     }
     const res = await $api.get(`${url.value}${endpoint}`);
-    
-    console.log('sadsad', res.data.data);
     // const res = await $api.get(`http://192.168.18.52:8080${endpoint}`);
     pengirimanData.value = res.data.data;
     if (activeTab.value === "order") {
