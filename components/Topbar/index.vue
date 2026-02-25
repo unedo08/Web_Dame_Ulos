@@ -94,9 +94,13 @@ const onMenuItemClick = async (item) => {
 
 <style scoped>
 .topbar {
+  position: fixed;
+  top: 0;
+  left: 16rem; /* lebar sidebar */
+  right: 0;
+  z-index: 1000;
   background-color: #fff;
   border-bottom: 2px solid #cfcfcf;
-  width: 100%;
 }
 
 .topbar-content {
@@ -136,5 +140,8 @@ const onMenuItemClick = async (item) => {
 }
 .dropdown-item:hover {
   background-color: #f0f0f0;
+}
+.main-content {
+  padding-top: 60px; /* sesuaikan tinggi topbar */
 }
 </style>

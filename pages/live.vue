@@ -817,8 +817,7 @@ watch(activeTab, () => {
   border: 1px solid #ccc;
   padding: 10px;
   width: 385px;
-  height: 25px;
-  font-size: 12px;
+  height: 34px;
 }
 
 .datatable {

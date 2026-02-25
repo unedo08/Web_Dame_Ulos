@@ -76,24 +76,20 @@ onUnmounted(() => {
   clearInterval(timer);
 });
 </script>
-
 <template>
-  <div class="flex flex-col h-screen bg-gray-100">
-    <div class="flex flex-grow">
-      <div class="w-64 bg-[#520000] text-white p-6 shrink-0">
-        <Sidebar />
-      </div>
+  <div class="bg-white min-h-screen">
+    <div class="w-64 bg-[#520000] text-white fixed top-0 left-0 h-screen p-6">
+      <Sidebar />
+    </div>
+    <div class="ml-64">
 
-      <div class="flex-1 bg-white">
-        <Topbar />
-        <div class="mt-2 px-6">
-          <slot />
-        </div>
+      <Topbar />
+      <div class="pt-[60px] px-6">
+        <slot />
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import Topbar from "../components/Topbar/index.vue";
 
