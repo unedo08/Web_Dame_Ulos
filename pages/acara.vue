@@ -41,22 +41,31 @@
             <td class="px-4 py-2">{{ acara.acara_keterangan }}</td>
             <td class="px-4 py-2">{{ acara.acara_status }}</td>
             <td class="space-x-2 px-4 py-2">
-              <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
-                <PlusIcon class="w-5 h-5" />
-              </button>
+              <template v-if="acara.acara_status !== 'Selesai'">
+                <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
+                  <PlusIcon class="w-5 h-5" />
+                </button>
 
-              <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
-                <CheckCircleIcon class="w-5 h-5" />
-              </button>
+                <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
+                  <CheckCircleIcon class="w-5 h-5" />
+                </button>
 
-              <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)" title="Export">
-                <ArrowDownTrayIcon class="w-5 h-5" />
-              </button>
+                <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
+                  title="Export">
+                  <ArrowDownTrayIcon class="w-5 h-5" />
+                </button>
 
-              <button class="text-red-500 hover:text-red-700" @click="deleteProduct(acara.acara_id, acara.acara_nama)"
-                title="Delete">
-                <TrashIcon class="w-5 h-5" />
-              </button>
+                <button class="text-red-500 hover:text-red-700" @click="deleteProduct(acara.acara_id, acara.acara_nama)"
+                  title="Delete">
+                  <TrashIcon class="w-5 h-5" />
+                </button>
+              </template>
+              <template v-else>
+                <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
+                  title="Export">
+                  <ArrowDownTrayIcon class="w-5 h-5" />
+                </button>
+              </template>
             </td>
           </tr>
         </tbody>
@@ -386,9 +395,9 @@ const addListBarangAcara = async () => {
     const newItems = res.data.data || []
     const map = new Map()
 
-    ;[...listBarangAcara.value, ...newItems].forEach(item => {
-      map.set(item.barangentry_id, item)
-    })
+      ;[...listBarangAcara.value, ...newItems].forEach(item => {
+        map.set(item.barangentry_id, item)
+      })
 
     listBarangAcara.value = Array.from(map.values())
     scannedCodes.value = []
@@ -454,6 +463,47 @@ const submitEdit = async () => {
     Swal.fire("Gagal", "Gagal menyimpan acara", "error")
   }
 }
+
+const markAsDone = async (item) => {
+  const result = await Swal.fire({
+    title: "Tandai Selesai?",
+    text: `Acara "${item.acara_nama}" akan diubah menjadi Selesai.`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Selesaikan",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await $api.put(
+      `${url.value}/api/acara/updateStatusAcara/${item.acara_id}`,
+      {
+        acara_status: "Selesai",
+      }
+    );
+
+    Swal.fire({
+      title: "Berhasil",
+      text: `Acara "${item.acara_nama}" telah diselesaikan.`,
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    await getListAcara();
+
+  } catch (error) {
+    console.error("Gagal update status acara:", error);
+    Swal.fire({
+      title: "Gagal",
+      text: "Terjadi kesalahan saat mengubah status.",
+      icon: "error",
+    });
+  }
+};
 
 const closeEditModal = () => {
   isEditModalOpen.value = false
@@ -562,65 +612,6 @@ const deleteProduct = async (id, acara_nama) => {
   }
 };
 
-// const editItem = async (item) => {
-//   isEditModalOpen.value = true;
-//   editForm.value = { ...item };
-//   barcodeInput.value = "";
-//   tempBarangList.value = [];
-//   try {
-//     const response = await $api.get(
-//       `${url.value}/api/acaradet/getDataByAcara/${item.acara_id}`);
-
-//     const data = response.data.data || [];
-//     const detailedBarangList = await Promise.all(
-//       data.map(async (barang) => {
-//         try {
-//           const detailResponse = await $api.get(
-//             `${url.value}/api/entrybarang/${barang.acaradet_barangentry_id}`);
-//           const detail = detailResponse.data.data;
-
-//           let codeData = null;
-//           try {
-//             const codeId = parseInt(detail.barangentry_code_id, 10);
-//             if (!isNaN(codeId)) {
-//               const codeResponse = await $api.get(
-//                 `${url.value}/api/codebarang/${codeId}`);
-//               codeData = codeResponse.data;
-//             } else {
-//               console.warn(
-//                 "Code ID bukan angka yang valid:",
-//                 detail.barangentry_code_id
-//               );
-//             }
-//           } catch (codeErr) {
-//             console.error("Gagal ambil data codebarang:", codeErr);
-//           }
-
-//           return {
-//             code: codeData.code_nama,
-//             acara_id: item.acara_id,
-//             acaradet_id: barang.acaradet_id,
-//             barangentry_id: detail.barangentry_id,
-//             acara_modalbarang: detail.barangentry_modal,
-//             acara_harganetbarang: detail.barangentry_harga_net,
-//             acara_hargapricetagbarang: detail.barangentry_price_tag,
-//             acara_status: detail.barangentry_status,
-//           };
-//         } catch (err) {
-//           console.error("Gagal ambil detail barangentry:", err);
-//           return null;
-//         }
-//       })
-//     );
-
-//     // Filter out null (gagal ambil data)
-//     tempBarangList.value = detailedBarangList.filter(Boolean);
-//   } catch (error) {
-//     console.error("Gagal mengambil data barang acara:", error);
-//     tempBarangList.value = [];
-//   }
-// };
-
 const addToTempBarang = () => {
   const code = barcodeInput.value.trim()
   if (!code) return
@@ -649,43 +640,6 @@ const removeFromTempBarang = async (id) => {
     }
   }
 };
-
-// const submitEdit = async () => {
-//   try {
-//     const jumlahBarang = tempBarangList.value.length;
-//     const totalModal = tempBarangList.value.reduce(
-//       (acc, curr) => acc + (Number(curr.acara_modalbarang) || 0),
-//       0
-//     );
-//     const totalHargaNet = tempBarangList.value.reduce(
-//       (acc, curr) => acc + (Number(curr.acara_harganetbarang) || 0),
-//       0
-//     );
-//     const totalPriceTag = tempBarangList.value.reduce(
-//       (acc, curr) => acc + (Number(curr.acara_hargapricetagbarang) || 0),
-//       0
-//     );
-
-//     await $api.put(
-//       `${url.value}/api/acara/updateAcara/${editForm.value.acara_id}`,
-//       {
-//         acara_nama: editForm.value.acara_nama,
-//         acara_keterangan: editForm.value.acara_keterangan,
-//         acara_jumlahbarang: jumlahBarang,
-//         acara_modalbarang: totalModal,
-//         acara_harganetbarang: totalHargaNet,
-//         acara_hargapricetagbarang: totalPriceTag,
-//         acara_keterangan: "Ready To store",
-//         acara_status: "Ready",
-//       });
-
-//     await getListAcara();
-//     closeEditModal();
-//   } catch (error) {
-//     console.error("Gagal mengupdate acara:", error);
-//     Swal.fire("Gagal", "Gagal menyimpan perubahan.", "error");
-//   }
-// };
 
 const exportItem = async (id) => {
   try {

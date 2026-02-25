@@ -21,7 +21,7 @@
       <br />
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input v-model="searchQuery" type="text" class="search-box p-2 rounded-md" placeholder="Cari data live..." />
+          <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
         </div>
         <div>
           <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
@@ -122,7 +122,7 @@
 
     <div class="mx-auto" v-show="activeTab === 'transaction'">
       <br />
-      <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari data live..." />
+      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
       <table class="datatable">
         <thead>
           <tr>

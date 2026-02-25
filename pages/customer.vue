@@ -3,7 +3,7 @@
     <title>Menu Customer</title>
     <div class="judul text-xl font-semibold mb-4">Menu Customer</div>
     <div class="flex items-center justify-between pt-2">
-      <input class="search-box p-2 border rounded-md w-[385px] text-sm" v-model="searchQuery" type="text"
+      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
         placeholder="Search customer..." />
 
       <!-- <button

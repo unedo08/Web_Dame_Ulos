@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="judul text-xl font-semibold mb-4">Daftar Transaksi</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4" placeholder="Cari transaksi
+    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari transaksi
       ..." />
 
     <table class="datatable">

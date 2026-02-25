@@ -4,9 +4,9 @@
 
   <div class="flex items-start justify-between pt-2">
     <div class="flex flex-col flex-1 space-y-2">
-      <input class="search-box p-2 border rounded-md" v-model="searchQueryCustomer" type="text"
+      <input class="search-box mb-4 rounded-md" v-model="searchQueryCustomer" type="text"
         placeholder="Nama Customer" />
-      <input class="search-box p-2 border rounded-md" v-model="searchQueryPhone" type="text"
+      <input class="search-box mb-4 rounded-md" v-model="searchQueryPhone" type="text"
         placeholder="Nomor Telepon" />
     </div>
 

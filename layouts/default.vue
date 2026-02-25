@@ -63,7 +63,7 @@ const checkSession = () => {
   }
 
   if (diff <= -GRACE_PERIOD) {
-    logout();
+    // logout();
   }
 };
 

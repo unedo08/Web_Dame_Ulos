@@ -3,7 +3,7 @@
         <title>Staff</title>
         <div class="judul text-xl font-semibold mb-4">Manajemen Staff</div>
         <div class="flex items-center justify-between pt-2">
-            <input class="search-box p-2 border rounded-md w-[385px] text-sm" v-model="searchQuery" type="text"
+            <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
                 placeholder="Search staff..." />
             <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
                 @click="openAddModal">

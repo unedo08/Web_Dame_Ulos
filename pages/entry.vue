@@ -27,7 +27,7 @@
     <div class="w-full" v-show="activeTab === 'wait'">
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
             placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
@@ -143,7 +143,7 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
             placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
@@ -270,7 +270,7 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box p-2 border rounded-md" v-model="searchQuery" type="text"
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
             placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
