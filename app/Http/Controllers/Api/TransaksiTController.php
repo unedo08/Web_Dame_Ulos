@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TransaksiTController extends Controller
 {
@@ -326,6 +327,97 @@ class TransaksiTController extends Controller
                 'end_date' => $request->end_date,
             ],
             'data' => $data
+        ]);
+    }
+
+    public function transaksiSummary(Request $request)
+    {
+        $type = $request->get('type');
+
+        if (!$type) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Type is required (day, month, year)'
+            ], 400);
+        }
+
+        // 🔥 Tentukan Range Tanggal
+        switch ($type) {
+
+            case 'day':
+                if (!$request->date) {
+                    return response()->json(['status' => false, 'message' => 'date required'], 400);
+                }
+                $start = Carbon::parse($request->date)->startOfDay();
+                $end   = Carbon::parse($request->date)->endOfDay();
+                break;
+
+            case 'month':
+                if (!$request->month || !$request->year) {
+                    return response()->json(['status' => false, 'message' => 'month & year required'], 400);
+                }
+                $start = Carbon::create($request->year, $request->month, 1)->startOfMonth();
+                $end   = Carbon::create($request->year, $request->month, 1)->endOfMonth();
+                break;
+
+            case 'year':
+                if (!$request->year) {
+                    return response()->json(['status' => false, 'message' => 'year required'], 400);
+                }
+                $start = Carbon::create($request->year, 1, 1)->startOfYear();
+                $end   = Carbon::create($request->year, 1, 1)->endOfYear();
+                break;
+
+            default:
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid type (day, month, year)'
+                ], 400);
+        }
+
+        // =============================
+        // 1️⃣ SUMMARY PER TRANSAKSI TIPE
+        // =============================
+        $transaksiSummary = DB::table('transaksi_t as tt')
+            ->whereNull('tt.deleted_at')
+            ->whereBetween('tt.created_at', [$start, $end])
+            ->selectRaw("
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM pengirimanBarang_t pbt
+                        JOIN live_order_t lot 
+                        ON lot.live_order_nama_akun = pbt.pengirimanBarang_akun_penerima
+                        WHERE pbt.pengirimanBarang_transaksi_id = tt.transaksi_id
+                    )
+                    THEN 'Live'
+                    ELSE tt.transaksi_tipe
+                END AS tipe,
+                COUNT(*) as total
+            ")
+            ->groupBy('tipe')
+            ->get();
+
+        // =============================
+        // 2️⃣ SUMMARY PER LIVE PLATFORM
+        // =============================
+        $platformSummary = DB::table('live_order_t as lot')
+            ->where('lot.is_check', 1)
+            ->whereNull('lot.deleted_at')
+            ->whereBetween('lot.created_at', [$start, $end])
+            ->select('lot.live_order_platform as tipe', DB::raw('COUNT(*) as total'))
+            ->groupBy('lot.live_order_platform')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'type' => $type,
+            'start_date' => $start,
+            'end_date' => $end,
+            'data' => [
+                'per_transaksi' => $transaksiSummary,
+                'per_platform'  => $platformSummary
+            ]
         ]);
     }
 }
