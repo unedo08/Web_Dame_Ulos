@@ -14,24 +14,25 @@
 
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Jumlah Barang per Bulan</div>
-        <PieChart v-if="dataPerMonth" :dataPerMonth="dataPerMonth" />
+        <div class="chart-title">Jenis Transaksi Hari Ini</div>
+        <PieTransaksi v-if="transaksiDay" :dataTransaksi="transaksiDay" />
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">Jenis Transaksi per Bulan</div>
-        <PieTransaksi v-if="dataTransaksi" :dataTransaksi="dataTransaksi" />
+        <div class="chart-title">Platform Hari Ini</div>
+        <PiePlatform v-if="platformDay" :dataPlatform="platformDay" />
       </div>
     </div>
+
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Platform Transaksi per Bulan</div>
-        <PiePlatform v-if="dataPlatform" :dataPlatform="dataPlatform" />
+        <div class="chart-title">Jenis Transaksi Bulan Ini</div>
+        <PieTransaksi v-if="transaksiMonth" :dataTransaksi="transaksiMonth" />
       </div>
 
       <div class="chart-card">
-        <!-- <div class="chart-title">Jenis Transaksi per Bulan</div>
-        <PieTransaksi v-if="dataTransaksi" :dataTransaksi="dataTransaksi" /> -->
+        <div class="chart-title">Platform Bulan Ini</div>
+        <PiePlatform v-if="platformMonth" :dataPlatform="platformMonth" />
       </div>
     </div>
   </div>
@@ -48,8 +49,13 @@ import dayjs from "dayjs";
 
 const totalBarang = ref(0)
 const dataPerMonth = ref(null);
-const dataTransaksi = ref(null);
-const dataPlatform = ref(null);
+
+const transaksiDay = ref(null);
+const platformDay = ref(null);
+
+const transaksiMonth = ref(null);
+const platformMonth = ref(null);
+
 const url = ref('')
 const { $api } = useNuxtApp();
 
@@ -60,7 +66,6 @@ onMounted(async () => {
   try {
     const responseBarang = await $api.get(`${url.value}/api/codebarang`)
     const dataBarang = responseBarang.data;
-
     totalBarang.value = dataBarang.length;
 
     const monthlyCounts = {};
@@ -71,37 +76,57 @@ onMounted(async () => {
 
     dataPerMonth.value = monthlyCounts;
 
-    const responseTransaksi = await $api.get(`${url.value}/api/transaksi/grouped`)
-    const transaksiData = responseTransaksi.data.data;
+    const today = dayjs().format("YYYY-MM-DD");
 
-    const currentMonth = dayjs().format("MMMM YYYY");
-
-    const transaksiPerTipe = {};
-
-    transaksiData.forEach((trx) => {
-      const month = dayjs(trx.created_at).format("MMMM YYYY");
-
-      if (month === currentMonth) {
-        const tipe = trx.transaksi_tipe || "Unknown";
-        transaksiPerTipe[tipe] = (transaksiPerTipe[tipe] || 0) + 1;
+    const responseDay = await $api.get(`${url.value}/api/transaksi/transaksi-summary`, {
+      params: {
+        type: "day",
+        date: today
       }
     });
 
-    dataTransaksi.value = transaksiPerTipe;
+    const dayData = responseDay.data.data;
 
-    const platformPerMonth = {};
+    const trxDayObj = {};
+    dayData.per_transaksi.forEach(item => {
+      trxDayObj[item.tipe] = item.total;
+    });
 
-    transaksiData.forEach((trx) => {
-      const month = dayjs(trx.created_at).format("MMMM YYYY");
+    transaksiDay.value = trxDayObj;
 
-      if (month === currentMonth) {
-        const platform = trx.transaksi_platform || "Offline";
-        platformPerMonth[platform] =
-          (platformPerMonth[platform] || 0) + 1;
+    const platformDayObj = {};
+    dayData.per_platform.forEach(item => {
+      platformDayObj[item.tipe] = item.total;
+    });
+
+    platformDay.value = platformDayObj;
+
+    const currentMonth = dayjs().month() + 1;
+    const currentYear = dayjs().year();
+
+    const responseMonth = await $api.get(`${url.value}/api/transaksi/transaksi-summary`, {
+      params: {
+        type: "month",
+        month: currentMonth,
+        year: currentYear
       }
     });
 
-    dataPlatform.value = platformPerMonth;
+    const monthData = responseMonth.data.data;
+
+    const trxMonthObj = {};
+    monthData.per_transaksi.forEach(item => {
+      trxMonthObj[item.tipe] = item.total;
+    });
+
+    transaksiMonth.value = trxMonthObj;
+
+    const platformMonthObj = {};
+    monthData.per_platform.forEach(item => {
+      platformMonthObj[item.tipe] = item.total;
+    });
+
+    platformMonth.value = platformMonthObj;
 
   } catch (error) {
     console.error('Gagal mengambil data:', error)

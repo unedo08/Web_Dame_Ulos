@@ -4,10 +4,8 @@
 
   <div class="flex items-start justify-between pt-2">
     <div class="flex flex-col flex-1 space-y-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQueryCustomer" type="text"
-        placeholder="Nama Customer" />
-      <input class="search-box mb-4 rounded-md" v-model="searchQueryPhone" type="text"
-        placeholder="Nomor Telepon" />
+      <input class="search-box mb-4 rounded-md" v-model="searchQueryCustomer" type="text" placeholder="Nama Customer" />
+      <input class="search-box mb-4 rounded-md" v-model="searchQueryPhone" type="text" placeholder="Nomor Telepon" />
     </div>
 
     <div class="flex space-x-2 ml-4">
@@ -175,7 +173,8 @@
     </button>
   </ModalKasir>
 
-  <ModalLive :visible="openModalLive" :items="datatableItems" @close="openModalLive = false" @success="handleOnlineSuccess"/>
+  <ModalLive :visible="openModalLive" :items="datatableItems" @close="openModalLive = false"
+    @success="handleOnlineSuccess" />
 
   <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
 </template>
@@ -298,6 +297,7 @@ async function loadHoldTransaction(id) {
     currentTransaksiId.value = transaksi.transaksi_id || null;
 
     const detailList = Array.isArray(transaksi.details) ? transaksi.details : [];
+    console.log('testt', detailList);
 
     const mapped = await Promise.all(
       detailList.map(async (detail) => {
@@ -306,6 +306,7 @@ async function loadHoldTransaction(id) {
             `${url.value}/api/entrybarang/${detail.transaksidetail_barang_id}`);
 
           const entry = resEntry?.data?.data;
+
           let codeNama = "";
           if (entry?.barangentry_code_id) {
             const resCode = await $api.get(
@@ -317,7 +318,7 @@ async function loadHoldTransaction(id) {
             barangentry_nama: entry?.barangentry_nama || detail?.barangentry_nama || "Tidak Diketahui",
             quantity: detail?.transaksidetail_jumlah_barang ?? 1,
             barangentry_jumlah_barang: entry?.barangentry_jumlah_barang ?? 1,
-            barangentry_harga_net: 0,
+            barangentry_harga_net: Number(detail?.transaksidetail_harga_barang) ?? 0,
             isEditing: false,
             code_nama: codeNama,
             transaksi_id: transaksi.transaksi_id || null,
@@ -542,8 +543,10 @@ async function checkoutProcess() {
         transaksi_status: "pending",
         transaksi_catatan: processForm.value.notes,
       };
-
+      console.log('masuk sini');
+      
       await $api.post(`${url.value}/api/transaksi`, payload_hold);
+      // await $api.delete(`${url.value}/api/transaksi-detail/${transaksi_id}`);
     } else {
       const { data } = await $api.post(`${url.value}/api/transaksi`, payload);
       transaksi_id = data.data.transaksi_id;
@@ -693,7 +696,7 @@ const fetchDataByBarcode = async (code) => {
     const item = data.data[0];
 
     const existingItem = datatableItems.value.find(
-      (i) => i.barangentry_nama === item.barangentry_nama
+      (i) => i.barangentry_code_id === item.barangentry_code_id
     );
 
     if (item.barangentry_jumlah_barang === 0) {
