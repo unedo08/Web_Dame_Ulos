@@ -43,12 +43,12 @@ const items = ref([
   { title: "Live", path: "/live", icon: TvIcon },
   { title: "Kasir", path: "/kasir", icon: CreditCardIcon },
   { title: "Packaging", path: "/packaging-page", icon: CubeIcon },
-  { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
+  // { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
   { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
-  { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
-  { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
+  // { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
+  // { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
   { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
-  { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
+  // { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
 ]);
 
 const roleAccess = {

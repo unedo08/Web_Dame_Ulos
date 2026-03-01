@@ -35,6 +35,7 @@
           <tr>
             <!-- <th>No</th> -->
             <th class="px-4 py-2 text-left">Nama Akun</th>
+            <th class="px-4 py-2 text-left">Kode Barang</th>
             <th class="px-4 py-2 text-left">Nama Barang</th>
             <th class="px-4 py-2 text-left">Nama Platform</th>
             <th class="px-4 py-2 text-left">Harga Terjual</th>
@@ -55,7 +56,10 @@
               </td>
 
               <td class="px-4 py-2">
-                {{ barangMap[pengiriman.live_order_barang_id] || "" }}
+                {{ barangMap[pengiriman.live_order_barang_id]?.kode || "" }}
+              </td>
+              <td class="px-4 py-2">
+                {{ barangMap[pengiriman.live_order_barang_id]?.nama || "" }}
               </td>
               <td class="px-4 py-2">
                 {{ capitalizeFirst(pengiriman.live_order_platform) }}
@@ -193,7 +197,7 @@
           </label>
           <input ref="barangInput" type="text" id="barang" v-model="form.barang" placeholder="Masukkan nama barang"
             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required/>
+            required />
           <p v-if="errors.barang" class="text-red-500 text-sm mt-1">
             {{ errors.barang }}
           </p>
@@ -435,15 +439,39 @@ const capitalizeFirst = (str) => {
 
 const fetchBarangNames = async (data) => {
   try {
-  
+
     const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
     const requests = ids.map((id) =>
       $api.get(`${url.value}/api/entrybarang/${id}`)
-    );  
+    );
     const responses = await Promise.all(requests);
-    responses.forEach((res, i) => {
-      barangMap.value[ids[i]] = res.data.data.barangentry_nama;
-    });
+
+    for (let i = 0; i < responses.length; i++) {
+
+      const entryData = responses[i].data.data;
+
+      const barangId = ids[i];
+      const namaBarang = entryData.barangentry_nama;
+      const codeId = entryData.barangentry_code_id;
+
+      let kodeBarang = "-";
+
+      if (codeId) {
+        const codeRes = await $api.get(
+          `${url.value}/api/codebarang/${codeId}`
+        );
+
+        kodeBarang = codeRes.data.code_nama || "-";
+      }
+
+      barangMap.value[barangId] = {
+        nama: namaBarang,
+        kode: kodeBarang,
+      };
+    }
+    // responses.forEach((res, i) => {
+    //   barangMap.value[ids[i]] = res.data.data.barangentry_nama;
+    // });
   } catch (error) {
     console.error("Gagal fetch nama barang:", error);
   }
@@ -451,7 +479,7 @@ const fetchBarangNames = async (data) => {
 
 const fetchDataPengiriman = async () => {
   try {
-  
+
     let endpoint = "";
     if (activeTab.value === "order") {
       endpoint = "/api/live-barang";
@@ -470,19 +498,21 @@ const fetchDataPengiriman = async () => {
 };
 
 const sortedPengirimanData = computed(() => {
-  return [...pengirimanData.value].sort((a, b) => {
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
+  return [...pengirimanData.value].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 });
 
 const groupedData = computed(() => {
   const groups = {};
+
   sortedPengirimanData.value.forEach((item) => {
     if (!groups[item.live_order_nama_akun]) {
       groups[item.live_order_nama_akun] = [];
     }
     groups[item.live_order_nama_akun].push(item);
   });
+
   return groups;
 });
 
@@ -493,11 +523,13 @@ const filteredGroupedData = computed(() => {
 
   for (let akun in groupedData.value) {
     const filteredItems = groupedData.value[akun].filter((item) => {
-      const namaBarang = barangMap[item.live_order_barang_id] || "";
+      const namaBarang = barangMap[item.live_order_barang_id]?.nama || "";
+      const kodeBarang = barangMap[item.live_order_barang_id]?.kode || "";
       const platform = capitalizeFirst(item.live_order_platform);
       return (
         akun.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         namaBarang.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        kodeBarang.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         platform.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     });
@@ -511,7 +543,13 @@ const filteredGroupedData = computed(() => {
 });
 
 const paginatedGroupedData = computed(() => {
-  const groups = Object.entries(filteredGroupedData.value);
+  let groups = Object.entries(filteredGroupedData.value);
+
+  groups.sort((a, b) => {
+    const latestA = new Date(a[1][0].created_at);
+    const latestB = new Date(b[1][0].created_at);
+    return latestB - latestA;
+  });
 
   if (itemsPerPage.value === "all") {
     return Object.fromEntries(groups);
@@ -527,7 +565,8 @@ const totalGroups = computed(() => Object.keys(filteredGroupedData.value).length
 
 const totalHargaPerAkun = computed(() => {
   const totalMap = {};
-  pengirimanData.value.forEach((item) => {
+
+  sortedPengirimanData.value.forEach((item) => {
     if (!totalMap[item.live_order_nama_akun]) {
       totalMap[item.live_order_nama_akun] = 0;
     }
@@ -535,6 +574,7 @@ const totalHargaPerAkun = computed(() => {
       item.live_order_harga_terjual
     );
   });
+
   return totalMap;
 });
 
@@ -551,7 +591,7 @@ const submitLiveOrder = async () => {
 
   isSubmitting.value = true;
   try {
-  
+
     const namaBarang = await $api.get(
       `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang);
     await $api.post(`${url.value}/api/live-barang/store-live`, {
@@ -590,7 +630,7 @@ const submitLiveOrder = async () => {
 
 const editOrderLive = async (id) => {
   try {
-  
+
     const res = await $api.get(`${url.value}/api/live-barang/show-live/${id}`);
     const data = res.data.data;
     const resBarang = await $api.get(
@@ -661,13 +701,11 @@ const resetForm = () => {
 };
 
 const listpengirimanData = computed(() => {
-  const sorted = [...pengirimanData.value].sort((a, b) => {
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
-  if (!searchQuery.value) return sorted;
+  if (!searchQuery.value) return sortedPengirimanData.value;
 
   const q = searchQuery.value.toLowerCase();
-  return sorted.filter((pengiriman) => {
+
+  return sortedData.value.filter((pengiriman) => {
     return (
       pengiriman.live_order_nama_akun?.toLowerCase().includes(q) ||
       pengiriman.live_order_platform?.toLowerCase().includes(q)
@@ -743,7 +781,7 @@ const deleteOrder = async (id) => {
 
   if (result.isConfirmed) {
     try {
-    
+
       await $api.delete(`${url.value}/api/live-barang/delete-live/${id}`);
 
       await fetchDataPengiriman();

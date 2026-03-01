@@ -531,22 +531,11 @@ async function checkoutProcess() {
 
   try {
     if (currentTransaksiId.value) {
-      transaksi_id = currentTransaksiId.value;
-      const payload_hold = {
-        transaksi_id: String(transaksi_id),
-        transaksi_nama_customer: searchQueryCustomer.value,
-        transaksi_nomor_telepon: searchQueryPhone.value,
-        transaksi_jumlah_barang: jumlahBarang,
-        transaksi_total_harga: parseRupiah(subtotal.value),
-        transaksi_cara_bayar: processForm.value.paymentMethod,
-        transaksi_tipe: "offline",
-        transaksi_status: "pending",
-        transaksi_catatan: processForm.value.notes,
-      };
-      console.log('masuk sini');
-      
-      await $api.post(`${url.value}/api/transaksi`, payload_hold);
-      // await $api.delete(`${url.value}/api/transaksi-detail/${transaksi_id}`);
+      await $api.delete(`${url.value}/api/transaksi/${currentTransaksiId.value}`);
+
+      currentTransaksiId.value = null;
+      const { data } = await $api.post(`${url.value}/api/transaksi`,payload);
+      transaksi_id = data.data.transaksi_id;
     } else {
       const { data } = await $api.post(`${url.value}/api/transaksi`, payload);
       transaksi_id = data.data.transaksi_id;

@@ -193,9 +193,10 @@ async function submitForm() {
       transaksi_jumlah_barang: jumlahBarang.value,
       transaksi_total_harga: subtotal.value,
       transaksi_cara_bayar: form.value.metode,
-      transaksi_tipe: "PREORDER",
-      transaksi_status: "PREORDER",
+      transaksi_tipe: "LIVE",
+      transaksi_status: "LIVE",
       transaksi_catatan: "",
+      transaksi_platform: ""
     });
 
     const transaksi_id = trx.data.data.transaksi_id;
