@@ -32,6 +32,7 @@ class JenisBarangMController extends Controller
                 'jenisbarang_m.jenisbarang_nama',
                 DB::raw('SUM(jenisbarang_m.jenisbarang_jumlah) as jumlah_barang')
             )
+            ->whereRaw('LOWER(jenisbarang_m.jenisbarang_kode) NOT LIKE ?', ['%po%'])
             ->groupBy(
                 'jenisbarang_m.jenisbarang_id',
                 'jenisbarang_m.jenisbarang_kode',
