@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 pt-[60px]">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
       <h2 class="text-xl font-semibold mb-4">Tambah Online Transaksi</h2>
 

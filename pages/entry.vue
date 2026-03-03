@@ -1165,8 +1165,8 @@ async function sendOrder(barangentry_id, formData) {
       transaksi_jumlah_barang: 1,
       transaksi_total_harga: parseInt(formData.total_pembayaran),
       transaksi_cara_bayar: formData.cara_bayar,
-      transaksi_tipe: "PREORDER",
-      transaksi_status: "PREORDER",
+      transaksi_tipe: "Pre Order",
+      transaksi_status: "Pre Order",
       transaksi_catatan: "",
     };
 

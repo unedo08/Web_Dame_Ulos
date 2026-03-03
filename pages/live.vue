@@ -422,6 +422,7 @@ const openModalEditTransaksi = async (namaAkun) => {
             jumlah: item.live_order_jumlah_barang,
             harga: parseFloat(item.live_order_harga_terjual),
             live_order_id: item.live_order_id,
+            platform: item.live_order_platform,
             is_check: true,
           })),
       };
@@ -705,7 +706,7 @@ const listpengirimanData = computed(() => {
 
   const q = searchQuery.value.toLowerCase();
 
-  return sortedData.value.filter((pengiriman) => {
+  return sortedPengirimanData.value.filter((pengiriman) => {
     return (
       pengiriman.live_order_nama_akun?.toLowerCase().includes(q) ||
       pengiriman.live_order_platform?.toLowerCase().includes(q)

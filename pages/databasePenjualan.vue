@@ -59,8 +59,8 @@
               {{ trx.transaksi_acara || "-" }}
             </td>
 
-            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ trx.transaksi_tipe === 'Online' ? trx.transaksi_platform : "Offline" }}
+            <td class="text-left align-top px-2 py-1">
+              {{ trx.transaksi_tipe === 'Offline' ? "Offline" : item.transaksi_platform }}
             </td>
             <td>{{ item.code_nama || "-" }}</td>
             <td>{{ item.barang_nama || "-" }}</td>
@@ -214,7 +214,6 @@ const groupedTransaksi = computed(() => {
         customer_nama: trx.customer_nama,
         transaksi_tipe: trx.transaksi_tipe,
         transaksi_acara: trx.transaksi_acara,
-        transaksi_platform: trx.transaksi_platform,
         cara_bayar: trx.cara_bayar,
         catatan: trx.catatan,
         transaksi_id: trx.transaksi_id,

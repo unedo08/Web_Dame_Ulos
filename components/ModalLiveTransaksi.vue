@@ -26,6 +26,7 @@
               <td class="px-3 py-2 text-center">{{ item.nama }}</td>
               <td class="px-3 py-2 text-center">{{ item.jumlah }}</td>
               <td class="px-3 py-2 text-right">{{ formatCurrency(item.harga) }}</td>
+              <td class="hidden"> {{ item.platform }}</td>
             </tr>
           </tbody>
         </table>
@@ -187,21 +188,21 @@ async function submitForm() {
   isSubmitting.value = true;
 
   try {
-    const trx = await $api.post(`${url.value}/api/transaksi`, {
-      transaksi_nama_customer: form.value.nama_penerima,
-      transaksi_nomor_telepon: form.value.no_telepon,
-      transaksi_jumlah_barang: jumlahBarang.value,
-      transaksi_total_harga: subtotal.value,
-      transaksi_cara_bayar: form.value.metode,
-      transaksi_tipe: "LIVE",
-      transaksi_status: "LIVE",
-      transaksi_catatan: "",
-      transaksi_platform: ""
-    });
+    for (const item of barangTerpilih) {      
+      const trx = await $api.post(`${url.value}/api/transaksi`, {
+        transaksi_nama_customer: form.value.nama_penerima,
+        transaksi_nomor_telepon: form.value.no_telepon,
+        transaksi_jumlah_barang: item.jumlah,
+        transaksi_total_harga: Number(item.harga),
+        transaksi_cara_bayar: form.value.metode,
+        transaksi_tipe: "LIVE",
+        transaksi_status: "LIVE",
+        transaksi_catatan: "",
+        transaksi_platform: item.platform
+      });
 
-    const transaksi_id = trx.data.data.transaksi_id;
+      const transaksi_id = trx.data.data.transaksi_id;
 
-    for (const item of barangTerpilih) {
       const barangRes = await $api.get(`${url.value}/api/entrybarang/getDataByCode/${item.kode}`);
       const barangData = barangRes.data;
 
@@ -213,19 +214,19 @@ async function submitForm() {
       });
 
       await $api.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {});
-    }
 
-    await $api.post(`${url.value}/api/pengiriman-barang`, {
-      pengirimanBarang_transaksi_id: transaksi_id,
-      pengirimanBarang_nama_penerima: form.value.nama_penerima,
-      pengirimanBarang_akun_penerima: props.namaAkun,
-      pengirimanBarang_no_telepon: form.value.no_telepon,
-      pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
-      pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
-      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
-      pengirimanBarang_catatan: "",
-      pengirimanBarang_status: "Proses",
-    });
+      await $api.post(`${url.value}/api/pengiriman-barang`, {
+        pengirimanBarang_transaksi_id: transaksi_id,
+        pengirimanBarang_nama_penerima: form.value.nama_penerima,
+        pengirimanBarang_akun_penerima: props.namaAkun,
+        pengirimanBarang_no_telepon: form.value.no_telepon,
+        pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
+        pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
+        pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
+        pengirimanBarang_catatan: "",
+        pengirimanBarang_status: "Proses",
+      });
+    }
 
     Swal.fire("Berhasil!", "Transaksi berhasil disimpan!", "success");
     emit("save");
