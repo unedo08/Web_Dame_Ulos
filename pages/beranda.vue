@@ -1,5 +1,6 @@
 <template>
   <div class="beranda">
+    <title>Beranda</title>
     <h1 class="page-title">Beranda</h1>
 
     <div class="stat-wrapper">

@@ -250,6 +250,7 @@ async function submitForm() {
         transaksidetail_barang_id: barangRes.data.data.barangentry_id,
         transaksidetail_jumlah_barang: item.quantity,
         transaksidetail_harga_barang: item.barangentry_harga_net,
+        transaksidetail_status_penjualan: 0
       });
     }
 

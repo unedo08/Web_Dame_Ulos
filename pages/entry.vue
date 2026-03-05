@@ -1188,6 +1188,7 @@ async function sendOrder(barangentry_id, formData) {
       transaksidetail_barang_id: barangData.barangentry_id,
       transaksidetail_jumlah_barang: 1,
       transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
+      transaksidetail_status_penjualan: 0
     };
     await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
 

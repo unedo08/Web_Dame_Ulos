@@ -452,6 +452,7 @@ async function handleHold() {
         transaksidetail_barang_id: barangData.barangentry_id,
         transaksidetail_jumlah_barang: item.quantity,
         transaksidetail_harga_barang: item.barangentry_harga_net,
+        transaksidetail_status_penjualan: 1
       };
 
       await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
@@ -552,6 +553,7 @@ async function checkoutProcess() {
         transaksidetail_barang_id: barangData.barangentry_id,
         transaksidetail_jumlah_barang: item.quantity,
         transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
+        transaksidetail_status_penjualan: 1
       };
 
       await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);

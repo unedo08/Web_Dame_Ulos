@@ -92,9 +92,9 @@
                       <td style="padding: 3px 8px 3px 0;">b. Dyer</td>
                       <td>: {{ item.data.barangentry_dryer }}</td>
                     </tr>
-                    <tr v-if="item.data.barangentry_pemintal">
+                    <tr v-if="item.data.barangentry_nama_panirat">
                       <td style="padding: 3px 8px 3px 0;">c. Panirat</td>
-                      <td>: {{ item.data.barangentry_pemintal }}</td>
+                      <td>: {{ item.data.barangentry_nama_panirat }}</td>
                     </tr>
                   </tbody>
                 </table>

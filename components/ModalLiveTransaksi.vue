@@ -195,8 +195,8 @@ async function submitForm() {
         transaksi_jumlah_barang: item.jumlah,
         transaksi_total_harga: Number(item.harga),
         transaksi_cara_bayar: form.value.metode,
-        transaksi_tipe: "LIVE",
-        transaksi_status: "LIVE",
+        transaksi_tipe: "Live",
+        transaksi_status: "Live",
         transaksi_catatan: "",
         transaksi_platform: item.platform
       });
@@ -211,6 +211,7 @@ async function submitForm() {
         transaksidetail_barang_id: barangData.data.barangentry_id,
         transaksidetail_jumlah_barang: item.jumlah,
         transaksidetail_harga_barang: Number(item.harga),
+        transaksidetail_status_penjualan: 0
       });
 
       await $api.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {});
