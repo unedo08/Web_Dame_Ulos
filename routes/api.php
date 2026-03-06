@@ -87,6 +87,10 @@ Route::middleware(['jwt'])->group(function () {
     Route::prefix('/customer')->group(function () {
         require __DIR__ . '/api/customerM.php';  // Relative path
     });
+
+    Route::prefix('dashboard')->group(function () {
+        require __DIR__ . '/api/dashboard.php';  // Relative path
+    });
 });
 
 // Route::prefix('jenisbarang')->group(function () {
