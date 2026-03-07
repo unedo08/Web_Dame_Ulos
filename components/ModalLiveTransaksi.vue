@@ -190,7 +190,7 @@ async function submitForm() {
   try {
     for (const item of barangTerpilih) {      
       const trx = await $api.post(`${url.value}/api/transaksi`, {
-        transaksi_nama_customer: form.value.nama_penerima,
+        transaksi_nama_customer: props.namaAkun,
         transaksi_nomor_telepon: form.value.no_telepon,
         transaksi_jumlah_barang: item.jumlah,
         transaksi_total_harga: Number(item.harga),

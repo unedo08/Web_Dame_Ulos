@@ -31,7 +31,7 @@ const roleMap = {
 };
 
 onMounted(() => {
-  role.value = roleMap[sessionStorage.getItem("role")] || null;
+  role.value = roleMap[localStorage.getItem("role") || sessionStorage.getItem("role")] || null;
 });
 
 const items = ref([

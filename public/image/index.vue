@@ -97,6 +97,10 @@ const handleLogin = async () => {
   sessionStorage.setItem("role", res.data.user.role.id);
   sessionStorage.setItem("auth_token", res.data.token);
 
+  localStorage.setItem("name", res.data.user.name);
+  localStorage.setItem("role", res.data.user.role.id);
+  localStorage.setItem("auth_token", res.data.token);
+
   router.push("/beranda");
 };
 

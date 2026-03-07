@@ -39,7 +39,7 @@ const routeRoleMap = {
 };
 
 export default defineNuxtRouteMiddleware((to) => {
-  const roleId = sessionStorage.getItem("role");
+  const roleId = localStorage.getItem("role") || sessionStorage.getItem("role");
   const role = roleMap[roleId];
 
   if (!role) {

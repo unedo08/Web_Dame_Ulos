@@ -62,7 +62,7 @@ const name = ref("");
 onMounted(async () => {
   const config = useRuntimeConfig();
   url.value = config.public.apiBase;
-  name.value = sessionStorage.getItem("name") || "User";
+  name.value = (localStorage.getItem("name") ? localStorage.getItem("name") :sessionStorage.getItem("name")) || "User";
 });
 
 const toggleDropdown = () => {
@@ -73,7 +73,7 @@ const onMenuItemClick = async (item) => {
   dropdownVisible.value = false;
   if (item === "Logout") {
     try {
-      const token = sessionStorage.getItem("auth_token")
+      const token = localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token")
       await axios.post(
         `${url.value}/api/logout`,{},
         {
@@ -85,6 +85,8 @@ const onMenuItemClick = async (item) => {
       await router.push("/");
       sessionStorage.removeItem("auth_token");
       sessionStorage.clear();
+      localStorage.removeItem("auth_token");
+      localStorage.clear();
     } catch (error) {
       console.error("Error logout", error);
     }

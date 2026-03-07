@@ -82,6 +82,11 @@ const handleLogin = async () => {
     sessionStorage.setItem("auth_token", res.data.token);
     sessionStorage.setItem("expired_at", expiresAt);
 
+    localStorage.setItem("name", res.data.user.name);
+    localStorage.setItem("role", res.data.user.role.id);
+    localStorage.setItem("auth_token", res.data.token);
+    localStorage.setItem("expired_at", expiresAt);
+
     router.push("/beranda");
   } catch (err) {
     Swal.fire({
