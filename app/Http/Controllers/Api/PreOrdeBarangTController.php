@@ -61,8 +61,8 @@ class PreOrdeBarangTController extends Controller
 
         $imagePath = null;
 
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('photos', 'public');
+        if ($request->hasFile('preOrderBarang_path_gambar')) {
+            $path = $request->file('preOrderBarang_path_gambar')->store('products', 'public');
             $imagePath = 'storage/' . $path;
         }
 
@@ -80,7 +80,8 @@ class PreOrdeBarangTController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pre Order Barang created successfully.',
-            'data' => $item
+            'data' => $item,
+            'image_url' => asset($item->preOrderBarang_path_gambar)
         ], 201);
     }
 
@@ -250,7 +251,7 @@ class PreOrdeBarangTController extends Controller
 
         return response()->json([
             "message" => "Product created",
-            "image_url" => $imagePath
+            "image_url" => asset($imagePath)
         ]);
     }
 
