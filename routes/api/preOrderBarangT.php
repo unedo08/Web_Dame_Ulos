@@ -14,5 +14,5 @@ Route::put('/{id}', [PreOrdeBarangTController::class, 'update']);
 Route::delete('/{id}', [PreOrdeBarangTController::class, 'destroy']);   
 Route::patch('/{id}/status', [PreOrdeBarangTController::class, 'updateStatus']); 
 Route::get('/{id}/image', [PreOrdeBarangTController::class, 'viewImage']);
-Route::put('/{id}/image', [PreOrdeBarangTController::class, 'updateImage']);
+Route::post('/{id}/image', [PreOrdeBarangTController::class, 'updateImage']);
 Route::delete('/{id}/image', [PreOrdeBarangTController::class, 'deleteImage']);
