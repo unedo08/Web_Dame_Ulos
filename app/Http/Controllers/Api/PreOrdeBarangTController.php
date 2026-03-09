@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\PreOrdeBarangT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PreOrdeBarangTController extends Controller
 {
@@ -53,10 +54,19 @@ class PreOrdeBarangTController extends Controller
             'preOrderBarang_sisa_pembayaran' => 'required|numeric',
             'preOrderBarang_deskripsi_barang' => 'required|string',
             'preOrderBarang_catatan' => 'required|string',
-            'preOrderBarang_path_gambar' => 'required|string|max:255',
+            'preOrderBarang_path_gambar' => 'nullable|image|max:2048',
             'preOrderBarang_barang_entry_id' => 'required|string|max:255',
             'preOrderBarang_cara_bayar' => 'string|max:255'
         ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $imagePath = 'storage/' . $path;
+        }
+
+        $validatedData['preOrderBarang_path_gambar'] = $imagePath;
 
         // Tambahkan create_id & update_id
         $validatedData['create_id'] = Auth::id();
@@ -222,5 +232,101 @@ class PreOrdeBarangTController extends Controller
                 'data' => null
             ], 500);
         }
+    }
+
+    public function storeImage(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+            'image' => 'required|image|max:2048'
+        ]);
+
+        // store image
+        $path = $request->file('image')->store('products', 'public');
+
+        // convert to public url
+        $imagePath = 'storage/' . $path;
+
+        return response()->json([
+            "message" => "Product created",
+            "image_url" => $imagePath
+        ]);
+    }
+
+    public function viewImage($id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $item = PreOrdeBarangT::findOrFail($id);
+
+        if (!$item->preOrderBarang_path_gambar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Image not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'image_url' => asset($item->preOrderBarang_path_gambar)
+        ]);
+    }
+
+    public function updateImage(Request $request, $id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $request->validate([
+            'image' => 'required|image|max:2048'
+        ]);
+
+        $item = PreOrdeBarangT::findOrFail($id);
+
+        // delete old image if exists
+        if ($item->preOrderBarang_path_gambar) {
+            $oldPath = str_replace('storage/', '', $item->preOrderBarang_path_gambar);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        // upload new image
+        $path = $request->file('image')->store('preorder', 'public');
+
+        $item->preOrderBarang_path_gambar = 'storage/' . $path;
+        $item->update_id = Auth::id();
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Image updated',
+            'image_url' => asset($item->preOrderBarang_path_gambar)
+        ]);
+    }
+
+    public function deleteImage($id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $item = PreOrdeBarangT::findOrFail($id);
+
+        if (!$item->preOrderBarang_path_gambar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Image not found'
+            ]);
+        }
+
+        $path = str_replace('storage/', '', $item->preOrderBarang_path_gambar);
+
+        Storage::disk('public')->delete($path);
+
+        $item->preOrderBarang_path_gambar = null;
+        $item->update_id = Auth::id();
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Image deleted'
+        ]);
     }
 }
