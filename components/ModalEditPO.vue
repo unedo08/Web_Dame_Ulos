@@ -114,6 +114,35 @@
           </div>
         </div>
 
+        <div class="md:col-span-2 mt-6">
+          <label class="judul-label block text-sm font-medium mb-2">
+            Gambar Pre Order
+          </label>
+          <div class="border border-dashed border-gray-400 rounded-lg p-4">
+            <div v-if="previewImage" class="mb-3">
+              <img :src="previewImage" class="max-h-48 rounded shadow border" />
+            </div>
+            <input type="file" accept="image/*" @change="handleImageUpload" />
+            <div class="flex gap-3 mt-3">
+              <button type="button" class="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700"
+                @click="uploadImage">
+                Upload / Replace
+              </button>
+              <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                @click="viewImage">
+                View
+              </button>
+              <!-- <button type="button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                @click="deleteImage">
+                Delete
+              </button> -->
+            </div>
+            <div v-if="uploadProgress > 0" class="w-full bg-gray-200 h-2 rounded-full mt-3">
+              <div class="bg-green-600 h-2 rounded-full" :style="{ width: uploadProgress + '%' }"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Tombol -->
         <div class="md:col-span-2 flex justify-end gap-4 mt-8">
           <button type="button" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
@@ -128,6 +157,20 @@
       </form>
     </div>
   </div>
+
+  <div v-if="showImageModal" class="fixed inset-0 bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded-lg max-w-2xl w-full relative">
+      <button class="absolute right-3 top-2 text-xl text-gray-500 hover:text-black" @click="showImageModal = false">
+        ✕
+      </button>
+      <h3 class="text-lg font-semibold mb-4">
+        Preview Gambar
+      </h3>
+      <div class="flex justify-center">
+        <img :src="serverImageUrl" class="max-h-[600px] rounded shadow border" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -138,6 +181,12 @@ import { useRuntimeConfig } from '#imports'
 const url = ref('')
 const isSubmittingEdit = ref(false)
 const { $api } = useNuxtApp();
+const selectedImage = ref(null)
+const previewImage = ref(null)
+const showImageModal = ref(false)
+const serverImageUrl = ref('')
+const uploadProgress = ref(0)
+
 onMounted(async () => {
   const config = useRuntimeConfig()
   url.value = config.public.apiBase
@@ -145,6 +194,7 @@ onMounted(async () => {
 
 const props = defineProps({
   id: Number,
+  preorderId: Number,
   show: Boolean,
 })
 const emit = defineEmits(['close', 'saved'])
@@ -176,6 +226,7 @@ const form = ref({
   preOrderBarang_deskripsi_barang: '',
   preOrderBarang_catatan: '',
   preOrderBarang_barang_entry_id: 0,
+  preOrderBarang_path_gambar: ''
 })
 
 const formatNumber = (value) => Number(value || 0).toLocaleString('id-ID')
@@ -184,6 +235,88 @@ const parseNumber = (val) => Number(String(val).replace(/\./g, '')) || 0
 const formattedModal = ref('')
 const formattedPriceTag = ref('')
 const formattedHargaNet = ref('')
+
+const handleImageUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+  selectedImage.value = file
+  previewImage.value = URL.createObjectURL(file)
+
+}
+
+const uploadImage = async () => {
+  if (!selectedImage.value) {
+    Swal.fire("Warning", "Pilih gambar terlebih dahulu", "warning")
+    return
+  }
+  try {
+    const formData = new FormData()
+    formData.append("image", selectedImage.value)
+    await $api.post(
+      `${url.value}/api/pre-order-barang/${props.preorderId}/image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        onUploadProgress: (e) => {
+          uploadProgress.value =
+            Math.round((e.loaded * 100) / e.total)
+        }
+      }
+    )
+    Swal.fire("Berhasil", "Gambar berhasil diupload", "success")
+    uploadProgress.value = 0
+  } catch (err) {
+    Swal.fire("Error", "Upload gambar gagal", "error")
+  }
+}
+
+const viewImage = async () => {
+  try {
+    const res = await $api.get(
+      `${url.value}/api/pre-order-barang/${props.preorderId}/image`
+    )
+    serverImageUrl.value = res.data.image_url
+    showImageModal.value = true
+  } catch (err) {
+    Swal.fire("Error", "Gagal mengambil gambar", "error")
+  }
+}
+
+const loadImage = async () => {
+  try {
+    const res = await $api.get(
+      `${url.value}/api/pre-order-barang/${props.preorderId}/image`
+    )
+
+    previewImage.value = res.data.image_url;
+  } catch (err) {
+    previewImage.value = null
+  }
+}
+
+const deleteImage = async () => {
+  const confirm = await Swal.fire({
+    title: "Hapus gambar?",
+    text: "Gambar akan dihapus permanen",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya Hapus"
+  })
+
+  if (!confirm.isConfirmed) return
+  try {
+    await $api.delete(
+      `${url.value}/api/pre-order-barang/${props.preorderId}/image`
+    )
+    Swal.fire("Berhasil", "Gambar berhasil dihapus", "success")
+    previewImage.value = null
+    serverImageUrl.value = ""
+  } catch (err) {
+    Swal.fire("Error", "Gagal menghapus gambar", "error")
+  }
+}
 
 const updateModal = (e) => {
   const raw = parseNumber(e.target.value)
@@ -214,6 +347,9 @@ const loadData = async () => {
     formattedModal.value = formatNumber(form.value.preOrderBarang_uang_muka)
     formattedPriceTag.value = formatNumber(form.value.preOrderBarang_sisa_pembayaran)
     formattedHargaNet.value = formatNumber(form.value.preOrderBarang_total_pembayaran)
+
+    await loadImage();
+
   } catch (err) {
     Swal.fire('Gagal', 'Gagal memuat data!', 'error')
   }
@@ -221,27 +357,69 @@ const loadData = async () => {
 
 const submitForm = async () => {
   isSubmittingEdit.value = true
+
   try {
-    const payload = {
-      preOrdeBarang_id: form.value.preOrdeBarang_id,
-      preOrderBarang_transaksi_id: '',
-      preOrderBarang_nama_barang: form.value.barangentry_nama,
-      preOrderBarang_nama_akun: form.value.preOrderBarang_nama_akun,
-      preOrderBarang_no_telepon: form.value.preOrderBarang_no_telepon,
-      preOrderBarang_target_selesai: toDatetimeString(form.value.preOrderBarang_target_selesai),
-      preOrderBarang_total_pembayaran: Number(form.value.preOrderBarang_total_pembayaran),
-      preOrderBarang_uang_muka: Number(form.value.preOrderBarang_uang_muka),
-      preOrderBarang_sisa_pembayaran: Number(form.value.preOrderBarang_sisa_pembayaran),
-      preOrderBarang_deskripsi_barang: form.value.preOrderBarang_deskripsi_barang,
-      preOrderBarang_catatan: form.value.preOrderBarang_catatan,
-      preOrderBarang_barang_entry_id: String(form.value.preOrderBarang_barang_entry_id),
+
+    const formData = new FormData()
+
+    formData.append("preOrdeBarang_id", form.value.preOrdeBarang_id)
+    formData.append("preOrderBarang_transaksi_id", "")
+    formData.append("preOrderBarang_nama_barang", form.value.barangentry_nama)
+    formData.append("preOrderBarang_nama_akun", form.value.preOrderBarang_nama_akun)
+    formData.append("preOrderBarang_no_telepon", form.value.preOrderBarang_no_telepon)
+    formData.append(
+      "preOrderBarang_target_selesai",
+      toDatetimeString(form.value.preOrderBarang_target_selesai)
+    )
+    formData.append(
+      "preOrderBarang_total_pembayaran",
+      Number(form.value.preOrderBarang_total_pembayaran)
+    )
+    formData.append(
+      "preOrderBarang_uang_muka",
+      Number(form.value.preOrderBarang_uang_muka)
+    )
+    formData.append(
+      "preOrderBarang_sisa_pembayaran",
+      Number(form.value.preOrderBarang_sisa_pembayaran)
+    )
+    formData.append(
+      "preOrderBarang_deskripsi_barang",
+      form.value.preOrderBarang_deskripsi_barang
+    )
+    formData.append(
+      "preOrderBarang_catatan",
+      form.value.preOrderBarang_catatan
+    )
+    formData.append(
+      "preOrderBarang_barang_entry_id",
+      String(form.value.preOrderBarang_barang_entry_id)
+    )
+    console.log('xzc', selectedImage);
+    
+
+    if (selectedImage.value) {
+      formData.append("preOrderBarang_path_gambar", selectedImage.value)
     }
-    await $api.post(`${url.value}/api/pre-order-barang`, payload)
-    await Swal.fire('Berhasil', 'Data berhasil disimpan!', 'success')
-    emit('saved')
+
+    await $api.post(
+      `${url.value}/api/pre-order-barang`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        onUploadProgress: (e) => {
+          uploadProgress.value =
+            Math.round((e.loaded / e.total) * 100)
+        }
+      }
+    )
+    await Swal.fire("Berhasil", "Data berhasil disimpan!", "success")
+    emit("saved")
     closeModal()
   } catch (err) {
-    Swal.fire('Gagal', 'Gagal menyimpan data!', 'error')
+    Swal.fire("Gagal", "Gagal menyimpan data!", "error")
   } finally {
     isSubmittingEdit.value = false
   }

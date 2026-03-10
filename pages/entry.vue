@@ -342,7 +342,7 @@
                   </button>
                   <button
                     class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 text-xs h-[25px] w-[50px]"
-                    @click="openModalEditPO(barang.barangentry_id)">
+                    @click="openModalEditPO(barang.barangentry_id, barang.pre_order_barang?.preOrdeBarang_id)">
                     Edit
                   </button>
                   <button v-if="barang.barangfilled"
@@ -726,7 +726,7 @@
     </div>
     <EditBarangReady :show="showEditModal" :id="selectedId" @close="showEditModal = false" @saved="loadData" />
 
-    <EditBarangPO :show="showEditPO" :id="selectedId" @close="showEditPO = false" @saved="loadData" />
+    <EditBarangPO :show="showEditPO" :id="selectedId" :preorder-id="selectedPreOrderId" @close="showEditPO = false" @saved="loadData" />
 
     <EditBarangDesc :show="showEditDesc" :id="selectedId" @close="showEditDesc = false" @saved="loadData" />
 
@@ -786,6 +786,7 @@ const isSubmittingSize = ref(false);
 const pengirimanStatus = ref("");
 const inputKodeDesc = ref(null);
 const inputKodeSize = ref(null);
+const selectedPreOrderId = ref(null);
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -881,8 +882,9 @@ const openModalEditBarang = (id) => {
   showEditModal.value = true;
 };
 
-const openModalEditPO = (id) => {
-  selectedId.value = id;
+const openModalEditPO = (barangEntryId, preOrderId) => {
+  selectedId.value = barangEntryId;
+  selectedPreOrderId.value = preOrderId;
   showEditPO.value = true;
 };
 
