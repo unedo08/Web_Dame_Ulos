@@ -56,10 +56,11 @@
               </td>
 
               <td class="px-4 py-2">
-                {{ barangMap[pengiriman.live_order_barang_id]?.kode || "" }}
+                {{ pengiriman.code_nama }}
               </td>
+
               <td class="px-4 py-2">
-                {{ barangMap[pengiriman.live_order_barang_id]?.nama || "" }}
+                {{ pengiriman.barangentry_nama }}
               </td>
               <td class="px-4 py-2">
                 {{ capitalizeFirst(pengiriman.live_order_platform) }}
@@ -349,35 +350,27 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, computed, nextTick } from "vue";
+import { reactive, ref, onMounted, computed, watch, nextTick } from "vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ModalLiveTransaksi from "../components/ModalLiveTransaksi.vue";
 
 const config = useRuntimeConfig();
-const url = ref(config.public.apiBase);
 const { $api } = useNuxtApp();
-const pengirimanData = ref([]);
+const url = ref(config.public.apiBase);
+const pengirimanData = ref({});
+const transactionData = ref([]);
 const searchQuery = ref("");
 const activeTab = ref("order");
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 const isModalOpenAddOrder = ref(false);
 const isModalOpenEditOrder = ref(false);
 const isSubmitting = ref(false);
 const isSubmittingEdit = ref(false);
-const currentPage = ref(1);
-const itemsPerPage = ref(10);
-const barangMap = ref({});
 const selected = ref({ namaAkun: "", barang: [] });
 const errors = reactive({});
-
 const isModalOpen = ref(false);
-const handleSave = (form) => {
-  isModalOpen.value = false;
-};
-
-const handleRemoveItem = (index) => {
-  selected.value.barang.splice(index, 1);
-};
 
 const form = ref({
   id: null,
@@ -390,171 +383,49 @@ const form = ref({
 const barangInput = ref(null);
 
 onMounted(() => {
-  const config = useRuntimeConfig();
-  url.value = config.public.apiBase;
   fetchDataPengiriman();
 });
 
-const openModalEditTransaksi = async (namaAkun) => {
-  try {
-    const { data } = await $api.get(
-      `${url.value}/api/live-barang/data-live/` + namaAkun);
-
-    const barangBelumPackaging = data.data.filter(item => item.is_check === 0);
-    if (barangBelumPackaging.length === 0) {
-      Swal.fire({
-        icon: "info",
-        title: "Semua Barang Sudah di Packaging",
-        text: "Tidak ada barang tersisa untuk diproses.",
-        confirmButtonColor: "#3085d6",
-      });
-      return;
-    }
-
-    if (data.data && data.data.length > 0) {
-      selected.value = {
-        namaAkun: data.data[0].live_order_nama_akun,
-        barang: data.data
-          .filter(item => item.is_check === 0)
-          .map((item) => ({
-            kode: item.code_nama,
-            nama: item.barangentry_nama,
-            jumlah: item.live_order_jumlah_barang,
-            harga: parseFloat(item.live_order_harga_terjual),
-            live_order_id: item.live_order_id,
-            platform: item.live_order_platform,
-            is_check: true,
-          })),
-      };
-      isModalOpen.value = true;
-    }
-  } catch (error) {
-    console.error("Gagal ambil data:", error);
-  }
-};
-
-const capitalizeFirst = (str) => {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
-const fetchBarangNames = async (data) => {
-  try {
-
-    const ids = [...new Set(data.map((item) => item.live_order_barang_id))];
-    const requests = ids.map((id) =>
-      $api.get(`${url.value}/api/entrybarang/${id}`)
-    );
-    const responses = await Promise.all(requests);
-
-    for (let i = 0; i < responses.length; i++) {
-
-      const entryData = responses[i].data.data;
-
-      const barangId = ids[i];
-      const namaBarang = entryData.barangentry_nama;
-      const codeId = entryData.barangentry_code_id;
-
-      let kodeBarang = "-";
-
-      if (codeId) {
-        const codeRes = await $api.get(
-          `${url.value}/api/codebarang/${codeId}`
-        );
-
-        kodeBarang = codeRes.data.code_nama || "-";
-      }
-
-      barangMap.value[barangId] = {
-        nama: namaBarang,
-        kode: kodeBarang,
-      };
-    }
-    // responses.forEach((res, i) => {
-    //   barangMap.value[ids[i]] = res.data.data.barangentry_nama;
-    // });
-  } catch (error) {
-    console.error("Gagal fetch nama barang:", error);
-  }
-};
-
 const fetchDataPengiriman = async () => {
   try {
-
-    let endpoint = "";
     if (activeTab.value === "order") {
-      endpoint = "/api/live-barang";
+      const res = await $api.get(`${url.value}/api/live-barang/data-live-grouped`);
+      pengirimanData.value = res.data.data || {};
     } else {
-      endpoint = "/api/live-barang/getAmountLive";
-    }
-    const res = await $api.get(`${url.value}${endpoint}`);
-    // const res = await $api.get(`http://192.168.18.52:8080${endpoint}`);
-    pengirimanData.value = res.data.data;
-    if (activeTab.value === "order") {
-      await fetchBarangNames(pengirimanData.value);
+      const res = await $api.get(`${url.value}/api/live-barang/getAmountLive`);
+      transactionData.value = res.data.data || [];
     }
   } catch (error) {
-    console.error("Gagal fetch data pengiriman:", error);
+    console.error("Gagal fetch data:", error);
   }
 };
 
-const sortedPengirimanData = computed(() => {
-  return [...pengirimanData.value].sort(
-    (a, b) => new Date(b.created_at) - new Date(a.created_at)
-  );
-});
-
 const groupedData = computed(() => {
-  const groups = {};
-
-  sortedPengirimanData.value.forEach((item) => {
-    if (!groups[item.live_order_nama_akun]) {
-      groups[item.live_order_nama_akun] = [];
-    }
-    groups[item.live_order_nama_akun].push(item);
-  });
-
-  return groups;
+  return pengirimanData.value || {};
 });
 
 const filteredGroupedData = computed(() => {
   if (!searchQuery.value) return groupedData.value;
+  const result = {};
 
-  let result = {};
-
-  for (let akun in groupedData.value) {
-    const filteredItems = groupedData.value[akun].filter((item) => {
-      const namaBarang = barangMap[item.live_order_barang_id]?.nama || "";
-      const kodeBarang = barangMap[item.live_order_barang_id]?.kode || "";
-      const platform = capitalizeFirst(item.live_order_platform);
+  for (const akun in groupedData.value) {
+    const filtered = groupedData.value[akun].filter(item => {
       return (
         akun.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        namaBarang.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        kodeBarang.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        platform.toLowerCase().includes(searchQuery.value.toLowerCase())
+        item.barangentry_nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.code_nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.live_order_platform?.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     });
-
-    if (filteredItems.length > 0) {
-      result[akun] = filteredItems;
-    }
+    if (filtered.length) result[akun] = filtered;
   }
-
   return result;
 });
 
 const paginatedGroupedData = computed(() => {
-  let groups = Object.entries(filteredGroupedData.value);
+  const groups = Object.entries(filteredGroupedData.value);
 
-  groups.sort((a, b) => {
-    const latestA = new Date(a[1][0].created_at);
-    const latestB = new Date(b[1][0].created_at);
-    return latestB - latestA;
-  });
-
-  if (itemsPerPage.value === "all") {
-    return Object.fromEntries(groups);
-  }
+  if (itemsPerPage.value === "all") return Object.fromEntries(groups);
 
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
@@ -562,128 +433,115 @@ const paginatedGroupedData = computed(() => {
   return Object.fromEntries(groups.slice(start, end));
 });
 
-const totalGroups = computed(() => Object.keys(filteredGroupedData.value).length);
+const totalGroups = computed(() =>
+  Object.keys(filteredGroupedData.value).length
+);
 
 const totalHargaPerAkun = computed(() => {
-  const totalMap = {};
+  const result = {};
 
-  sortedPengirimanData.value.forEach((item) => {
-    if (!totalMap[item.live_order_nama_akun]) {
-      totalMap[item.live_order_nama_akun] = 0;
-    }
-    totalMap[item.live_order_nama_akun] += Number(
-      item.live_order_harga_terjual
-    );
-  });
-
-  return totalMap;
+  for (const akun in groupedData.value) {
+    result[akun] = groupedData.value[akun].reduce((sum, item) => {
+      return sum + Number(item.live_order_harga_terjual);
+    }, 0);
+  }
+  return result;
 });
 
-function validate() {
-  errors.barang = !form.barang ? "Kode barang wajib diisi" : "";
-  errors.namaAkun = !form.value.namaAkun ? "Nama akun wajib diisi" : "";
-  errors.platform = !form.value.platform ? "Platform selesai wajib diisi" : "";
-  errors.hargaTotal = !form.value.hargaTotal ? "Harga Total wajib diisi" : "";
-
-  return Object.values(errors).every((err) => !err);
-}
-
-const submitLiveOrder = async () => {
-
-  isSubmitting.value = true;
-  try {
-
-    const namaBarang = await $api.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang);
-    await $api.post(`${url.value}/api/live-barang/store-live`, {
-      live_order_barang_id: namaBarang.data.data.barangentry_id,
-      live_order_nama_akun: form.value.namaAkun,
-      live_order_platform: form.value.platform,
-      live_order_harga_terjual: form.value.hargaTotal,
-    });
-
-    form.value = {
-      barang: "",
-      namaAkun: "",
-      platform: "",
-      hargaTotal: "",
-    };
-    closeModalAddOrder();
-    await fetchDataPengiriman();
-    Swal.fire({
-      title: "Berhasil!",
-      text: "Order Berhasil ditambahkan.",
-      icon: "success",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  } catch (error) {
-    console.error("Gagal menyimpan data:", error);
-    Swal.fire({
-      title: "Gagal!",
-      text: "Terjadi kesalahan saat menambahkan order.",
-      icon: "error",
-    });
-  } finally {
-    isSubmitting.value = false;
+const totalPages = computed(() => {
+  if (itemsPerPage.value === "all") return 1;
+  if (activeTab.value === "order") {
+    return Math.ceil(totalGroups.value / itemsPerPage.value);
   }
+  return Math.ceil(filteredTransaction.value.length / itemsPerPage.value);
+});
+
+const paginatedPages = computed(() => {
+
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (current <= 3) pages.push(1,2,3,"...",total);
+    else if (current >= total-2) pages.push(1,"...",total-2,total-1,total);
+    else pages.push(1,"...",current-1,current,current+1,"...",total);
+  }
+  return pages;
+});
+
+const filteredTransaction = computed(() => {
+
+  if (!searchQuery.value) return transactionData.value;
+
+  return transactionData.value.filter(item =>
+    item.live_order_nama_akun?.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+const pagination = computed(() => {
+
+  if (itemsPerPage.value === "all") return filteredTransaction.value;
+
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+
+  return filteredTransaction.value.slice(start, end);
+});
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0
+  }).format(Number(value));
 };
 
-const editOrderLive = async (id) => {
-  try {
-
-    const res = await $api.get(`${url.value}/api/live-barang/show-live/${id}`);
-    const data = res.data.data;
-    const resBarang = await $api.get(
-      `${url.value}/api/entrybarang/` + data.live_order_barang_id);
-    const code = resBarang.data.data.barangentry_code_id;
-
-    const codeNama = await $api.get(`${url.value}/api/codebarang/` + code);
-
-    form.value.id = data.live_order_id;
-    form.value.barang = codeNama.data.code_nama;
-    form.value.namaAkun = data.live_order_nama_akun;
-    form.value.platform = data.live_order_platform.toLowerCase();
-    form.value.hargaTotal = Number(data.live_order_harga_terjual);
-
-    isModalOpenEditOrder.value = true;
-  } catch (error) {
-    console.error("Gagal mengambil data:", error);
-  }
+const capitalizeFirst = (str) => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-const submitLiveEditOrder = async () => {
+const handleSave = () => {
+  isModalOpen.value = false;
+};
 
-  isSubmittingEdit.value = true;
+const handleRemoveItem = (index) => {
+  selected.value.barang.splice(index, 1);
+};
+
+const openModalEditTransaksi = async (namaAkun) => {
   try {
-    const namaBarang = await $api.get(
-      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang);
-    await $api.put(
-      `${url.value}/api/live-barang/update-live/${form.value.id}`,
-      {
-        live_order_barang_id: namaBarang.data.data.barangentry_id,
-        live_order_nama_akun: form.value.namaAkun,
-        live_order_platform: form.value.platform,
-        live_order_harga_terjual: form.value.hargaTotal,
+    const { data } = await $api.get(
+      `${url.value}/api/live-barang/data-live/` + namaAkun
+    );
+    const barangBelumPackaging = data.data.filter(item => item.is_check === 0);
+
+    if (barangBelumPackaging.length === 0) {
+      Swal.fire({
+        icon: "info",
+        title: "Semua Barang Sudah di Packaging",
+        text: "Tidak ada barang tersisa untuk diproses.",
       });
-    isModalOpenEditOrder.value = false;
-    await fetchDataPengiriman();
-    Swal.fire({
-      title: "Berhasil!",
-      text: "Order Berhasil diedit.",
-      icon: "success",
-      timer: 1500,
-      showConfirmButton: false,
-    });
+      return;
+    }
+
+    selected.value = {
+      namaAkun: data.data[0].live_order_nama_akun,
+      barang: barangBelumPackaging.map((item) => ({
+        kode: item.code_nama,
+        nama: item.barangentry_nama,
+        jumlah: item.live_order_jumlah_barang,
+        harga: parseFloat(item.live_order_harga_terjual),
+        live_order_id: item.live_order_id,
+        platform: item.live_order_platform,
+        is_check: true,
+      })),
+    };
+    isModalOpen.value = true;
   } catch (error) {
-    console.error("Gagal update data:", error);
-    Swal.fire({
-      title: "Gagal!",
-      text: "Terjadi kesalahan saat menambahkan produk.",
-      icon: "error",
-    });
-  } finally {
-    isSubmittingEdit.value = false;
+    console.error("Gagal ambil data:", error);
   }
 };
 
@@ -694,60 +552,12 @@ const closeModalEditOrder = () => {
 
 const resetForm = () => {
   form.value = {
+    id: null,
     barang: "",
     namaAkun: "",
     platform: "",
     hargaTotal: "",
   };
-};
-
-const listpengirimanData = computed(() => {
-  if (!searchQuery.value) return sortedPengirimanData.value;
-
-  const q = searchQuery.value.toLowerCase();
-
-  return sortedPengirimanData.value.filter((pengiriman) => {
-    return (
-      pengiriman.live_order_nama_akun?.toLowerCase().includes(q) ||
-      pengiriman.live_order_platform?.toLowerCase().includes(q)
-    );
-  });
-});
-
-const pagination = computed(() => {
-  if (itemsPerPage.value === "all") {
-    return listpengirimanData.value;
-  }
-
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return listpengirimanData.value.slice(start, end);
-});
-
-const totalPages = computed(() => {
-  if (itemsPerPage.value === "all") return 1;
-
-  if (activeTab.value === "order") {
-    return Math.ceil(totalGroups.value / itemsPerPage.value);
-  }
-
-  return Math.ceil(listpengirimanData.value.length / itemsPerPage.value);
-});
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("id-ID", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 };
 
 const openModalAddOrder = () => {
@@ -756,94 +566,96 @@ const openModalAddOrder = () => {
 
 const closeModalAddOrder = () => {
   isModalOpenAddOrder.value = false;
-  resetForm();
 };
 
-const formattedHarga = computed(() => {
-  if (!form.value.hargaTotal) return "";
-  return form.value.hargaTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-});
+const submitLiveOrder = async () => {
+  isSubmitting.value = true;
+  try {
+    const namaBarang = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
+    );
 
-const updateHarga = (val) => {
-  const number = val.replace(/\./g, "");
-  form.value.hargaTotal = number;
+    await $api.post(`${url.value}/api/live-barang/store-live`,{
+      live_order_barang_id:namaBarang.data.data.barangentry_id,
+      live_order_nama_akun:form.value.namaAkun,
+      live_order_platform:form.value.platform,
+      live_order_harga_terjual:form.value.hargaTotal
+    });
+
+    closeModalAddOrder();
+    fetchDataPengiriman();
+    Swal.fire("Berhasil","Order berhasil ditambahkan","success");
+  } catch(e) {
+    Swal.fire("Error","Gagal menambahkan order","error");
+  }
+  isSubmitting.value = false;
+};
+
+const editOrderLive = async (id) => {
+  try {
+    const res = await $api.get(`${url.value}/api/live-barang/show-live/${id}`);
+    const data = res.data.data;
+    form.value.id = data.live_order_id;
+    form.value.namaAkun = data.live_order_nama_akun;
+    form.value.platform = data.live_order_platform;
+    form.value.hargaTotal = data.live_order_harga_terjual;
+    isModalOpenEditOrder.value = true;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const submitLiveEditOrder = async () => {
+  isSubmittingEdit.value = true;
+  try {
+    await $api.put(`${url.value}/api/live-barang/update-live/${form.value.id}`,{
+      live_order_nama_akun:form.value.namaAkun,
+      live_order_platform:form.value.platform,
+      live_order_harga_terjual:form.value.hargaTotal
+    });
+    isModalOpenEditOrder.value = false;
+    fetchDataPengiriman();
+    Swal.fire("Berhasil","Order berhasil diupdate","success");
+  } catch(e) {
+    Swal.fire("Error","Gagal update","error");
+  }
+  isSubmittingEdit.value = false;
 };
 
 const deleteOrder = async (id) => {
   const result = await Swal.fire({
-    title: "Konfirmasi Hapus",
-    text: `Anda yakin ingin menghapus order ini?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Ya, Hapus!",
-    cancelButtonText: "Batal",
-    reverseButtons: true,
+    title:"Hapus Order?",
+    icon:"warning",
+    showCancelButton:true
   });
 
-  if (result.isConfirmed) {
-    try {
-
-      await $api.delete(`${url.value}/api/live-barang/delete-live/${id}`);
-
-      await fetchDataPengiriman();
-      await Swal.fire({
-        title: "Berhasil!",
-        text: `Order ini telah dihapus.`,
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      console.error("Error saat menghapus order ini:", error);
-      Swal.fire({
-        title: "Gagal",
-        text: "Terjadi kesalahan saat menghapus order ini.",
-        icon: "error",
-      });
-    }
-  }
+  if(!result.isConfirmed) return;
+  await $api.delete(`${url.value}/api/live-barang/delete-live/${id}`);
+  fetchDataPengiriman();
 };
 
-const paginatedPages = computed(() => {
-  const total = totalPages.value;
-  const current = currentPage.value;
-  const pages = [];
-
-  if (total <= 5) {
-    for (let i = 1; i <= total; i++) {
-      pages.push(i);
-    }
-  } else {
-    if (current <= 3) {
-      pages.push(1, 2, 3, "...", total);
-    } else if (current >= total - 2) {
-      pages.push(1, "...", total - 2, total - 1, total);
-    } else {
-      pages.push(1, "...", current - 1, current, current + 1, "...", total);
-    }
-  }
-
-  return pages;
+const formattedHarga = computed(()=>{
+  if(!form.value.hargaTotal) return "";
+  return form.value.hargaTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
 });
 
-watch(isModalOpenAddOrder, async (val) => {
-  if (val) {
-    await nextTick();
-    barangInput.value.focus();
-  }
-});
+const updateHarga = (val)=>{
+  const number = val.replace(/\./g,"");
+  form.value.hargaTotal = number;
+};
 
-watch(searchQuery, () => {
-  currentPage.value = 1;
-});
+watch(searchQuery,()=>currentPage.value=1);
 
-watch(currentPage, (val) => {
-  if (val < 1) currentPage.value = 1;
-  if (val > totalPages.value) currentPage.value = totalPages.value;
-});
-
-watch(activeTab, () => {
+watch(activeTab,()=>{
+  currentPage.value=1;
   fetchDataPengiriman();
+});
+
+watch(isModalOpenAddOrder,async(val)=>{
+  if(val){
+    await nextTick();
+    barangInput.value?.focus();
+  }
 });
 </script>
 

@@ -158,7 +158,7 @@
     </div>
   </div>
 
-  <div v-if="showImageModal" class="fixed inset-0 bg-opacity-70 flex items-center justify-center z-50">
+  <div v-if="showImageModal" class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
     <div class="bg-white p-4 rounded-lg max-w-2xl w-full relative">
       <button class="absolute right-3 top-2 text-xl text-gray-500 hover:text-black" @click="showImageModal = false">
         ✕
