@@ -324,4 +324,34 @@ class LiveOrderTController extends Controller
             'data' => $liveorder
         ], 200);
     }
+
+    public function getGroupedByNamaAkun()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $data = LiveOrderT::select(
+            'live_order_t.*',
+            'barangentry_m.barangentry_nama',
+            'code_m.code_nama'
+        )
+            ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'live_order_t.live_order_barang_id')
+            ->join('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
+            ->get();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'code'    => 404,
+                'message' => 'Live order not found',
+                'data'    => null
+            ], 404);
+        }
+
+        $groupedData = $data->groupBy('live_order_nama_akun');
+
+        return response()->json([
+            'code'    => 200,
+            'message' => 'Data Live Grouped By Nama Akun',
+            'data'    => $groupedData
+        ], 200);
+    }
 }
