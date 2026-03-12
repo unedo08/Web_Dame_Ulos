@@ -234,8 +234,7 @@ async function submitForm() {
       transaksi_cara_bayar: form.metodePembayaran,
       transaksi_tipe: "online",
       transaksi_status: "pending",
-      transaksi_catatan: form.catatan,
-      transaksi_platform: form.platform,
+      transaksi_catatan: form.catatan
     });
 
     const transaksi_id = transaksiRes.data.data.transaksi_id;
@@ -250,7 +249,8 @@ async function submitForm() {
         transaksidetail_barang_id: barangRes.data.data.barangentry_id,
         transaksidetail_jumlah_barang: item.quantity,
         transaksidetail_harga_barang: item.barangentry_harga_net,
-        transaksidetail_status_penjualan: 0
+        transaksidetail_status_penjualan: 0,
+        transaksidetail_platform: form.platform,
       });
     }
 

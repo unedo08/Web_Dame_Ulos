@@ -188,48 +188,60 @@ async function submitForm() {
   isSubmitting.value = true;
 
   try {
-    for (const item of barangTerpilih) {      
-      const trx = await $api.post(`${url.value}/api/transaksi`, {
-        transaksi_nama_customer: props.namaAkun,
-        transaksi_nomor_telepon: form.value.no_telepon,
-        transaksi_jumlah_barang: item.jumlah,
-        transaksi_total_harga: Number(item.harga),
-        transaksi_cara_bayar: form.value.metode,
-        transaksi_tipe: "Live",
-        transaksi_status: "Live",
-        transaksi_catatan: "",
-        transaksi_platform: item.platform
-      });
+    const totalHarga = barangTerpilih.reduce((sum, item) => {
+      return sum + Number(item.harga);
+    }, 0);
 
-      const transaksi_id = trx.data.data.transaksi_id;
+    const totalJumlah = barangTerpilih.reduce((sum, item) => {
+      return sum + Number(item.jumlah);
+    }, 0);
 
-      const barangRes = await $api.get(`${url.value}/api/entrybarang/getDataByCode/${item.kode}`);
+    const trx = await $api.post(`${url.value}/api/transaksi`, {
+      transaksi_nama_customer: props.namaAkun,
+      transaksi_nomor_telepon: form.value.no_telepon,
+      transaksi_jumlah_barang: totalJumlah,
+      transaksi_total_harga: totalHarga,
+      transaksi_cara_bayar: form.value.metode,
+      transaksi_tipe: "Live",
+      transaksi_status: "Live",
+      transaksi_catatan: ""
+    });
+
+    const transaksi_id = trx.data.data.transaksi_id;
+    for (const item of barangTerpilih) {
+      const barangRes = await $api.get(
+        `${url.value}/api/entrybarang/getDataByCode/${item.kode}`
+      );
       const barangData = barangRes.data;
-
       await $api.post(`${url.value}/api/transaksi-detail`, {
         transaksidetail_transaksi_id: transaksi_id,
         transaksidetail_barang_id: barangData.data.barangentry_id,
         transaksidetail_jumlah_barang: item.jumlah,
         transaksidetail_harga_barang: Number(item.harga),
+        transaksidetail_platform: item.platform,
         transaksidetail_status_penjualan: 0
       });
 
-      await $api.patch(`${url.value}/api/live-barang/${item.live_order_id}/check`, {});
-
-      await $api.post(`${url.value}/api/pengiriman-barang`, {
-        pengirimanBarang_transaksi_id: transaksi_id,
-        pengirimanBarang_nama_penerima: form.value.nama_penerima,
-        pengirimanBarang_akun_penerima: props.namaAkun,
-        pengirimanBarang_no_telepon: form.value.no_telepon,
-        pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
-        pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
-        pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
-        pengirimanBarang_catatan: "",
-        pengirimanBarang_status: "Proses",
-      });
+      await $api.patch(
+        `${url.value}/api/live-barang/${item.live_order_id}/check`,
+        {}
+      );
     }
 
+    await $api.post(`${url.value}/api/pengiriman-barang`, {
+      pengirimanBarang_transaksi_id: transaksi_id,
+      pengirimanBarang_nama_penerima: form.value.nama_penerima,
+      pengirimanBarang_akun_penerima: props.namaAkun,
+      pengirimanBarang_no_telepon: form.value.no_telepon,
+      pengirimanBarang_harga_kirim_barang: form.value.biaya_pengiriman,
+      pengirimanBarang_jenis_pengiriman_barang: form.value.pengiriman,
+      pengirimanBarang_alamat_pengiriman_barang: form.value.alamat,
+      pengirimanBarang_catatan: "",
+      pengirimanBarang_status: "Proses",
+    });
+
     Swal.fire("Berhasil!", "Transaksi berhasil disimpan!", "success");
+
     emit("save");
     emit("close");
 
