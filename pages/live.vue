@@ -566,6 +566,7 @@ const openModalAddOrder = () => {
 
 const closeModalAddOrder = () => {
   isModalOpenAddOrder.value = false;
+  resetForm();
 };
 
 const submitLiveOrder = async () => {
