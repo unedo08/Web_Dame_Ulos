@@ -19,6 +19,7 @@ class TransaksiDetailT extends Model
         'transaksidetail_jumlah_barang',
         'transaksidetail_harga_barang',
         'transaksidetail_status_penjualan',
+        'transaksidetail_platform',
         'create_id',
         'update_id',
         'delete_id'

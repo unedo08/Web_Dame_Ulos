@@ -117,25 +117,21 @@ class DashboardController extends Controller
         if ($type == 'day') {
             // PIE CHART (hari ini)
             $pie = DB::select("
-                SELECT tt2.transaksi_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                AND DATE(tt2.created_at) = CURDATE()
-                GROUP BY tt2.transaksi_platform
+                AND tt.transaksidetail_platform IS NOT NULL
+                AND DATE(tt.created_at) = CURDATE()
+                GROUP BY tt.transaksidetail_platform
             ");
 
             // LINE CHART (per hari bulan ini)
             $line = DB::select("
                 SELECT 
-                    DATE(tt2.created_at) as Tanggal,
-                    tt2.transaksi_platform,
+                    DATE(tt.created_at) as Tanggal,
+                    tt.transaksidetail_platform,
                     COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
                 AND tt2.deleted_at IS NULL
                 AND MONTH(tt2.created_at) = MONTH(CURDATE())
@@ -148,30 +144,27 @@ class DashboardController extends Controller
 
             // PIE CHART (bulan ini)
             $pie = DB::select("
-                SELECT tt2.transaksi_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                AND MONTH(tt2.created_at) = MONTH(CURDATE())
-                AND YEAR(tt2.created_at) = YEAR(CURDATE())
+                AND tt.transaksidetail_platform IS NOT NULL
+                AND MONTH(tt.created_at) = MONTH(CURDATE())
+                AND YEAR(tt.created_at) = YEAR(CURDATE())
                 GROUP BY tt2.transaksi_platform
             ");
 
             // LINE CHART (per bulan tahun ini)
             $line = DB::select("
                 SELECT 
-                    MONTH(tt2.created_at) as Bulan,
-                    tt2.transaksi_platform,
+                    MONTH(tt.created_at) as Bulan,
+                    tt.transaksidetail_platform,
                     COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                AND YEAR(tt2.created_at) = YEAR(CURDATE())
-                GROUP BY MONTH(tt2.created_at), tt2.transaksi_platform
+                AND tt.transaksidetail_platform IS NOT NULL
+                AND MONTH(tt.created_at) = MONTH(CURDATE())
+                AND YEAR(tt.created_at) = YEAR(CURDATE())
+                GROUP BY MONTH(tt.created_at), tt.transaksidetail_platform
                 ORDER BY Bulan
             ");
 
@@ -179,28 +172,24 @@ class DashboardController extends Controller
 
             // PIE CHART (tahun ini)
             $pie = DB::select("
-                SELECT tt2.transaksi_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                AND YEAR(tt2.created_at) = YEAR(CURDATE())
-                GROUP BY tt2.transaksi_platform
+                AND tt.transaksidetail_platform IS NOT NULL
+                AND YEAR(tt.created_at) = YEAR(CURDATE())
+                GROUP BY tt.transaksidetail_platform
             ");
 
             // LINE CHART (per tahun)
             $line = DB::select("
                 SELECT 
-                    YEAR(tt2.created_at) as Tahun,
-                    tt2.transaksi_platform,
+                    YEAR(tt.created_at) as Tahun,
+                    tt.transaksidetail_platform,
                     COUNT(*) as total
                 FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                GROUP BY YEAR(tt2.created_at), tt2.transaksi_platform
+                AND tt.transaksidetail_platform IS NOT NULL
+                GROUP BY YEAR(tt.created_at), tt.transaksidetail_platform
                 ORDER BY Tahun
             ");
         }

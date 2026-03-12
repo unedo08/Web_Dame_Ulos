@@ -253,7 +253,7 @@ class TransaksiTController extends Controller
                             'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
                             'transaksi_status' => $d->transaksi_status ?? null,
-                            'transaksi_platform' => $first->transaksi_platform ?? null,
+                            'transaksi_platform' => $d->transaksidetail_platform ?? null,
 
                         ];
                     });

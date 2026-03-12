@@ -50,7 +50,8 @@ class TransaksiDetailTController extends Controller
             'transaksidetail_barang_id' => 'required|integer|exists:barangentry_m,barangentry_id',
             'transaksidetail_jumlah_barang' => 'required|integer|min:1',
             'transaksidetail_harga_barang' => 'required|numeric|min:0',
-            'transaksidetail_status_penjualan' => 'required|integer'
+            'transaksidetail_status_penjualan' => 'required|integer',
+            'transaksidetail_platform' => 'nullable|string'
         ]);
 
         return DB::transaction(function () use ($validatedData) {
