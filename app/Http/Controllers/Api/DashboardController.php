@@ -133,10 +133,10 @@ class DashboardController extends Controller
                     COUNT(*) as total
                 FROM transaksidetail_t tt
                 WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
-                AND MONTH(tt2.created_at) = MONTH(CURDATE())
-                AND YEAR(tt2.created_at) = YEAR(CURDATE())
-                GROUP BY DATE(tt2.created_at), tt2.transaksi_platform
+                AND tt.transaksidetail_platform IS NOT NULL
+                AND MONTH(tt.created_at) = MONTH(CURDATE())
+                AND YEAR(tt.created_at) = YEAR(CURDATE())
+                GROUP BY DATE(tt.created_at), tt.transaksidetail_platform
                 ORDER BY Tanggal
             ");
 
@@ -150,7 +150,7 @@ class DashboardController extends Controller
                 AND tt.transaksidetail_platform IS NOT NULL
                 AND MONTH(tt.created_at) = MONTH(CURDATE())
                 AND YEAR(tt.created_at) = YEAR(CURDATE())
-                GROUP BY tt2.transaksi_platform
+                GROUP BY tt.transaksidetail_platform
             ");
 
             // LINE CHART (per bulan tahun ini)
