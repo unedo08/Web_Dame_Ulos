@@ -1,67 +1,104 @@
 <template>
-    <div>
-        <apexchart type="line" height="350" :options="chartOptions" :series="dataBarang.series" />
-    </div>
+  <div v-if="chartData.datasets.length">
+    <Line :data="chartData" :options="chartOptions" />
+  </div>
+
+  <div v-else class="loading-placeholder">
+    Data kosong...
+  </div>
 </template>
 
 <script setup>
 import { computed } from "vue"
+import { Line } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale
+} from "chart.js"
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale
+)
 
 const props = defineProps({
-    dataBarang: Object
+  dataBarang: Object
 })
 
-const chartOptions = computed(() => ({
-    chart: {
-        type: "line",
-        toolbar: { show: false },
-        zoom: { enabled: false }
-    },
+const chartData = computed(() => {
+  const labels = props.dataBarang?.categories || []
 
-    stroke: {
-        curve: "smooth",
-        width: 3
-    },
+  const datasets = (props.dataBarang?.series || []).map((item, index) => {
+    const colors = ["#22c55e", "#3b82f6", "#f59e0b"]
 
-    markers: {
-        size: 4
-    },
-
-    xaxis: {
-        categories: props.dataBarang?.categories || [],
-        labels: {
-            show:false
-        }
-    },
-
-    yaxis: {
-        title: {
-            text: "Nilai (Rp)"
-        },
-        labels: {
-            formatter: val => val.toLocaleString("id-ID")
-        }
-    },
-
-    tooltip: {
-        y: {
-            formatter: val => "Rp " + val.toLocaleString("id-ID")
-        }
-    },
-
-    colors: [
-        "#22c55e",
-        "#3b82f6",
-        "#f59e0b"
-    ],
-
-    legend: {
-        position: "top"
-    },
-
-    title: {
-        // text: "Grafik Omset Per Hari",
-        align: "center"
+    return {
+      label: item.name,
+      data: item.data.map(v => Number(v)),
+      borderColor: colors[index % colors.length],
+      backgroundColor: colors[index % colors.length],
+      tension: 0.4,
+      fill: false,
+      pointRadius: 4
     }
-}))
+  })
+
+  return {
+    labels,
+    datasets
+  }
+})
+
+const chartOptions = {
+  responsive: true,
+
+  plugins: {
+    legend: {
+      position: "top"
+    },
+    tooltip: {
+      callbacks: {
+        label: ctx =>
+          `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString("id-ID")}`
+      }
+    }
+  },
+
+  scales: {
+    x: {
+      ticks: {
+        display: false
+      }
+    },
+    y: {
+      title: {
+        display: true,
+        text: "Nilai (Rp)"
+      },
+      ticks: {
+        callback: val => val.toLocaleString("id-ID")
+      }
+    }
+  }
+}
 </script>
+
+<style scoped>
+.loading-placeholder {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+</style>

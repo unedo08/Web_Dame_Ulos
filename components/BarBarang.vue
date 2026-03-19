@@ -1,11 +1,6 @@
 <template>
-  <div v-if="series.length">
-    <apexchart
-      type="bar"
-      height="350"
-      :options="chartOptions"
-      :series="series"
-    />
+  <div v-if="chartData.datasets.length">
+    <Bar :data="chartData" :options="chartOptions" />
   </div>
 
   <div v-else class="loading-placeholder">
@@ -15,70 +10,85 @@
 
 <script setup>
 import { computed } from "vue"
+import { Bar } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from "chart.js"
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+)
 
 const props = defineProps({
   dataBarang: Object
 })
 
-const categories = computed(() =>
-  Object.keys(props.dataBarang || {})
-)
+const chartData = computed(() => {
+  const labels = Object.keys(props.dataBarang || {})
+  const data = Object.values(props.dataBarang || {}).map(v => Number(v))
 
-const series = computed(() => {
-  const values = Object.values(props.dataBarang || {}).map(v => Number(v))
-
-  return values.length
-    ? [{ name: "Total", data: values }]
-    : []
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Total",
+        data,
+        backgroundColor: [
+          "#22c55e",
+          "#3b82f6",
+          "#f59e0b",
+          "#ef4444",
+          "#a855f7"
+        ],
+        borderRadius: 8
+      }
+    ]
+  }
 })
 
-const chartOptions = computed(() => ({
-  chart: {
-    type: "bar",
-    toolbar: { show: false }
-  },
-
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      columnWidth: "50%",
-      borderRadius: 8,
-      distributed: true
-    }
-  },
-
-  dataLabels: {
-    enabled: true,
-    formatter: val => "Rp " + val.toLocaleString("id-ID")
-  },
-
-  xaxis: {
-    categories: categories.value
-  },
-
-  yaxis: {
-    title: {
-      text: "Nilai (Rp)"
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false
     },
-    labels: {
-      formatter: val => val.toLocaleString("id-ID")
+    tooltip: {
+      callbacks: {
+        label: ctx => "Rp " + ctx.raw.toLocaleString("id-ID")
+      }
     }
   },
-
-  tooltip: {
+  scales: {
     y: {
-      formatter: val => "Rp " + val.toLocaleString("id-ID")
+      title: {
+        display: true,
+        text: "Nilai (Rp)"
+      },
+      ticks: {
+        callback: val => val.toLocaleString("id-ID")
+      }
     }
-  },
-
-  colors: [
-    "#22c55e",
-    "#3b82f6",
-    "#f59e0b"
-  ],
-
-  title: {
-    align: "center"
   }
-}))
+}
 </script>
+
+<style scoped>
+.loading-placeholder {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+</style>
