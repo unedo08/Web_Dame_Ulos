@@ -13,6 +13,7 @@ import {
   ArcElement,
 } from "chart.js";
 import { computed } from "vue";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
@@ -43,9 +44,20 @@ const chartData = computed(() => ({
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
+
   plugins: {
     legend: {
       position: "bottom",
+    },
+    datalabels: {
+      color: "#fff",
+      font: {
+        weight: "bold",
+        size: 14,
+      },
+      formatter: (value) => {
+        return value.toLocaleString("id-ID");
+      },
     },
   },
 };

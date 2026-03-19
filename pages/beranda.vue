@@ -1,6 +1,8 @@
 <template>
   <div class="beranda">
     <h1 class="page-title">Beranda</h1>
+    <title>Beranda</title>
+
     <div class="stat-wrapper">
       <div class="stat-card">
         <CubeIcon class="stat-icon" />
@@ -10,7 +12,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-header-custom">
@@ -19,78 +21,90 @@
 
         <div class="chart-main-content">
           <PiePlatform v-if="platformPieDay" :dataPlatform="platformPieDay" />
-          <div v-else class="loading-placeholder">
-            Menunggu data...
-          </div>
+          <div v-else class="loading-placeholder">Menunggu data...</div>
         </div>
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">
-          Jenis Transaksi Hari Ini
-        </div>
+        <div class="chart-title">Jenis Transaksi Hari Ini</div>
         <PieTransaksi v-if="transaksiDay" :dataTransaksi="transaksiDay" />
-        <div v-else class="loading-placeholder">
-          Menunggu data...
-        </div>
+        <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
 
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">
-          Jenis Transaksi Bulan Ini
-        </div>
+        <div class="chart-title">Jenis Transaksi Bulan Ini</div>
         <PieTransaksi v-if="transaksiMonth" :dataTransaksi="transaksiMonth" />
-        <div v-else class="loading-placeholder">
-          Menunggu data...
-        </div>
+        <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">
-          Platform Bulan Ini
-        </div>
+        <div class="chart-title">Platform Bulan Ini</div>
         <PiePlatform v-if="platformMonth" :dataPlatform="platformMonth" />
-        <div v-else class="loading-placeholder">
-          Menunggu data...
-        </div>
+        <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
 
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">
-          Komposisi Nilai Barang Bulan Ini
-        </div>
+        <div class="chart-title">Grafik Omset Per Bulan</div>
 
-        <PiePlatform v-if="barangMonth" :dataPlatform="barangMonth" />
-        <div v-else class="loading-placeholder">
-          Menunggu data...
-        </div>
+        <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Grafik Omset Per Hari</div>
+
+        <LineBarang v-if="barangLine" :dataBarang="barangLine" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Diagram pie perbandingan customer baru dan custumer
+          lama per bulan</div>
+
+        <PiePlatform v-if="customerPie" :dataPlatform="customerPie" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Pertumbuhan costumer baru per tahun</div>
+
+        <LineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-
 import { ref, onMounted } from "vue"
 import { useRuntimeConfig, useNuxtApp } from "#imports"
 import { CubeIcon } from "@heroicons/vue/24/solid"
 import PieTransaksi from "~/components/PieTransaksi.vue"
 import PiePlatform from "~/components/PiePlatform.vue"
+import BarBarang from "~/components/BarBarang.vue"
+import LineBarang from "~/components/LineBarang.vue"
+import LineBarangCustomer from "~/components/LineBarangCustomer.vue"
 import dayjs from "dayjs"
 
 const { $api } = useNuxtApp()
 const config = useRuntimeConfig()
 const url = config.public.apiBase
+
 const totalBarang = ref(0)
 const platformPieDay = ref(null)
 const transaksiDay = ref(null)
 const transaksiMonth = ref(null)
 const platformMonth = ref(null)
 const barangMonth = ref(null)
+const barangLine = ref(null)
+const customerPie = ref(null)
+const customerLine = ref(null)
 
 onMounted(async () => {
   try {
@@ -103,7 +117,8 @@ onMounted(async () => {
       resDashboard,
       resDay,
       resMonth,
-      resBarangMonth
+      resBarangMonth,
+      resCustomer
     ] = await Promise.all([
 
       $api.get(`${url}/api/codebarang`),
@@ -126,50 +141,87 @@ onMounted(async () => {
 
       $api.get(`${url}/api/dashboard/barang`, {
         params: { type: "month" }
-      })
+      }),
+
+      $api.get(`${url}/api/dashboard/jumlah-customer`)
     ])
 
-    totalBarang.value = responseBarang.data.length;
-    const pieDataRaw = resDashboard.data.pie_chart
+    totalBarang.value = responseBarang.data.length
+
     const mappedPlatformDay = {}
-    if (pieDataRaw) {
-      pieDataRaw.forEach(item => {
-        const name = item.transaksi_platform || "Lainnya"
-        mappedPlatformDay[name] = item.total
-      })
-      platformPieDay.value = mappedPlatformDay
-    }
+    resDashboard.data.pie_chart?.forEach(item => {
+      const name = item.transaksi_platform || "Lainnya"
+      mappedPlatformDay[name] = item.total
+    })
+    platformPieDay.value = mappedPlatformDay
 
     const trxDayObj = {}
     resDay.data.data.per_transaksi.forEach(item => {
       trxDayObj[item.tipe] = item.total
     })
+    transaksiDay.value = trxDayObj
 
-    transaksiDay.value = trxDayObj;
     const trxMonthObj = {}
-
     resMonth.data.data.per_transaksi.forEach(item => {
       trxMonthObj[item.tipe] = item.total
     })
+    transaksiMonth.value = trxMonthObj
 
-    transaksiMonth.value = trxMonthObj;
     const platMonthObj = {}
-
     resMonth.data.data.per_platform.forEach(item => {
       platMonthObj[item.tipe] = item.total
     })
-
     platformMonth.value = platMonthObj
-    const barangMonthObj = {}
+
+    const barangObj = {}
+
     resBarangMonth.data.series.forEach(series => {
       const total = series.data.reduce((sum, val) => {
         return sum + Number(val)
       }, 0)
-      barangMonthObj[series.name] = total
+
+      barangObj[series.name] = total
     })
-    barangMonth.value = barangMonthObj
-  }
-  catch (error) {
+
+    barangMonth.value = barangObj
+
+    const lineSeries = resBarangMonth.data.series.map(series => ({
+      name: series.name,
+      data: series.data.map(val => Number(val))
+    }))
+
+    const categories = resBarangMonth.data.labels || []
+
+    barangLine.value = {
+      series: lineSeries,
+      categories
+    }
+
+    barangLine.value = {
+      series: lineSeries,
+      categories
+    }
+
+    customerPie.value = {
+      "Customer Baru": Number(resCustomer.data.pie_chart.customer_baru),
+      "Customer Lama": Number(resCustomer.data.pie_chart.customer_lama)
+    }
+
+    const customerSeries = [
+      {
+        name: "Total Customer",
+        data: resCustomer.data.line_chart.map(item => Number(item.total))
+      }
+    ]
+
+    const customerCategories = resCustomer.data.line_chart.map(item => item.bulan)
+
+    customerLine.value = {
+      series: customerSeries,
+      categories: customerCategories
+    }
+
+  } catch (error) {
     console.error("Gagal mengambil data dashboard:", error)
   }
 })
