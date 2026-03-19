@@ -394,7 +394,19 @@ const fetchDataPengiriman = async () => {
   try {
     if (activeTab.value === "order") {
       const res = await $api.get(`${url.value}/api/live-barang/data-live-grouped`);
-      pengirimanData.value = res.data.data || {};
+      const rawData = res.data.data || {}
+
+      const filtered = {}
+
+      for (const akun in rawData) {
+        const items = rawData[akun].filter(item => Number(item.is_check) === 0)
+
+        if (items.length > 0) {
+          filtered[akun] = items
+        }
+      }
+
+      pengirimanData.value = filtered
     } else {
       const res = await $api.get(`${url.value}/api/live-barang/getAmountLive`);
       transactionData.value = res.data.data || [];
@@ -420,7 +432,7 @@ const flatData = computed(() => {
 })
 
 const sortedFlatData = computed(() => {
-  return [...flatData.value].sort((a, b) => {
+  return [...filteredFlatData.value].sort((a, b) => {
     return new Date(b.created_at) - new Date(a.created_at)
   })
 })
@@ -432,6 +444,40 @@ const paginatedFlatData = computed(() => {
   const end = start + itemsPerPage.value
 
   return sortedFlatData.value.slice(start, end)
+})
+
+const filteredFlatData = computed(() => {
+  if (!searchQuery.value) return flatData.value
+
+  return flatData.value.filter(item => {
+    return (
+      item.akun?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.barangentry_nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.code_nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.live_order_platform?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  })
+})
+
+const groupedSortedData = computed(() => {
+  const grouped = {}
+
+  sortedFlatData.value.forEach(item => {
+    if (!grouped[item.akun]) {
+      grouped[item.akun] = []
+    }
+    grouped[item.akun].push(item)
+  })
+
+  return grouped
+})
+
+const sortedGroupedEntries = computed(() => {
+  return Object.entries(groupedSortedData.value).sort((a, b) => {
+    const lastA = new Date(a[1][0]?.created_at || 0)
+    const lastB = new Date(b[1][0]?.created_at || 0)
+    return lastB - lastA
+  })
 })
 
 const groupedData = computed(() => {
@@ -478,16 +524,12 @@ const filteredGroupedData = computed(() => {
 });
 
 const paginatedGroupedData = computed(() => {
-  const grouped = {}
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
 
-  paginatedFlatData.value.forEach(item => {
-    if (!grouped[item.akun]) {
-      grouped[item.akun] = []
-    }
-    grouped[item.akun].push(item)
-  })
-
-  return grouped
+  return Object.fromEntries(
+    sortedGroupedEntries.value.slice(start, end)
+  )
 })
 
 const totalGroups = computed(() =>
@@ -498,20 +540,24 @@ const totalHargaPerAkun = computed(() => {
   const result = {};
 
   for (const akun in groupedData.value) {
-    result[akun] = groupedData.value[akun].reduce((sum, item) => {
-      return sum + Number(item.live_order_harga_terjual);
-    }, 0);
+    let total = 0;
+
+    groupedData.value[akun].forEach(item => {
+      if (Number(item.is_check) === 0) {
+        total += Number(item.live_order_harga_terjual);
+      }
+    });
+
+    result[akun] = total;
   }
+
   return result;
 });
 
 const totalPages = computed(() => {
-  if (itemsPerPage.value === "all") return 1;
-  if (activeTab.value === "order") {
-    return Math.ceil(totalGroups.value / itemsPerPage.value);
-  }
-  return Math.ceil(filteredTransaction.value.length / itemsPerPage.value);
-});
+  if (itemsPerPage.value === "all") return 1
+  return Math.ceil(sortedGroupedEntries.value.length / itemsPerPage.value)
+})
 
 const paginatedPages = computed(() => {
 
