@@ -55,23 +55,23 @@
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">Grafik Omset Per Hari</div>
-
-        <LineBarang v-if="barangLine" :dataBarang="barangLine" />
-        <div v-else class="loading-placeholder">Menunggu data...</div>
-      </div>
-    </div>
-
-    <div class="chart-grid">
-      <div class="chart-card">
         <div class="chart-title">Diagram pie perbandingan customer baru dan custumer
           lama per bulan</div>
 
         <PiePlatform v-if="customerPie" :dataPlatform="customerPie" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
+    </div>
+    <div class="chart-grid-line">
+      <div class="chart-card-line">
+        <div class="chart-title">Grafik Omset Per Hari</div>
 
-      <div class="chart-card">
+        <LineBarang v-if="barangLine" :dataBarang="barangLine" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+    </div>
+    <div class="chart-grid-line">
+      <div class="chart-card-line">
         <div class="chart-title">Pertumbuhan costumer baru per tahun</div>
 
         <LineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
@@ -279,11 +279,32 @@ onMounted(async () => {
   margin-bottom: 32px;
 }
 
+.chart-grid-line {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  margin-bottom: 32px;
+  height: 400px;
+}
+
 .chart-card {
   background: #ffffff;
   padding: 28px;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.chart-card-line {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  height: 400px;
+}
+
+.chart-card-line canvas {
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .chart-title {

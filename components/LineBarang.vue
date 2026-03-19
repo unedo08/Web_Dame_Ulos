@@ -1,6 +1,6 @@
 <template>
   <div v-if="chartData.datasets.length">
-    <Line :data="chartData" :options="chartOptions" />
+    <Line :data="chartData" :options="chartOptions" style="height: 320px; width: 100%;" />
   </div>
 
   <div v-else class="loading-placeholder">
@@ -61,7 +61,7 @@ const chartData = computed(() => {
 
 const chartOptions = {
   responsive: true,
-
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       position: "top"
@@ -77,7 +77,7 @@ const chartOptions = {
   scales: {
     x: {
       ticks: {
-        display: false
+        display: true
       }
     },
     y: {
