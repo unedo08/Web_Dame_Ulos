@@ -62,6 +62,20 @@
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Jumlah Barang Masuk per bulan</div>
+
+        <PiePlatform v-if="jenisBarangPie" :dataPlatform="jenisBarangPie" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Jumlah Barang Terjual per bulan</div>
+
+        <PiePlatform v-if="barangTerjualPie" :dataPlatform="barangTerjualPie" />
+        <div v-else class="loading-placeholder">Menunggu data...</div>
+      </div>
+    </div>
     <div class="chart-grid-line">
       <div class="chart-card-line">
         <div class="chart-title">Grafik Omset Per Hari</div>
@@ -105,6 +119,8 @@ const barangMonth = ref(null)
 const barangLine = ref(null)
 const customerPie = ref(null)
 const customerLine = ref(null)
+const jenisBarangPie = ref(null)
+const barangTerjualPie = ref(null)
 
 onMounted(async () => {
   try {
@@ -118,7 +134,9 @@ onMounted(async () => {
       resDay,
       resMonth,
       resBarangMonth,
-      resCustomer
+      resCustomer,
+      resJenisBarang,
+      resJenisBarangTerjual
     ] = await Promise.all([
 
       $api.get(`${url}/api/codebarang`),
@@ -143,7 +161,13 @@ onMounted(async () => {
         params: { type: "month" }
       }),
 
-      $api.get(`${url}/api/dashboard/jumlah-customer`)
+      $api.get(`${url}/api/dashboard/jumlah-customer`),
+      $api.get(`${url}/api/dashboard/jenis-barang-entry`, {
+        params: { type: "month" }
+      }),
+       $api.get(`${url}/api/dashboard/jenis-barang-jual`, {
+        params: { type: "month" }
+      })
     ])
 
     totalBarang.value = responseBarang.data.length
@@ -220,6 +244,28 @@ onMounted(async () => {
       series: customerSeries,
       categories: customerCategories
     }
+
+    const jenisBarangObj = {}
+
+    resJenisBarang.data.forEach(item => {
+      if (item.Bulan === currentMonth) {
+        const name = "Kode " + item.kategori
+        jenisBarangObj[name] = (jenisBarangObj[name] || 0) + Number(item.total)
+      }
+    })
+
+    jenisBarangPie.value = jenisBarangObj
+
+    const barangTerjualObj = {}
+
+    resJenisBarangTerjual.data.forEach(item => {
+      if (item.Bulan === currentMonth) {
+        const name = "Kode " + item.kategori
+        barangTerjualObj[name] = (barangTerjualObj[name] || 0) + Number(item.total)
+      }
+    })
+
+    barangTerjualPie.value = barangTerjualObj
 
   } catch (error) {
     console.error("Gagal mengambil data dashboard:", error)

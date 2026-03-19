@@ -70,7 +70,7 @@ const chartOptions = {
     tooltip: {
       callbacks: {
         label: ctx =>
-          `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString("id-ID")}`
+          `${ctx.dataset.label}: ${ctx.raw.toLocaleString("id-ID")}`
       }
     }
   },
@@ -84,7 +84,7 @@ const chartOptions = {
     y: {
       title: {
         display: true,
-        text: "Nilai (Rp)"
+        text: "Jumlah"
       },
       ticks: {
         callback: val => val.toLocaleString("id-ID")
