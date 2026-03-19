@@ -35,6 +35,7 @@
           <tr>
             <!-- <th>No</th> -->
             <th class="px-4 py-2 text-left">Nama Akun</th>
+            <th class="px-4 py-2 text-left">Tanggal</th>
             <th class="px-4 py-2 text-left">Kode Barang</th>
             <th class="px-4 py-2 text-left">Nama Barang</th>
             <th class="px-4 py-2 text-left">Nama Platform</th>
@@ -53,6 +54,9 @@
               <!-- <td>{{ index + 1 }}</td> -->
               <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
                 {{ akun }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatTanggal(pengiriman.created_at) }}
               </td>
 
               <td class="px-4 py-2">
@@ -400,9 +404,60 @@ const fetchDataPengiriman = async () => {
   }
 };
 
+const flatData = computed(() => {
+  const result = []
+
+  for (const akun in pengirimanData.value) {
+    pengirimanData.value[akun].forEach(item => {
+      result.push({
+        ...item,
+        akun
+      })
+    })
+  }
+
+  return result
+})
+
+const sortedFlatData = computed(() => {
+  return [...flatData.value].sort((a, b) => {
+    return new Date(b.created_at) - new Date(a.created_at)
+  })
+})
+
+const paginatedFlatData = computed(() => {
+  if (itemsPerPage.value === "all") return sortedFlatData.value
+
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+
+  return sortedFlatData.value.slice(start, end)
+})
+
 const groupedData = computed(() => {
-  return pengirimanData.value || {};
-});
+  const entries = Object.entries(pengirimanData.value)
+
+  const sortedEntries = entries.map(([akun, items]) => {
+    const sortedItems = [...items].sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at)
+    })
+
+    return [akun, sortedItems]
+  })
+
+  sortedEntries.sort((a, b) => {
+    const lastA = new Date(a[1][0]?.created_at || 0)
+    const lastB = new Date(b[1][0]?.created_at || 0)
+    return lastB - lastA
+  })
+
+  const result = {}
+  sortedEntries.forEach(([akun, items]) => {
+    result[akun] = items
+  })
+
+  return result
+})
 
 const filteredGroupedData = computed(() => {
   if (!searchQuery.value) return groupedData.value;
@@ -423,15 +478,17 @@ const filteredGroupedData = computed(() => {
 });
 
 const paginatedGroupedData = computed(() => {
-  const groups = Object.entries(filteredGroupedData.value);
+  const grouped = {}
 
-  if (itemsPerPage.value === "all") return Object.fromEntries(groups);
+  paginatedFlatData.value.forEach(item => {
+    if (!grouped[item.akun]) {
+      grouped[item.akun] = []
+    }
+    grouped[item.akun].push(item)
+  })
 
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-
-  return Object.fromEntries(groups.slice(start, end));
-});
+  return grouped
+})
 
 const totalGroups = computed(() =>
   Object.keys(filteredGroupedData.value).length
@@ -464,9 +521,9 @@ const paginatedPages = computed(() => {
   if (total <= 5) {
     for (let i = 1; i <= total; i++) pages.push(i);
   } else {
-    if (current <= 3) pages.push(1,2,3,"...",total);
-    else if (current >= total-2) pages.push(1,"...",total-2,total-1,total);
-    else pages.push(1,"...",current-1,current,current+1,"...",total);
+    if (current <= 3) pages.push(1, 2, 3, "...", total);
+    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
+    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
   }
   return pages;
 });
@@ -576,18 +633,18 @@ const submitLiveOrder = async () => {
       `${url.value}/api/entrybarang/getDataByCode/` + form.value.barang
     );
 
-    await $api.post(`${url.value}/api/live-barang/store-live`,{
-      live_order_barang_id:namaBarang.data.data.barangentry_id,
-      live_order_nama_akun:form.value.namaAkun,
-      live_order_platform:form.value.platform,
-      live_order_harga_terjual:form.value.hargaTotal
+    await $api.post(`${url.value}/api/live-barang/store-live`, {
+      live_order_barang_id: namaBarang.data.data.barangentry_id,
+      live_order_nama_akun: form.value.namaAkun,
+      live_order_platform: form.value.platform,
+      live_order_harga_terjual: form.value.hargaTotal
     });
 
     closeModalAddOrder();
     fetchDataPengiriman();
-    Swal.fire("Berhasil","Order berhasil ditambahkan","success");
-  } catch(e) {
-    Swal.fire("Error","Gagal menambahkan order","error");
+    Swal.fire("Berhasil", "Order berhasil ditambahkan", "success");
+  } catch (e) {
+    Swal.fire("Error", "Gagal menambahkan order", "error");
   }
   isSubmitting.value = false;
 };
@@ -606,54 +663,65 @@ const editOrderLive = async (id) => {
   }
 };
 
+
+function formatTanggal(dateStr) {
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return date.toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 const submitLiveEditOrder = async () => {
   isSubmittingEdit.value = true;
   try {
-    await $api.put(`${url.value}/api/live-barang/update-live/${form.value.id}`,{
-      live_order_nama_akun:form.value.namaAkun,
-      live_order_platform:form.value.platform,
-      live_order_harga_terjual:form.value.hargaTotal
+    await $api.put(`${url.value}/api/live-barang/update-live/${form.value.id}`, {
+      live_order_nama_akun: form.value.namaAkun,
+      live_order_platform: form.value.platform,
+      live_order_harga_terjual: form.value.hargaTotal
     });
     isModalOpenEditOrder.value = false;
     fetchDataPengiriman();
-    Swal.fire("Berhasil","Order berhasil diupdate","success");
-  } catch(e) {
-    Swal.fire("Error","Gagal update","error");
+    Swal.fire("Berhasil", "Order berhasil diupdate", "success");
+  } catch (e) {
+    Swal.fire("Error", "Gagal update", "error");
   }
   isSubmittingEdit.value = false;
 };
 
 const deleteOrder = async (id) => {
   const result = await Swal.fire({
-    title:"Hapus Order?",
-    icon:"warning",
-    showCancelButton:true
+    title: "Hapus Order?",
+    icon: "warning",
+    showCancelButton: true
   });
 
-  if(!result.isConfirmed) return;
+  if (!result.isConfirmed) return;
   await $api.delete(`${url.value}/api/live-barang/delete-live/${id}`);
   fetchDataPengiriman();
 };
 
-const formattedHarga = computed(()=>{
-  if(!form.value.hargaTotal) return "";
-  return form.value.hargaTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
+const formattedHarga = computed(() => {
+  if (!form.value.hargaTotal) return "";
+  return form.value.hargaTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 });
 
-const updateHarga = (val)=>{
-  const number = val.replace(/\./g,"");
+const updateHarga = (val) => {
+  const number = val.replace(/\./g, "");
   form.value.hargaTotal = number;
 };
 
-watch(searchQuery,()=>currentPage.value=1);
+watch(searchQuery, () => currentPage.value = 1);
 
-watch(activeTab,()=>{
-  currentPage.value=1;
+watch(activeTab, () => {
+  currentPage.value = 1;
   fetchDataPengiriman();
 });
 
-watch(isModalOpenAddOrder,async(val)=>{
-  if(val){
+watch(isModalOpenAddOrder, async (val) => {
+  if (val) {
     await nextTick();
     barangInput.value?.focus();
   }
