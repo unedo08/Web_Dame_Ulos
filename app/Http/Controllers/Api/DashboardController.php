@@ -17,11 +17,8 @@ class DashboardController extends Controller
             // PIE CHART (hari ini)
             $pie = DB::select("
                 SELECT tt2.transaksi_tipe, COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2 
+                WHERE tt2.deleted_at IS NULL
                 AND DATE(tt2.created_at) = CURDATE()
                 GROUP BY tt2.transaksi_tipe
             ");
@@ -32,11 +29,8 @@ class DashboardController extends Controller
                     DATE(tt2.created_at) as Tanggal,
                     tt2.transaksi_tipe,
                     COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2
+                WHERE tt2.deleted_at IS NULL
                 AND MONTH(tt2.created_at) = MONTH(CURDATE())
                 AND YEAR(tt2.created_at) = YEAR(CURDATE())
                 GROUP BY DATE(tt2.created_at), tt2.transaksi_tipe
@@ -48,11 +42,8 @@ class DashboardController extends Controller
             // PIE CHART (bulan ini)
             $pie = DB::select("
                 SELECT tt2.transaksi_tipe, COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2
+                WHERE tt2.deleted_at IS NULL
                 AND MONTH(tt2.created_at) = MONTH(CURDATE())
                 AND YEAR(tt2.created_at) = YEAR(CURDATE())
                 GROUP BY tt2.transaksi_tipe
@@ -64,11 +55,8 @@ class DashboardController extends Controller
                     MONTH(tt2.created_at) as Bulan,
                     tt2.transaksi_tipe,
                     COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2
+                WHERE tt2.deleted_at IS NULL
                 AND YEAR(tt2.created_at) = YEAR(CURDATE())
                 GROUP BY MONTH(tt2.created_at), tt2.transaksi_tipe
                 ORDER BY Bulan
@@ -79,11 +67,8 @@ class DashboardController extends Controller
             // PIE CHART (tahun ini)
             $pie = DB::select("
                 SELECT tt2.transaksi_tipe, COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2
+                WHERE tt2.deleted_at IS NULL
                 AND YEAR(tt2.created_at) = YEAR(CURDATE())
                 GROUP BY tt2.transaksi_tipe
             ");
@@ -94,14 +79,15 @@ class DashboardController extends Controller
                     YEAR(tt2.created_at) as Tahun,
                     tt2.transaksi_tipe,
                     COUNT(*) as total
-                FROM transaksidetail_t tt
-                JOIN transaksi_t tt2 
-                    ON tt2.transaksi_id = tt.transaksidetail_transaksi_id
-                WHERE tt.deleted_at IS NULL
-                AND tt2.deleted_at IS NULL
+                FROM transaksi_t tt2
+                WHERE tt2.deleted_at IS NULL
                 GROUP BY YEAR(tt2.created_at), tt2.transaksi_tipe
                 ORDER BY Tahun
             ");
+        }
+        $totalPie = collect($pie)->sum('total');
+        foreach ($pie as $item) {
+            $item->percent = $totalPie > 0 ? round(($item->total / $totalPie) * 100, 2) : 0;
         }
 
         return response()->json([
@@ -193,6 +179,10 @@ class DashboardController extends Controller
                 ORDER BY Tahun
             ");
         }
+        $totalPie = collect($pie)->sum('total');
+        foreach ($pie as $item) {
+            $item->percent = $totalPie > 0 ? round(($item->total / $totalPie) * 100, 2) : 0;
+        }
 
         return response()->json([
             'pie_chart' => $pie,
@@ -201,55 +191,60 @@ class DashboardController extends Controller
     }
 
     public function barangChart(Request $request)
-    {
-        $type = $request->type ?? 'month';
+{
+    $type = $request->type ?? 'month';
 
-        $query = DB::table('transaksidetail_t as tt')
-            ->join('barangentry_m as bm', 'tt.transaksidetail_barang_id', '=', 'bm.barangentry_id')
-            ->whereNull('bm.deleted_at')
-            ->whereNull('tt.deleted_at');
+    $query = DB::table('transaksidetail_t as tt')
+        ->join('barangentry_m as bm', 'tt.transaksidetail_barang_id', '=', 'bm.barangentry_id')
+        ->whereNull('bm.deleted_at')
+        ->whereNull('tt.deleted_at');
 
-        if ($type == 'day') {
-            $query->whereDate('tt.created_at', Carbon::today());
-        }
-
-        if ($type == 'month') {
-            $query->whereMonth('tt.created_at', Carbon::now()->month)
-                ->whereYear('tt.created_at', Carbon::now()->year);
-        }
-
-        if ($type == 'year') {
-            $query->whereYear('tt.created_at', Carbon::now()->year);
-        }
-
-        $data = $query->select(
-            'bm.barangentry_nama',
-            DB::raw('SUM(bm.barangentry_harga_net) as total_harga_net'),
-            DB::raw('SUM(tt.transaksidetail_harga_barang) as total_harga_barang'),
-            DB::raw('SUM(bm.barangentry_modal) as total_barang_modal')
-        )
-        ->groupBy('bm.barangentry_nama')
-        ->orderBy('bm.barangentry_nama')
-        ->get();
-
-        return response()->json([
-            'labels' => $data->pluck('barangentry_nama'),
-            'series' => [
-                [
-                    'name' => 'Harga Net',
-                    'data' => $data->pluck('total_harga_net')
-                ],
-                [
-                    'name' => 'Harga Barang',
-                    'data' => $data->pluck('total_harga_barang')
-                ],
-                [
-                    'name' => 'Barang Modal',
-                    'data' => $data->pluck('total_barang_modal')
-                ]
-            ]
-        ]);
+    // FILTER BY TIME
+    if ($type == 'day') {
+        $query->whereDate('tt.created_at', Carbon::today());
+        $format = '%H:00'; // per jam
     }
+
+    if ($type == 'month') {
+        $query->whereMonth('tt.created_at', Carbon::now()->month)
+              ->whereYear('tt.created_at', Carbon::now()->year);
+        $format = '%Y-%m-%d'; // per hari
+    }
+
+    if ($type == 'year') {
+        $query->whereYear('tt.created_at', Carbon::now()->year);
+        $format = '%Y-%m'; // per bulan
+    }
+
+    // QUERY DATA
+    $data = $query->select(
+        DB::raw("DATE_FORMAT(tt.created_at, '$format') as periode"),
+        DB::raw('SUM(bm.barangentry_harga_net) as total_harga_net'),
+        DB::raw('SUM(tt.transaksidetail_harga_barang) as total_harga_jual'),
+        DB::raw('SUM(bm.barangentry_modal) as total_harga_modal')
+    )
+    ->groupBy('periode')
+    ->orderBy('periode')
+    ->get();
+
+    return response()->json([
+        'labels' => $data->pluck('periode'),
+        'series' => [
+            [
+                'name' => 'Harga Net',
+                'data' => $data->pluck('total_harga_net')
+            ],
+            [
+                'name' => 'Harga Jual',
+                'data' => $data->pluck('total_harga_jual')
+            ],
+            [
+                'name' => 'Harga Modal',
+                'data' => $data->pluck('total_harga_modal')
+            ]
+        ]
+    ]);
+}
 
     public function jenisBarangEntryChart(Request $request)
     {
@@ -433,11 +428,16 @@ class DashboardController extends Controller
             GROUP BY bulan
             ORDER BY bulan
         ");
+        $customerBaru = (int) ($pie[0]->customer_baru ?? 0);
+        $customerLama = (int) ($pie[0]->customer_lama ?? 0);
+        $totalCustomer = $customerBaru + $customerLama;
 
         return response()->json([
             'pie_chart' => [
-                'customer_baru' => $pie[0]->customer_baru ?? 0,
-                'customer_lama' => $pie[0]->customer_lama ?? 0,
+                'customer_baru' => $customerBaru,
+                'customer_lama' => $customerLama,
+                'customer_baru_percent' => $totalCustomer > 0 ? round(($customerBaru / $totalCustomer) * 100, 2) : 0,
+                'customer_lama_percent' => $totalCustomer > 0 ? round(($customerLama / $totalCustomer) * 100, 2) : 0,
             ],
             'line_chart' => $line
         ]);
