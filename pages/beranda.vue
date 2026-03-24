@@ -174,7 +174,7 @@ onMounted(async () => {
 
     const mappedPlatformDay = {}
     resDashboard.data.pie_chart?.forEach(item => {
-      const name = item.transaksi_platform || "Lainnya"
+      const name = item.transaksidetail_platform || "Lainnya"
       mappedPlatformDay[name] = item.total
     })
     platformPieDay.value = mappedPlatformDay
