@@ -158,7 +158,8 @@
     </div>
   </div>
 
-  <div v-if="showImageModal" class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="showImageModal"
+    class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
     <div class="bg-white p-4 rounded-lg max-w-2xl w-full relative">
       <button class="absolute right-3 top-2 text-xl text-gray-500 hover:text-black" @click="showImageModal = false">
         ✕
@@ -219,7 +220,7 @@ const form = ref({
   preOrderBarang_nama_barang: '',
   preOrderBarang_nama_akun: '',
   preOrderBarang_no_telepon: '',
-  preOrderBarang_target_selesai: 0,
+  preOrderBarang_target_selesai: '',
   preOrderBarang_total_pembayaran: 0,
   preOrderBarang_uang_muka: 0,
   preOrderBarang_sisa_pembayaran: 0,
@@ -336,11 +337,19 @@ const updateHargaNet = (e) => {
   formattedHargaNet.value = formatNumber(raw)
 }
 
+const formatDateOnly = (datetime) => {
+  if (!datetime || typeof datetime !== 'string') return ''
+  return datetime.split(' ')[0]
+}
+
 const loadData = async () => {
   try {
     const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${props.id}`)
     const resEntry = await $api.get(`${url.value}/api/entrybarang/${props.id}`)
     form.value = { ...res.data.data, ...resEntry.data.data }
+    form.value.preOrderBarang_target_selesai = formatDateOnly(
+      form.value.preOrderBarang_target_selesai
+    )
     const code = await $api.get(`${url.value}/api/codebarang/${form.value.barangentry_code_id}`)
     form.value.code = code.data.code_nama
 
@@ -396,7 +405,7 @@ const submitForm = async () => {
       String(form.value.preOrderBarang_barang_entry_id)
     )
     console.log('xzc', selectedImage);
-    
+
 
     if (selectedImage.value) {
       formData.append("preOrderBarang_path_gambar", selectedImage.value)

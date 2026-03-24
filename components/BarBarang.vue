@@ -1,6 +1,6 @@
 <template>
   <div v-if="chartData.datasets.length">
-    <Bar :data="chartData" :options="chartOptions" />
+    <Bar :data="chartData" :options="chartOptions" style="height: 320px;" />
   </div>
 
   <div v-else class="loading-placeholder">
@@ -35,25 +35,21 @@ const props = defineProps({
 })
 
 const chartData = computed(() => {
-  const labels = Object.keys(props.dataBarang || {})
-  const data = Object.values(props.dataBarang || {}).map(v => Number(v))
+  if (!props.dataBarang) return { labels: [], datasets: [] }
+
+  const colorMap = {
+    "Harga Net": "#22c55e",
+    "Harga Jual": "#3b82f6",
+    "Harga Modal": "#ef4444"
+  }
 
   return {
-    labels,
-    datasets: [
-      {
-        label: "Total",
-        data,
-        backgroundColor: [
-          "#22c55e",
-          "#3b82f6",
-          "#f59e0b",
-          "#ef4444",
-          "#a855f7"
-        ],
-        borderRadius: 8
-      }
-    ]
+    labels: props.dataBarang.labels || [],
+    datasets: props.dataBarang.datasets.map(ds => ({
+      ...ds,
+      backgroundColor: colorMap[ds.label] || "#94a3b8",
+      borderRadius: 6
+    }))
   }
 })
 
@@ -61,11 +57,14 @@ const chartOptions = {
   responsive: true,
   plugins: {
     legend: {
-      display: false
+      display: true,
+      position: "bottom"
     },
     tooltip: {
       callbacks: {
-        label: ctx => "Rp " + ctx.raw.toLocaleString("id-ID")
+        label: ctx => {
+          return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString("id-ID")}`
+        }
       }
     }
   },

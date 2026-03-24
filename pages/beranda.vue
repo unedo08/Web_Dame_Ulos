@@ -165,7 +165,7 @@ onMounted(async () => {
       $api.get(`${url}/api/dashboard/jenis-barang-entry`, {
         params: { type: "month" }
       }),
-       $api.get(`${url}/api/dashboard/jenis-barang-jual`, {
+      $api.get(`${url}/api/dashboard/jenis-barang-jual`, {
         params: { type: "month" }
       })
     ])
@@ -197,17 +197,53 @@ onMounted(async () => {
     })
     platformMonth.value = platMonthObj
 
-    const barangObj = {}
+    const labelsAPI = resBarangMonth.data.labels || []
+    const seriesAPI = resBarangMonth.data.series || []
 
-    resBarangMonth.data.series.forEach(series => {
-      const total = series.data.reduce((sum, val) => {
-        return sum + Number(val)
-      }, 0)
+    if (!labelsAPI.length) {
+      console.warn("Data kosong dari API")
+      return
+    }
 
-      barangObj[series.name] = total
+    const grouped = {}
+
+    labelsAPI.forEach((date, index) => {
+      const bulan = dayjs(date).format("MMM YYYY")
+
+      if (!grouped[bulan]) {
+        grouped[bulan] = {}
+      }
+
+      seriesAPI.forEach(series => {
+        const name = series.name
+        const value = Number(series.data[index] || 0)
+
+        if (!grouped[bulan][name]) {
+          grouped[bulan][name] = 0
+        }
+
+        grouped[bulan][name] += value
+      })
     })
 
-    barangMonth.value = barangObj
+    if (!Object.keys(grouped).length) {
+      console.warn("Grouped kosong")
+      return
+    }
+
+    const labels = Object.keys(grouped).sort((a, b) => {
+      return dayjs(a, "MMM YYYY") - dayjs(b, "MMM YYYY")
+    })
+
+    const datasets = seriesAPI.map(series => ({
+      label: series.name,
+      data: labels.map(bulan => grouped[bulan][series.name] || 0)
+    }))
+
+    barangMonth.value = {
+      labels,
+      datasets
+    }
 
     const lineSeries = resBarangMonth.data.series.map(series => ({
       name: series.name,
