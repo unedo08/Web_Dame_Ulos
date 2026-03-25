@@ -136,7 +136,8 @@ onMounted(async () => {
       resBarangMonth,
       resCustomer,
       resJenisBarang,
-      resJenisBarangTerjual
+      resJenisBarangTerjual,
+      resOmsetPerhari
     ] = await Promise.all([
 
       $api.get(`${url}/api/codebarang`),
@@ -167,7 +168,10 @@ onMounted(async () => {
       }),
       $api.get(`${url}/api/dashboard/jenis-barang-jual`, {
         params: { type: "month" }
-      })
+      }),
+      $api.get(`${url}/api/dashboard/barang`, {
+        params: { type: "month" }
+      }),
     ])
 
     totalBarang.value = responseBarang.data.length
@@ -245,21 +249,21 @@ onMounted(async () => {
       datasets
     }
 
-    const lineSeries = resBarangMonth.data.series.map(series => ({
-      name: series.name,
-      data: series.data.map(val => Number(val))
-    }))
+    const labelsOmset = resOmsetPerhari.data.labels || []
+    const seriesOmset = resOmsetPerhari.data.series || []
 
-    const categories = resBarangMonth.data.labels || []
+    if (!labelsOmset.length) {
+      console.warn("Data omset per hari kosong")
+    } else {
+      const lineSeries = seriesOmset.map(series => ({
+        name: series.name,
+        data: series.data.map(val => Number(val || 0))
+      }))
 
-    barangLine.value = {
-      series: lineSeries,
-      categories
-    }
-
-    barangLine.value = {
-      series: lineSeries,
-      categories
+      barangLine.value = {
+        categories: labelsOmset,
+        series: lineSeries
+      }
     }
 
     customerPie.value = {
