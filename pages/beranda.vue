@@ -158,7 +158,7 @@ onMounted(async () => {
       }),
 
       $api.get(`${url}/api/dashboard/barang`, {
-        params: { type: "month" }
+        params: { type: "year" }
       }),
 
       $api.get(`${url}/api/dashboard/jumlah-customer`),
