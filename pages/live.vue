@@ -617,7 +617,7 @@ const handleRemoveItem = (index) => {
 const openModalEditTransaksi = async (namaAkun) => {
   try {
     const { data } = await $api.get(
-      `${url.value}/api/live-barang/data-live/` + namaAkun
+      `${url.value}/api/live-barang/data-live/akun/` + namaAkun
     );
     const barangBelumPackaging = data.data.filter(item => item.is_check === 0);
 
