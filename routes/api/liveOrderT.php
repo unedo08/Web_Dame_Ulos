@@ -10,6 +10,9 @@ Route::post('/store-live', [LiveOrderTController::class, 'store']);             
 Route::put('/update-live/{id}', [LiveOrderTController::class, 'update']);          // Update
 Route::delete('/delete-live/{id}', [LiveOrderTController::class, 'destroy']);      // Delete
 
+Route::get('/data-live/akun/{namaAkun}', [LiveOrderTController::class, 'getLiveOrderByNamaAkun'])
+    ->where('namaAkun', '.*');
+
 // ---------- Custom Actions & Queries ----------
 Route::patch('/{id}/check', [LiveOrderTController::class, 'updateStatusCheck']);
 
@@ -23,5 +26,4 @@ Route::get('/data-live-grouped', [LiveOrderTController::class, 'getGroupedByNama
 Route::get('/data-live/{id}', [LiveOrderTController::class, 'getLiveOrderByLiveId'])
     ->whereNumber('id');
 
-Route::get('/data-live/{namaAkun}', [LiveOrderTController::class, 'getLiveOrderByNamaAkun'])
-    ->where('namaAkun', '.*');
+

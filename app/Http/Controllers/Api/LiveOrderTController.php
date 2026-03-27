@@ -203,7 +203,7 @@ class LiveOrderTController extends Controller
         $results = LiveOrderT::select('live_order_t.live_order_nama_akun')
             ->selectRaw('COUNT(*) as jumlah')
             ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'live_order_t.live_order_barang_id')
-            ->where('live_order_t.is_check', false)
+            ->where('live_order_t.is_check', "0")
             ->groupBy('live_order_t.live_order_nama_akun')
             ->get();
 
