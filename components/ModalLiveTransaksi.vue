@@ -219,7 +219,7 @@ async function submitForm() {
         transaksidetail_jumlah_barang: item.jumlah,
         transaksidetail_harga_barang: Number(item.harga),
         transaksidetail_platform: item.platform,
-        transaksidetail_status_penjualan: 0
+        transaksidetail_status_penjualan: 1
       });
 
       await $api.patch(

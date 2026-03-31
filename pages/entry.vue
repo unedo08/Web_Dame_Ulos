@@ -1160,42 +1160,10 @@ async function sendOrder(barangentry_id, formData) {
   try {
     const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
 
-    const dataPreOrder = res.data.data;
-    const payloadTransaksi = {
-      transaksi_nama_customer: formData.nama_akun,
-      transaksi_nomor_telepon: "",
-      transaksi_jumlah_barang: 1,
-      transaksi_total_harga: parseInt(formData.total_pembayaran),
-      transaksi_cara_bayar: formData.cara_bayar,
-      transaksi_tipe: "Pre Order",
-      transaksi_status: "Pre Order",
-      transaksi_catatan: "",
-    };
-
-    const { data } = await $api.post(
-      `${url.value}/api/transaksi`,
-      payloadTransaksi);
-    const transaksi_id = data.data.transaksi_id;
-
-    const barang = await $api.get(`${url.value}/api/entrybarang/${barangentry_id}`)
-
-    const code = await $api.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
-
-    const { data: barangResponse } = await $api.get(
-      `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`);
-    const barangData = barangResponse.data;
-
-    const detailPayload = {
-      transaksidetail_transaksi_id: transaksi_id,
-      transaksidetail_barang_id: barangData.barangentry_id,
-      transaksidetail_jumlah_barang: 1,
-      transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
-      transaksidetail_status_penjualan: 0
-    };
-    await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
+    const dataPreOrder = res.data.data;    
 
     const pengirimanPayload = {
-      pengirimanBarang_transaksi_id: transaksi_id,
+      pengirimanBarang_transaksi_id: dataPreOrder.preOrderBarang_transaksi_id,
       pengirimanBarang_nama_penerima: formData.nama_akun,
       pengirimanBarang_akun_penerima: formData.nama_akun,
       pengirimanBarang_no_telepon: formData.no_telepon,
@@ -1208,6 +1176,8 @@ async function sendOrder(barangentry_id, formData) {
 
     const resPengiriman = await $api.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
     const dataPengiriman = resPengiriman.data.data;
+
+    await $api.post(`${url}/api/transaksi-detail/updateStatusPenjualan/${dataPreOrder.preOrderBarang_transaksi_id}`,{})
 
     await getListBarangTemp();
     showSendModal.value = false;

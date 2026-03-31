@@ -338,9 +338,42 @@ async function submitForm() {
 
     form.barangentryID = entry.data.data.barangentry_id;
 
+    const payloadTransaksi = {
+      transaksi_nama_customer: form.namaAkun,
+      transaksi_nomor_telepon: form.nomor_telepon,
+      transaksi_jumlah_barang: 1,
+      transaksi_total_harga: parseInt(form.hargaNet),
+      transaksi_cara_bayar: form.metodePembayaran,
+      transaksi_tipe: "Pre Order",
+      transaksi_status: "Pre Order",
+      transaksi_catatan: "",
+    };
+
+    const { data } = await $api.post(
+      `${url.value}/api/transaksi`,
+      payloadTransaksi);
+    const transaksi_id = data.data.transaksi_id;
+
+    const barang = await $api.get(`${url.value}/api/entrybarang/${form.barangentryID}`)
+
+    const code = await $api.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
+
+    const { data: barangResponse } = await $api.get(
+      `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`);
+    const barangData = barangResponse.data;
+
+    const detailPayload = {
+      transaksidetail_transaksi_id: transaksi_id,
+      transaksidetail_barang_id: barangData.barangentry_id,
+      transaksidetail_jumlah_barang: 1,
+      transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
+      transaksidetail_status_penjualan: 0
+    };
+    await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
+
     const formData = new FormData();
     formData.append("preOrdeBarang_id", "");
-    formData.append("preOrderBarang_transaksi_id", "");
+    formData.append("preOrderBarang_transaksi_id", transaksi_id);
     formData.append("preOrderBarang_nama_barang", form.namaUlos);
     formData.append("preOrderBarang_nama_akun", form.namaAkun);
     formData.append("preOrderBarang_no_telepon", form.nomor_telepon);
