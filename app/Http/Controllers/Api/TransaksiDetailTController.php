@@ -152,23 +152,23 @@ class TransaksiDetailTController extends Controller
         ], 200);
     }
 
-    public function updateStatusPenjualan($transaksidetail_id)
-    {
-        if ($resp = $this->checkAuth()) return $resp;
-        $detail = TransaksiDetailT::find($transaksidetail_id);
-        if (!$detail) {
-            return response()->json(['message' => 'Transaction detail not found.'], 404);
-        }
-        $detail->transaksidetail_status_penjualan = 1;
-        $detail->update_id = Auth::id();
-        $detail->save();
-        return response()->json([
-            'message' => 'Transaction detail updated successfully.',
-            'data' => $detail
-        ], 200);
-    }
+    // public function updateStatusPenjualan($transaksidetail_id)
+    // {
+    //     if ($resp = $this->checkAuth()) return $resp;
+    //     $detail = TransaksiDetailT::find($transaksidetail_id);
+    //     if (!$detail) {
+    //         return response()->json(['message' => 'Transaction detail not found.'], 404);
+    //     }
+    //     $detail->transaksidetail_status_penjualan = 1;
+    //     $detail->update_id = Auth::id();
+    //     $detail->save();
+    //     return response()->json([
+    //         'message' => 'Transaction detail updated successfully.',
+    //         'data' => $detail
+    //     ], 200);
+    // }
 
-    public function updateStatusPenjualanPO($transaksi_id)
+    public function updateStatusPenjualan($transaksi_id)
     {
         if ($resp = $this->checkAuth()) return $resp;
         $detail = TransaksiDetailT::where('transaksidetail_transaksi_id', $transaksi_id)->update([

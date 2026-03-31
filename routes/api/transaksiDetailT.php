@@ -4,8 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TransaksiDetailTController;
 
 
-Route::post('/updateStatusPenjualan/{transaksidetail_id}', [TransaksiDetailTController::class, 'updateStatusPenjualan']);
-Route::post('/updateStatusPenjualanPO/{transaksi_id}', [TransaksiDetailTController::class, 'updateStatusPenjualanPO']);
+Route::post('/updateStatusPenjualan/{transaksi_id}', [TransaksiDetailTController::class, 'updateStatusPenjualan']);
 Route::get('/', [TransaksiDetailTController::class, 'index']);
 Route::post('/', [TransaksiDetailTController::class, 'store']);
 Route::get('/{id}', [TransaksiDetailTController::class, 'show']);

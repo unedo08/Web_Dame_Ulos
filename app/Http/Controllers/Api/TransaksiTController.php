@@ -297,7 +297,7 @@ class TransaksiTController extends Controller
                 'tt.created_at',
                 'cm2.customer_nama',
                 'tt.transaksi_tipe',
-                'tdt.transaksidetail_platform',
+                'tdt.transaksidetail_platform as transaksi_platform',
                 'bm.barangentry_acara_id',
                 'tdt.transaksidetail_jumlah_barang',
                 'tdt.transaksidetail_harga_barang',
