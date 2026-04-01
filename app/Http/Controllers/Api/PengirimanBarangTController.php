@@ -270,7 +270,7 @@ class PengirimanBarangTController extends Controller
             ->join('barangentry_m', 'barangentry_m.barangentry_id', '=', 'transaksidetail_t.transaksidetail_barang_id')
             ->join('code_m', 'code_m.code_id', '=', 'barangentry_m.barangentry_code_id')
             ->where('transaksidetail_t.transaksidetail_transaksi_id', $id)
-            ->where('transaksidetail_status_penjualan', "0")
+            // ->where('transaksidetail_status_penjualan', "0")
             ->get();
 
         if ($data->isEmpty()) {
