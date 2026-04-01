@@ -529,6 +529,7 @@ async function checkoutProcess() {
   };
 
   let transaksi_id = null;
+  let status_transaksi = "";
 
   try {
     if (currentTransaksiId.value) {
@@ -537,9 +538,11 @@ async function checkoutProcess() {
       currentTransaksiId.value = null;
       const { data } = await $api.post(`${url.value}/api/transaksi`,payload);
       transaksi_id = data.data.transaksi_id;
+      status_transaksi = data.data.transaksi_tipe;
     } else {
       const { data } = await $api.post(`${url.value}/api/transaksi`, payload);
       transaksi_id = data.data.transaksi_id;
+      status_transaksi = data.data.transaksi_tipe;
     }
     for (const item of datatableItems.value) {
       const { data: barangResponse } = await $api.get(
@@ -553,7 +556,7 @@ async function checkoutProcess() {
         transaksidetail_barang_id: barangData.barangentry_id,
         transaksidetail_jumlah_barang: item.quantity,
         transaksidetail_harga_barang: parseFloat(item.barangentry_harga_net),
-        transaksidetail_status_penjualan: 1
+        transaksidetail_status_penjualan: status_transaksi == 'offline' ? 1 : 0
       };
 
       await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);

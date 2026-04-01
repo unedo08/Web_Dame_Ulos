@@ -1084,12 +1084,6 @@ const searchFilterData = computed(() => {
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
-  sorted.sort((a, b) => {
-    if (a.barangentry_jumlah_barang === 0 && b.barangentry_jumlah_barang > 0) return 1;
-    if (a.barangentry_jumlah_barang > 0 && b.barangentry_jumlah_barang === 0) return -1;
-    return 0;
-  });
-
   if (!searchQuery.value) return sorted;
 
   const q = searchQuery.value.toLowerCase();
@@ -1177,7 +1171,8 @@ async function sendOrder(barangentry_id, formData) {
     const resPengiriman = await $api.post(`${url.value}/api/pengiriman-barang`, pengirimanPayload);
     const dataPengiriman = resPengiriman.data.data;
 
-    await $api.post(`${url}/api/transaksi-detail/updateStatusPenjualan/${dataPreOrder.preOrderBarang_transaksi_id}`,{})
+
+    await $api.post(`${url.value}/api/transaksi-detail/updateStatusPenjualan/${dataPreOrder.preOrderBarang_transaksi_id}`,{})
 
     await getListBarangTemp();
     showSendModal.value = false;
