@@ -1157,7 +1157,7 @@ async function sendOrder(barangentry_id, formData) {
     const dataPreOrder = res.data.data;   
     let transaksi_po_lama = null;
     let status_transaksi_po_lama = '';
-    if(dataPreOrder.preOrderBarang_transaksi_id == '' || dataPreOrder.preOrderBarang_transaksi_id == null){
+    if(!dataPreOrder.preOrderBarang_transaksi_id){
       const payloadTransaksi = {
         transaksi_nama_customer: formData.nama_akun,
         transaksi_nomor_telepon: "",
