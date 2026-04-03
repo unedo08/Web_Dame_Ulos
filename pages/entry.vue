@@ -27,8 +27,7 @@
     <div class="w-full" v-show="activeTab === 'wait'">
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-            placeholder="Search barang..." />
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <br />
@@ -143,8 +142,7 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-            placeholder="Search barang..." />
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
@@ -270,8 +268,7 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-            placeholder="Search barang..." />
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
@@ -726,7 +723,8 @@
     </div>
     <EditBarangReady :show="showEditModal" :id="selectedId" @close="showEditModal = false" @saved="loadData" />
 
-    <EditBarangPO :show="showEditPO" :id="selectedId" :preorder-id="selectedPreOrderId" @close="showEditPO = false" @saved="loadData" />
+    <EditBarangPO :show="showEditPO" :id="selectedId" :preorder-id="selectedPreOrderId" @close="showEditPO = false"
+      @saved="loadData" />
 
     <EditBarangDesc :show="showEditDesc" :id="selectedId" @close="showEditDesc = false" @saved="loadData" />
 
@@ -832,11 +830,11 @@ async function openSendModal(id) {
   if (result.isDenied) {
     pengirimanStatus.value = "Dijemput";
 
-    // await updatePengiriman(
-    //   selectedId.value,
-    //   "-",
-    //   "Dijemput"
-    // );
+    const pengiriman_id = await processOrderDijemput(selectedId.value);
+
+    if (!pengiriman_id) return;
+
+    await updatePengiriman(pengiriman_id, "-", "Dijemput");
 
     Swal.fire({
       icon: "success",
@@ -848,6 +846,102 @@ async function openSendModal(id) {
   }
 }
 
+async function processOrderDijemput(barangentry_id) {
+  try {
+    const res = await $api.get(
+      `${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`
+    );
+
+    const po = res.data.data;
+
+    let transaksi_id = po.preOrderBarang_transaksi_id;
+
+    if (!transaksi_id) {
+      const payloadTransaksi = {
+        transaksi_nama_customer: po.preOrderBarang_nama_akun || "-",
+        transaksi_nomor_telepon: po.preOrderBarang_no_telepon || "",
+        transaksi_jumlah_barang: 1,
+        transaksi_total_harga: parseInt(po.preOrderBarang_total_pembayaran || 0),
+        transaksi_cara_bayar: po.preOrderBarang_cara_bayar || "Cash",
+        transaksi_tipe: "Pre Order",
+        transaksi_status: "Pre Order",
+        transaksi_catatan: "",
+      };
+
+      const { data } = await $api.post(
+        `${url.value}/api/transaksi`,
+        payloadTransaksi
+      );
+
+      transaksi_id = data.data.transaksi_id;
+
+      const barang = await $api.get(
+        `${url.value}/api/entrybarang/${barangentry_id}`
+      );
+
+      const code = await $api.get(
+        `${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`
+      );
+
+      const { data: barangResponse } = await $api.get(
+        `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`
+      );
+
+      const barangData = barangResponse.data;
+
+      const detailPayload = {
+        transaksidetail_transaksi_id: transaksi_id,
+        transaksidetail_barang_id: barangData.barangentry_id,
+        transaksidetail_jumlah_barang: 1,
+        transaksidetail_harga_barang: Number(
+          barangData.barangentry_harga_net
+        ),
+        transaksidetail_status_penjualan: 0,
+      };
+
+      await $api.post(
+        `${url.value}/api/transaksi-detail`,
+        detailPayload
+      );
+    }
+
+    const pengirimanPayload = {
+      pengirimanBarang_transaksi_id: transaksi_id,
+      pengirimanBarang_nama_penerima: po.preOrderBarang_nama_akun || "-",
+      pengirimanBarang_akun_penerima: po.preOrderBarang_nama_akun || "-",
+      pengirimanBarang_no_telepon: po.preOrderBarang_no_telepon || "",
+      pengirimanBarang_harga_kirim_barang: 0,
+      pengirimanBarang_jenis_pengiriman_barang: "Dijemput",
+      pengirimanBarang_alamat_pengiriman_barang: "-",
+      pengirimanBarang_catatan: "",
+      pengirimanBarang_status: "Dijemput",
+    };
+
+    const resPengiriman = await $api.post(
+      `${url.value}/api/pengiriman-barang`,
+      pengirimanPayload
+    );
+
+    const pengiriman_id = resPengiriman.data.data.pengiriman.pengirimanBarang_id;
+
+    await $api.post(
+      `${url.value}/api/transaksi-detail/updateStatusPenjualan/${transaksi_id}`,
+      {}
+    );
+
+    await getListBarangTemp();
+
+    return pengiriman_id;
+
+  } catch (err) {
+    Swal.fire({
+      title: "Gagal!",
+      text: "Silahkan lengkapi preorder",
+      icon: "error",
+      timer: 3000,
+    });
+  }
+}
 
 async function handleSend(data) {
 
@@ -1154,10 +1248,10 @@ async function sendOrder(barangentry_id, formData) {
   try {
     const res = await $api.get(`${url.value}/api/pre-order-barang/preOrderEntry/${barangentry_id}`);
 
-    const dataPreOrder = res.data.data;   
+    const dataPreOrder = res.data.data;
     let transaksi_po_lama = null;
     let status_transaksi_po_lama = '';
-    if(!dataPreOrder.preOrderBarang_transaksi_id){
+    if (!dataPreOrder.preOrderBarang_transaksi_id) {
       const payloadTransaksi = {
         transaksi_nama_customer: formData.nama_akun,
         transaksi_nomor_telepon: "",
@@ -1168,20 +1262,20 @@ async function sendOrder(barangentry_id, formData) {
         transaksi_status: "Pre Order",
         transaksi_catatan: "",
       };
-  
+
       const { data } = await $api.post(
         `${url.value}/api/transaksi`,
         payloadTransaksi);
       transaksi_po_lama = data.data.transaksi_id;
-  
+
       const barang = await $api.get(`${url.value}/api/entrybarang/${barangentry_id}`)
-  
+
       const code = await $api.get(`${url.value}/api/codebarang/${barang.data.data.barangentry_code_id}`);
-  
+
       const { data: barangResponse } = await $api.get(
         `${url.value}/api/entrybarang/getDataByCode/${code.data.code_nama}`);
       const barangData = barangResponse.data;
-  
+
       const detailPayload = {
         transaksidetail_transaksi_id: transaksi_po_lama,
         transaksidetail_barang_id: barangData.barangentry_id,
@@ -1210,7 +1304,7 @@ async function sendOrder(barangentry_id, formData) {
 
     const po_id = status_transaksi_po_lama == 'po lama' ? transaksi_po_lama : dataPreOrder.preOrderBarang_transaksi_id;
 
-    await $api.post(`${url.value}/api/transaksi-detail/updateStatusPenjualan/${po_id}`,{})
+    await $api.post(`${url.value}/api/transaksi-detail/updateStatusPenjualan/${po_id}`, {})
 
     await getListBarangTemp();
     showSendModal.value = false;
