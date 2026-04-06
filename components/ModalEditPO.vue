@@ -86,7 +86,7 @@
               </div>
               <input :value="formattedHargaNet" @input="updateHargaNet" type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
-                placeholder="Masukkan Harga Net" />
+                placeholder="Masukkan Harga Terjual" />
             </div>
           </div>
 
