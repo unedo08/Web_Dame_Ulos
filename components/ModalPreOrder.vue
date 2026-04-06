@@ -98,7 +98,7 @@
 
           <div>
             <label class="judul-label block text-sm font-medium mb-1">
-              Harga Net <span class="required">*</span>
+              Harga Terjual <span class="required">*</span>
             </label>
             <div class="flex">
               <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
@@ -331,7 +331,7 @@ async function submitForm() {
       barangentry_dryer: "PO",
       barangentry_modal: 0,
       barangentry_price_tag: Number(form.hargaNet),
-      barangentry_harga_net: 0,
+      barangentry_harga_net: Number(form.hargaNet),
       barangentry_jumlah_barang: 1,
       barangentry_status: "PREORDER",
     });

@@ -1649,7 +1649,9 @@ async function printPreOrder(id) {
   const code = await $api.get(`${url.value}/api/codebarang/${barangEntry.barangentry_code_id}`)
   const code_nama = code.data.code_nama;
 
+  console.log('dsdd', data);
   printData(data, barangEntry, code_nama);
+  
 
 }
 
@@ -1725,7 +1727,7 @@ function printData(data, barangEntry, code_nama) {
         margin-bottom: 6px;
       }
       .info-label {
-        width: 150px; /* pastikan lebar sama biar titik dua sejajar */
+        width: 150px;
         font-weight: bold;
       }
       .info-separator {
@@ -1774,7 +1776,7 @@ function printData(data, barangEntry, code_nama) {
 
       .signatures {
         display: flex;
-        justify-content: flex-end; /* rata kanan */
+        justify-content: flex-end;
         gap: 40px;
         margin: 40px 0;
       }
@@ -1823,7 +1825,7 @@ function printData(data, barangEntry, code_nama) {
           <div class="info-row">
             <div class="info-label">Deskripsi</div>
             <div class="info-separator">:</div>
-            <div class="info-value">${data.preOrderBarang_deskripsi || "-"}</div>
+            <div class="info-value">${data.preOrderBarang_deskripsi_barang || "-"}</div>
           </div>
         </div>
 
