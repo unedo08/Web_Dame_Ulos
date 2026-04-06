@@ -78,7 +78,7 @@
 
           <div>
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
-              Harga Net <span class="required">*</span>
+              Harga Terjual <span class="required">*</span>
             </label>
             <div class="flex">
               <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
