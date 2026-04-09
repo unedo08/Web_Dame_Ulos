@@ -32,20 +32,30 @@
               border: 1px solid #999;
               padding: 32px 40px;
               font-family: 'Times New Roman', serif;
-              color: #541B1A;            
+              color: #541B1A;   
+              word-break: break-word;
+              overflow-wrap: break-word;
+              white-space: normal;        
             ">
 
-            <h1 style="
-              font-size: 20px;
-              font-weight: 700;
-              text-transform: uppercase;
-              margin-bottom: 14px;
-            ">
-              {{ item.data.barangentry_nama }}
-            </h1>
+            <div style="width: 55%;">
 
-            <div style="display: flex; gap: 60px;">
-              <div style="flex: 1.2;">
+              <h1 style="
+                  font-size: 16px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  margin-bottom: 14px;
+
+                  word-break: break-word;
+                  overflow-wrap: break-word;
+                ">
+                {{ item.data.barangentry_nama }}
+              </h1>
+
+            </div>
+
+            <div style="display: flex; gap: 50px;">
+              <div style="flex: 1.2;min-width: 0;">
                 <p style="margin: 0; font-weight: 700;">Horas!</p>
                 <p style="margin: 4px 0; text-align: justify;">
                   Mauliate atas dukungan dan pelestarian budaya Batak.
@@ -54,11 +64,11 @@
                   <em style="font-weight: 600;">Menjaga Kehidupan dan Tradisi Batak.</em>
                 </p>
 
-                <p style="margin-top: 16px;">Salam Hangat,</p>
+                <p style="margin-top: 10px;">Salam Hangat,</p>
                 <p style="font-style: italic; font-weight: 600;">Artisan Dame Ulos</p>
 
                 <table style="
-                  margin-top: 16px;
+                  margin-top: 12px;
                   border-collapse: collapse;
                   font-size: 13px;
                   line-height: 1.4;
