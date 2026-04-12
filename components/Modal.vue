@@ -30,32 +30,26 @@
           <div v-for="item in priceTagData" :key="item.data.barangentry_id" style="
               page-break-after: always;
               border: 1px solid #999;
-              padding: 32px 40px;
+              padding: 30px 35px;
               font-family: 'Times New Roman', serif;
-              color: #541B1A;   
-              word-break: break-word;
-              overflow-wrap: break-word;
-              white-space: normal;        
+              color: #541B1A;     
             ">
 
-            <div style="width: 55%;">
+            <div style="width: 50%;">
 
               <h1 style="
-                  font-size: 16px;
+                  font-size: 14px;
                   font-weight: 700;
                   text-transform: uppercase;
-                  margin-bottom: 14px;
-
-                  word-break: break-word;
-                  overflow-wrap: break-word;
+                  margin-bottom: 12px;
                 ">
                 {{ item.data.barangentry_nama }}
               </h1>
 
             </div>
 
-            <div style="display: flex; gap: 50px;">
-              <div style="flex: 1.2;min-width: 0;">
+            <div style="display: flex; gap: 40px;">
+              <div style="flex: 1.2;">
                 <p style="margin: 0; font-weight: 700;">Horas!</p>
                 <p style="margin: 4px 0; text-align: justify;">
                   Mauliate atas dukungan dan pelestarian budaya Batak.
@@ -64,11 +58,11 @@
                   <em style="font-weight: 600;">Menjaga Kehidupan dan Tradisi Batak.</em>
                 </p>
 
-                <p style="margin-top: 10px;">Salam Hangat,</p>
+                <p style="margin-top: 8px;">Salam Hangat,</p>
                 <p style="font-style: italic; font-weight: 600;">Artisan Dame Ulos</p>
 
                 <table style="
-                  margin-top: 12px;
+                  margin-top: 10px;
                   border-collapse: collapse;
                   font-size: 13px;
                   line-height: 1.4;
@@ -110,7 +104,7 @@
                 </table>
 
                 <p style="
-                    margin-top: 20px;
+                    margin-top: 15px;
                     font-size: 26px;
                     font-weight: 800;
                     letter-spacing: 1px;
@@ -148,7 +142,7 @@
 
                 <p style="
                     text-align: right;
-                    margin-top: 80px;
+                    margin-top: 60px;
                     font-style: italic;
                     font-size: 15px;
                   ">
@@ -358,7 +352,6 @@ async function printPriceTag() {
           <style>
             body {
               font-family: Nunito;
-              padding: 20px;
               font-size: 12px;
               line-height: 1.2;
             }
