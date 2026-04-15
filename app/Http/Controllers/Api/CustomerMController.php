@@ -55,6 +55,7 @@ class CustomerMController extends Controller
                 DB::raw('COUNT(tt.transaksidetail_barang_id) as jumlah_barang')
             )
             ->groupBy(
+                'cm.customer_id',
                 'cm.customer_nama',
                 'cm.customer_akun',
                 'cm.customer_alamat',
