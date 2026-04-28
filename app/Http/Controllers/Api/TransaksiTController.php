@@ -233,9 +233,8 @@ class TransaksiTController extends Controller
                             'barang_price_tag' => $d->barang->barangentry_price_tag ?? null,
                             'harga_kirim_barang' => $d->pengiriman->pengirimanBarang_harga_kirim_barang ?? 0,
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
-                            'transaksi_status' => $d->transaksi_status ?? null,
+                            'transaksi_status' => $d->transaksidetail_status_penjualan ?? null,
                             'transaksi_platform' => $d->transaksidetail_platform ?? null,
-
                         ];
                     });
                 })
@@ -279,7 +278,7 @@ class TransaksiTController extends Controller
                 'tt.created_at',
                 'cm2.customer_nama',
                 'tt.transaksi_tipe',
-                'tdt.transaksidetail_platform',
+                'tdt.transaksidetail_platform as transaksi_platform',
                 'bm.barangentry_acara_id',
                 'tdt.transaksidetail_jumlah_barang',
                 'tdt.transaksidetail_harga_barang',
