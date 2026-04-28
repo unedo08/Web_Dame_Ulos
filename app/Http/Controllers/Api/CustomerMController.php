@@ -45,6 +45,7 @@ class CustomerMController extends Controller
             ->join('transaksi_t as tt2', 'tt2.transaksi_id', '=', 'tt.transaksidetail_transaksi_id')
             ->join('customer_m as cm', 'cm.customer_nama', '=', 'tt2.transaksi_nama_customer')
             ->select(
+                'cm.customer_id',
                 'cm.customer_nama',
                 'cm.customer_akun',
                 'cm.customer_alamat',
