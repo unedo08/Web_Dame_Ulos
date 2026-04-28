@@ -72,9 +72,9 @@ Route::middleware(['jwt'])->group(function () {
         require __DIR__ . '/api/pengirimanBarangT.php';  // Relative path
     });
 
-    Route::prefix('pengiriman-barang-detail')->group(function () {
-        require __DIR__ . '/api/pengirimanBarangDetailT.php';  // Relative path
-    });
+    // Route::prefix('pengiriman-barang-detail')->group(function () {
+    //     require __DIR__ . '/api/pengirimanBarangDetailT.php';  // Relative path
+    // });
 
     Route::prefix('/pre-order-barang')->group(function () {
         require __DIR__ . '/api/preOrderBarangT.php';  // Relative path
@@ -96,4 +96,3 @@ Route::middleware(['jwt'])->group(function () {
         require __DIR__ . '/api/dashboard.php';  // Relative path
     });
 });
-
