@@ -11,18 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class CodeMController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     // PUBLIC
     public function index()
     {

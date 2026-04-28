@@ -11,18 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LiveOrderTController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     // GET all
     public function index()
     {

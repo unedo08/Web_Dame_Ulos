@@ -12,29 +12,11 @@ use Illuminate\Support\Facades\Storage;
 
 class PreOrdeBarangTController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
-        $data = PreOrdeBarangT::all();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'List of Pre Order Barang retrieved successfully.',
-            'data' => $data
-        ], 200);
+        return $this->ok(PreOrdeBarangT::all(), 'List of Pre Order Barang retrieved successfully.');
     }
 
     public function store(Request $request)
@@ -77,12 +59,10 @@ class PreOrdeBarangTController extends Controller
             $validatedData
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pre Order Barang created successfully.',
-            'data' => $item,
+        return $this->created([
+            'preorder'  => $item,
             'image_url' => asset($item->preOrderBarang_path_gambar)
-        ], 201);
+        ], 'Pre Order Barang created successfully.');
     }
 
     public function show($id)
@@ -90,32 +70,20 @@ class PreOrdeBarangTController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
         
         try {
-            $item = PreOrdeBarangT::findOrFail($id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre Order Barang details retrieved successfully.',
-                'data' => $item
-            ], 200);
+            return $this->ok(PreOrdeBarangT::findOrFail($id), 'Pre Order Barang details retrieved successfully.');
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pre Order Barang not found.',
-                'data' => null
-            ], 404);
+            return $this->notFound('Pre Order Barang not found.');
         }
     }
 
     public function getPreOrderbyBarangEntryID($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
-        $item = PreOrdeBarangT::where('preOrderBarang_barang_entry_id', $id)->first();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pre Order Barang details retrieved successfully.',
-            'data' => $item
-        ], 200);
+        return $this->ok(
+            PreOrdeBarangT::where('preOrderBarang_barang_entry_id', $id)->first(),
+            'Pre Order Barang details retrieved successfully.'
+        );
     }
 
     public function update(Request $request, $id)
@@ -128,78 +96,46 @@ class PreOrdeBarangTController extends Controller
 
             $data = $request->all();
             $data['update_id'] = Auth::id();
-
             $item->update($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre Order Barang updated successfully.',
-                'data' => $item
-            ], 200);
+            return $this->ok($item, 'Pre Order Barang updated successfully.');
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pre Order Barang not found.',
-                'data' => null
-            ], 404);
+            return $this->notFound('Pre Order Barang not found.');
         }
     }
 
     public function destroy($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
 
         try {
             $item = PreOrdeBarangT::findOrFail($id);
-
-            // simpan delete_id sebelum soft delete
             $item->delete_id = Auth::id();
             $item->save();
-
-            // soft delete
             $item->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre Order Barang deleted successfully.',
-                'data' => null
-            ], 200);
-
+            return $this->ok(null, 'Pre Order Barang deleted successfully.');
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pre Order Barang not found.',
-                'data' => null
-            ], 404);
+            return $this->notFound('Pre Order Barang not found.');
         }
     }
 
     public function updateStatus(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
 
-        $request->validate([
-            'status' => 'required|string',
-        ]);
+        $request->validate(['status' => 'required|string']);
 
         $item = PreOrdeBarangT::find($id);
         if (!$item) {
-            return response()->json([
-                'message' => 'Data Pre Order tidak ditemukan.',
-                'data' => null
-            ], 404);
+            return $this->notFound('Data Pre Order tidak ditemukan.');
         }
 
         $item->status = $request->status;
         $item->update_id = Auth::id();
         $item->save();
 
-        return response()->json([
-            'message' => 'Status updated successfully.',
-            'data' => $item
-        ], 200);
+        return $this->ok($item, 'Status updated successfully.');
     }
 
     public function kodePO()
@@ -220,18 +156,9 @@ class PreOrdeBarangTController extends Controller
 
             $newKode = $prefix . str_pad($nextNumber, $length, '0', STR_PAD_LEFT);
 
-            return response()->json([
-                'sukses' => true,
-                'message' => 'Kode Barang untuk barang Pre-Order',
-                'data' => ['code_nama' => $newKode]
-            ], 200);
-
+            return $this->ok(['code_nama' => $newKode], 'Kode Barang untuk barang Pre-Order');
         } catch (\Exception $e) {
-            return response()->json([
-                'sukses' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-                'data' => null
-            ], 500);
+            return $this->fail('Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -262,46 +189,29 @@ class PreOrdeBarangTController extends Controller
         $item = PreOrdeBarangT::findOrFail($id);
 
         if (!$item->preOrderBarang_path_gambar) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Image not found'
-            ], 404);
+            return $this->notFound('Image not found');
         }
 
-        return response()->json([
-            'success' => true,
-            'image_url' => asset($item->preOrderBarang_path_gambar)
-        ]);
+        return $this->ok(['image_url' => asset($item->preOrderBarang_path_gambar)]);
     }
 
     public function updateImage(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $request->validate([
-            'image' => 'required|image|max:2048'
-        ]);
+        $request->validate(['image' => 'required|image|max:2048']);
 
         $item = PreOrdeBarangT::findOrFail($id);
 
-        // delete old image if exists
         if ($item->preOrderBarang_path_gambar) {
-            $oldPath = str_replace('storage/', '', $item->preOrderBarang_path_gambar);
-            Storage::disk('public')->delete($oldPath);
+            Storage::disk('public')->delete(str_replace('storage/', '', $item->preOrderBarang_path_gambar));
         }
 
-        // upload new image
-        $path = $request->file('image')->store('preorder', 'public');
-
-        $item->preOrderBarang_path_gambar = 'storage/' . $path;
+        $item->preOrderBarang_path_gambar = 'storage/' . $request->file('image')->store('preorder', 'public');
         $item->update_id = Auth::id();
         $item->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Image updated',
-            'image_url' => asset($item->preOrderBarang_path_gambar)
-        ]);
+        return $this->ok(['image_url' => asset($item->preOrderBarang_path_gambar)], 'Image updated');
     }
 
     public function deleteImage($id)
@@ -311,23 +221,15 @@ class PreOrdeBarangTController extends Controller
         $item = PreOrdeBarangT::findOrFail($id);
 
         if (!$item->preOrderBarang_path_gambar) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Image not found'
-            ]);
+            return $this->notFound('Image not found');
         }
 
-        $path = str_replace('storage/', '', $item->preOrderBarang_path_gambar);
-
-        Storage::disk('public')->delete($path);
+        Storage::disk('public')->delete(str_replace('storage/', '', $item->preOrderBarang_path_gambar));
 
         $item->preOrderBarang_path_gambar = null;
         $item->update_id = Auth::id();
         $item->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Image deleted'
-        ]);
+        return $this->ok(null, 'Image deleted');
     }
 }

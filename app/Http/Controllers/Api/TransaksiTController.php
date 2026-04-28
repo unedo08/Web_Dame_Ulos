@@ -14,18 +14,6 @@ use Carbon\Carbon;
 
 class TransaksiTController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         $transaksis = TransaksiT::with('details')->get();
@@ -201,13 +189,6 @@ class TransaksiTController extends Controller
     {
         $transactions = TransaksiT::where('transaksi_status', 'hold')->get();
 
-        if ($transactions->isEmpty()) {
-            return response()->json([
-                'message' => 'Tidak ada data transaksi yang ditemukan.',
-                'data' => []
-            ], 404);
-        }
-
         return response()->json([
             'message' => 'Transactions with status hold retrieved successfully.',
             'data' => $transactions
@@ -321,10 +302,10 @@ class TransaksiTController extends Controller
             ->get();
 
         return response()->json([
-            'success' => true,
+            'code'    => 200,
             'filters' => [
                 'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
+                'end_date'   => $request->end_date,
             ],
             'data' => $data
         ]);

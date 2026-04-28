@@ -10,30 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class CaraBayarMController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
-    // GET ALL
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        return response()->json([
-            'status' => true,
-            'data'   => CaraBayarM::all()
-        ]);
+        return $this->ok(CaraBayarM::all());
     }
 
-    // STORE
     public function store(Request $request)
     {
         if ($resp = $this->checkAuth()) return $resp;
@@ -43,38 +26,28 @@ class CaraBayarMController extends Controller
             'carabayar_kode' => 'nullable|string|max:50',
         ]);
 
-        $data = CaraBayarM::create($validated);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Cara bayar berhasil ditambahkan',
-            'data' => $data
-        ]);
+        return $this->created(CaraBayarM::create($validated), 'Cara bayar berhasil ditambahkan');
     }
 
-    // SHOW BY ID
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
         $data = CaraBayarM::find($id);
-
         if (!$data) {
-            return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+            return $this->notFound('Data tidak ditemukan');
         }
 
-        return response()->json(['status' => true, 'data' => $data]);
+        return $this->ok($data);
     }
 
-    // UPDATE
     public function update(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
         $data = CaraBayarM::find($id);
-
         if (!$data) {
-            return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+            return $this->notFound('Data tidak ditemukan');
         }
 
         $validated = $request->validate([
@@ -84,29 +57,20 @@ class CaraBayarMController extends Controller
 
         $data->update($validated);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $data
-        ]);
+        return $this->ok($data, 'Data berhasil diupdate');
     }
 
-    // DELETE
     public function destroy($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        
-        $data = CaraBayarM::find($id);
 
+        $data = CaraBayarM::find($id);
         if (!$data) {
-            return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+            return $this->notFound('Data tidak ditemukan');
         }
 
         $data->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+        return $this->ok(null, 'Data berhasil dihapus');
     }
 }

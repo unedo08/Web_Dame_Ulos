@@ -31,4 +31,9 @@ class PengirimanBarangT extends Model
     {
         return $this->belongsTo(CustomerM::class, 'pengirimanBarang_customer_id', 'customer_id');
     }
+
+    public function pengirimanBarangDetails()
+    {
+        return $this->hasMany(PengirimanBarangDetailT::class, 'pengirimanbarangdetail_pengiriman_id', 'pengirimanBarang_id');
+    }
 }

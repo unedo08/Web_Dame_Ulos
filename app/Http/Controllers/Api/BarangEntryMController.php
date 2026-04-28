@@ -11,19 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class BarangEntryMController extends Controller
 {
-    // ====== AUTH CHECK TANPA CONSTRUCTOR ======
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
@@ -134,22 +121,24 @@ class BarangEntryMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $entries = BarangEntryM::whereHas('barangentry_code_id', function ($query) use ($codeNama) {
+        $entries = BarangEntryM::whereHas('code', function ($query) use ($codeNama) {
             $query->where('code_nama', $codeNama);
         })
             ->where('barangentry_status', 'READY')
-            ->with('barangentry_code_id')->get();
+            ->with('code')
+            ->get();
 
         if ($entries->isEmpty()) {
             return response()->json([
-                "code" => 404,
-                "message" => "No entries found for code_nama: {$codeNama}"
+                'code'    => 404,
+                'message' => "No entries found for code_nama: {$codeNama}",
+                'data'    => null
             ], 404);
         }
 
         return response()->json([
-            "code" => 200,
-            "data" => $entries
+            'code' => 200,
+            'data' => $entries
         ]);
     }
 
@@ -597,5 +586,52 @@ class BarangEntryMController extends Controller
             'message' => 'Deleted successfully',
             'code'    => 200
         ], 200);
+    }
+
+    public function exportReadyStock(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date'   => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        $data = DB::table('barangentry_m as bm')
+            ->join('code_m as cm', 'cm.code_id', '=', 'bm.barangentry_code_id')
+            ->join('jenisbarang_m as jm', 'jm.jenisbarang_id', '=', 'cm.code_jenisbarang_id')
+            ->leftJoin('acaradet_m as ad', 'ad.acaradet_barangentry_id', '=', 'bm.barangentry_id')
+            ->leftJoin('acara_m as am', 'am.acara_id', '=', 'ad.acaradet_acara_id')
+            ->where('bm.barangentry_status', 'READY')
+            ->where('bm.barangentry_jumlah_barang', '>=', 1)
+            ->whereNull('bm.deleted_at')
+            // ->when($request->start_date, fn($q) => $q->whereDate('bm.created_at', '>=', $request->start_date))
+            // ->when($request->end_date,   fn($q) => $q->whereDate('bm.created_at', '<=', $request->end_date))
+            ->select(
+                'cm.code_nama',
+                'jm.jenisbarang_nama',
+                'bm.barangentry_nama',
+                'bm.barangentry_warna',
+                'bm.barangentry_nama_penenun',
+                'bm.barangentry_nama_panirat',
+                'bm.barangentry_dryer',
+                'bm.barangentry_modal',
+                'bm.barangentry_price_tag',
+                'bm.barangentry_harga_net',
+                'bm.barangentry_ukuran_mandar',
+                'bm.barangentry_ukuran_ulos',
+                'bm.barangentry_jumlah_barang',
+                'am.acara_nama',
+                'bm.created_at'
+            )
+            ->orderBy('cm.code_nama')
+            ->get();
+
+        return response()->json([
+            'code'    => 200,
+            'message' => 'Export data barang ready berhasil',
+            'total'   => $data->count(),
+            'data'    => $data,
+        ]);
     }
 }

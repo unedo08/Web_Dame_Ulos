@@ -13,18 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PengirimanBarangTController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
@@ -123,13 +111,6 @@ class PengirimanBarangTController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         try {
-
-            if (!Auth::check()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Unauthorized: Please login first.'
-                ], 401);
-            }
             $item = PengirimanBarangT::with('customer')->findOrFail($id);
 
             $validated = $request->validate([
@@ -192,13 +173,6 @@ class PengirimanBarangTController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         try {
-
-            if (!Auth::check()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Unauthorized: Please login first.'
-                ], 401);
-            }
             $item = PengirimanBarangT::findOrFail($id);
 
             // simpan delete_id sebelum soft delete
@@ -224,14 +198,6 @@ class PengirimanBarangTController extends Controller
     public function updateStatus(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-
-
-        if (!Auth::check()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized: Please login first.'
-            ], 401);
-        }
 
         $request->validate([
             'pengirimanBarang_status' => 'required|string|max:50',

@@ -12,18 +12,6 @@ use App\Models\LiveOrderT;
 
 class TransaksiDetailTController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
@@ -142,13 +130,29 @@ class TransaksiDetailTController extends Controller
             return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
-        $detail->delete_id = Auth::id();  // ⬅️ Save who deleted
+        $detail->delete_id = Auth::id();
         $detail->save();
-
-        $detail->delete(); // If using soft delete, this will fill deleted_at
+        $detail->delete();
 
         return response()->json([
             'message' => 'Transaction detail deleted successfully.'
+        ], 200);
+    }
+
+    public function updateStatusPenjualan($transaksi_id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $updated = TransaksiDetailT::where('transaksidetail_transaksi_id', $transaksi_id)
+            ->update([
+                'transaksidetail_status_penjualan' => 1,
+                'update_id' => Auth::id(),
+            ]);
+
+        return response()->json([
+            'code'    => 200,
+            'message' => 'Status penjualan berhasil diperbarui.',
+            'data'    => ['rows_updated' => $updated]
         ], 200);
     }
 }

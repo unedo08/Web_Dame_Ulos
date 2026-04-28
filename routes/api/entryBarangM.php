@@ -13,6 +13,7 @@ Route::get('/getDataKasir/{code_nama}', [BarangEntryMController::class, 'getData
 Route::post('/storeDescription', [BarangEntryMController::class, 'storeDescription']);
 Route::post('/storeSize', [BarangEntryMController::class, 'storeSize']);
 Route::get('/getJumlahBarang', [BarangEntryMController::class, 'getAllBarangEntryAmount']);
+Route::get('/export-ready', [BarangEntryMController::class, 'exportReadyStock']);
 // Route::get('/checkBarangEntry/{code_nama}', [BarangEntryMController::class, 'checkBarangEntryByCodeNama']);
 Route::patch('/{id}/updateStatus', [BarangEntryMController::class, 'updateStatusBarang']);
 Route::get('/getDataByCode/{code_nama}', [BarangEntryMController::class, 'getDataByCode']);

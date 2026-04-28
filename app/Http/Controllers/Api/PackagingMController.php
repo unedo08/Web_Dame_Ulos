@@ -11,29 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PackagingMController extends Controller
 {
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = PackagingM::all();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'List of all packaging',
-            'data' => $data
-        ], 200);
+        return $this->ok(PackagingM::all(), 'List of all packaging');
     }
 
     public function store(Request $request)
@@ -46,43 +28,29 @@ class PackagingMController extends Controller
             'packaging_alamat' => 'nullable|string',
         ]);
 
-        // Tambah create_id & update_id otomatis
         $validated['create_id'] = Auth::id();
         $validated['update_id'] = Auth::id();
 
         $packaging = PackagingM::create($validated);
 
-        // Update status transaksi detail jika ada ID
         if (!empty($validated['packaging_transactiondetail_id'])) {
             TransaksiDetailT::where('transaksidetail_id', $validated['packaging_transactiondetail_id'])
                 ->update(['transaksidetail_status_penjualan' => 1]);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Packaging created successfully',
-            'data' => $packaging
-        ], 201);
+        return $this->created($packaging, 'Packaging created successfully');
     }
 
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
-        $packaging = PackagingM::find($id);
 
+        $packaging = PackagingM::find($id);
         if (!$packaging) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Packaging not found',
-                'data' => null
-            ], 404);
+            return $this->notFound('Packaging not found');
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Packaging detail',
-            'data' => $packaging
-        ], 200);
+        return $this->ok($packaging, 'Packaging detail');
     }
 
     public function update(Request $request, $id)
@@ -90,13 +58,8 @@ class PackagingMController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
-
         if (!$packaging) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Packaging not found',
-                'data' => null
-            ], 404);
+            return $this->notFound('Packaging not found');
         }
 
         $validated = $request->validate([
@@ -105,16 +68,10 @@ class PackagingMController extends Controller
             'packaging_alamat' => 'nullable|string',
         ]);
 
-        // update_id otomatis
         $validated['update_id'] = Auth::id();
-
         $packaging->update($validated);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Packaging updated successfully',
-            'data' => $packaging
-        ], 200);
+        return $this->ok($packaging, 'Packaging updated successfully');
     }
 
     public function destroy($id)
@@ -122,27 +79,15 @@ class PackagingMController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
-
         if (!$packaging) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Packaging not found',
-                'data' => null
-            ], 404);
+            return $this->notFound('Packaging not found');
         }
 
-        // Simpan siapa yang menghapus
         $packaging->delete_id = Auth::id();
         $packaging->save();
-
-        // Soft delete
         $packaging->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Packaging deleted successfully',
-            'data' => null
-        ], 200);
+        return $this->ok(null, 'Packaging deleted successfully');
     }
 
     public function updateStatus(Request $request, $id)
@@ -150,13 +95,8 @@ class PackagingMController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         $packaging = PackagingM::find($id);
-
         if (!$packaging) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Packaging not found',
-                'data' => null
-            ], 404);
+            return $this->notFound('Packaging not found');
         }
 
         $validated = $request->validate([
@@ -166,10 +106,6 @@ class PackagingMController extends Controller
         $packaging->update_id = Auth::id();
         $packaging->update($validated);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Packaging Status updated successfully',
-            'data' => $packaging
-        ], 200);
+        return $this->ok($packaging, 'Packaging status updated successfully');
     }
 }

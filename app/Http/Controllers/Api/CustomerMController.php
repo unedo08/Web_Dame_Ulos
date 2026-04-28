@@ -11,19 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerMController extends Controller
 {
-    
-    private function checkAuth()
-    {
-        if (!Auth::check()) {
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized. Please login.',
-                'data'    => null
-            ], 401);
-        }
-        return null;
-    }
-
     public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
@@ -55,6 +42,7 @@ class CustomerMController extends Controller
                 DB::raw('COUNT(tt.transaksidetail_barang_id) as jumlah_barang')
             )
             ->groupBy(
+                'cm.customer_id',
                 'cm.customer_nama',
                 'cm.customer_akun',
                 'cm.customer_alamat',
