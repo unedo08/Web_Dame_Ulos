@@ -153,6 +153,10 @@
             @click="openModal('priceTag')">
             Print Price Tag
           </button>
+          <button class="btn-add bg-green-600 text-white text-center rounded-md hover:bg-green-700 w-[130px] h-[30px]"
+            @click="exportReadyStock">
+            Export Ready Stock
+          </button>
         </div>
       </div>
 
@@ -1069,6 +1073,51 @@ async function getListBarangTemp() {
 
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
+  }
+}
+
+async function exportReadyStock() {
+  try {
+    Swal.fire({ title: "Mengexport data...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    const res = await $api.get(`${url.value}/api/entrybarang/export-ready`);
+    const rows = res.data.data;
+
+    const headers = ["Kode Barang", "Jenis Barang", "Nama Ulos", "Warna", "Nama Penenun", "Nama Panirat", "Dryer", "Modal", "Price Tag", "Harga Net", "Ukuran Mandar", "Ukuran Ulos", "Jumlah", "Acara", "Tanggal"];
+    let html = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>`;
+    rows.forEach(r => {
+      html += `<tr>
+        <td>${r.code_nama ?? ""}</td>
+        <td>${r.jenisbarang_nama ?? ""}</td>
+        <td>${r.barangentry_nama ?? ""}</td>
+        <td>${r.barangentry_warna ?? ""}</td>
+        <td>${r.barangentry_nama_penenun ?? ""}</td>
+        <td>${r.barangentry_nama_panirat ?? ""}</td>
+        <td>${r.barangentry_dryer ?? ""}</td>
+        <td>${r.barangentry_modal ?? 0}</td>
+        <td>${r.barangentry_price_tag ?? 0}</td>
+        <td>${r.barangentry_harga_net ?? 0}</td>
+        <td>${r.barangentry_ukuran_mandar ?? ""}</td>
+        <td>${r.barangentry_ukuran_ulos ?? ""}</td>
+        <td>${r.barangentry_jumlah_barang ?? 0}</td>
+        <td>${r.acara_nama ?? "-"}</td>
+        <td>${r.created_at ? r.created_at.substring(0, 10) : ""}</td>
+      </tr>`;
+    });
+    html += "</tbody></table>";
+
+    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `ReadyStock_${new Date().toISOString().split("T")[0]}.xls`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    Swal.close();
+    Swal.fire("Berhasil", "Export Excel selesai.", "success");
+  } catch (err) {
+    console.error(err);
+    Swal.close();
+    Swal.fire("Gagal", "Terjadi kesalahan saat export.", "error");
   }
 }
 
