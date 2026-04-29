@@ -156,15 +156,8 @@
         </div>
 
         <div class="md:col-span-2 flex justify-end gap-4 mt-8">
-          <button type="button" @click="batalPreOrder()"
-            class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition">
-            Batal
-          </button>
-
-          <button type="button" @click="submitForm"
-            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
-            Tambah
-          </button>
+          <button type="button" @click="batalPreOrder()" class="btn btn-neutral btn-md">Batal</button>
+          <button type="button" @click="submitForm" class="btn btn-primary btn-md">Tambah</button>
         </div>
 
       </form>

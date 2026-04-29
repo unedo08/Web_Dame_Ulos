@@ -86,24 +86,12 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
-        </button>
-
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
         <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded text-xs',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer',
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
-        </button>
+          @click="typeof page === 'number' && (currentPage = page)"
+          :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+          :disabled="page === '...'">{{ page }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
   </div>

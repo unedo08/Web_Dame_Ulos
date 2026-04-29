@@ -1,22 +1,39 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  modules: ['shadcn-nuxt'],
-
-  shadcn: {
-    prefix: '',
-    componentDir: './components/ui'
-  },
+  ssr: false,
 
   css: [
     '~/assets/css/tailwind.css',
     '~/assets/css/print.css'
   ],
 
+  experimental: {
+    payloadExtraction: false,
+  },
+
   vite: {
     plugins: [tailwindcss()],
     build: {
-      sourcemap: false
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-chart': ['chart.js', 'vue-chartjs', 'chartjs-plugin-datalabels'],
+            'vendor-swal': ['sweetalert2'],
+            'vendor-dayjs': ['dayjs'],
+          }
+        }
+      }
+    },
+    optimizeDeps: {
+      include: [
+        'chart.js',
+        'vue-chartjs',
+        'chartjs-plugin-datalabels',
+        'sweetalert2',
+        'dayjs'
+      ]
     }
   },
 

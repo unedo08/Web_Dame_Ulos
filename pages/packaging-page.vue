@@ -4,9 +4,7 @@
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
       <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
-      <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
-        Export Excel
-      </button>
+      <button @click="exportToExcel" class="btn btn-export btn-sm">📥 Export Excel</button>
     </div>
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
@@ -44,22 +42,11 @@
           <td>
             <div class="flex gap-2">
               <template v-if="row.status_pengiriman !== 'DONE'">
-                <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
-                  Edit
-                </button>
-
-                <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
-                  Selesai
-                </button>
+                <button class="btn btn-primary btn-xs" @click="openModalEdit(row)">Edit</button>
+                <button class="btn btn-success btn-xs" @click="selesaikanPackaging(row)">Selesai</button>
               </template>
-              <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                @click="deleteData(row.pengirimanBarang_id)">
-                Delete
-              </button>
-              <button v-if="row.status_pengiriman === 'DONE'" class="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
-                @click="printLabel(row)">
-                Print
-              </button>
+              <button class="btn btn-danger btn-xs" @click="deleteData(row.pengirimanBarang_id)">Delete</button>
+              <button v-if="row.status_pengiriman === 'DONE'" class="btn btn-print-h btn-xs" @click="printLabel(row)">Print</button>
             </div>
           </td>
         </tr>
@@ -79,18 +66,10 @@
       </div>
 
       <div class="flex space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage--" :disabled="currentPage === 1">
-          Sebelumnya
-        </button>
-
-        <button v-for="p in paginatedPages" :key="p" @click="typeof p === 'number' && (currentPage = p)" :class="['px-3 py-1 rounded',
-          currentPage === p ? 'bg-blue-500 text-white' : 'bg-gray-200']">
-          {{ p }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage++" :disabled="currentPage === totalPages">
-          Selanjutnya
-        </button>
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
+        <button v-for="p in paginatedPages" :key="p" @click="typeof p === 'number' && (currentPage = p)"
+          :class="['pg-btn', currentPage === p ? 'active' : '', p === '...' ? 'dots' : '']">{{ p }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
 
@@ -106,8 +85,6 @@ import { ref, onMounted, computed, watch } from "vue";
 import Swal from "sweetalert2";
 import { useRuntimeConfig } from "#imports";
 import ModalEditPackaging from "../components/ModalEditPackaging.vue";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 const config = useRuntimeConfig();
 const url = config.public.apiBase;
@@ -231,7 +208,8 @@ const selesaikanPackaging = async (row) => {
 
 const exportToExcel = async () => {
   try {
-    
+    const XLSX = await import('xlsx')
+    const { saveAs } = await import('file-saver')
     Swal.fire({
       title: "Menyiapkan data…",
       text: "Mohon tunggu sebentar",

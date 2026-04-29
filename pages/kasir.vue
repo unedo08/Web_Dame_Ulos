@@ -9,29 +9,11 @@
     </div>
 
     <div class="flex space-x-2 ml-4">
-      <button class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
-        @click="openModalLive = true">
-        Online
-      </button>
-      <button class="bg-[#F97316] text-white rounded-md hover:bg-[#F36E12] w-[104px] h-[34px]"
-        @click="openModalPreOrder = true">
-        Pre-Order
-      </button>
-      <button class="bg-[#FACC15] text-white rounded-md hover:bg-[#F4C405] w-[132.97px] h-[34px]" @click="
-        () => {
-          openModalHold = true;
-          fetchHoldTransactions();
-        }
-      ">
-        Pending List
-      </button>
-      <button class="bg-[#404040] text-white rounded-md hover:bg-[#363535] w-[104px] h-[34px]" @click="handleHold">
-        Hold
-      </button>
-      <button class="bg-[#22C55E] text-white rounded-md hover:bg-[#21B156] w-[104px] h-[34px]"
-        @click="openModalProcess = true">
-        Checkout
-      </button>
+      <button class="btn btn-online btn-md" @click="openModalLive = true">Online</button>
+      <button class="btn btn-preorder btn-md" @click="openModalPreOrder = true">Pre-Order</button>
+      <button class="btn btn-pending-list btn-md" @click="() => { openModalHold = true; fetchHoldTransactions(); }">Pending List</button>
+      <button class="btn btn-hold btn-md" @click="handleHold">Hold</button>
+      <button class="btn btn-checkout btn-md" @click="openModalProcess = true">Checkout</button>
     </div>
   </div>
 
@@ -128,24 +110,12 @@
         </div>
 
         <div v-if="totalPages > 1" class="flex justify-center mt-4 space-x-2">
-          <button @click="currentPage--" :disabled="currentPage === 1"
-            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
-            «
-          </button>
-
-          <button v-for="page in totalPages" :key="page" @click="currentPage = page" :class="[
-            'px-3 py-1 rounded border',
-            page === currentPage
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 hover:bg-gray-200'
-          ]">
+          <button @click="currentPage--" :disabled="currentPage === 1" class="pg-btn">«</button>
+          <button v-for="page in totalPages" :key="page" @click="currentPage = page"
+            :class="['pg-btn', page === currentPage ? 'active' : '']">
             {{ page }}
           </button>
-
-          <button @click="currentPage++" :disabled="currentPage === totalPages"
-            class="px-2 py-1 rounded border bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
-            »
-          </button>
+          <button @click="currentPage++" :disabled="currentPage === totalPages" class="pg-btn">»</button>
         </div>
       </div>
     </div>
@@ -163,13 +133,9 @@
     <label>Catatan:</label>
     <textarea v-model="processForm.notes" class="input-field mb-4" placeholder="Catatan tambahan"></textarea>
 
-    <button @click="checkoutProcess" class="w-full text-white px-4 py-2 rounded-md transition font-semibold" :class="isLoading
-      ? 'bg-gray-400 cursor-not-allowed'
-      : 'bg-green-600 hover:bg-green-700'
-      " :disabled="isLoading">
+    <button @click="checkoutProcess" class="btn btn-success btn-md w-full" :disabled="isLoading">
       <span v-if="isLoading" class="loader-border ease-linear rounded-full border-2 border-t-2 h-5 w-5"></span>
-      <span v-if="isLoading">Mohon tunggu sebentar...</span>
-      <span v-else>Checkout</span>
+      <span>{{ isLoading ? 'Mohon tunggu sebentar...' : 'Checkout' }}</span>
     </button>
   </ModalKasir>
 
@@ -1064,47 +1030,6 @@ watch(openModalHold, (val) => {
   box-sizing: border-box;
 }
 
-.btn-yellow {
-  background-color: #f59e0b;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-yellow:hover {
-  background-color: #b45309;
-}
-
-.btn-red {
-  background-color: #ef4444;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-red:hover {
-  background-color: #b91c1c;
-}
-
-.btn-green {
-  background-color: #22c55e;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-green:hover {
-  background-color: #166534;
-}
 
 .loader-border {
   border-top-color: #fff;

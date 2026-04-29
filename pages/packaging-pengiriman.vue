@@ -8,9 +8,7 @@
     <div class="flex justify-between items-center mb-4">
       <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
 
-      <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
-        Export Excel
-      </button>
+      <button @click="exportToExcel" class="btn btn-export btn-sm">📥 Export Excel</button>
     </div>
 
     <table class="datatable w-full rounded-md overflow-hidden">
@@ -34,16 +32,11 @@
           <td class="px-4 py-2">{{ pengiriman.packaging_status }}</td>
           <td class="px-4 py-2">
             <div class="flex space-x-2">
-              <button v-if="pengiriman.packaging_status === 'Done'"
-                class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s" :disabled="true"
-                :hidden="true">
+              <button v-if="pengiriman.packaging_status === 'Done'" class="btn btn-success btn-xs" :disabled="true" hidden>
                 Selesai
               </button>
               <template v-else>
-                <button class="btn-selesai flex items-center gap-1 px-2 py-1 text-white rounded-md text-s"
-                  @click="selesaiPackaging(pengiriman.packaging_id)">
-                  Selesai
-                </button>
+                <button class="btn btn-success btn-xs" @click="selesaiPackaging(pengiriman.packaging_id)">Selesai</button>
               </template>
             </div>
           </td>
@@ -65,24 +58,12 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
-        </button>
-
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
         <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded text-xs',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer',
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
-        </button>
+          @click="typeof page === 'number' && (currentPage = page)"
+          :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+          :disabled="page === '...'">{{ page }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
   </div>
@@ -92,8 +73,6 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 const config = useRuntimeConfig();
 const url = ref("");
@@ -295,6 +274,8 @@ async function buildRowsForPackaging(pkg) {
 
 const exportToExcel = async () => {
   try {
+    const XLSX = await import('xlsx')
+    const { saveAs } = await import('file-saver')
     const source = [...listpengirimanData.value];
     if (!source.length) {
       Swal.fire({

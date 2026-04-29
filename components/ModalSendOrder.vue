@@ -55,9 +55,8 @@
             </div>
 
             <div class="flex justify-end gap-3 mt-8">
-                <button @click="close" class="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Batal</button>
-                <button @click="submit"
-                    class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Kirim</button>
+                <button @click="close" class="btn btn-neutral btn-md">Batal</button>
+                <button @click="submit" class="btn btn-primary btn-md">Kirim</button>
             </div>
         </div>
     </div>

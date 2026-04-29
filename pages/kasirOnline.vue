@@ -11,10 +11,7 @@
     </div>
 
     <div class="flex space-x-2 ml-4">
-      <button class="bg-green-500 text-white rounded-md hover:bg-green-600 w-[104px] h-[34px]"
-        @click="openModalOnline = true">
-        Online
-      </button>
+      <button class="btn btn-success btn-md" @click="openModalOnline = true">Online</button>
     </div>
   </div>
 
@@ -527,45 +524,4 @@ function printToNewTab(data, items) {
   box-sizing: border-box;
 }
 
-.btn-yellow {
-  background-color: #f59e0b;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-yellow:hover {
-  background-color: #b45309;
-}
-
-.btn-red {
-  background-color: #ef4444;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-red:hover {
-  background-color: #b91c1c;
-}
-
-.btn-green {
-  background-color: #22c55e;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-green:hover {
-  background-color: #166534;
-}
 </style>

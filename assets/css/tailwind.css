@@ -1,6 +1,252 @@
 /* assets/css/tailwind.css */
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
 @import "tailwindcss";
+
+/* ─── Button Design System ─── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+  outline: none;
+  line-height: 1;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #7baef8;
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Sizes ── */
+.btn-xs {
+  font-size: 11px;
+  padding: 3px 10px;
+  height: 24px;
+}
+
+.btn-sm {
+  font-size: 12px;
+  padding: 4px 12px;
+  height: 28px;
+}
+
+.btn-md {
+  font-size: 13px;
+  padding: 6px 16px;
+  height: 34px;
+}
+
+.btn-lg {
+  font-size: 14px;
+  padding: 8px 20px;
+  height: 40px;
+}
+
+/* ── Primary (blue) ── */
+.btn-primary {
+  background-color: #3B82F6;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.35);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563EB;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Success (green) – add / create ── */
+.btn-success {
+  background-color: #22C55E;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(34, 197, 94, 0.35);
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #16A34A;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Danger (red) – delete ── */
+.btn-danger {
+  background-color: #EF4444;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.35);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #DC2626;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Warning (amber) – search / caution ── */
+.btn-warning {
+  background-color: #F59E0B;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.35);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background-color: #D97706;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Info (sky) – view / detail ── */
+.btn-info {
+  background-color: #FBBF24;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-online {
+  background-color: #3d8bfd;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-preorder {
+  background-color: #f97316;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-pending-list {
+  background-color: #facc15;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-hold {
+  background-color: #404040;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-checkout {
+  background-color: #22c55e;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.35);
+}
+
+.btn-info:hover:not(:disabled) {
+  background-color: #d8a116;
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Neutral (gray) – cancel / close ── */
+.btn-neutral {
+  background-color: #F3F4F6;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.btn-neutral:hover:not(:disabled) {
+  background-color: #E5E7EB;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Export (emerald) – excel export ── */
+.btn-export {
+  background-color: #059669;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.35);
+}
+
+.btn-export:hover:not(:disabled) {
+  background-color: #047857;
+  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Print (violet) ── */
+.btn-print-h {
+  background-color: #2AC769;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(58, 237, 79, 0.35);
+}
+
+.btn-print-h:hover:not(:disabled) {
+  background-color: #048437;
+  box-shadow: 0 4px 10px rgba(58, 237, 79, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Brand (Dame Ulos warm maroon) ── */
+.btn-brand {
+  background-color: #7A0000;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(122, 0, 0, 0.35);
+}
+
+.btn-brand:hover:not(:disabled) {
+  background-color: #520000;
+  box-shadow: 0 4px 10px rgba(122, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Pill variant (for table row actions) ── */
+.btn-pill {
+  border-radius: 999px;
+}
+
+/* ─── Pagination Buttons ─── */
+.pg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Nunito", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+  background-color: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.pg-btn:hover:not(:disabled) {
+  background-color: #F3F4F6;
+  border-color: #D1D5DB;
+}
+
+.pg-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pg-btn.active {
+  background-color: #520000;
+  border-color: #520000;
+  color: #fff;
+}
+
+.pg-btn.dots {
+  cursor: default;
+  pointer-events: none;
+}

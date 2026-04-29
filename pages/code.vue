@@ -3,12 +3,10 @@
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
+      <input class="search-box rounded-md" v-model="searchQuery" type="text"
         placeholder="Search barang..." />
 
-      <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]" @click="openModal">
-        + Tambah
-      </button>
+      <button class="btn btn-primary btn-sm" @click="openModal">+ Tambah</button>
     </div>
 
     <table class="datatable w-full rounded-md overflow-hidden mt-4">
@@ -30,14 +28,8 @@
           <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
           <td class="px-4 py-2">
             <div class="flex space-x-2">
-              <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
-                @click="openModelPrint(barang)">
-                Print
-              </button>
-              <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
-                @click="deleteProduct(barang.jenisbarang_id, barang.jenisbarang_kode)">
-                Delete
-              </button>
+              <button class="btn btn-print-h btn-xs" @click="openModelPrint(barang)">Print</button>
+              <button class="btn btn-danger btn-xs" @click="deleteProduct(barang.jenisbarang_id, barang.jenisbarang_kode)">Delete</button>
             </div>
           </td>
         </tr>
@@ -57,24 +49,12 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
-        </button>
-
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
         <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer'
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
-        </button>
+          @click="typeof page === 'number' && (currentPage = page)"
+          :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+          :disabled="page === '...'">{{ page }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
 
@@ -106,13 +86,9 @@
           </div>
 
           <div class="flex justify-end">
-            <button type="button" @click="closeModal"
-              class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
-              Cancel
-            </button>
-            <button type="submit" :disabled="isSubmitting"
-              class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400">
-              {{ isSubmitting ? "Saving..." : "Save" }}
+            <button type="button" @click="closeModal" class="btn btn-neutral btn-md">Cancel</button>
+            <button type="submit" :disabled="isSubmitting" class="btn btn-primary btn-md">
+              {{ isSubmitting ? "Saving…" : "Save" }}
             </button>
           </div>
         </form>
@@ -128,12 +104,8 @@
             class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan jumlah kode" />
         </div>
         <div class="flex justify-end">
-          <button class="mr-4 text-gray-500" @click="closePrintModal">
-            Cancel
-          </button>
-          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="handlePrint">
-            Print
-          </button>
+          <button class="btn btn-neutral btn-md" @click="closePrintModal">Cancel</button>
+          <button class="btn btn-print-h btn-md" @click="handlePrint">🖨 Print</button>
         </div>
       </div>
     </div>
@@ -449,17 +421,6 @@ watch(isModalOpen, async (val) => {
   background-color: #f4f4f4;
 }
 
-.btn-add {
-  background-color: #3d8bfd;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.btn-add:hover {
-  background-color: #3d8bfd;
-}
 
 .fixed {
   position: fixed;

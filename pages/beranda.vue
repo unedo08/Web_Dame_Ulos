@@ -20,14 +20,14 @@
         </div>
 
         <div class="chart-main-content">
-          <PiePlatform v-if="platformPieDay" :dataPlatform="platformPieDay" />
+          <LazyPiePlatform v-if="platformPieDay" :dataPlatform="platformPieDay" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
         </div>
       </div>
 
       <div class="chart-card">
         <div class="chart-title">Jenis Transaksi Hari Ini</div>
-        <PieTransaksi v-if="transaksiDay" :dataTransaksi="transaksiDay" />
+        <LazyPieTransaksi v-if="transaksiDay" :dataTransaksi="transaksiDay" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -35,13 +35,13 @@
     <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-title">Jenis Transaksi Bulan Ini</div>
-        <PieTransaksi v-if="transaksiMonth" :dataTransaksi="transaksiMonth" />
+        <LazyPieTransaksi v-if="transaksiMonth" :dataTransaksi="transaksiMonth" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
 
       <div class="chart-card">
         <div class="chart-title">Platform Bulan Ini</div>
-        <PiePlatform v-if="platformMonth" :dataPlatform="platformMonth" />
+        <LazyPiePlatform v-if="platformMonth" :dataPlatform="platformMonth" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -50,7 +50,7 @@
       <div class="chart-card">
         <div class="chart-title">Grafik Omset Per Bulan</div>
 
-        <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
+        <LazyBarBarang v-if="barangMonth" :dataBarang="barangMonth" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
 
@@ -58,7 +58,7 @@
         <div class="chart-title">Diagram pie perbandingan customer baru dan custumer
           lama per bulan</div>
 
-        <PiePlatform v-if="customerPie" :dataPlatform="customerPie" />
+        <LazyPiePlatform v-if="customerPie" :dataPlatform="customerPie" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -66,13 +66,13 @@
       <div class="chart-card">
         <div class="chart-title">Jumlah Barang Masuk per bulan</div>
 
-        <PiePlatform v-if="jenisBarangPie" :dataPlatform="jenisBarangPie" />
+        <LazyPiePlatform v-if="jenisBarangPie" :dataPlatform="jenisBarangPie" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Jumlah Barang Terjual per bulan</div>
 
-        <PiePlatform v-if="barangTerjualPie" :dataPlatform="barangTerjualPie" />
+        <LazyPiePlatform v-if="barangTerjualPie" :dataPlatform="barangTerjualPie" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -80,7 +80,7 @@
       <div class="chart-card-line">
         <div class="chart-title">Grafik Omset Per Hari</div>
 
-        <LineBarang v-if="barangLine" :dataBarang="barangLine" />
+        <LazyLineBarang v-if="barangLine" :dataBarang="barangLine" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -88,7 +88,7 @@
       <div class="chart-card-line">
         <div class="chart-title">Pertumbuhan costumer baru per tahun</div>
 
-        <LineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
+        <LazyLineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
         <div v-else class="loading-placeholder">Menunggu data...</div>
       </div>
     </div>
@@ -99,11 +99,6 @@
 import { ref, onMounted } from "vue"
 import { useRuntimeConfig, useNuxtApp } from "#imports"
 import { CubeIcon } from "@heroicons/vue/24/solid"
-import PieTransaksi from "~/components/PieTransaksi.vue"
-import PiePlatform from "~/components/PiePlatform.vue"
-import BarBarang from "~/components/BarBarang.vue"
-import LineBarang from "~/components/LineBarang.vue"
-import LineBarangCustomer from "~/components/LineBarangCustomer.vue"
 import dayjs from "dayjs"
 
 const { $api } = useNuxtApp()

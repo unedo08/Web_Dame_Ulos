@@ -12,9 +12,7 @@
 
       <input type="date" v-model="endDate" class="border rounded px-2 py-1 text-sm" />
 
-      <button class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm" @click="exportExcel">
-        Export Excel
-      </button>
+      <button class="btn btn-export btn-md" @click="exportExcel">📥 Export Excel</button>
     </div>
 
     <table class="datatable w-full rounded-md overflow-hidden">
@@ -82,17 +80,9 @@
 
             <td>
               <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(trx.transaksi_id)">
-                  View
-                </button>
-
-                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(trx.transaksi_id)">
-                  Print
-                </button>
-
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(trx.transaksi_id)">
-                  Delete
-                </button>
+                <button class="btn btn-info btn-xs" @click="openViewDetail(trx.transaksi_id)">View</button>
+                <button class="btn btn-print-h btn-xs" @click="handlePrint(trx.transaksi_id)">Print</button>
+                <button class="btn btn-danger btn-xs" @click="deleteTransaksi(trx.transaksi_id)">Delete</button>
               </div>
             </td>
           </tr>
@@ -117,20 +107,13 @@
         <span>data</span>
       </div>
 
-      <div class="pagination">
-        <button class="nav-btn" :disabled="currentPage === 1" @click="currentPage--">
-          Sebelumnya
-        </button>
-
-        <button v-for="p in paginatedPages" :key="p" class="page-btn"
-          :class="{ active: p === currentPage, dots: p === '...' }" :disabled="p === '...'"
-          @click="typeof p === 'number' && (currentPage = p)">
-          {{ p }}
-        </button>
-
-        <button class="nav-btn" :disabled="currentPage === totalPages" @click="currentPage++">
-          Selanjutnya
-        </button>
+      <div class="flex items-center gap-1">
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
+        <button v-for="p in paginatedPages" :key="p"
+          @click="typeof p === 'number' && (currentPage = p)"
+          :class="['pg-btn', p === currentPage ? 'active' : '', p === '...' ? 'dots' : '']"
+          :disabled="p === '...'">{{ p }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
 
@@ -143,8 +126,6 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 import ViewDetailModal from "../components/ModalViewDetail.vue";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 const today = new Date().toISOString().slice(0, 10);
 const startDate = ref(today);
 const endDate = ref(today);
@@ -332,6 +313,8 @@ const deleteTransaksi = async (id) => {
 
 const exportExcel = async () => {
   try {
+    const XLSX = await import('xlsx')
+    const { saveAs } = await import('file-saver')
     const res = await $api.get(
       `${url.value}/api/transaksi/report`,
       {
@@ -769,45 +752,4 @@ watch(itemsPerPage, () => {
   font-size: 10px !important;
 }
 
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.page-btn,
-.nav-btn {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.page-btn:hover,
-.nav-btn:hover {
-  background: #f3f4f6;
-}
-
-.page-btn.active {
-  background: #2563eb;
-  color: #fff;
-  border-color: #2563eb;
-  font-weight: 600;
-}
-
-.page-btn.dots {
-  cursor: default;
-  border: none;
-  background: transparent;
-}
-
-.page-btn:disabled,
-.nav-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 </style>

@@ -3,12 +3,9 @@
         <title>Staff</title>
         <div class="judul text-xl font-semibold mb-4">Manajemen Staff</div>
         <div class="flex items-center justify-between pt-2">
-            <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
+            <input class="search-box rounded-md" v-model="searchQuery" type="text"
                 placeholder="Search staff..." />
-            <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
-                @click="openAddModal">
-                + Tambah Staff
-            </button>
+            <button class="btn btn-primary btn-sm" @click="openAddModal">+ Tambah Staff</button>
         </div>
 
         <table class="datatable w-full rounded-md overflow-hidden mt-4">
@@ -31,15 +28,8 @@
                     <td class="px-4 py-2">{{ user.role?.name }}</td>
 
                     <td class="px-4 py-2 flex gap-2">
-                        <button class="px-2 py-1 bg-yellow-500 text-white rounded text-xs hover:bg-yellow-600"
-                            @click="openEditModal(user)">
-                            Edit
-                        </button>
-
-                        <button class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
-                            @click="deleteUser(user.id, user.name)">
-                            Delete
-                        </button>
+                        <button class="btn btn-warning btn-xs" @click="openEditModal(user)">Edit</button>
+                        <button class="btn btn-danger btn-xs" @click="deleteUser(user.id, user.name)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -57,25 +47,12 @@
             </div>
 
             <div class="flex items-center space-x-2">
-                <button class="px-3 py-1 bg-gray-300 rounded" :disabled="currentPage === 1" @click="currentPage--">
-                    Sebelumnya
-                </button>
-
+                <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
                 <button v-for="page in paginatedPages" :key="page"
-                    @click="typeof page === 'number' && (currentPage = page)" :disabled="page === '...'" :class="[
-                        'px-3 py-1 rounded',
-                        currentPage === page
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200',
-                        page === '...' && 'cursor-default'
-                    ]">
-                    {{ page }}
-                </button>
-
-                <button class="px-3 py-1 bg-gray-300 rounded" :disabled="currentPage === totalPages"
-                    @click="currentPage++">
-                    Selanjutnya
-                </button>
+                  @click="typeof page === 'number' && (currentPage = page)"
+                  :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+                  :disabled="page === '...'">{{ page }}</button>
+                <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
             </div>
         </div>
 
@@ -104,11 +81,8 @@
                 </div>
 
                 <div class="flex justify-end gap-2 mt-6">
-                    <button class="px-4 py-2 bg-gray-300 rounded" @click="closeEditModal">Close</button>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        @click="submitUpdateUser">
-                        Save
-                    </button>
+                    <button class="btn btn-neutral btn-md" @click="closeEditModal">Close</button>
+                    <button class="btn btn-primary btn-md" @click="submitUpdateUser">Save</button>
                 </div>
             </div>
         </div>
@@ -166,12 +140,8 @@
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 mt-6">
-                    <button class="px-4 py-2 bg-gray-300 rounded" @click="closeAddModal">
-                        Batal
-                    </button>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" @click="submitAddUser">
-                        Tambah
-                    </button>
+                    <button class="btn btn-neutral btn-md" @click="closeAddModal">Batal</button>
+                    <button class="btn btn-primary btn-md" @click="submitAddUser">Tambah</button>
                 </div>
             </div>
         </div>
@@ -455,15 +425,5 @@ const deleteUser = async (id, name) => {
     background-color: #f4f4f4;
 }
 
-.btn-add {
-    background-color: #3d8bfd;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-}
 
-.btn-add:hover {
-    background-color: #3d8bfd;
-}
 </style>

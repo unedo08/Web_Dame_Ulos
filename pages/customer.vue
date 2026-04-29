@@ -38,10 +38,7 @@
           <td class="px-4 py-2">{{ cust.transaksi_tipe }}</td>
 
           <td class="px-4 py-2">
-            <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
-              @click="deleteCustomer(cust.customer_id, cust.customer_nama)">
-              Delete
-            </button>
+            <button class="btn btn-danger btn-xs" @click="deleteCustomer(cust.customer_id, cust.customer_nama)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -60,24 +57,12 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
-        </button>
-
+        <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
         <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer'
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
-
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
-        </button>
+          @click="typeof page === 'number' && (currentPage = page)"
+          :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+          :disabled="page === '...'">{{ page }}</button>
+        <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
       </div>
     </div>
 
@@ -129,16 +114,9 @@
               class="mt-1 block w-full border border-gray-300 rounded-md p-2"
               placeholder="Contoh: Instagram, Tiktok, Shopee" />
           </div>
-          <div class="flex justify-end">
-            <button type="button" @click="closeModal"
-              class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
-              Cancel
-            </button>
-
-            <button type="submit"
-              class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400">
-              Save
-            </button>
+          <div class="flex justify-end gap-2">
+            <button type="button" @click="closeModal" class="btn btn-neutral btn-md">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-md">Save</button>
           </div>
         </form>
       </div>
@@ -335,7 +313,5 @@ const deleteCustomer = async (id, nama) => {
   background-color: #f4f4f4;
 }
 
-.btn-add {
-  font-size: 12px;
-}
+
 </style>

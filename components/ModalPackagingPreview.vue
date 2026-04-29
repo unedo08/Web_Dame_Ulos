@@ -25,13 +25,9 @@
                 </div>
             </div>
 
-            <div class="flex justify-end mt-6">
-                <button @click="triggerPrint" class="px-4 py-2 mx-4 bg-green-600 text-white rounded hover:bg-green-700">
-                    Print
-                </button>
-                <button @click="$emit('close')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    Tutup
-                </button>
+            <div class="flex justify-end gap-3 mt-6">
+                <button @click="triggerPrint" class="btn btn-print-h btn-md">Print</button>
+                <button @click="$emit('close')" class="btn btn-neutral btn-md">Tutup</button>
             </div>
 
         </div>

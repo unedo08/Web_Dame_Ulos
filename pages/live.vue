@@ -24,10 +24,7 @@
           <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
         </div>
         <div>
-          <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
-            @click="openModalAddOrder">
-            + Live
-          </button>
+          <button class="btn btn-primary btn-sm" @click="openModalAddOrder">+ Live</button>
         </div>
       </div>
       <table class="datatable w-full rounded-md overflow-hidden">
@@ -78,16 +75,8 @@
               </td>
               <td class="px-4 py-2">
                 <div class="flex space-x-2">
-                  <button
-                    class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
-                    @click="editOrderLive(pengiriman.live_order_id)">
-                    Edit
-                  </button>
-                  <button
-                    class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
-                    @click="deleteOrder(pengiriman.live_order_id)">
-                    Delete
-                  </button>
+                  <button class="btn btn-success btn-xs" @click="editOrderLive(pengiriman.live_order_id)">Edit</button>
+                  <button class="btn btn-danger btn-xs" @click="deleteOrder(pengiriman.live_order_id)">Delete</button>
                 </div>
               </td>
             </tr>
@@ -107,31 +96,19 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
-          </button>
-
+          <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
           <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
-          </button>
-
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
-          </button>
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+            :disabled="page === '...'">{{ page }}</button>
+          <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
         </div>
       </div>
     </div>
 
     <div class="mx-auto" v-show="activeTab === 'transaction'">
       <br />
-      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
+      <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari data live..." />
       <table class="datatable">
         <thead>
           <tr>
@@ -147,10 +124,7 @@
             <td>{{ pengiriman.live_order_nama_akun }}</td>
             <td>{{ pengiriman.jumlah }}</td>
             <td>
-              <button class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
-                @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)">
-                Edit
-              </button>
+              <button class="btn btn-success btn-xs" @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)">Edit</button>
             </td>
           </tr>
         </tbody>
@@ -168,24 +142,12 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
-          </button>
-
+          <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
           <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
-          </button>
-
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
-          </button>
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+            :disabled="page === '...'">{{ page }}</button>
+          <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
         </div>
       </div>
     </div>
@@ -256,12 +218,8 @@
         </div>
 
         <div class="flex justify-end space-x-2">
-          <button type="button" @click="closeModalAddOrder"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-            Batal
-          </button>
-          <button type="submit" :disabled="isSubmitting"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
+          <button type="button" @click="closeModalAddOrder" class="btn btn-neutral btn-md">Batal</button>
+          <button type="submit" :disabled="isSubmitting" class="btn btn-primary btn-md">
             {{ isSubmitting ? "Menyimpan..." : "Tambah" }}
           </button>
         </div>
@@ -336,12 +294,8 @@
         </div>
 
         <div class="flex justify-end space-x-2">
-          <button type="button" @click="closeModalEditOrder"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-            Batal
-          </button>
-          <button type="submit" :disabled="isSubmittingEdit"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
+          <button type="button" @click="closeModalEditOrder" class="btn btn-neutral btn-md">Batal</button>
+          <button type="submit" :disabled="isSubmittingEdit" class="btn btn-primary btn-md">
             {{ isSubmittingEdit ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>
@@ -808,17 +762,6 @@ watch(isModalOpenAddOrder, async (val) => {
   color: #888;
 }
 
-.btn-add {
-  background-color: #3d8bfd;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.btn-add:hover {
-  background-color: #3d8bfd;
-}
 
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);

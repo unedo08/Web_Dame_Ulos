@@ -4,10 +4,7 @@
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
     <div class="flex items-center justify-end">
-      <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
-        @click="openModal">
-        + Tambah Acara
-      </button>
+      <button class="btn btn-primary btn-sm" @click="openModal">+ Tambah Acara</button>
     </div>
 
     <!-- Product Table -->
@@ -84,24 +81,12 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
-          </button>
-
+          <button class="pg-btn" :disabled="currentPage === 1" @click="currentPage--">‹ Prev</button>
           <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
-          </button>
-
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
-          </button>
+            @click="typeof page === 'number' && (currentPage = page)"
+            :class="['pg-btn', currentPage === page ? 'active' : '', page === '...' ? 'dots' : '']"
+            :disabled="page === '...'">{{ page }}</button>
+          <button class="pg-btn" :disabled="currentPage === totalPages" @click="currentPage++">Next ›</button>
         </div>
       </div>
     </div>
@@ -132,14 +117,9 @@
             </p>
           </div>
 
-          <div class="flex justify-end">
-            <button type="button" @click="closeModal"
-              class="mr-4 px-4 py-2 bg-[#D8D8D8] text-gray-800 rounded-md hover:bg-[#D8D8D8]">
-              Batal
-            </button>
-            <button type="submit" class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#1C9DBD]">
-              Tambah
-            </button>
+          <div class="flex justify-end gap-2">
+            <button type="button" @click="closeModal" class="btn btn-neutral btn-md">Batal</button>
+            <button type="submit" class="btn btn-primary btn-md">Tambah</button>
           </div>
         </form>
       </div>
@@ -154,13 +134,9 @@
           <input type="number" v-model="printJumlah" min="1"
             class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan jumlah kode" />
         </div>
-        <div class="flex justify-end">
-          <button class="mr-4 text-gray-500" @click="closePrintModal">
-            Cancel
-          </button>
-          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="handlePrint">
-            Print
-          </button>
+        <div class="flex justify-end gap-2">
+          <button class="btn btn-neutral btn-md" @click="closePrintModal">Cancel</button>
+          <button class="btn btn-print-h btn-md" @click="handlePrint">Print</button>
         </div>
       </div>
     </div>
@@ -173,9 +149,7 @@
         <div class="flex gap-2 mb-3">
           <input v-model="barcodeInput" @keyup.enter="addToTemp" type="text" class="flex-1 border rounded-md px-3 py-2"
             placeholder="Scan / ketik barcode" />
-          <button @click="addToTemp" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Tambah
-          </button>
+          <button @click="addToTemp" class="btn btn-primary btn-md">Tambah</button>
         </div>
 
         <div class="mb-3">
@@ -187,9 +161,7 @@
           </div>
         </div>
 
-        <button @click="addListBarangAcara" class="mb-4 px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">
-          Tambah ke List
-        </button>
+        <button @click="addListBarangAcara" class="btn btn-info btn-sm mb-4">Tambah ke List</button>
 
         <table class="datatable w-full mb-4">
           <thead class="bg-blue-100">
@@ -217,12 +189,8 @@
         </table>
 
         <div class="flex justify-end gap-2">
-          <button @click="closeEditModal" class="px-4 py-2 bg-gray-300 rounded">
-            Batal
-          </button>
-          <button @click="submitEdit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-            Submit
-          </button>
+          <button @click="closeEditModal" class="btn btn-neutral btn-md">Batal</button>
+          <button @click="submitEdit" class="btn btn-success btn-md">Submit</button>
         </div>
 
       </div>
@@ -239,7 +207,6 @@ import {
   TrashIcon,
   PlusIcon
 } from "@heroicons/vue/24/solid";
-import * as XLSX from "xlsx";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
 const { $api } = useNuxtApp();
@@ -643,6 +610,7 @@ const removeFromTempBarang = async (id) => {
 
 const exportItem = async (id) => {
   try {
+    const XLSX = await import('xlsx')
     const response = await $api.get(`${url.value}/api/acara/export/${id}`);
     const acaraData = response.data.data.acara;
     const detailData = response.data.data.detail;
@@ -745,17 +713,6 @@ const handlePrint = () => {
   background-color: #f4f4f4;
 }
 
-.btn-add {
-  background-color: #3d8bfd;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.btn-add:hover {
-  background-color: #3d8bfd;
-}
 
 /* Modal styles */
 .fixed {

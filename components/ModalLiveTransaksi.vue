@@ -88,10 +88,8 @@
       </div>
 
       <div class="flex justify-end gap-2 px-6 py-4">
-        <button @click="closeModal" class="px-4 py-2 rounded-md border border-gray-300 text-gray-800">Batal</button>
-
-        <button @click="submitForm" :disabled="isSubmitting"
-          class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600">
+        <button @click="closeModal" class="btn btn-neutral btn-md">Batal</button>
+        <button @click="submitForm" :disabled="isSubmitting" class="btn btn-primary btn-md">
           {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
         </button>
       </div>

@@ -124,14 +124,8 @@
             </div>
             <input type="file" accept="image/*" @change="handleImageUpload" />
             <div class="flex gap-3 mt-3">
-              <button type="button" class="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700"
-                @click="uploadImage">
-                Upload / Replace
-              </button>
-              <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                @click="viewImage">
-                View
-              </button>
+              <button type="button" class="btn btn-primary btn-sm" @click="uploadImage">Upload / Replace</button>
+              <button type="button" class="btn btn-info btn-sm" @click="viewImage">View</button>
               <!-- <button type="button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                 @click="deleteImage">
                 Delete
@@ -145,12 +139,8 @@
 
         <!-- Tombol -->
         <div class="md:col-span-2 flex justify-end gap-4 mt-8">
-          <button type="button" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
-            @click="closeModal">
-            Batal
-          </button>
-          <button type="button" @click="submitForm" :disabled="isSubmittingEdit"
-            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
+          <button type="button" class="btn btn-neutral btn-md" @click="closeModal">Batal</button>
+          <button type="button" @click="submitForm" :disabled="isSubmittingEdit" class="btn btn-primary btn-md">
             {{ isSubmittingEdit ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>

@@ -28,11 +28,8 @@
         </div>
 
         <div class="flex justify-end mt-6 space-x-4">
-          <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
-            Batal
-          </button>
-          <button type="button" @click="submitForm" :disabled="isSubmittingEdit"
-            class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
+          <button type="button" class="btn btn-neutral btn-md" @click="closeModal">Batal</button>
+          <button type="button" @click="submitForm" :disabled="isSubmittingEdit" class="btn btn-primary btn-md">
             {{ isSubmittingEdit ? 'Menyimpan...' : 'Simpan' }}
           </button>
         </div>
