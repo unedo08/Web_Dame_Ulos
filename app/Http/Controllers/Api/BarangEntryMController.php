@@ -168,13 +168,15 @@ class BarangEntryMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $entry = BarangEntryM::find($id);
+        $entry = BarangEntryM::with('code')->find($id);
         if (!$entry) {
             return response()->json([
                 'message' => 'Data not found',
                 'code' => 404
             ], 404);
         }
+
+        $entry->code_nama = $entry->code?->code_nama ?? '';
 
         return response()->json([
             'message' => 'Data found',
@@ -202,6 +204,8 @@ class BarangEntryMController extends Controller
                 'code' => 404
             ], 404);
         }
+
+        $item->code_nama = $code_nama;
 
         return response()->json([
             'message' => 'Data ditemukan',
