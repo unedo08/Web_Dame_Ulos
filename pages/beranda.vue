@@ -325,9 +325,10 @@ async function fetchDefault() {
   const currentMonth = dayjs().month() + 1
   const year         = dayjs().year()
 
-  const [resPlatformDay, resDay, resMonth, resBarangYear, resCustomer,
+  const [resPlatformDay, resPlatformMonth, resDay, resMonth, resBarangYear, resCustomer,
          resJenisEntry, resJenisJual, resBarangMonth, resCustomerChart] = await Promise.all([
     $api.get(`${url}/api/dashboard/transaksi-platform`, { params: { type: "day" } }),
+    $api.get(`${url}/api/dashboard/transaksi-platform`, { params: { type: "month", month: currentMonth, year } }),
     $api.get(`${url}/api/transaksi/transaksi-summary`,  { params: { type: "day", date: today } }),
     $api.get(`${url}/api/transaksi/transaksi-summary`,  { params: { type: "month", month: currentMonth, year } }),
     $api.get(`${url}/api/dashboard/barang`,             { params: { type: "year" } }),
@@ -339,6 +340,7 @@ async function fetchDefault() {
   ])
 
   mapPlatformDay(resPlatformDay)
+  mapPlatformMonth(resPlatformMonth)
   mapTransaksiDay(resDay)
   mapTransaksiMonth(resMonth)
   mapBarangYear(resBarangYear)
@@ -362,7 +364,9 @@ async function fetchByTanggal(date) {
 
 // ── Filter: Bulan ─────────────────────────────────────────────────────────────
 async function fetchByBulan(month, year) {
-  const [resMonth, resBarangMonth, resCustomer, resJenisEntry, resJenisJual, resCustomerChart] = await Promise.all([
+  const [resPlatformMonth, resMonth, resBarangMonth, resCustomer,
+         resJenisEntry, resJenisJual, resCustomerChart] = await Promise.all([
+    $api.get(`${url}/api/dashboard/transaksi-platform`, { params: { type: "month", month, year } }),
     $api.get(`${url}/api/transaksi/transaksi-summary`,  { params: { type: "month", month, year } }),
     $api.get(`${url}/api/dashboard/barang`,             { params: { type: "month", month, year } }),
     $api.get(`${url}/api/dashboard/jumlah-customer`,    { params: { month, year } }),
@@ -370,6 +374,7 @@ async function fetchByBulan(month, year) {
     $api.get(`${url}/api/dashboard/jenis-barang-jual`,  { params: { type: "month", month, year } }),
     $api.get(`${url}/api/dashboard/customer-chart`,     { params: { month, year } }),
   ])
+  mapPlatformMonth(resPlatformMonth)
   mapTransaksiMonth(resMonth)
   mapOmsetPerHari(resBarangMonth)
   mapCustomerPie(resCustomer)
@@ -393,25 +398,34 @@ function mapPlatformDay(res) {
   const obj = {}
   res.data.pie_chart?.forEach(item => {
     const name = item.transaksidetail_platform || "Lainnya"
-    obj[name] = item.total
+    obj[name] = Number(item.total_harga || 0)
   })
   platformPieDay.value = Object.keys(obj).length ? obj : null
 }
 
+function mapPlatformMonth(res) {
+  const obj = {}
+  res.data.pie_chart?.forEach(item => {
+    const name = item.transaksidetail_platform || "Lainnya"
+    obj[name] = Number(item.total_harga || 0)
+  })
+  platformMonth.value = Object.keys(obj).length ? obj : null
+}
+
 function mapTransaksiDay(res) {
   const obj = {}
-  res.data.data?.per_transaksi?.forEach(item => { obj[item.tipe] = item.total })
+  res.data.data?.per_transaksi?.forEach(item => {
+    obj[item.tipe] = Number(item.total_harga || 0)
+  })
   transaksiDay.value = Object.keys(obj).length ? obj : null
 }
 
 function mapTransaksiMonth(res) {
   const trx = {}
-  res.data.data?.per_transaksi?.forEach(item => { trx[item.tipe] = item.total })
+  res.data.data?.per_transaksi?.forEach(item => {
+    trx[item.tipe] = Number(item.total_harga || 0)
+  })
   transaksiMonth.value = Object.keys(trx).length ? trx : null
-
-  const plat = {}
-  res.data.data?.per_platform?.forEach(item => { plat[item.tipe] = item.total })
-  platformMonth.value = Object.keys(plat).length ? plat : null
 }
 
 function mapBarangYear(res) {

@@ -44,29 +44,21 @@ const chartData = computed(() => ({
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-
   plugins: {
     legend: {
-      position: 'bottom',
-      labels: {
-        boxWidth: 12,
-        padding: 10,
-        font: {
-          size: 10
+      position: "bottom",
+      labels: { boxWidth: 12, padding: 10, font: { size: 10 } }
+    },
+    tooltip: {
+      callbacks: {
+        label(ctx) {
+          const label = ctx.label || ""
+          const value = Number(ctx.raw || 0)
+          return ` ${label}: Rp ${value.toLocaleString("id-ID")}`
         }
       }
-    },
-    datalabels: {
-      color: "#fff",
-      font: {
-        weight: "bold",
-        size: 14,
-      },
-      formatter: (value) => {
-        return value.toLocaleString("id-ID");
-      },
-    },
-  },
+    }
+  }
 };
 </script>
 

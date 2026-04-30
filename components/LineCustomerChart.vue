@@ -47,8 +47,8 @@ const chartData = computed(() => ({
     {
       label: "Jumlah Transaksi",
       data: props.dataCustomer.map(c => Number(c.jumlah_transaksi || 0)),
-      borderColor: "#a78bfa",
-      backgroundColor: "#a78bfa",
+      borderColor: "#F5A623",
+      backgroundColor: "#E67E22",
       yAxisID: "yJumlah",
       tension: 0.4,
       fill: false,
@@ -94,7 +94,7 @@ const chartOptions = {
       position: "left",
       title: { display: true, text: "Nilai Pembelian (Rp)", color: "#3b82f6" },
       ticks: {
-        color: "#3b82f6",
+        color: "#000000",
         callback: val => "Rp " + val.toLocaleString("id-ID")
       },
       grid: { color: "#f1f5f9" }

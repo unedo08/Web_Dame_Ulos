@@ -49,6 +49,15 @@ const renderChart = () => {
             plugins: {
                 legend: {
                     position: "bottom"
+                },
+                tooltip: {
+                    callbacks: {
+                        label(ctx) {
+                            const label = ctx.label || ""
+                            const value = Number(ctx.raw || 0)
+                            return ` ${label}: Rp ${value.toLocaleString("id-ID")}`
+                        }
+                    }
                 }
             }
         }
