@@ -99,7 +99,8 @@ class DashboardController extends Controller
             $date = $request->date ?? Carbon::today()->toDateString();
 
             $pie = DB::select("
-                SELECT tt.transaksidetail_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total,
+                       SUM(tt.transaksidetail_harga_barang) as total_harga
                 FROM transaksidetail_t tt
                 WHERE tt.deleted_at IS NULL
                 AND tt.transaksidetail_platform IS NOT NULL
@@ -125,7 +126,8 @@ class DashboardController extends Controller
             $year  = $request->year  ?? Carbon::now()->year;
 
             $pie = DB::select("
-                SELECT tt.transaksidetail_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total,
+                       SUM(tt.transaksidetail_harga_barang) as total_harga
                 FROM transaksidetail_t tt
                 WHERE tt.deleted_at IS NULL
                 AND tt.transaksidetail_platform IS NOT NULL
@@ -152,7 +154,8 @@ class DashboardController extends Controller
             $year = $request->year ?? Carbon::now()->year;
 
             $pie = DB::select("
-                SELECT tt.transaksidetail_platform, COUNT(*) as total
+                SELECT tt.transaksidetail_platform, COUNT(*) as total,
+                       SUM(tt.transaksidetail_harga_barang) as total_harga
                 FROM transaksidetail_t tt
                 WHERE tt.deleted_at IS NULL
                 AND tt.transaksidetail_platform IS NOT NULL

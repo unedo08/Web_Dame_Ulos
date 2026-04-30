@@ -362,18 +362,19 @@ class TransaksiTController extends Controller
             ->whereNull('tt.deleted_at')
             ->whereBetween('tt.created_at', [$start, $end])
             ->selectRaw("
-                CASE 
+                CASE
                     WHEN EXISTS (
                         SELECT 1
                         FROM pengirimanBarang_t pbt
-                        JOIN live_order_t lot 
+                        JOIN live_order_t lot
                         ON lot.live_order_nama_akun = pbt.pengirimanBarang_akun_penerima
                         WHERE pbt.pengirimanBarang_transaksi_id = tt.transaksi_id
                     )
                     THEN 'Live'
                     ELSE tt.transaksi_tipe
                 END AS tipe,
-                COUNT(*) as total
+                COUNT(*) as total,
+                SUM(tt.transaksi_total_harga) as total_harga
             ")
             ->groupBy('tipe')
             ->get();
