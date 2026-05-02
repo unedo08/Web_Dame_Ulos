@@ -301,6 +301,7 @@ class TransaksiTController extends Controller
             ->get();
 
         return response()->json([
+            'success' => true,
             'code'    => 200,
             'filters' => [
                 'start_date' => $request->start_date,
