@@ -113,7 +113,7 @@ class CustomerMController extends Controller
                 'bm.barangentry_nama',
                 'tdt.transaksidetail_harga_barang',
                 'tdt.transaksidetail_status_penjualan',
-                DB::raw("CASE WHEN LOWER(tt.transaksi_tipe) = 'live' THEN tdt.transaksidetail_platform ELSE '-' END as transaksi_platform")
+                DB::raw("COALESCE(NULLIF(tdt.transaksidetail_platform, ''), '-') as transaksi_platform")
             )
             ->orderBy('tt.created_at', 'desc')
             ->get();
