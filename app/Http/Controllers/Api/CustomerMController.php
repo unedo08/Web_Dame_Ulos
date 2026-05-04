@@ -47,6 +47,12 @@ class CustomerMController extends Controller
             )
             ->whereNull('tt.deleted_at')
             ->whereNull('c2.deleted_at')
+            ->whereExists(function ($q) {
+                $q->select(DB::raw(1))
+                    ->from('transaksidetail_t as tdt')
+                    ->whereColumn('tdt.transaksidetail_transaksi_id', 'tt.transaksi_id')
+                    ->whereNull('tdt.deleted_at');
+            })
             ->groupBy('c2.customer_notelepon');
 
         $data = DB::table('customer_m as cm')
