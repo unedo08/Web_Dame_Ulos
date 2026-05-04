@@ -38,7 +38,10 @@
               </svg>
               {{ customerData?.customer_notelepon || '-' }}
             </span>
-            <span class="cd-info-address">{{ customerData?.customer_alamat || '-' }}</span>
+            <span class="cd-info-address">
+              <MapPinIcon class="cd-info-address-icon" />
+              {{ customerData?.customer_alamat || '-' }}
+            </span>
           </div>
         </div>
       </div>
@@ -154,6 +157,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { MapPinIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const { $api } = useNuxtApp()

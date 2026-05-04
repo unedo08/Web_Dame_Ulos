@@ -131,7 +131,17 @@
 }
 
 .cd-info-address {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   color: #374151;
+}
+
+.cd-info-address-icon {
+  width: 14px;
+  height: 14px;
+  color: #6B7280;
+  flex-shrink: 0;
 }
 
 /* ---------- Stats Section ---------- */

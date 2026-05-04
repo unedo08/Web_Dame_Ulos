@@ -125,7 +125,6 @@
         <span class="cl-pagination-sep">|</span>
         <span>Tampilkan</span>
         <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
-          <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="25">25</option>
           <option :value="50">50</option>
@@ -168,7 +167,7 @@ const url = config.public.apiBase
 const customer     = ref([])
 const searchQuery  = ref('')
 const currentPage  = ref(1)
-const itemsPerPage = ref(5)
+const itemsPerPage = ref(10)
 const sortField    = ref('tanggal_daftar')
 const sortDir      = ref('desc')
 
