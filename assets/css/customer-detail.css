@@ -1,0 +1,364 @@
+/* =========================================
+   Customer Detail Page — customer/[id].vue
+   ========================================= */
+
+/* ---------- Layout ---------- */
+.cd-page {
+  font-family: 'Nunito', sans-serif;
+  color: #111827;
+}
+
+/* ---------- Breadcrumb ---------- */
+.cd-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cd-breadcrumb-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cd-breadcrumb-link {
+  color: #6B7280;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.cd-breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.cd-breadcrumb-sep {
+  color: #9CA3AF;
+}
+
+.cd-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.cd-back-btn:hover {
+  background: #F9FAFB;
+}
+
+/* ---------- Card (shared) ---------- */
+.cd-card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- Customer Info Card ---------- */
+.cd-info-card {
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.cd-info-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.cd-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cd-avatar svg {
+  width: 36px;
+  height: 36px;
+  color: #9CA3AF;
+}
+
+.cd-info-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.cd-info-since {
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0 0 10px;
+}
+
+.cd-info-contact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #374151;
+  flex-wrap: wrap;
+}
+
+.cd-info-phone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cd-info-phone svg {
+  width: 14px;
+  height: 14px;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.cd-info-address {
+  color: #374151;
+}
+
+/* ---------- Stats Section ---------- */
+.cd-stats {
+  display: flex;
+  gap: 48px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.cd-stat-label {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-bottom: 4px;
+}
+
+.cd-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------- Search Card ---------- */
+.cd-search-card {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cd-search-icon {
+  width: 18px;
+  height: 18px;
+  color: #9CA3AF;
+  flex-shrink: 0;
+}
+
+.cd-search-input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+  color: #374151;
+  font-family: 'Nunito', sans-serif;
+  background: transparent;
+}
+
+.cd-search-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* ---------- Table Card ---------- */
+.cd-table-card {
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.cd-table-header {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 1px solid #EBEBEB;
+}
+
+.cd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cd-table thead tr {
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cd-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.cd-table td {
+  padding: 14px 16px;
+  color: #374151;
+  vertical-align: middle;
+  border-bottom: 1px solid #F9FAFB;
+}
+
+.cd-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cd-table tbody tr:hover td {
+  background: #FAFAFA;
+}
+
+.cd-table-empty {
+  padding: 40px;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 13px;
+}
+
+/* ---------- Status Badges ---------- */
+.cd-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cd-badge-open {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.cd-badge-closed {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+/* ---------- Pagination ---------- */
+.cd-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.cd-pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cd-pagination-sep {
+  color: #D1D5DB;
+}
+
+.cd-perpage-select {
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-family: 'Nunito', sans-serif;
+  color: #374151;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.cd-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cd-page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 50%;
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  font-family: 'Nunito', sans-serif;
+}
+
+.cd-page-btn:hover:not(:disabled):not(.cd-page-btn--active) {
+  background: #F3F4F6;
+}
+
+.cd-page-btn--active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #fff;
+  font-weight: 700;
+}
+
+.cd-page-btn--dots {
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+
+.cd-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cd-page-nav {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  font-family: 'Nunito', sans-serif;
+}
+
+.cd-page-nav:hover:not(:disabled) {
+  background: #F3F4F6;
+}
+
+.cd-page-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
