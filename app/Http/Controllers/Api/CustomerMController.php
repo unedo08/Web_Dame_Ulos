@@ -28,15 +28,42 @@ class CustomerMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        // For each unique phone number, keep only the latest customer (highest ID = most recently created)
-        $latestIds = DB::table('customer_m')
-            ->select(DB::raw('MAX(customer_id) as customer_id'))
+        // Per phone group: pick latest record (MAX id) + earliest registration date (MIN created_at)
+        $phoneGroups = DB::table('customer_m')
+            ->select(
+                'customer_notelepon',
+                DB::raw('MAX(customer_id) as max_id'),
+                DB::raw('MIN(created_at) as tanggal_daftar')
+            )
             ->whereNull('deleted_at')
-            ->groupBy('customer_notelepon')
-            ->pluck('customer_id');
+            ->groupBy('customer_notelepon');
 
-        $data = CustomerM::whereIn('customer_id', $latestIds)
-            ->orderBy('customer_nama')
+        // Total purchase amount per phone group (across all duplicate customer IDs)
+        $transaksiCounts = DB::table('transaksi_t as tt')
+            ->join('customer_m as c2', 'c2.customer_id', '=', 'tt.transaksi_customer_id')
+            ->select(
+                'c2.customer_notelepon',
+                DB::raw('COALESCE(SUM(tt.transaksi_total_harga), 0) as total_transaksi')
+            )
+            ->whereNull('tt.deleted_at')
+            ->whereNull('c2.deleted_at')
+            ->groupBy('c2.customer_notelepon');
+
+        $data = DB::table('customer_m as cm')
+            ->joinSub($phoneGroups, 'pg', 'cm.customer_id', '=', 'pg.max_id')
+            ->leftJoinSub($transaksiCounts, 'tc', 'tc.customer_notelepon', '=', 'cm.customer_notelepon')
+            ->whereNull('cm.deleted_at')
+            ->select(
+                'cm.customer_id',
+                'cm.customer_nama',
+                'cm.customer_akun',
+                'cm.customer_alamat',
+                'cm.customer_notelepon',
+                'cm.customer_platform',
+                'pg.tanggal_daftar',
+                DB::raw('COALESCE(tc.total_transaksi, 0) as total_transaksi')
+            )
+            ->orderBy('cm.customer_nama')
             ->get();
 
         return response()->json([
