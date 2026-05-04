@@ -34,7 +34,6 @@ class DashboardController extends Controller
                 GROUP BY DATE(tt2.created_at), tt2.transaksi_tipe
                 ORDER BY Tanggal
             ");
-
         } elseif ($type == 'month') {
 
             $pie = DB::select("
@@ -57,7 +56,6 @@ class DashboardController extends Controller
                 GROUP BY MONTH(tt2.created_at), tt2.transaksi_tipe
                 ORDER BY Bulan
             ");
-
         } else {
 
             $pie = DB::select("
@@ -120,7 +118,6 @@ class DashboardController extends Controller
                 GROUP BY DATE(tt.created_at), tt.transaksidetail_platform
                 ORDER BY Tanggal
             ", [$date]);
-
         } elseif ($type == 'month') {
             $month = $request->month ?? Carbon::now()->month;
             $year  = $request->year  ?? Carbon::now()->year;
@@ -149,7 +146,6 @@ class DashboardController extends Controller
                 GROUP BY MONTH(tt.created_at), tt.transaksidetail_platform
                 ORDER BY Bulan
             ", [$month, $year]);
-
         } else {
             $year = $request->year ?? Carbon::now()->year;
 
@@ -205,7 +201,7 @@ class DashboardController extends Controller
             $month = $request->month ?? Carbon::now()->month;
             $year  = $request->year  ?? Carbon::now()->year;
             $query->whereMonth('tt.created_at', $month)
-                  ->whereYear('tt.created_at', $year);
+                ->whereYear('tt.created_at', $year);
             $format = '%Y-%m-%d';
         } else {
             $year = $request->year ?? Carbon::now()->year;
@@ -219,9 +215,9 @@ class DashboardController extends Controller
             DB::raw('SUM(tt.transaksidetail_harga_barang) as total_harga_jual'),
             DB::raw('SUM(bm.barangentry_modal) as total_harga_modal')
         )
-        ->groupBy('periode')
-        ->orderBy('periode')
-        ->get();
+            ->groupBy('periode')
+            ->orderBy('periode')
+            ->get();
 
         return response()->json([
             'labels' => $data->pluck('periode'),
@@ -256,7 +252,6 @@ class DashboardController extends Controller
                 GROUP BY Tanggal, kategori
                 ORDER BY Tanggal
             ", [$date]);
-
         } elseif ($type == 'month') {
             $month = $request->month ?? Carbon::now()->month;
             $year  = $request->year  ?? Carbon::now()->year;
@@ -278,7 +273,6 @@ class DashboardController extends Controller
                 GROUP BY Bulan, kategori
                 ORDER BY Bulan
             ", [$month, $year]);
-
         } else {
             $year = $request->year ?? Carbon::now()->year;
 
@@ -329,7 +323,6 @@ class DashboardController extends Controller
                 GROUP BY Tanggal, kategori
                 ORDER BY Tanggal
             ", [$date]);
-
         } elseif ($type == 'month') {
             $month = $request->month ?? Carbon::now()->month;
             $year  = $request->year  ?? Carbon::now()->year;
@@ -354,7 +347,6 @@ class DashboardController extends Controller
                 GROUP BY Bulan, kategori
                 ORDER BY Bulan
             ", [$month, $year]);
-
         } else {
             $year = $request->year ?? Carbon::now()->year;
 
@@ -394,17 +386,17 @@ class DashboardController extends Controller
 
         if ($month && $year) {
             $query->whereMonth('tt.created_at', $month)
-                  ->whereYear('tt.created_at', $year);
+                ->whereYear('tt.created_at', $year);
         } else {
             $query->where('tt.created_at', '>=', Carbon::now()->subMonth());
         }
 
         $data = $query->select(
-                'cm.customer_nama',
-                DB::raw('SUM(tt.transaksi_total_harga) as nilai_pembelian'),
-                DB::raw('COUNT(tt.transaksi_id) as jumlah_transaksi')
-            )
-            ->groupBy('cm.customer_id', 'cm.customer_nama')
+            'cm.customer_akun',
+            DB::raw('SUM(tt.transaksi_total_harga) as nilai_pembelian'),
+            DB::raw('COUNT(tt.transaksi_id) as jumlah_transaksi')
+        )
+            ->groupBy('cm.customer_id', 'cm.customer_akun')
             ->orderBy('nilai_pembelian', 'DESC')
             ->limit(10)
             ->get();

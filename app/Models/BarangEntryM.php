@@ -46,4 +46,9 @@ class BarangEntryM extends Model
     {
         return $this->hasOne(PreOrdeBarangT::class, 'preOrderBarang_barang_entry_id', 'barangentry_id');
     }
+
+    public function acaraDetail()
+    {
+        return $this->hasOne(AcaradetM::class, 'acaradet_barangentry_id', 'barangentry_id');
+    }
 }

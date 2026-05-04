@@ -351,16 +351,14 @@ class BarangEntryMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = BarangEntryM::leftJoin('acaradet_m', 'barangentry_m.barangentry_id', '=', 'acaradet_m.acaradet_barangentry_id')
-            ->leftJoin('code_m', 'barangentry_m.barangentry_code_id', '=', 'code_m.code_id') // kalau sebelumnya pakai with('code')
-            ->leftJoin('acara_m', 'acara_m.acara_id', '=', 'acaradet_m.acaradet_acara_id')
-            ->where('barangentry_m.barangentry_status', 'READY')
-            ->select(
-                'barangentry_m.*',
-                'code_m.code_nama',
-                'acara_m.acara_nama'
-            )
-            ->get();
+        $data = BarangEntryM::with(['code', 'acaraDetail.acara'])
+            ->where('barangentry_status', 'READY')
+            ->get()
+            ->map(function ($item) {
+                $item->code_nama = $item->code?->code_nama;
+                $item->acara_nama = $item->acaraDetail?->acara?->acara_nama;
+                return $item;
+            });
 
         return response()->json([
             'code' => 200,
