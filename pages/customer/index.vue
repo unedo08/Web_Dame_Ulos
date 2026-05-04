@@ -1,345 +1,292 @@
 <template>
-  <div>
-    <title>Menu Customer</title>
-    <div class="judul text-xl font-semibold mb-4">Menu Customer</div>
-    <div class="flex items-center justify-between pt-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-        placeholder="Search customer..." />
+  <div class="cl-page">
+    <h1 class="cl-title">Customer</h1>
 
-      <!-- <button
-        class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
-        @click="openModal"
-      >
-        + Tambah
-      </button> -->
+    <!-- Search -->
+    <div class="cl-search-wrap">
+      <svg class="cl-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+      </svg>
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="cl-search-input"
+        placeholder="Cari customer..."
+        @input="currentPage = 1"
+      />
     </div>
 
-    <table class="datatable w-full rounded-md overflow-hidden mt-4">
-      <thead class="bg-blue-100">
-        <tr>
-          <th class="px-4 py-2 text-left">No.</th>
-          <th class="px-4 py-2 text-left">Akun</th>
-          <th class="px-4 py-2 text-left">Nama</th>
-          <th class="px-4 py-2 text-left">Alamat</th>
-          <th class="px-4 py-2 text-left">No HP</th>
-          <th class="px-4 py-2 text-left">Platform</th>
-          <th class="px-4 py-2 text-left">Aksi</th>
-        </tr>
-      </thead>
+    <!-- Table -->
+    <div class="cl-table-wrap">
+      <table class="cl-table">
+        <colgroup>
+          <col style="width: 50px">
+          <col style="width: 120px">
+          <col style="width: 150px">
+          <col style="width: 200px">
+          <col style="width: 250px">
+          <col style="width: 150px">
+          <col style="width: 150px">
+          <col style="width: 180px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="sortable" @click="setSort('tanggal_daftar')">
+              <div class="cl-th-inner">
+                Tanggal
+                <span class="cl-sort-icon" :class="{ active: sortField === 'tanggal_daftar' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th class="sortable" @click="setSort('customer_akun')">
+              <div class="cl-th-inner">
+                Akun
+                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_akun' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th class="sortable" @click="setSort('customer_nama')">
+              <div class="cl-th-inner">
+                Nama
+                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_nama' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th class="sortable" @click="setSort('customer_alamat')">
+              <div class="cl-th-inner">
+                Alamat
+                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_alamat' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th class="sortable" @click="setSort('total_transaksi')">
+              <div class="cl-th-inner">
+                Total Transaksi
+                <span class="cl-sort-icon" :class="{ active: sortField === 'total_transaksi' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th class="sortable" @click="setSort('customer_notelepon')">
+              <div class="cl-th-inner">
+                Nomor Telepon
+                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_notelepon' }">
+                  <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
+                  <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
+                </span>
+              </div>
+            </th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr v-for="(cust, index) in pagination" :key="cust.customer_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-          <td class="px-4 py-2">{{ index + 1 }}</td>
-          <td class="px-4 py-2">{{ cust.customer_akun }}</td>
-          <td class="px-4 py-2">{{ cust.customer_nama }}</td>
-          <td class="px-4 py-2">{{ cust.customer_alamat }}</td>
-          <td class="px-4 py-2">{{ cust.customer_notelepon }}</td>
-          <td class="px-4 py-2">{{ cust.customer_platform || '-' }}</td>
+        <tbody>
+          <tr v-if="paginatedCustomer.length === 0">
+            <td colspan="8" class="cl-empty">Tidak ada data customer.</td>
+          </tr>
+          <tr v-for="(cust, index) in paginatedCustomer" :key="cust.customer_id">
+            <td class="cl-col-num">{{ startItem + index }}</td>
+            <td>{{ formatDate(cust.tanggal_daftar) }}</td>
+            <td>{{ cust.customer_akun || '-' }}</td>
+            <td>{{ cust.customer_nama }}</td>
+            <td>{{ cust.customer_alamat || '-' }}</td>
+            <td class="cl-col-total">{{ formatCurrency(cust.total_transaksi) }}</td>
+            <td>{{ cust.customer_notelepon || '-' }}</td>
+            <td>
+              <div class="cl-actions">
+                <NuxtLink :to="`/customer/${cust.customer_id}`" class="cl-btn cl-btn-view">
+                  View
+                </NuxtLink>
+                <button class="cl-btn cl-btn-delete" @click="deleteCustomer(cust.customer_id, cust.customer_nama)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-          <td class="px-4 py-2 flex gap-2">
-            <NuxtLink :to="`/customer/${cust.customer_id}`"
-              class="px-2 py-1 bg-blue-500 text-white hover:bg-blue-600 rounded-md text-xs">
-              View
-            </NuxtLink>
-            <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
-              @click="deleteCustomer(cust.customer_id, cust.customer_nama)">
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-      <div class="flex items-center space-x-2">
-        <label for="perPage">Tampilkan:</label>
-        <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+    <!-- Pagination -->
+    <div class="cl-pagination">
+      <div class="cl-pagination-left">
+        <span>Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ filteredCustomer.length }}</span>
+        <span class="cl-pagination-sep">|</span>
+        <span>Tampilkan</span>
+        <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
           <option :value="5">5</option>
           <option :value="10">10</option>
-          <option :value="20">20</option>
+          <option :value="25">25</option>
           <option :value="50">50</option>
-          <option value="all">All</option>
+          <option :value="100">100</option>
         </select>
+        <span>data</span>
       </div>
 
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-          @click="currentPage--">
-          Sebelumnya
-        </button>
+      <div class="cl-pagination-pages">
+        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">&#xAB;</button>
+        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">&#x3C;</button>
 
-        <button v-for="(page, index) in paginatedPages" :key="index"
-          @click="typeof page === 'number' && (currentPage = page)" :class="[
-            'px-3 py-1 rounded',
-            currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-            page === '...' ? 'cursor-default' : 'cursor-pointer'
-          ]" :disabled="page === '...'">
-          {{ page }}
-        </button>
+        <template v-for="(page, idx) in paginatedPages" :key="idx">
+          <button
+            v-if="page !== '...'"
+            class="cl-page-btn"
+            :class="{ 'cl-page-btn--active': currentPage === page }"
+            @click="currentPage = page"
+          >
+            {{ page }}
+          </button>
+          <span v-else class="cl-page-btn cl-page-btn--dots">...</span>
+        </template>
 
-        <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-          @click="currentPage++">
-          Selanjutnya
-        </button>
-      </div>
-    </div>
-
-    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-      <div class="bg-white p-6 rounded-lg max-w-lg w-full">
-        <h3 class="text-xl font-semibold mb-4">Tambah Customer</h3>
-
-        <form @submit.prevent="submitCustomer">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">
-              Akun <span class="text-red-500">*</span>
-            </label>
-            <input v-model="newCustomer.customer_akun" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Isikan username / akun pelanggan" />
-            <p v-if="errors.customer_akun" class="text-red-500 text-xs">{{ errors.customer_akun }}</p>
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">
-              Nama Customer <span class="text-red-500">*</span>
-            </label>
-            <input v-model="newCustomer.customer_nama" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Nama customer" />
-            <p v-if="errors.customer_nama" class="text-red-500 text-xs">{{ errors.customer_nama }}</p>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">
-              Alamat <span class="text-red-500">*</span>
-            </label>
-            <input v-model="newCustomer.customer_alamat" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Alamat customer" />
-            <p v-if="errors.customer_alamat" class="text-red-500 text-xs">{{ errors.customer_alamat }}</p>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">
-              Nomor HP <span class="text-red-500">*</span>
-            </label>
-            <input v-model="newCustomer.customer_notelpon" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Nomor telepon" />
-            <p v-if="errors.customer_notelpon" class="text-red-500 text-xs">
-              {{ errors.customer_notelpon }}
-            </p>
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Platform</label>
-            <input v-model="newCustomer.customer_platform" type="text"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="Contoh: Instagram, Tiktok, Shopee" />
-          </div>
-          <div class="flex justify-end">
-            <button type="button" @click="closeModal"
-              class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
-              Cancel
-            </button>
-
-            <button type="submit"
-              class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400">
-              Save
-            </button>
-          </div>
-        </form>
+        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">&#x3E;</button>
+        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">&#xBB;</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import Swal from "sweetalert2";
-import { useRuntimeConfig } from "#imports";
-const { $api } = useNuxtApp();
-const searchQuery = ref("");
-const customer = ref([]);
-const url = ref("");
+import { ref, computed, onMounted } from 'vue'
+import Swal from 'sweetalert2'
 
-const isModalOpen = ref(false);
-const itemsPerPage = ref(10);
-const currentPage = ref(1);
-const newCustomer = ref({
-  customer_akun: "",
-  customer_nama: "",
-  customer_alamat: "",
-  customer_notelepon: "",
-  transaksi_tipe: "-"
-});
+const { $api } = useNuxtApp()
+const config = useRuntimeConfig()
+const url = config.public.apiBase
 
-const errors = ref({});
+const customer     = ref([])
+const searchQuery  = ref('')
+const currentPage  = ref(1)
+const itemsPerPage = ref(5)
+const sortField    = ref('tanggal_daftar')
+const sortDir      = ref('desc')
 
-onMounted(async () => {
-  const config = useRuntimeConfig();
-  url.value = config.public.apiBase;
-  fetchData();
-});
+onMounted(fetchData)
 
-const fetchData = async () => {
+async function fetchData() {
   try {
-    const res = await $api.get(`${url.value}/api/customer`);
-
-    customer.value = res.data.data
-      .map((item) => ({
-        customer_id: item.customer_id,
-        customer_akun: item.customer_akun,
-        customer_nama: item.customer_nama,
-        customer_alamat: item.customer_alamat,
-        customer_notelepon: item.customer_notelepon,
-        customer_platform: item.customer_platform,
-        created_at: item.created_at
-      }))
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  } catch (error) {
-    console.error("Error fetching customer:", error);
+    const res = await $api.get(`${url}/api/customer`)
+    customer.value = res.data.data.map(item => ({
+      customer_id:       item.customer_id,
+      customer_akun:     item.customer_akun,
+      customer_nama:     item.customer_nama,
+      customer_alamat:   item.customer_alamat,
+      customer_notelepon: item.customer_notelepon,
+      tanggal_daftar:    item.tanggal_daftar,
+      total_transaksi:   Number(item.total_transaksi) || 0,
+    }))
+  } catch (e) {
+    console.error('Error fetching customer:', e)
   }
-};
+}
 
-const listCustomer = computed(() => {
-  const q = searchQuery.value.toLowerCase();
+function setSort(field) {
+  if (sortField.value === field) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortField.value = field
+    sortDir.value = 'asc'
+  }
+  currentPage.value = 1
+}
 
-  return customer.value.filter((cust) => {
-    return (
-      cust.customer_nama?.toLowerCase().includes(q) ||
-      cust.customer_akun?.toLowerCase().includes(q) ||
-      cust.customer_alamat?.toLowerCase().includes(q) ||
-      cust.customer_notelepon?.toLowerCase().includes(q) ||
-      cust.customer_platform?.toLowerCase().includes(q)
-    );
-  });
-});
+const filteredCustomer = computed(() => {
+  const q = searchQuery.value.toLowerCase().trim()
+  const list = q
+    ? customer.value.filter(c =>
+        (c.customer_nama     || '').toLowerCase().includes(q) ||
+        (c.customer_akun     || '').toLowerCase().includes(q) ||
+        (c.customer_alamat   || '').toLowerCase().includes(q) ||
+        (c.customer_notelepon || '').toLowerCase().includes(q)
+      )
+    : customer.value
 
-const pagination = computed(() => {
-  if (itemsPerPage.value === "all") return listCustomer.value;
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  return listCustomer.value.slice(start, start + itemsPerPage.value);
-});
+  return [...list].sort((a, b) => {
+    let valA = a[sortField.value] ?? ''
+    let valB = b[sortField.value] ?? ''
 
-const totalPages = computed(() => {
-  if (itemsPerPage.value === "all") return 1;
-  return Math.ceil(listCustomer.value.length / itemsPerPage.value);
-});
+    if (sortField.value === 'tanggal_daftar') {
+      valA = new Date(valA).getTime() || 0
+      valB = new Date(valB).getTime() || 0
+    } else if (sortField.value === 'total_transaksi') {
+      valA = Number(valA)
+      valB = Number(valB)
+    } else {
+      valA = String(valA).toLowerCase()
+      valB = String(valB).toLowerCase()
+    }
+
+    if (valA < valB) return sortDir.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortDir.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredCustomer.value.length / itemsPerPage.value))
+)
+
+const paginatedCustomer = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return filteredCustomer.value.slice(start, start + itemsPerPage.value)
+})
+
+const startItem = computed(() =>
+  filteredCustomer.value.length ? (currentPage.value - 1) * itemsPerPage.value + 1 : 0
+)
+
+const endItem = computed(() =>
+  Math.min(currentPage.value * itemsPerPage.value, filteredCustomer.value.length)
+)
 
 const paginatedPages = computed(() => {
-  const total = totalPages.value;
-  const current = currentPage.value;
+  const total   = totalPages.value
+  const current = currentPage.value
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1)
+  if (current <= 3) return [1, 2, 3, '...', total]
+  if (current >= total - 2) return [1, '...', total - 2, total - 1, total]
+  return [1, '...', current - 1, current, current + 1, '...', total]
+})
 
-  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
-  if (current <= 3) return [1, 2, 3, "...", total];
-  if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
-  return [1, "...", current - 1, current, current + 1, "...", total];
-});
+const formatDate = (d) =>
+  d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'
 
-const openModal = () => {
-  isModalOpen.value = true;
-  errors.value = {};
-};
+const formatCurrency = (v) =>
+  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(v) || 0)
 
-const closeModal = () => {
-  isModalOpen.value = false;
-  newCustomer.value = {
-    customer_akun: "",
-    customer_nama: "",
-    customer_alamat: "",
-    customer_notelpon: "",
-    customer_platform: "-"
-  };
-  errors.value = {};
-};
-
-// VALIDATION
-const validateCustomer = () => {
-  errors.value = {};
-
-  if (!newCustomer.value.customer_akun.trim())
-    errors.value.customer_akun = "Akun wajib diisi";
-
-  if (!newCustomer.value.customer_nama.trim())
-    errors.value.customer_nama = "Nama wajib diisi";
-
-  if (!newCustomer.value.customer_alamat.trim())
-    errors.value.customer_alamat = "Alamat wajib diisi";
-
-  if (!newCustomer.value.customer_notelpon.trim())
-    errors.value.customer_notelpon = "Nomor telepon wajib diisi";
-
-  return Object.keys(errors.value).length === 0;
-};
-
-const submitCustomer = async () => {
-  if (!validateCustomer()) {
-    Swal.fire("Gagal!", "Silakan lengkapi semua field wajib.", "error");
-    return;
-  }
-  try {
-    await $api.post(`${url.value}/api/customer/addCustomer`, newCustomer.value);
-
-    Swal.fire("Berhasil!", "Customer berhasil ditambahkan.", "success");
-
-    closeModal();
-    fetchData();
-  } catch (err) {
-    Swal.fire("Gagal!", "Kesalahan saat menambah customer", "error");
-  }
-};
-
-const deleteCustomer = async (id, nama) => {
+async function deleteCustomer(id, nama) {
   const confirm = await Swal.fire({
-    title: "Hapus Customer?",
+    title: 'Hapus Customer?',
     text: `Anda yakin ingin menghapus '${nama}'?`,
-    icon: "warning",
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: "Ya, Hapus!",
-    cancelButtonText: "Batal"
-  });
-
-  if (!confirm.isConfirmed) return;
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+    confirmButtonColor: '#EF4444',
+  })
+  if (!confirm.isConfirmed) return
 
   try {
-    await $api.delete(`${url.value}/api/customer/deleteCustomer/${id}`);
-
-    customer.value = customer.value.filter((c) => c.customer_id !== id);
-
-    Swal.fire("Berhasil!", "Customer berhasil dihapus.", "success");
-  } catch (err) {
-    Swal.fire("Gagal!", "Tidak dapat menghapus data.", "error");
+    await $api.delete(`${url}/api/customer/deleteCustomer/${id}`)
+    customer.value = customer.value.filter(c => c.customer_id !== id)
+    Swal.fire('Berhasil!', 'Customer berhasil dihapus.', 'success')
+  } catch {
+    Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error')
   }
-};
+}
 </script>
 
-<style scoped>
-* {
-  font-family: "Nunito", sans-serif;
-}
-
-.search-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 385px;
-  height: 34px;
-}
-
-.datatable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.datatable th,
-.datatable td {
-  padding: 10px;
-  text-align: left;
-  font-size: 12px;
-}
-
-.datatable th {
-  background-color: #f4f4f4;
-}
-
-.btn-add {
-  font-size: 12px;
-}
+<style>
+@import '~/assets/css/customer-list.css';
 </style>
