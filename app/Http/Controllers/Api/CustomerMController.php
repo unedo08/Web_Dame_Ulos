@@ -28,39 +28,89 @@ class CustomerMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = DB::table('transaksidetail_t as tt')
-            ->join('transaksi_t as tt2', 'tt2.transaksi_id', '=', 'tt.transaksidetail_transaksi_id')
-            ->join('customer_m as cm', 'cm.customer_nama', '=', 'tt2.transaksi_nama_customer')
-            ->select(
-                'cm.customer_id',
-                'cm.customer_nama',
-                'cm.customer_akun',
-                'cm.customer_alamat',
-                'cm.customer_notelepon',
-                'tt2.transaksi_tipe',
-                DB::raw('COUNT(DISTINCT tt2.transaksi_id) as jumlah_transaksi'),
-                DB::raw('COUNT(tt.transaksidetail_barang_id) as jumlah_barang')
-            )
-            ->groupBy(
-                'cm.customer_id',
-                'cm.customer_nama',
-                'cm.customer_akun',
-                'cm.customer_alamat',
-                'cm.customer_notelepon',
-                'tt2.transaksi_tipe'
-            )
-            ->orderBy('cm.customer_nama', 'asc')
-            ->orderBy('tt2.transaksi_tipe', 'asc')
+        // For each unique phone number, keep only the latest customer (highest ID = most recently created)
+        $latestIds = DB::table('customer_m')
+            ->select(DB::raw('MAX(customer_id) as customer_id'))
+            ->whereNull('deleted_at')
+            ->groupBy('customer_notelepon')
+            ->pluck('customer_id');
+
+        $data = CustomerM::whereIn('customer_id', $latestIds)
+            ->orderBy('customer_nama')
             ->get();
 
         return response()->json([
             'code' => 200,
-            'message' => 'Summary transaksi per customer ditemukan',
+            'message' => 'Customers retrieved',
             'count' => $data->count(),
             'data' => $data
         ]);
     }
 
+
+    public function getCustomerDetail($id)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $customer = CustomerM::find($id);
+
+        if (!$customer) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Customer not found',
+                'data' => null
+            ], 404);
+        }
+
+        // All customer IDs sharing the same phone number (handle duplicates)
+        $customerIds = CustomerM::where('customer_notelepon', $customer->customer_notelepon)
+            ->pluck('customer_id');
+
+        // Use the latest record's name/phone/address for display
+        $latestCustomer = CustomerM::whereIn('customer_id', $customerIds)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $transactions = DB::table('transaksi_t as tt')
+            ->join('transaksidetail_t as tdt', 'tdt.transaksidetail_transaksi_id', '=', 'tt.transaksi_id')
+            ->join('barangentry_m as bm', 'bm.barangentry_id', '=', 'tdt.transaksidetail_barang_id')
+            ->join('code_m as cm', 'cm.code_id', '=', 'bm.barangentry_code_id')
+            ->whereIn('tt.transaksi_customer_id', $customerIds)
+            ->whereNull('tt.deleted_at')
+            ->whereNull('tdt.deleted_at')
+            ->select(
+                'tt.transaksi_id',
+                'tt.created_at',
+                DB::raw("CONCAT(UPPER(SUBSTR(tt.transaksi_tipe,1,1)), LOWER(SUBSTR(tt.transaksi_tipe,2))) as transaksi_tipe"),
+                'cm.code_nama',
+                'bm.barangentry_nama',
+                'tdt.transaksidetail_harga_barang',
+                'tdt.transaksidetail_status_penjualan',
+                DB::raw("CASE WHEN LOWER(tt.transaksi_tipe) = 'live' THEN tdt.transaksidetail_platform ELSE '-' END as transaksi_platform")
+            )
+            ->orderBy('tt.created_at', 'desc')
+            ->get();
+
+        $totalPembelian = $transactions->sum('transaksidetail_harga_barang');
+        $totalTransaksi = $transactions->count();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Customer detail retrieved',
+            'data' => [
+                'customer' => [
+                    'customer_id'       => $customer->customer_id,
+                    'customer_nama'     => $latestCustomer->customer_nama,
+                    'customer_notelepon' => $latestCustomer->customer_notelepon,
+                    'customer_alamat'   => $latestCustomer->customer_alamat,
+                    'created_at'        => $customer->created_at,
+                ],
+                'total_pembelian' => $totalPembelian,
+                'total_transaksi' => $totalTransaksi,
+                'transactions'    => $transactions
+            ]
+        ], 200);
+    }
 
     public function show($id)
     {
