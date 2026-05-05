@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BarangEntryMController;
+use App\Http\Controllers\Api\BarangEntryRiwayatController;
 
+Route::get('/{id}/riwayat', [BarangEntryRiwayatController::class, 'getByBarang']);
 Route::get('/getDataPO', [BarangEntryMController::class, 'getAllDataBarangPO']);
 Route::post('/{id}/deleteBarangEntry', [BarangEntryMController::class, 'deleteBarangEntry']);
 Route::post('/{id}/updateStok', [BarangEntryMController::class, 'updateStok']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BarangEntryM;
+use App\Models\BarangEntryRiwayat;
 use App\Models\CodeM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,6 +65,11 @@ class BarangEntryMController extends Controller
             }
         }
 
+        BarangEntryRiwayat::updateOrCreate(
+            ['riwayat_barangentry_id' => $record->barangentry_id, 'riwayat_aktivitas' => 'Description'],
+            ['riwayat_user_id' => Auth::id()]
+        );
+
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
             'status' => $hasNullUkuran ? 'warning' : 'success',
@@ -106,6 +112,11 @@ class BarangEntryMController extends Controller
                 ]);
             }
         }
+
+        BarangEntryRiwayat::updateOrCreate(
+            ['riwayat_barangentry_id' => $record->barangentry_id, 'riwayat_aktivitas' => 'Size'],
+            ['riwayat_user_id' => Auth::id()]
+        );
 
         return response()->json([
             'code' => $hasNullUkuran ? '201' : '200',
@@ -487,6 +498,11 @@ class BarangEntryMController extends Controller
 
         $updated->update($request->all());
 
+        BarangEntryRiwayat::updateOrCreate(
+            ['riwayat_barangentry_id' => $updated->barangentry_id, 'riwayat_aktivitas' => 'Description'],
+            ['riwayat_user_id' => Auth::id()]
+        );
+
         return response()->json([
             'message' => 'Barang Ready Stock updated successfully',
             'code' => 200,
@@ -522,6 +538,11 @@ class BarangEntryMController extends Controller
         }
 
         $updated->update($request->all());
+
+        BarangEntryRiwayat::updateOrCreate(
+            ['riwayat_barangentry_id' => $updated->barangentry_id, 'riwayat_aktivitas' => 'Size'],
+            ['riwayat_user_id' => Auth::id()]
+        );
 
         return response()->json([
             'message' => 'Barang Ready Stock updated successfully',
