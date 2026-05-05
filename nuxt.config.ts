@@ -22,6 +22,10 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  experimental: {
+    viteEnvironmentApi: true
+  },
+
   nitro: {
     preset: 'static'
   },
