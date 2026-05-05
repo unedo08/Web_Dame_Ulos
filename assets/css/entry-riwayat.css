@@ -1,0 +1,166 @@
+/* =========================================
+   Riwayat Perubahan Modal — entry.vue
+   ========================================= */
+
+.er-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.5);
+}
+
+.er-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 520px;
+  max-width: 95vw;
+  padding: 28px 28px 24px;
+}
+
+.er-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.er-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.er-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6B7280;
+  line-height: 1;
+  padding: 2px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.er-close:hover {
+  color: #111827;
+}
+
+/* ---------- Inner table card ---------- */
+.er-table-wrap {
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.er-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.er-table thead tr {
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.er-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  color: #111827;
+  background: #fff;
+  font-size: 13px;
+}
+
+.er-table td {
+  padding: 12px 14px;
+  color: #374151;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.er-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.er-table-empty {
+  padding: 32px;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 13px;
+}
+
+/* ---------- Loading ---------- */
+.er-loading {
+  padding: 32px;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 13px;
+}
+
+/* ---------- View button in table ---------- */
+.er-btn-view {
+  background: #FBBF24;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 3px 10px;
+  height: 25px;
+  width: 63px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.er-btn-view:hover {
+  background: #F59E0B;
+}
+
+.er-btn-edit {
+  background: #2AC769;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 3px 10px;
+  height: 25px;
+  width: 63px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.er-btn-edit:hover:not(:disabled) {
+  background: #5ce392;
+}
+
+.er-btn-edit:disabled,
+.er-btn-edit--disabled {
+  background: #A8A8A8;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.er-btn-delete {
+  background: #DC3545;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 3px 10px;
+  height: 25px;
+  width: 63px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.er-btn-delete:hover {
+  background: #e25764;
+}

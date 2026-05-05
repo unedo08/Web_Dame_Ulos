@@ -212,17 +212,16 @@
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
               <td class="px-4 py-2">
                 <div class="flex space-x-3">
+                  <button class="er-btn-view" @click="openRiwayat(barang.barangentry_id)">View</button>
                   <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
-                  <button v-if="barang.barangentry_jumlah_barang > 0"
-                    class="bg-green-500 text-white text-xs rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[40px]"
-                    @click="openModalEditBarang(barang.barangentry_id)">
+                  <button
+                    :class="['er-btn-edit', { 'er-btn-edit--disabled': barang.barangentry_jumlah_barang <= 0 }]"
+                    :disabled="barang.barangentry_jumlah_barang <= 0"
+                    @click="barang.barangentry_jumlah_barang > 0 && openModalEditBarang(barang.barangentry_id)"
+                  >
                     Edit
                   </button>
-                  <button v-else disabled
-                    class="bg-gray-400 text-white text-xs rounded-md px-2 py-1 h-[25px] w-[40px] cursor-not-allowed">
-                    Edit
-                  </button>
-                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[25px] w-[60px]"
+                  <button class="er-btn-delete"
                     @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
@@ -736,6 +735,41 @@
 
     <SendOrderModal :visible="showSendModal" @close="showSendModal = false" @submitted="handleSend" />
 
+    <!-- Modal Riwayat Perubahan -->
+    <div v-if="showRiwayatModal" class="er-overlay" @click.self="showRiwayatModal = false">
+      <div class="er-modal">
+        <div class="er-header">
+          <p class="er-title">Riwayat Perubahan</p>
+          <button class="er-close" @click="showRiwayatModal = false">&#x2715;</button>
+        </div>
+
+        <div class="er-table-wrap">
+          <div v-if="riwayatLoading" class="er-loading">Memuat data...</div>
+          <table v-else class="er-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Aktivitas</th>
+                <th>Tanggal</th>
+                <th>Author</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="riwayatData.length === 0">
+                <td colspan="4" class="er-table-empty">Belum ada riwayat.</td>
+              </tr>
+              <tr v-for="row in riwayatData" :key="row.no">
+                <td>{{ row.no }}</td>
+                <td>{{ row.aktivitas }}</td>
+                <td>{{ formatTanggalWIB(row.tanggal) }}</td>
+                <td>{{ row.author }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -768,6 +802,10 @@ const showEditSize = ref(false);
 const showEditPO = ref(false);
 const selectedId = ref(null);
 const showSendModal = ref(false);
+
+const showRiwayatModal = ref(false);
+const riwayatLoading  = ref(false);
+const riwayatData     = ref([]);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -1074,6 +1112,28 @@ async function getListBarangTemp() {
   } catch (error) {
     console.error("Gagal Memuat Data Barang: ", error);
   }
+}
+
+async function openRiwayat(id) {
+  showRiwayatModal.value = true
+  riwayatLoading.value = true
+  riwayatData.value = []
+  try {
+    const res = await $api.get(`${url.value}/api/entrybarang/${id}/riwayat`)
+    riwayatData.value = res.data.data
+  } catch (e) {
+    console.error('Gagal memuat riwayat:', e)
+  } finally {
+    riwayatLoading.value = false
+  }
+}
+
+function formatTanggalWIB(d) {
+  if (!d) return '-'
+  const date = new Date(d)
+  const tgl = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })
+  const jam = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' }).replace(':', '.')
+  return `${tgl}, ${jam} WIB`
 }
 
 async function exportReadyStock() {
@@ -1951,6 +2011,7 @@ watch(activeTab, () => {
 </script>
 
 <style>
+@import '~/assets/css/entry-riwayat.css';
 .judul {
   font-size: 20px;
 }

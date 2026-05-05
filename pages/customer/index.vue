@@ -1,4 +1,5 @@
 <template>
+  <title>Menu Customer</title>
   <div class="cl-page">
     <h1 class="cl-title">Customer</h1>
 
@@ -105,7 +106,11 @@
             <td>{{ cust.customer_notelepon || '-' }}</td>
             <td>
               <div class="cl-actions">
-                <NuxtLink :to="`/customer/${cust.customer_id}`" class="cl-btn cl-btn-view">
+                <NuxtLink
+                  :to="`/customer/detail?id=${cust.customer_id}`"
+                  class="cl-btn cl-btn-view"
+                  @click="saveCustomerId(cust.customer_id)"
+                >
                   View
                 </NuxtLink>
                 <button class="cl-btn cl-btn-delete" @click="deleteCustomer(cust.customer_id, cust.customer_nama)">
@@ -263,6 +268,11 @@ const formatDate = (d) =>
 
 const formatCurrency = (v) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(v) || 0)
+
+function saveCustomerId(id) {
+  sessionStorage.setItem('selected_customer_id', id)
+  localStorage.setItem('selected_customer_id', id)
+}
 
 async function deleteCustomer(id, nama) {
   const confirm = await Swal.fire({
