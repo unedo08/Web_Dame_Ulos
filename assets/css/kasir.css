@@ -1,0 +1,259 @@
+* {
+  font-family: "Nunito", sans-serif;
+}
+
+.search-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 385px;
+  height: 34px;
+}
+
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.datatable th,
+.datatable td {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
+}
+
+.input-field {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-yellow {
+  background-color: #f59e0b;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-yellow:hover {
+  background-color: #b45309;
+}
+
+.btn-red {
+  background-color: #ef4444;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-red:hover {
+  background-color: #b91c1c;
+}
+
+.btn-green {
+  background-color: #22c55e;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-green:hover {
+  background-color: #166534;
+}
+
+.loader-border {
+  border-top-color: #fff;
+  animation: spinner 0.6s linear infinite;
+}
+
+.transition-slide {
+  font-size: 12px;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-leave-to {
+  transform: translateX(100%);
+}
+
+/* Tambah Barang button row */
+.tambah-barang-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-top: 4px;
+  background-color: #ffffff;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.15s;
+}
+
+.tambah-barang-row:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.swal-above-modal.swal2-container {
+  z-index: 10000 !important;
+}
+
+/* Modal Tambah Kode Barang */
+.modal-tambah-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-tambah-box {
+  background-color: #ffffff;
+  width: 420px;
+  max-width: 92vw;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+
+.modal-tambah-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-tambah-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.modal-tambah-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+.modal-tambah-close:hover {
+  color: #ef4444;
+}
+
+.modal-tambah-body {
+  margin-bottom: 24px;
+}
+
+.modal-tambah-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.modal-tambah-required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.modal-tambah-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.modal-tambah-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.modal-tambah-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-batal {
+  padding: 8px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-batal:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-tambah {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #22c55e;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-tambah:hover:not(:disabled) {
+  background-color: #16a34a;
+}
+
+.btn-tambah:disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}

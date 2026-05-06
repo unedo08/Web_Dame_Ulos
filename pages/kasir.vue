@@ -76,6 +76,14 @@
         </tr>
       </tbody>
     </table>
+    <div
+      class="tambah-barang-row"
+      @click="openTambahBarangModal"
+    >
+      <PlusCircleIcon class="w-5 h-5" />
+      <span>Tambah Barang</span>
+    </div>
+
     <div class="mt-4 text-right font-semibold text-lg">
       Subtotal: Rp. {{ formatRupiahSubtotal(subtotal) }}
     </div>
@@ -177,14 +185,22 @@
     @success="handleOnlineSuccess" />
 
   <ModalPreOrder :visible="openModalPreOrder" @close="openModalPreOrder = false" />
+
+  <ModalTambahBarang
+    v-if="openModalTambahBarang"
+    ref="modalTambahRef"
+    @close="openModalTambahBarang = false"
+    @tambah="handleTambahManual"
+  />
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 import ModalKasir from "../components/ModalKasir.vue";
+import ModalTambahBarang from "../components/ModalTambahBarang.vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-import { TrashIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 import ModalLive from "../components/ModalLive.vue";
 import ModalPreOrder from "../components/ModalPreOrder.vue";
 
@@ -199,6 +215,8 @@ const openModalHold = ref(false);
 const openModalProcess = ref(false);
 const openModalLive = ref(false);
 const openModalPreOrder = ref(false);
+const openModalTambahBarang = ref(false);
+const modalTambahRef = ref(null);
 
 const barcodeInput = ref("");
 let barcodeTimeout = null;
@@ -322,6 +340,7 @@ async function loadHoldTransaction(id) {
             isEditing: false,
             code_nama: codeNama,
             transaksi_id: transaksi.transaksi_id || null,
+            barangentry_id: detail.transaksidetail_barang_id || null,
           };
         } catch (err) {
           console.warn("Gagal memetakan detail transaksi:", err);
@@ -333,6 +352,7 @@ async function loadHoldTransaction(id) {
             isEditing: false,
             code_nama: detail?.kode_barang || "",
             transaksi_id: transaksi.transaksi_id || null,
+            barangentry_id: detail.transaksidetail_barang_id || null,
           };
         }
       })
@@ -604,6 +624,8 @@ async function checkoutProcess() {
 }
 
 const handleBarcodeInput = (e) => {
+  if (openModalTambahBarang.value) return;
+
   if (barcodeTimeout) clearTimeout(barcodeTimeout);
 
   if (e.key === "Enter") {
@@ -619,6 +641,83 @@ const handleBarcodeInput = (e) => {
     barcodeInput.value = "";
   }, 300);
 };
+
+function openTambahBarangModal() {
+  openModalTambahBarang.value = true;
+  nextTick(() => modalTambahRef.value?.reset());
+}
+
+async function handleTambahManual(kode) {
+  try {
+    const { data } = await $api.get(`${url.value}/api/entrybarang/getDataKasir/${kode}`);
+
+    if (!data || !Array.isArray(data.data) || data.data.length === 0) {
+      Swal.fire({ title: "Kode tidak valid", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      return;
+    }
+
+    const item = data.data[0];
+
+    if (item.barangentry_jumlah_barang === 0) {
+      Swal.fire({ title: "Stok Kosong", text: "Produk ini tidak dapat ditambahkan karena stok kosong.", icon: "warning", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      return;
+    }
+
+    const existingItem = datatableItems.value.find((i) => i.code_nama === kode);
+
+    if (item.barangentry_jumlah_barang === 1) {
+      if (existingItem) {
+        Swal.fire({ title: "Barang sudah ditambahkan", text: "Barang dengan jumlah 1 hanya bisa ditambahkan sekali.", icon: "info", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+        return;
+      }
+      datatableItems.value.push({
+        barangentry_nama: item.barangentry_nama,
+        quantity: 1,
+        barangentry_jumlah_barang: item.barangentry_jumlah_barang,
+        barangentry_harga_net: 0,
+        isEditing: false,
+        code_nama: kode,
+        barangentry_id: item.barangentry_id,
+      });
+    } else {
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        datatableItems.value.push({
+          barangentry_nama: item.barangentry_nama,
+          quantity: 1,
+          barangentry_jumlah_barang: item.barangentry_jumlah_barang,
+          barangentry_harga_net: 0,
+          isEditing: false,
+          code_nama: kode,
+          barangentry_id: item.barangentry_id,
+        });
+      }
+    }
+
+    openModalTambahBarang.value = false;
+  } catch (error) {
+    const errType = error.response?.data?.error_type;
+    if (errType === "invalid_code" || error.response?.status === 404) {
+      Swal.fire({ title: "Kode tidak valid", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+    } else if (errType === "out_of_stock") {
+      Swal.fire({ title: "Stok Kosong", text: "Produk ini tidak dapat ditambahkan karena stok kosong.", icon: "warning", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+    } else {
+      Swal.fire({ title: "Error", text: "Gagal mengambil data barang", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+    }
+  }
+}
+
+async function restoreItemStock(item) {
+  if (!item?.barangentry_id) return;
+  try {
+    await $api.post(`${url.value}/api/entrybarang/${item.barangentry_id}/updateStok`, {
+      jumlah_barang: item.quantity,
+    });
+  } catch (err) {
+    console.error("Gagal restore stok:", err);
+  }
+}
 
 function removeItem(index) {
   const itemCount = datatableItems.value.length;
@@ -638,9 +737,11 @@ function removeItem(index) {
     if (!result.isConfirmed) return;
 
     if (itemCount === 1) {
+      const item = datatableItems.value[0];
+      await restoreItemStock(item);
+
       if (currentTransaksiId.value) {
         try {
-
           await $api.delete(
             `${url.value}/api/transaksi/${currentTransaksiId.value}`);
           Swal.fire("Terhapus", "Transaksi berhasil dihapus.", "success");
@@ -654,6 +755,8 @@ function removeItem(index) {
       searchQueryCustomer.value = "";
       searchQueryPhone.value = "";
     } else {
+      const item = datatableItems.value[index];
+      await restoreItemStock(item);
       datatableItems.value.splice(index, 1);
       Swal.fire({
         title: "Item Dihapus",
@@ -719,6 +822,7 @@ const fetchDataByBarcode = async (code) => {
         barangentry_harga_net: 0,
         isEditing: false,
         code_nama: code,
+        barangentry_id: item.barangentry_id,
       });
 
       return;
@@ -734,12 +838,18 @@ const fetchDataByBarcode = async (code) => {
         barangentry_harga_net: 0,
         isEditing: false,
         code_nama: code,
+        barangentry_id: item.barangentry_id,
       });
     }
 
   } catch (error) {
     console.error(error);
-    Swal.fire("Error", "Gagal mengambil data barang", "error");
+    const errType = error.response?.data?.error_type;
+    if (errType === "out_of_stock") {
+      Swal.fire({ title: "Tidak dapat scan", text: "Barang ini memiliki jumlah 0 dan tidak bisa discan.", icon: "warning" });
+    } else {
+      Swal.fire("Tidak ditemukan", "Kode barang tidak ditemukan", "warning");
+    }
   }
 };
 
@@ -1026,111 +1136,6 @@ watch(openModalHold, (val) => {
 
 </script>
 
-<style scoped>
-* {
-  font-family: "Nunito", sans-serif;
-}
-
-.search-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 385px;
-  height: 34px;
-}
-
-.datatable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.datatable th,
-.datatable td {
-  padding: 10px;
-  /* border: 1px solid #ddd; */
-  text-align: left;
-  font-size: 12px;
-}
-
-.datatable th {
-  background-color: #f4f4f4;
-}
-
-.input-field {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.btn-yellow {
-  background-color: #f59e0b;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-yellow:hover {
-  background-color: #b45309;
-}
-
-.btn-red {
-  background-color: #ef4444;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-red:hover {
-  background-color: #b91c1c;
-}
-
-.btn-green {
-  background-color: #22c55e;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-green:hover {
-  background-color: #166534;
-}
-
-.loader-border {
-  border-top-color: #fff;
-  animation: spinner 0.6s linear infinite;
-}
-
-.transition-slide {
-  font-size: 12px;
-}
-
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s ease;
-}
-
-.slide-enter-from {
-  transform: translateX(100%);
-}
-
-.slide-leave-to {
-  transform: translateX(100%);
-}
+<style>
+@import '~/assets/css/kasir.css';
 </style>

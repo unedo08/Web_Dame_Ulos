@@ -1,7 +1,7 @@
 <template>
   <div class="pm-page">
-    <title>Setting - Metode Pembayaran</title>
-    <h1 class="pm-title">Metode Pembayaran</h1>
+    <title>Setting - Jenis Benang</title>
+    <h1 class="pm-title">Jenis Benang</h1>
 
     <div class="pm-toolbar">
       <div class="pm-search-wrap">
@@ -9,7 +9,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Cara metode pembayaran"
+          placeholder="Cari jenis benang"
           class="pm-search-input"
         />
       </div>
@@ -21,7 +21,7 @@
         <thead>
           <tr>
             <th class="pm-th pm-th-no">#</th>
-            <th class="pm-th">Nama Metode Pembayaran</th>
+            <th class="pm-th">Jenis Benang</th>
             <th class="pm-th">Terakhir Diperbaharui</th>
             <th class="pm-th pm-th-status">Status</th>
             <th class="pm-th pm-th-aksi">Aksi</th>
@@ -30,11 +30,11 @@
         <tbody v-if="paginatedData.length > 0">
           <tr v-for="(item, index) in paginatedData" :key="item.id" class="pm-tr">
             <td class="pm-td pm-td-no">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-            <td class="pm-td">{{ item.carabayar_nama }}</td>
+            <td class="pm-td">{{ item.jenisbenang_nama }}</td>
             <td class="pm-td">{{ formatDate(getDisplayDate(item)) }}</td>
             <td class="pm-td pm-td-status">
-              <span :class="['pm-chip', statusChipClass(item.carabayar_status)]">
-                {{ statusLabel(item.carabayar_status) }}
+              <span :class="['pm-chip', statusChipClass(item.jenisbenang_status)]">
+                {{ statusLabel(item.jenisbenang_status) }}
               </span>
             </td>
             <td class="pm-td pm-td-aksi">
@@ -50,7 +50,6 @@
       </table>
 
       <div v-if="filteredData.length === 0" class="pm-empty">
-        <!-- <img src="/icons/empty-state.svg" alt="empty" class="pm-empty-icon" onerror="this.style.display='none'" /> -->
         <p class="pm-empty-text">Data Tidak Ditemukan</p>
       </div>
     </div>
@@ -69,12 +68,8 @@
         </select>
       </div>
       <div class="pm-pagination-controls">
-        <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage = 1">
-          &#171;
-        </button>
-        <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage--">
-          &#8249;
-        </button>
+        <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage = 1">&#171;</button>
+        <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage--">&#8249;</button>
         <button
           v-for="(page, i) in paginatedPages"
           :key="i"
@@ -85,12 +80,8 @@
         >
           {{ page }}
         </button>
-        <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage++">
-          &#8250;
-        </button>
-        <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
-          &#187;
-        </button>
+        <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage++">&#8250;</button>
+        <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage = totalPages">&#187;</button>
       </div>
     </div>
 
@@ -99,35 +90,35 @@
       <div class="pm-modal">
         <div class="pm-modal-header">
           <h2 class="pm-modal-title">
-            {{ isEditMode ? "Edit Metode Pembayaran" : "Tambah Metode Pembayaran" }}
+            {{ isEditMode ? "Edit Jenis Benang" : "Tambah Jenis Benang" }}
           </h2>
           <button class="pm-modal-close" @click="closeModal">&#x2715;</button>
         </div>
 
         <div class="pm-modal-body">
           <label class="pm-label">
-            Nama Metode Pembayaran <span class="pm-required">*</span>
+            Jenis Benang <span class="pm-required">*</span>
           </label>
           <input
-            v-model="form.carabayar_nama"
+            v-model="form.jenisbenang_nama"
             type="text"
-            placeholder="Masukkan nama metode pembayaran"
+            placeholder="Masukkan jenis benang"
             class="pm-input"
           />
 
           <label class="pm-label pm-label-status">Status</label>
           <div class="pm-toggle-box">
             <div class="pm-toggle-info">
-              <span class="pm-toggle-title">Status metode pembayaran</span>
+              <span class="pm-toggle-title">Status jenis benang</span>
               <span class="pm-toggle-desc">
-                {{ form.carabayar_status == 1 ? "Akan dapat digunakan dalam transaksi" : "Tidak dapat digunakan dalam transaksi" }}
+                {{ form.jenisbenang_status == 1 ? "Akan dapat digunakan dalam transaksi" : "Tidak dapat digunakan dalam transaksi" }}
               </span>
             </div>
             <label class="pm-switch">
               <input
                 type="checkbox"
-                :checked="form.carabayar_status == 1"
-                @change="form.carabayar_status = $event.target.checked ? 1 : 0"
+                :checked="form.jenisbenang_status == 1"
+                @change="form.jenisbenang_status = $event.target.checked ? 1 : 0"
               />
               <span class="pm-slider"></span>
             </label>
@@ -138,7 +129,7 @@
           <button class="pm-btn-batal" @click="closeModal">Batal</button>
           <button
             class="pm-btn-simpan"
-            :disabled="!form.carabayar_nama.trim() || isLoading"
+            :disabled="!form.jenisbenang_nama.trim() || isLoading"
             @click="handleSave"
           >
             {{ isEditMode ? "Simpan" : "Tambah" }}
@@ -153,7 +144,7 @@
 import "@/assets/css/payment-method.css";
 import { onMounted } from "vue";
 import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
-import { usePaymentMethod } from "@/composables/usePaymentMethod";
+import { useJenisBenang } from "@/composables/useJenisBenang";
 
 const {
   search,
@@ -177,7 +168,7 @@ const {
   statusChipClass,
   statusLabel,
   getDisplayDate,
-} = usePaymentMethod();
+} = useJenisBenang();
 
 async function handleSave() {
   const { default: Swal } = await import("sweetalert2");
@@ -185,15 +176,15 @@ async function handleSave() {
   const success = await saveData();
   if (success) {
     Swal.fire({
-      title: isEdit ? "Metode Pembayaran Berhasil Diupdate" : "Metode Pembayaran Berhasil Ditambahkan",
+      title: isEdit ? "Jenis Benang Berhasil Diupdate" : "Jenis Benang Berhasil Ditambahkan",
       icon: "success",
       timer: 1500,
-      showConfirmButton: true,
+      showConfirmButton: false,
     });
   } else {
     Swal.fire({
       title: "Gagal",
-      text: isEdit ? "Gagal mengupdate metode pembayaran." : "Gagal menambahkan metode pembayaran.",
+      text: isEdit ? "Gagal mengupdate jenis benang." : "Gagal menambahkan jenis benang.",
       icon: "error",
       confirmButtonText: "OK",
     });
@@ -203,8 +194,8 @@ async function handleSave() {
 async function confirmDelete(item) {
   const { default: Swal } = await import("sweetalert2");
   const result = await Swal.fire({
-    title: "Hapus Metode Pembayaran?",
-    text: `"${item.carabayar_nama}" akan dihapus.`,
+    title: "Hapus Jenis Benang?",
+    text: `"${item.jenisbenang_nama}" akan dihapus.`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#d33",
@@ -214,7 +205,7 @@ async function confirmDelete(item) {
   });
   if (result.isConfirmed) {
     await deleteItem(item);
-    Swal.fire({ title: "Metode Pembayaran Berhasil Dihapus", icon: "success", timer: 1500, showConfirmButton: true });
+    Swal.fire({ title: "Jenis Benang Berhasil Dihapus", icon: "success", timer: 1500, showConfirmButton: false });
   }
 }
 

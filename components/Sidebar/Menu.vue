@@ -60,6 +60,18 @@ const items = ref([
         title: "Metode Pembayaran",
         path: "/setting/metode-pembayaran",
       },
+      {
+        title: "Jenis Pengiriman",
+        path: "/setting/jenis-pengiriman",
+      },
+      {
+        title: "Platform",
+        path: "/setting/platform",
+      },
+      {
+        title: "Benang",
+        path: "/setting/jenis-benang",
+      },
     ],
   },
 ]);

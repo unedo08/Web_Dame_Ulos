@@ -1,12 +1,12 @@
 import { ref, computed, watch } from "vue";
 import { useNuxtApp, useRuntimeConfig } from "#imports";
 
-export function usePaymentMethod() {
+export function useJenisPengiriman() {
   const { $api } = useNuxtApp();
   const config = useRuntimeConfig();
   const baseUrl = config.public.apiBase;
 
-  const paymentMethods = ref([]);
+  const jenisPengiriman = ref([]);
   const search = ref("");
   const currentPage = ref(1);
   const itemsPerPage = ref(10);
@@ -17,24 +17,24 @@ export function usePaymentMethod() {
 
   const form = ref({
     id: null,
-    carabayar_nama: "",
-    carabayar_status: 1,
+    jenispengiriman_nama: "",
+    jenispengiriman_status: 1,
   });
 
   async function fetchData() {
     try {
-      const { data } = await $api.get(`${baseUrl}/api/carabayar/all`);
-      paymentMethods.value = data.data ?? [];
+      const { data } = await $api.get(`${baseUrl}/api/jenispengiriman/all`);
+      jenisPengiriman.value = data.data ?? [];
     } catch (err) {
-      console.error("Gagal fetch data cara bayar:", err);
+      console.error("Gagal fetch data jenis pengiriman:", err);
     }
   }
 
   const filteredData = computed(() => {
     const q = search.value.toLowerCase().trim();
-    if (!q) return paymentMethods.value;
-    return paymentMethods.value.filter((item) =>
-      item.carabayar_nama.toLowerCase().includes(q)
+    if (!q) return jenisPengiriman.value;
+    return jenisPengiriman.value.filter((item) =>
+      item.jenispengiriman_nama.toLowerCase().includes(q)
     );
   });
 
@@ -49,7 +49,6 @@ export function usePaymentMethod() {
   const paginatedPages = computed(() => {
     const total = totalPages.value;
     const current = currentPage.value;
-
     if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
     if (current <= 3) return [1, 2, 3, "...", total];
     if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
@@ -61,12 +60,12 @@ export function usePaymentMethod() {
       isEditMode.value = true;
       form.value = {
         id: data.id,
-        carabayar_nama: data.carabayar_nama,
-        carabayar_status: data.carabayar_status,
+        jenispengiriman_nama: data.jenispengiriman_nama,
+        jenispengiriman_status: data.jenispengiriman_status,
       };
     } else {
       isEditMode.value = false;
-      form.value = { id: null, carabayar_nama: "", carabayar_status: 1 };
+      form.value = { id: null, jenispengiriman_nama: "", jenispengiriman_status: 1 };
     }
     isModalOpen.value = true;
   }
@@ -76,18 +75,18 @@ export function usePaymentMethod() {
   }
 
   async function saveData() {
-    if (!form.value.carabayar_nama.trim()) return false;
+    if (!form.value.jenispengiriman_nama.trim()) return false;
     isLoading.value = true;
     try {
       const payload = {
-        carabayar_nama: form.value.carabayar_nama,
-        carabayar_status: form.value.carabayar_status,
+        jenispengiriman_nama: form.value.jenispengiriman_nama,
+        jenispengiriman_status: form.value.jenispengiriman_status,
       };
 
       if (isEditMode.value) {
-        await $api.put(`${baseUrl}/api/carabayar/${form.value.id}`, payload);
+        await $api.put(`${baseUrl}/api/jenispengiriman/${form.value.id}`, payload);
       } else {
-        await $api.post(`${baseUrl}/api/carabayar`, payload);
+        await $api.post(`${baseUrl}/api/jenispengiriman`, payload);
       }
 
       closeModal();
@@ -104,7 +103,7 @@ export function usePaymentMethod() {
 
   async function deleteItem(item) {
     try {
-      await $api.delete(`${baseUrl}/api/carabayar/${item.id}`);
+      await $api.delete(`${baseUrl}/api/jenispengiriman/${item.id}`);
       await fetchData();
       if (currentPage.value > totalPages.value) {
         currentPage.value = totalPages.value;
@@ -149,7 +148,7 @@ export function usePaymentMethod() {
   });
 
   return {
-    paymentMethods,
+    jenisPengiriman,
     search,
     currentPage,
     itemsPerPage,
