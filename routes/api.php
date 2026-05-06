@@ -36,6 +36,18 @@ Route::middleware(['jwt'])->group(function () {
         require __DIR__ . '/api/carabayarM.php';
     });
 
+    Route::prefix('/jenispengiriman')->group(function () {
+        require __DIR__ . '/api/jenisPengirimanM.php';
+    });
+
+    Route::prefix('/platform')->group(function () {
+        require __DIR__ . '/api/platformM.php';
+    });
+
+    Route::prefix('/jenisbenang')->group(function () {
+        require __DIR__ . '/api/jenisBenangM.php';
+    });
+
     Route::prefix('jenisbarang')->group(function () {
         require __DIR__ . '/api/jenisBarangM.php';  // Relative path
     });

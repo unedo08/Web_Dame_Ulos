@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CaraBayarM extends Model
+class JenisBenangM extends Model
 {
     use SoftDeletes;
-    protected $table = 'carabayar_m';
+
+    protected $table = 'jenis_benang_m';
 
     protected $fillable = [
-        'carabayar_nama',
-        'carabayar_kode',
-        'carabayar_status',
+        'jenisbenang_nama',
+        'jenisbenang_kode',
+        'jenisbenang_status',
         'create_id',
         'update_id',
-        'delete_id'
+        'delete_id',
     ];
 }

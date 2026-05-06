@@ -37,27 +37,26 @@ class CustomerMController extends Controller
             )
             ->whereNull('deleted_at')
             ->groupBy('customer_notelepon');
+        
 
-        // Total purchase amount per phone group (across all duplicate customer IDs)
+        // Total purchase amount per phone group — only customers with at least one valid detail
         $transaksiCounts = DB::table('transaksi_t as tt')
             ->join('customer_m as c2', 'c2.customer_id', '=', 'tt.transaksi_customer_id')
+            ->join('transaksidetail_t as tdt', function ($join) {
+                $join->on('tdt.transaksidetail_transaksi_id', '=', 'tt.transaksi_id')
+                     ->whereNull('tdt.deleted_at');
+            })
             ->select(
                 'c2.customer_notelepon',
-                DB::raw('COALESCE(SUM(tt.transaksi_total_harga), 0) as total_transaksi')
+                DB::raw('COALESCE(SUM(tdt.transaksidetail_harga_barang), 0) as total_transaksi')
             )
             ->whereNull('tt.deleted_at')
             ->whereNull('c2.deleted_at')
-            ->whereExists(function ($q) {
-                $q->select(DB::raw(1))
-                    ->from('transaksidetail_t as tdt')
-                    ->whereColumn('tdt.transaksidetail_transaksi_id', 'tt.transaksi_id')
-                    ->whereNull('tdt.deleted_at');
-            })
             ->groupBy('c2.customer_notelepon');
 
         $data = DB::table('customer_m as cm')
             ->joinSub($phoneGroups, 'pg', 'cm.customer_id', '=', 'pg.max_id')
-            ->leftJoinSub($transaksiCounts, 'tc', 'tc.customer_notelepon', '=', 'cm.customer_notelepon')
+            ->joinSub($transaksiCounts, 'tc', 'tc.customer_notelepon', '=', 'cm.customer_notelepon')
             ->whereNull('cm.deleted_at')
             ->select(
                 'cm.customer_id',

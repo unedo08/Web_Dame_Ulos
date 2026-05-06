@@ -3,51 +3,45 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\CaraBayarM;
+use App\Models\PlatformM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CaraBayarMController extends Controller
+class PlatformMController extends Controller
 {
-    public function index()
+    public function getActive()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::orderBy('created_at', 'desc')->get();
+        $data = PlatformM::where('platform_status', 1)
+            ->orderBy('platform_nama')
+            ->get();
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Berhasil mendapatkan data metode pembayaran',
+            'message' => 'Berhasil mendapatkan data platform aktif',
             'data'    => $data,
         ], 200);
     }
 
-    public function store(Request $request)
+    public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $validated = $request->validate([
-            'carabayar_nama'   => 'required|string|max:100',
-            'carabayar_status' => 'required|in:0,1',
-        ]);
-
-        $validated['carabayar_kode'] = strtoupper(str_replace(' ', '_', $request->carabayar_nama));
-        $validated['create_id']      = Auth::id();
-
-        $data = CaraBayarM::create($validated);
+        $data = PlatformM::orderBy('created_at', 'desc')->get();
 
         return response()->json([
-            'code'    => 201,
-            'message' => 'Metode pembayaran berhasil ditambahkan',
+            'code'    => 200,
+            'message' => 'Berhasil mendapatkan data platform',
             'data'    => $data,
-        ], 201);
+        ], 200);
     }
 
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = PlatformM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -63,11 +57,32 @@ class CaraBayarMController extends Controller
         ], 200);
     }
 
+    public function store(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $validated = $request->validate([
+            'platform_nama'   => 'required|string|max:100',
+            'platform_status' => 'required|in:0,1',
+        ]);
+
+        $validated['platform_kode'] = strtoupper(str_replace(' ', '_', $request->platform_nama));
+        $validated['create_id']     = Auth::id();
+
+        $data = PlatformM::create($validated);
+
+        return response()->json([
+            'code'    => 201,
+            'message' => 'Platform berhasil ditambahkan',
+            'data'    => $data,
+        ], 201);
+    }
+
     public function update(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = PlatformM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -77,18 +92,18 @@ class CaraBayarMController extends Controller
         }
 
         $validated = $request->validate([
-            'carabayar_nama'   => 'required|string|max:100',
-            'carabayar_status' => 'required|in:0,1',
+            'platform_nama'   => 'required|string|max:100',
+            'platform_status' => 'required|in:0,1',
         ]);
 
-        $validated['carabayar_kode'] = strtoupper($request->carabayar_nama);
-        $validated['update_id']      = Auth::id();
+        $validated['platform_kode'] = strtoupper(str_replace(' ', '_', $request->platform_nama));
+        $validated['update_id']     = Auth::id();
 
         $data->update($validated);
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Metode pembayaran berhasil diupdate',
+            'message' => 'Platform berhasil diupdate',
             'data'    => $data,
         ], 200);
     }
@@ -97,7 +112,7 @@ class CaraBayarMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = PlatformM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -112,18 +127,8 @@ class CaraBayarMController extends Controller
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Metode pembayaran berhasil dihapus',
+            'message' => 'Platform berhasil dihapus',
             'data'    => null,
         ], 200);
-    }
-
-    public function getActiveCarabayar(){
-        $data = CaraBayarM::where('carabayar_status','=', 1)->get();
-
-        return response()->json([
-            'code'    => 200,
-            'message' => 'Berhasil mendapatkan data metode pembayaran aktif',
-            'data'    => $data,
-        ], 200);   
     }
 }

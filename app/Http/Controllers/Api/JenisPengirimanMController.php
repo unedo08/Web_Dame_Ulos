@@ -3,51 +3,45 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\CaraBayarM;
+use App\Models\JenisPengirimanM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CaraBayarMController extends Controller
+class JenisPengirimanMController extends Controller
 {
-    public function index()
+    public function getActive()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::orderBy('created_at', 'desc')->get();
+        $data = JenisPengirimanM::where('jenispengiriman_status', 1)
+            ->orderBy('jenispengiriman_nama')
+            ->get();
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Berhasil mendapatkan data metode pembayaran',
+            'message' => 'Berhasil mendapatkan data jenis pengiriman aktif',
             'data'    => $data,
         ], 200);
     }
 
-    public function store(Request $request)
+    public function index()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $validated = $request->validate([
-            'carabayar_nama'   => 'required|string|max:100',
-            'carabayar_status' => 'required|in:0,1',
-        ]);
-
-        $validated['carabayar_kode'] = strtoupper(str_replace(' ', '_', $request->carabayar_nama));
-        $validated['create_id']      = Auth::id();
-
-        $data = CaraBayarM::create($validated);
+        $data = JenisPengirimanM::orderBy('created_at', 'desc')->get();
 
         return response()->json([
-            'code'    => 201,
-            'message' => 'Metode pembayaran berhasil ditambahkan',
+            'code'    => 200,
+            'message' => 'Berhasil mendapatkan data jenis pengiriman',
             'data'    => $data,
-        ], 201);
+        ], 200);
     }
 
     public function show($id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = JenisPengirimanM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -63,11 +57,32 @@ class CaraBayarMController extends Controller
         ], 200);
     }
 
+    public function store(Request $request)
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $validated = $request->validate([
+            'jenispengiriman_nama'   => 'required|string|max:100',
+            'jenispengiriman_status' => 'required|in:0,1',
+        ]);
+
+        $validated['jenispengiriman_kode'] = strtoupper(str_replace(' ', '_', $request->jenispengiriman_nama));
+        $validated['create_id']            = Auth::id();
+
+        $data = JenisPengirimanM::create($validated);
+
+        return response()->json([
+            'code'    => 201,
+            'message' => 'Jenis pengiriman berhasil ditambahkan',
+            'data'    => $data,
+        ], 201);
+    }
+
     public function update(Request $request, $id)
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = JenisPengirimanM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -77,18 +92,18 @@ class CaraBayarMController extends Controller
         }
 
         $validated = $request->validate([
-            'carabayar_nama'   => 'required|string|max:100',
-            'carabayar_status' => 'required|in:0,1',
+            'jenispengiriman_nama'   => 'required|string|max:100',
+            'jenispengiriman_status' => 'required|in:0,1',
         ]);
 
-        $validated['carabayar_kode'] = strtoupper($request->carabayar_nama);
-        $validated['update_id']      = Auth::id();
+        $validated['jenispengiriman_kode'] = strtoupper(str_replace(' ', '_', $request->jenispengiriman_nama));
+        $validated['update_id']            = Auth::id();
 
         $data->update($validated);
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Metode pembayaran berhasil diupdate',
+            'message' => 'Jenis pengiriman berhasil diupdate',
             'data'    => $data,
         ], 200);
     }
@@ -97,7 +112,7 @@ class CaraBayarMController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $data = CaraBayarM::find($id);
+        $data = JenisPengirimanM::find($id);
         if (!$data) {
             return response()->json([
                 'code'    => 404,
@@ -112,18 +127,8 @@ class CaraBayarMController extends Controller
 
         return response()->json([
             'code'    => 200,
-            'message' => 'Metode pembayaran berhasil dihapus',
+            'message' => 'Jenis pengiriman berhasil dihapus',
             'data'    => null,
         ], 200);
-    }
-
-    public function getActiveCarabayar(){
-        $data = CaraBayarM::where('carabayar_status','=', 1)->get();
-
-        return response()->json([
-            'code'    => 200,
-            'message' => 'Berhasil mendapatkan data metode pembayaran aktif',
-            'data'    => $data,
-        ], 200);   
     }
 }

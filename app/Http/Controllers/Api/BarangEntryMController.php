@@ -158,6 +158,14 @@ class BarangEntryMController extends Controller
         if ($resp = $this->checkAuth()) return $resp;
 
         $code = CodeM::where('code_nama', $codeNama)->first();
+
+        if (!$code) {
+            return response()->json([
+                "code" => 404,
+                "message" => "No entries found for code_nama: {$codeNama}"
+            ], 404);
+        }
+
         $entries = BarangEntryM::where('barangentry_code_id', $code->code_id)
             ->where('barangentry_status', 'READY')
             ->get();
