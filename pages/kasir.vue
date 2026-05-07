@@ -647,19 +647,21 @@ function openTambahBarangModal() {
   nextTick(() => modalTambahRef.value?.reset());
 }
 
-async function handleTambahManual(kode) {
+async function handleTambahManual(payload) {
+
+  const {kode, setError} = payload;
   try {
     const { data } = await $api.get(`${url.value}/api/entrybarang/getDataKasir/${kode}`);
 
     if (!data || !Array.isArray(data.data) || data.data.length === 0) {
-      Swal.fire({ title: "Kode tidak valid", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      setError("Kode barang tidak valid");
       return;
     }
 
     const item = data.data[0];
 
     if (item.barangentry_jumlah_barang === 0) {
-      Swal.fire({ title: "Stok Kosong", text: "Produk ini tidak dapat ditambahkan karena stok kosong.", icon: "warning", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      setError("Produk ini tidak dapat ditambahkan karena stok kosong");
       return;
     }
 
@@ -699,9 +701,9 @@ async function handleTambahManual(kode) {
   } catch (error) {
     const errType = error.response?.data?.error_type;
     if (errType === "invalid_code" || error.response?.status === 404) {
-      Swal.fire({ title: "Kode tidak valid", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      setError("Kode tidak valid");
     } else if (errType === "out_of_stock") {
-      Swal.fire({ title: "Stok Kosong", text: "Produk ini tidak dapat ditambahkan karena stok kosong.", icon: "warning", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
+      setError("Produk ini tidak dapat ditambahkan karena stok kosong");
     } else {
       Swal.fire({ title: "Error", text: "Gagal mengambil data barang", icon: "error", confirmButtonText: "OK", customClass: { container: 'swal-above-modal' } });
     }

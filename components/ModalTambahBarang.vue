@@ -10,23 +10,17 @@
         <label class="modal-tambah-label">
           Kode Barang <span class="modal-tambah-required">*</span>
         </label>
-        <input
-          ref="inputRef"
-          v-model="kodeBarang"
-          type="text"
-          class="modal-tambah-input"
-          placeholder="Masukkan kode barang"
-          @keyup.enter="handleTambah"
-        />
+        <input ref="inputRef" v-model="kodeBarang" type="text" class="modal-tambah-input"
+          placeholder="Masukkan kode barang" @keyup.enter="handleTambah" />
+          <p v-if="errorMessage" class="modal-error-text">
+            {{ errorMessage }}
+          </p>
       </div>
+
 
       <div class="modal-tambah-footer">
         <button class="btn-batal" @click="$emit('close')">Batal</button>
-        <button
-          class="btn-tambah"
-          :disabled="!kodeBarang.trim()"
-          @click="handleTambah"
-        >
+        <button class="btn-tambah" :disabled="!kodeBarang.trim()" @click="handleTambah">
           Tambah
         </button>
       </div>
@@ -41,11 +35,23 @@ const emit = defineEmits(['close', 'tambah']);
 
 const kodeBarang = ref('');
 const inputRef = ref(null);
+const errorMessage = ref('');
 
 function handleTambah() {
+  errorMessage.value = '';
+
   const kode = kodeBarang.value.trim();
-  if (!kode) return;
-  emit('tambah', kode);
+  if (!kode) {
+    errorMessage.value = 'Kode barang wajib diisi';
+    return;
+  }
+
+  emit('tambah', {
+    kode,
+    setError: (msg) => {
+      errorMessage.value = msg;
+    }
+  });
 }
 
 function reset() {
