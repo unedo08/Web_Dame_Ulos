@@ -78,12 +78,18 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Pengiriman <span style="color:red">*</span></label>
-            <input v-model="form.pengiriman" type="text" class="w-full border rounded-md px-3 py-2"
-              placeholder="Masukkan jenis pengiriman" />
+            <label class="block text-sm font-medium mb-1">Pengiriman<span style="color:red">*</span></label>
+
+            <select v-model="form.pengiriman" class="w-full border rounded-md px-3 py-2">
+              <option value="" disabled>Pilih Pengiriman</option>
+
+              <option v-for="jp in jenisPengiriman" :key="jp.id" :value="jp.jenispengiriman_kode">
+                {{ jp.jenispengiriman_nama }}
+              </option>
+            </select>
+
             <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">{{ errors.pengiriman }}</p>
           </div>
-
         </div>
       </div>
 
@@ -116,6 +122,7 @@ const emit = defineEmits(["close", "save"]);
 
 const url = ref("");
 const caraBayarList = ref([]);
+const jenisPengiriman = ref([]);
 
 const isSubmitting = ref(false);
 
@@ -136,7 +143,9 @@ onMounted(async () => {
 
   try {
     const res = await $api.get(`${url.value}/api/carabayar`);
+    const resJenisPengiriman = await $api.get(`${url.value}/api/jenispengiriman/all`);    
     caraBayarList.value = res.data.data;
+    jenisPengiriman.value = resJenisPengiriman.data.data;
   } catch (err) { }
 });
 
@@ -174,6 +183,8 @@ function validate() {
 }
 
 async function submitForm() {
+  console.log('sads',form.value);
+  
   if (!validate()) {
     Swal.fire("Gagal!", "Silakan lengkapi semua field wajib.", "error");
     return;
