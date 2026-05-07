@@ -143,7 +143,7 @@ onMounted(async () => {
 
   try {
     const res = await $api.get(`${url.value}/api/carabayar`);
-    const resJenisPengiriman = await $api.get(`${url.value}/api/jenispengiriman/all`);    
+    const resJenisPengiriman = await $api.get(`${url.value}/api/jenispengiriman/all`);
     caraBayarList.value = res.data.data;
     jenisPengiriman.value = resJenisPengiriman.data.data;
   } catch (err) { }
@@ -183,8 +183,6 @@ function validate() {
 }
 
 async function submitForm() {
-  console.log('sads',form.value);
-  
   if (!validate()) {
     Swal.fire("Gagal!", "Silakan lengkapi semua field wajib.", "error");
     return;

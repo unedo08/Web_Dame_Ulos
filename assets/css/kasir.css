@@ -240,7 +240,7 @@
   padding: 8px 20px;
   border: none;
   border-radius: 6px;
-  background: #06b6d4;
+  background: #0190a3;
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -249,11 +249,11 @@
 }
 
 .btn-tambah:hover:not(:disabled) {
-  background: #0891b2;
+  background: #06abc1;
 }
 
 .btn-tambah:disabled {
-  background-color: #06b6d4;
+  background-color: #65d9e9;
   cursor: not-allowed;
 }
 
