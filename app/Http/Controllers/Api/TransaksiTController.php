@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\TransaksiT;
 use App\Models\TransaksiDetailT;
+use App\Models\BarangEntryM;
 use App\Models\CustomerM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -159,7 +160,7 @@ class TransaksiTController extends Controller
 
         $userId = Auth::id();
 
-        $transaksi = TransaksiT::find($id);
+        $transaksi = TransaksiT::with('details')->find($id);
 
         if (!$transaksi) {
             return response()->json([
@@ -169,6 +170,12 @@ class TransaksiTController extends Controller
             ], 404);
         }
 
+        foreach ($transaksi->details as $detail) {
+            $barang = BarangEntryM::find($detail->transaksidetail_barang_id);
+            if ($barang) {
+                $barang->increment('barangentry_jumlah_barang', $detail->transaksidetail_jumlah_barang);
+            }
+        }
 
         $transaksi->delete_id = $userId;
         $transaksi->save();
