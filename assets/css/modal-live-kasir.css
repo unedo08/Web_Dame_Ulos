@@ -1,0 +1,140 @@
+.modal-tambah-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-tambah-box {
+  background-color: #ffffff;
+  width: 420px;
+  max-width: 92vw;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+
+.modal-tambah-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-tambah-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.modal-tambah-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+.modal-tambah-close:hover {
+  color: #ef4444;
+}
+
+.modal-tambah-body {
+  margin-bottom: 24px;
+}
+
+.modal-tambah-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.modal-tambah-required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.modal-tambah-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.modal-tambah-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.modal-input-error {
+  border-color: #ef4444 !important;
+}
+
+.modal-input-error:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+}
+
+.modal-error-text {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ef4444;
+}
+
+.modal-tambah-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-batal {
+  padding: 8px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-batal:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-tambah {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #22c55e;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-tambah:hover:not(:disabled) {
+  background-color: #16a34a;
+}
+
+.btn-tambah:disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}

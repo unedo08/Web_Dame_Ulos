@@ -9,9 +9,13 @@
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Platform <span class="required">*</span>
             </label>
-            <input v-model="form.platform" type="text"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan Nama Platform" />
+            <select v-model="form.platform"
+              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500">
+              <option disabled value="">Pilih Jenis Platform</option>
+              <option v-for="platform in jenisPlatform" :key="platform.id" :value="platform.platform_nama">
+                {{ platform.platform_nama }}
+              </option>
+            </select>
             <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
               {{ errors.platform }}
             </p>
@@ -33,14 +37,18 @@
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Pengiriman <span class="required">*</span>
             </label>
-            <input v-model="form.pengiriman" type="text"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500"
-              placeholder="Masukkan Pengiriman" />
+            <select v-model="form.pengiriman"
+              class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500">
+              <option disabled value="">Pilih Jenis Pengiriman</option>
+              <option v-for="jp in jenisPengiriman" :key="jp.id" :value="jp.jenispengiriman_nama">
+                {{ jp.jenispengiriman_nama }}
+              </option>
+            </select>
             <p v-if="errors.pengiriman" class="text-red-500 text-sm mt-1">
               {{ errors.pengiriman }}
             </p>
           </div>
-
+          
           <div>
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Metode Pembayaran <span class="required">*</span>
@@ -161,6 +169,8 @@ const emit = defineEmits(["close", "success"]);
 const url = ref("");
 const isSubmitting = ref(false);
 const caraBayarList = ref([]);
+const jenisPengiriman = ref([]);
+const jenisPlatform = ref([]);
 const errors = reactive({});
 
 onMounted(async () => {
@@ -168,7 +178,11 @@ onMounted(async () => {
   url.value = config.public.apiBase;
 
   const res = await $api.get(`${url.value}/api/carabayar`);
+  const resJenisPengiriman = await $api.get(`${url.value}/api/jenispengiriman`)
+  const resJenisPlatform = await $api.get(`${url.value}/api/platform`)
   caraBayarList.value = res.data.data;
+  jenisPengiriman.value = resJenisPengiriman.data.data;
+  jenisPlatform.value = resJenisPlatform.data.data;  
 });
 
 const form = reactive({
@@ -282,26 +296,6 @@ function batalLive() {
 }
 </script>
 
-<style scoped>
-* {
-  font-family: "Nunito", sans-serif;
-}
-
-.judul-label {
-  font-weight: 700;
-}
-
-input,
-textarea,
-select {
-  border-color: #e4e6fc;
-  background-color: #fdfdff;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #cdd4ff;
-  box-shadow: 0 0 0 2px rgba(205, 212, 255, 0.5);
-}
+<style>
+@import "~/assets/css/modal-live-kasir.css";
 </style>

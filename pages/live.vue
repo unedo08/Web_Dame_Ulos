@@ -218,18 +218,17 @@
             {{ errors.namaAkun }}
           </p>
         </div>
+
         <div class="mb-4">
-          <label for="platform" class="block text-sm font-medium text-gray-700 mb-1">
-            Platform<span class="text-red-500">*</span>
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            Platform <span class="required">*</span>
           </label>
-          <select id="platform" v-model="form.platform"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required>
-            <option value="" disabled>Pilih Platform</option>
-            <option value="tiktok">TikTok</option>
-            <option value="instagram">Instagram</option>
-            <option value="facebook">Facebook</option>
-            <option value="whatsapp">WhatsApp</option>
+          <select v-model="form.platform"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500">
+            <option disabled value="">Pilih Jenis Platform</option>
+            <option v-for="platform in jenisPlatform" :key="platform.id" :value="platform.platform_nama">
+              {{ platform.platform_nama }}
+            </option>
           </select>
           <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
             {{ errors.platform }}
@@ -297,19 +296,17 @@
             {{ errors.namaAkun }}
           </p>
         </div>
+
         <div class="mb-4">
-          <label for="platform" class="block text-sm font-medium text-gray-700 mb-1">
-            Platform<span class="text-red-500">*</span>
+          <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
+            Platform <span class="required">*</span>
           </label>
-          <select id="platform" v-model="form.platform"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            required>
-            <option value="" disabled>Pilih Platform</option>
-            <option value="tiktok">TikTok</option>
-            <option value="instagram">Instagram</option>
-            <option value="facebook">Facebook</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="shopee">Shopee</option>
+          <select v-model="form.platform"
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-cyan-500">
+            <option disabled value="">Pilih Jenis Platform</option>
+            <option v-for="platform in jenisPlatform" :key="platform.id" :value="platform.platform_nama">
+              {{ platform.platform_nama }}
+            </option>
           </select>
           <p v-if="errors.platform" class="text-red-500 text-sm mt-1">
             {{ errors.platform }}
@@ -372,6 +369,7 @@ const isModalOpenAddOrder = ref(false);
 const isModalOpenEditOrder = ref(false);
 const isSubmitting = ref(false);
 const isSubmittingEdit = ref(false);
+const jenisPlatform = ref([]);
 const selected = ref({ namaAkun: "", barang: [] });
 const errors = reactive({});
 const isModalOpen = ref(false);
@@ -394,6 +392,7 @@ const fetchDataPengiriman = async () => {
   try {
     if (activeTab.value === "order") {
       const res = await $api.get(`${url.value}/api/live-barang/data-live-grouped`);
+      const resJenisPlatform = await $api.get(`${url.value}/api/platform`);
       const rawData = res.data.data || {}
 
       const filtered = {}
@@ -406,7 +405,8 @@ const fetchDataPengiriman = async () => {
         }
       }
 
-      pengirimanData.value = filtered
+      pengirimanData.value = filtered;
+      jenisPlatform.value = resJenisPlatform.data.data;
     } else {
       const res = await $api.get(`${url.value}/api/live-barang/getAmountLive`);
       transactionData.value = res.data.data || [];
