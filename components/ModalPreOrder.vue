@@ -367,7 +367,8 @@ async function submitForm() {
       transaksidetail_barang_id: barangData.barangentry_id,
       transaksidetail_jumlah_barang: 1,
       transaksidetail_harga_barang: Number(barangData.barangentry_harga_net),
-      transaksidetail_status_penjualan: 0
+      transaksidetail_status_penjualan: 0,
+      transaksidetail_platform: '-'
     };
     await $api.post(`${url.value}/api/transaksi-detail`, detailPayload);
 

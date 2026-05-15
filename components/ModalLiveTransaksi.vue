@@ -83,7 +83,7 @@
             <select v-model="form.pengiriman" class="w-full border rounded-md px-3 py-2">
               <option value="" disabled>Pilih Pengiriman</option>
 
-              <option v-for="jp in jenisPengiriman" :key="jp.id" :value="jp.jenispengiriman_kode">
+              <option v-for="jp in jenisPengiriman" :key="jp.id" :value="jp.jenispengiriman_nama">
                 {{ jp.jenispengiriman_nama }}
               </option>
             </select>
