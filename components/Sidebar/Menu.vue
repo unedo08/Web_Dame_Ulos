@@ -51,6 +51,7 @@ const items = ref([
   // { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
   // { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
   { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
+  { title: "Cek Produk", path: "/cek-produk", icon: DocumentChartBarIcon },
   // { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
   {
     title: "Settings",
@@ -85,7 +86,7 @@ const toggleDropdown = (index) => {
 
 const roleAccess = {
   "super-admin": "all",
-  admin: ["Akun Pembeli", "Beranda", "Code", "Barang Masuk", "Live", "Kasir", "Inventory", "Acara", "Database Penjualan", "Database Inventory", "Settings"],
+  admin: ["Akun Pembeli", "Beranda", "Code", "Barang Masuk", "Live", "Kasir", "Inventory", "Acara", "Database Penjualan", "Cek Produk","Database Inventory", "Settings"],
   marketing: ["Akun Pembeli", "Beranda", "Barang Masuk", "Live", "Kasir", "Packaging", "Acara", "Database Penjualan", "Database Inventory"],
   "quality-control": ["Code", "Barang Masuk", "Kasir", "Inventory", "Database Penjualan", "Database Inventory", "Settings"],
   packaging: ["Akun Pembeli", "Live", "Kasir", "Packaging", "Inventory", "Database Penjualan", "Database Inventory"],

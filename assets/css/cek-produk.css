@@ -1,0 +1,142 @@
+.check-container {
+  width: 1000px;
+  margin: auto;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.check-header {
+  background: #142235;
+  color: white;
+  padding: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.header-icon {
+  font-size: 24px;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.check-body {
+  padding: 20px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.input-search {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 40px 10px 12px;
+  font-size: 12px;
+}
+
+.search-button {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.empty-state {
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.empty-text {
+  font-size: 13px;
+}
+
+.product-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.product-row {
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.label {
+  width: 180px;
+  color: #777;
+  font-weight: 600;
+}
+
+.value {
+  flex: 1;
+  color: #222;
+  font-weight: 600;
+}
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.price-box {
+  border-radius: 6px;
+  padding: 14px;
+  border: 1px solid;
+}
+
+.price-title {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.price-value {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.price-box.blue {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.price-box.gray {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.price-box.green {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #047857;
+}
