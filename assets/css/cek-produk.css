@@ -1,10 +1,11 @@
 .check-container {
-  width: 1000px;
+  width: 700px;
   margin: auto;
   background: white;
-  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding-top: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
 }
 
 .check-header {
@@ -17,16 +18,16 @@
 }
 
 .header-icon {
-  font-size: 24px;
+  font-size: 30px;
 }
 
 .header-title {
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 700;
 }
 
 .header-subtitle {
-  font-size: 12px;
+  font-size: 15px;
   opacity: 0.8;
 }
 
@@ -35,9 +36,11 @@
 }
 
 .input-label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -46,16 +49,20 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 10px 40px 10px 12px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .search-button {
   position: absolute;
-  right: 10px;
-  top: 8px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
   background: transparent;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .empty-state {
@@ -83,12 +90,17 @@
 
 .product-row {
   display: flex;
+  align-items: center;
   margin-bottom: 12px;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .label {
   width: 180px;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: #777;
   font-weight: 600;
 }
@@ -108,18 +120,36 @@
 
 .price-box {
   border-radius: 6px;
-  padding: 14px;
+  padding: 15px;
   border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.price-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 10px;
 }
 
 .price-title {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 700;
-  margin-bottom: 6px;
+}
+
+.price-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
 }
 
 .price-value {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
 
