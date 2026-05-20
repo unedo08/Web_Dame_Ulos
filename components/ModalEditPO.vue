@@ -278,7 +278,7 @@ const viewImage = async () => {
     const res = await $api.get(
       `${url.value}/api/pre-order-barang/${props.preorderId}/image`
     )
-    serverImageUrl.value = res.data.image_url
+    serverImageUrl.value = res.data.data.image_url    
     showImageModal.value = true
   } catch (err) {
     Swal.fire("Error", "Gagal mengambil gambar", "error")
