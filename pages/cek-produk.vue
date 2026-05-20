@@ -35,7 +35,7 @@
 
                 <div v-if="!product" class="empty-state">
                     <div class="empty-icon">
-                        📷
+                         <img :src="DefaultPencarianIcons" class="pencarian-icon" />
                     </div>
 
                     <div class="empty-text">
@@ -141,6 +141,7 @@ import HargaPriceTagIcon from "@/assets/image/Harga Price Tag.png";
 import HargaModalIcon from "@/assets/image/Harga Modal.png";
 import HargaNetIcon from "@/assets/image/Harga Net.png";
 import ButtonSearchIcon from "@/assets/image/Button Search.png";
+import DefaultPencarianIcons from "@/assets/image/Default Pencarian.png";
 
 const {
     codeBarang,

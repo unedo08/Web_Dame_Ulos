@@ -69,12 +69,19 @@
   border: 1px dashed #ddd;
   border-radius: 8px;
   padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  color: #999;
+  color: #5D5D5D;
+  background-color: #e2e1e1;
 }
 
 .empty-icon {
-  font-size: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -109,6 +116,13 @@
   flex: 1;
   color: #222;
   font-weight: 600;
+}
+
+.pencarian-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
 }
 
 .price-grid {
