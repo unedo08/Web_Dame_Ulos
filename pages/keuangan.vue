@@ -1,0 +1,201 @@
+<template>
+    <div>
+        <title>Keuangan</title>
+
+        <div class="page-header">
+            <h1 class="page-title">Keuangan</h1>
+            <div class="header-action">
+                <button class="btn-export">
+                    Export
+                </button>
+                <button class="btn-add" @click="openModal()">
+                    + Tambah
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Pengeluaran</th>
+                        <th>Jenis Pengeluaran</th>
+                        <th>Divisi</th>
+                        <th>Jumlah Pengeluaran</th>
+                        <th>Sumber Dana</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-for="(item, index) in financeData" :key="item.id">
+                        <td>{{ index + 1 }}</td>
+                        <td>
+                            {{ formatDate(item.tanggal) }}
+                        </td>
+                        <td>{{ item.nama_pengeluaran }}</td>
+                        <td>{{ item.jenis_pengeluaran }}</td>
+                        <td>{{ item.divisi }}</td>
+                        <td>
+                            {{ formatRupiah(item.jumlah_pengeluaran) }}
+                        </td>
+                        <td>{{ item.sumber_dana }}</td>
+                        <td>
+                            <div class="action-wrapper">
+                                <button class="action-btn" @click="openModal(item)">
+                                    <PencilSquareIcon class="pm-icon" />
+                                </button>
+                                <button class="action-btn delete" @click="deleteData(item)">
+                                    <TrashIcon class="pm-icon" />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="financeData.length === 0">
+                        <td colspan="8" class="empty-table">
+                            Data Tidak Ditemukan
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div v-if="isModalOpen" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>
+                        {{ form.id ? "Edit" : "Tambah" }} Pengeluaran
+                    </h2>
+                    <button @click="closeModal">
+                        ✕
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tanggal Transaksi <span class="pm-required">*</span></label>
+                        <input type="date" v-model="form.tanggal" />
+                        <small v-if="errors.tanggal">
+                            Data wajib diisi
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nama Pengeluaran <span class="pm-required">*</span></label>
+                        <input type="text" v-model="form.nama_pengeluaran" placeholder="Masukkan nama pengeluaran" />
+                        <small v-if="errors.nama_pengeluaran">
+                            Data wajib diisi
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenis Pengeluaran <span class="pm-required">*</span></label>
+                        <select v-model="form.jenis_pengeluaran">
+                            <option value="">
+                                Pilih Jenis Pengeluaran
+                            </option>
+                            <option v-for="item in jenisPengeluaran" :key="item" :value="item">
+                                {{ item }}
+                            </option>
+                        </select>
+                        <small v-if="errors.jenis_pengeluaran">
+                            Data wajib diisi
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Divisi <span class="pm-required">*</span></label>
+                        <select v-model="form.divisi">
+                            <option value="">
+                                Pilih Divisi
+                            </option>
+                            <option v-for="item in divisiList" :key="item" :value="item">
+                                {{ item }}
+                            </option>
+                        </select>
+
+                        <small v-if="errors.divisi">
+                            Data wajib diisi
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jumlah Pengeluaran <span class="pm-required">*</span></label>
+
+                        <input type="text" :value="formatInputRupiah(form.jumlah_pengeluaran)"
+                            @input="handleJumlahInput" placeholder="Rp" />
+
+                        <small v-if="errors.jumlah_pengeluaran">
+                            Data wajib diisi
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Sumber Dana <span class="pm-required">*</span></label>
+                        <select v-model="form.sumber_dana">
+                            <option value="">
+                                Pilih Sumber Dana
+                            </option>
+                            <option v-for="item in sumberDanaList" :key="item" :value="item">
+                                {{ item }}
+                            </option>
+                        </select>
+                        <small v-if="errors.sumber_dana">
+                            Data wajib diisi
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenis Pembayaran <span class="pm-required">*</span></label>
+
+                        <select v-model="form.metode_pembayaran">
+                            <option value="">
+                                Pilih Jenis Pembayaran
+                            </option>
+
+                            <option v-for="item in metodePembayaran" :key="item" :value="item">
+                                {{ item }}
+                            </option>
+                        </select>
+
+                        <small v-if="errors.metode_pembayaran">
+                            Data wajib diisi
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancel" @click="closeModal">
+                        Batal
+                    </button>
+                    <button class="btn-save" @click="saveData">
+                        Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import "@/assets/css/keuangan.css";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { useKeuangan } from "@/composables/useKeuangan";
+
+const {
+    financeData,
+    isModalOpen,
+    form,
+    errors,
+    jenisPengeluaran,
+    divisiList,
+    sumberDanaList,
+    metodePembayaran,
+    openModal,
+    closeModal,
+    saveData,
+    deleteData,
+    formatDate,
+    formatRupiah,
+    formatInputRupiah,
+    handleJumlahInput,
+} = useKeuangan();
+</script>

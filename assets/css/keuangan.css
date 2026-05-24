@@ -1,0 +1,240 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.header-action {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-export,
+.btn-add {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-export {
+    background: #16a34a;
+}
+
+.btn-add {
+    background: #2563eb;
+}
+
+.table-wrapper {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-table th {
+    background: #f3f4f6;
+    padding: 14px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.custom-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+.action-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.action-btn.delete {
+    color: red;
+}
+
+.empty-table {
+    text-align: center;
+    padding: 30px;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.pm-required {
+    color: #ef4444;
+    margin-left: 2px;
+}
+
+.modal-content {
+    width: 420px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 0 20px 20px;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+
+.form-group small {
+    color: red;
+    font-size: 11px;
+}
+
+.modal-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel,
+.btn-save {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #e5e7eb;
+}
+
+.btn-save {
+    background: #06b6d4;
+    color: white;
+}
+
+.swal-popup {
+    border-radius: 10px;
+    padding: 24px;
+    width: 500px;
+}
+
+.delete-confirmation,
+.delete-success-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.delete-icon-warning {
+    width: 70px;
+    height: 70px;
+    border: 3px solid #fb923c;
+    border-radius: 999px;
+    color: #fb923c;
+    font-size: 40px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.delete-success-icon {
+    width: 70px;
+    height: 70px;
+    border: 3px solid #22c55e;
+    border-radius: 999px;
+    color: #22c55e;
+    font-size: 40px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.delete-title,
+.delete-success-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.delete-subtitle,
+.delete-success-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.swal-confirm-btn {
+    background: #06b6d4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.swal-cancel-btn {
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+}
