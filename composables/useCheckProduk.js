@@ -20,8 +20,8 @@ export function useCheckProduk() {
 
             if (!response.data.data || response.data.data.length === 0) {
                 Swal.fire({
-                    title: "Tidak Ditemukan",
-                    text: "Kode barang tidak valid",
+                    title: "Kode Tidak Ditemukan",
+                    text: "Kode produk tidak terdaftar dalam sistem. Pastikan kode sudah benar atau hubungi admin.",
                     icon: "warning",
                 });
 
@@ -43,12 +43,19 @@ export function useCheckProduk() {
             };
             codeBarang.value = "";
         } catch (error) {
-            console.error(error);
-
             Swal.fire({
-                title: "Error",
-                text: "Gagal mengambil data produk",
-                icon: "error",
+                title: "Kode Tidak Ditemukan",
+                text: "Kode produk tidak terdaftar dalam sistem. Pastikan kode sudah benar atau hubungi admin.",
+                icon: "warning",
+
+                confirmButtonText: "Tutup",
+
+                customClass: {
+                    popup: "cp-swal-popup",
+                    confirmButton: "cp-swal-confirm-btn",
+                },
+
+                buttonsStyling: false,
             });
 
             product.value = null;

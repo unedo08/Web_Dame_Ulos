@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 export function useKeuangan() {
 
     const financeData = ref([]);
+    const search = ref("");
 
     const isModalOpen = ref(false);
 
@@ -39,6 +40,23 @@ export function useKeuangan() {
         jumlah_pengeluaran: "",
         sumber_dana: "",
         metode_pembayaran: "",
+    });
+
+    const filteredFinanceData = computed(() => {
+
+        const keyword = search.value.toLowerCase();
+
+        return financeData.value.filter((item) => {
+
+            return (
+                item.nama_pengeluaran?.toLowerCase().includes(keyword) ||
+                item.jenis_pengeluaran?.toLowerCase().includes(keyword) ||
+                item.divisi?.toLowerCase().includes(keyword) ||
+                item.sumber_dana?.toLowerCase().includes(keyword)
+            );
+
+        });
+
     });
 
     const errors = ref({});
@@ -134,22 +152,22 @@ export function useKeuangan() {
 
         const result = await Swal.fire({
             html: `
-      <div class="delete-confirmation">
+            <div class="keuangan-delete-confirmation">
 
-        <div class="delete-icon-warning">
-          !
-        </div>
+                <div class="keuangan-delete-icon-warning">
+                    !
+                </div>
 
-        <div class="delete-title">
-          Konfirmasi hapus data pengeluaran
-        </div>
+                <div class="keuangan-delete-title">
+                    Konfirmasi hapus data pengeluaran
+                </div>
 
-        <div class="delete-subtitle">
-          Apakah Anda yakin ingin menghapus data pengeluaran ini?
-        </div>
+                <div class="keuangan-delete-subtitle">
+                    Apakah Anda yakin ingin menghapus data pengeluaran ini?
+                </div>
 
-      </div>
-    `,
+            </div>
+        `,
 
             showCancelButton: true,
 
@@ -159,9 +177,9 @@ export function useKeuangan() {
             reverseButtons: true,
 
             customClass: {
-                popup: "swal-popup",
-                confirmButton: "swal-confirm-btn",
-                cancelButton: "swal-cancel-btn",
+                popup: "keuangan-swal-popup",
+                confirmButton: "keuangan-swal-confirm-btn",
+                cancelButton: "keuangan-swal-cancel-btn",
             },
 
             buttonsStyling: false,
@@ -175,28 +193,28 @@ export function useKeuangan() {
 
         await Swal.fire({
             html: `
-      <div class="delete-success-wrapper">
+            <div class="keuangan-delete-success-wrapper">
 
-        <div class="delete-success-icon">
-          ✓
-        </div>
+                <div class="keuangan-delete-success-icon">
+                    ✓
+                </div>
 
-        <div class="delete-success-title">
-          Data berhasil dihapus
-        </div>
+                <div class="keuangan-delete-success-title">
+                    Data berhasil dihapus
+                </div>
 
-        <div class="delete-success-subtitle">
-          Data pengeluaran berhasil dihapus.
-        </div>
+                <div class="keuangan-delete-success-subtitle">
+                    Data pengeluaran berhasil dihapus.
+                </div>
 
-      </div>
-    `,
+            </div>
+        `,
 
             confirmButtonText: "Tutup",
 
             customClass: {
-                popup: "swal-popup",
-                confirmButton: "swal-confirm-btn",
+                popup: "keuangan-swal-popup",
+                confirmButton: "keuangan-swal-confirm-btn",
             },
 
             buttonsStyling: false,
@@ -244,17 +262,16 @@ export function useKeuangan() {
         isModalOpen,
         form,
         errors,
-
+        search,
+        filteredFinanceData,
         jenisPengeluaran,
         divisiList,
         sumberDanaList,
         metodePembayaran,
-
         openModal,
         closeModal,
         saveData,
         deleteData,
-
         formatDate,
         formatRupiah,
         formatInputRupiah,

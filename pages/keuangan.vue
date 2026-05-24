@@ -3,12 +3,21 @@
         <title>Keuangan</title>
 
         <div class="page-header">
-            <h1 class="page-title">Keuangan</h1>
+            <h1 class="page-title">
+                Keuangan
+            </h1>
+        </div>
+
+        <div class="keuangan-toolbar">
+            <div class="keuangan-search-box">
+                <input v-model="search" type="text" placeholder="Cari pengeluaran..." class="keuangan-search-input" />
+                <MagnifyingGlassIcon class="keuangan-search-icon" />
+            </div>
             <div class="header-action">
-                <button class="btn-export">
+                <button class="keuangan-btn-export">
                     Export
                 </button>
-                <button class="btn-add" @click="openModal()">
+                <button class="keuangan-btn-add" @click="openModal()">
                     + Tambah
                 </button>
             </div>
@@ -30,7 +39,7 @@
                 </thead>
 
                 <tbody>
-                    <tr v-for="(item, index) in financeData" :key="item.id">
+                    <tr v-for="(item, index) in filteredFinanceData" :key="item.id">
                         <td>{{ index + 1 }}</td>
                         <td>
                             {{ formatDate(item.tanggal) }}
@@ -118,13 +127,19 @@
                             Data wajib diisi
                         </small>
                     </div>
-
                     <div class="form-group">
-                        <label>Jumlah Pengeluaran <span class="pm-required">*</span></label>
-
-                        <input type="text" :value="formatInputRupiah(form.jumlah_pengeluaran)"
-                            @input="handleJumlahInput" placeholder="Rp" />
-
+                        <label>
+                            Jumlah Pengeluaran
+                            <span class="pm-required">*</span>
+                        </label>
+                        <div class="keuangan-rupiah-input">
+                            <span class="keuangan-rupiah-prefix">
+                                Rp
+                            </span>
+                            <input type="text" :value="formatInputRupiah(form.jumlah_pengeluaran)"
+                                @input="handleJumlahInput" placeholder="Masukkan jumlah pengeluaran"
+                                class="keuangan-rupiah-field" />
+                        </div>
                         <small v-if="errors.jumlah_pengeluaran">
                             Data wajib diisi
                         </small>
@@ -177,7 +192,7 @@
 
 <script setup>
 import "@/assets/css/keuangan.css";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useKeuangan } from "@/composables/useKeuangan";
 
 const {
@@ -197,5 +212,7 @@ const {
     formatRupiah,
     formatInputRupiah,
     handleJumlahInput,
+    search,
+    filteredFinanceData,
 } = useKeuangan();
 </script>
