@@ -66,7 +66,7 @@
 
                     <div class="product-row">
                         <span class="label"><img :src="UkuranMandarIcon" class="label-icon" /> UKURAN MANDAR</span>
-                        <span class="value">{{ product.barangentry_ukuran_mandar == 0 ? '-' :
+                        <span class="value">{{ product.barangentry_ukuran_mandar == 0 || product.barangentry_ukuran_mandar == null ? '-' :
                             product.barangentry_ukuran_mandar + ' cm' }}</span>
                     </div>
 
