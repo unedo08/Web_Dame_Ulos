@@ -42,7 +42,7 @@
                 <PencilSquareIcon class="pm-icon" />
               </button>
               <button @click="confirmDelete(item)" class="pm-btn-icon pm-btn-delete" title="Hapus">
-                <TrashIcon class="pm-icon" />
+                <TrashIcon class="pm-icon delete" />
               </button>
             </td>
           </tr>

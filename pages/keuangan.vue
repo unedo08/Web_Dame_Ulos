@@ -39,18 +39,18 @@
                 </thead>
 
                 <tbody>
-                    <tr v-for="(item, index) in filteredFinanceData" :key="item.id">
+                    <tr v-for="(item, index) in filteredFinanceData" :key="item.pengeluaran_id">
                         <td>{{ index + 1 }}</td>
                         <td>
-                            {{ formatDate(item.tanggal) }}
+                            {{ formatDate(item.pengeluaran_tanggal) }}
                         </td>
-                        <td>{{ item.nama_pengeluaran }}</td>
-                        <td>{{ item.jenis_pengeluaran }}</td>
-                        <td>{{ item.divisi }}</td>
+                        <td>{{ item.pengeluaran_nama }}</td>
+                        <td>{{ item.jenis_pengeluaran_nama }}</td>
+                        <td>{{ item.divisi_nama }}</td>
                         <td>
-                            {{ formatRupiah(item.jumlah_pengeluaran) }}
+                            {{ formatRupiah(item.pengeluaran_jumlah) }}
                         </td>
-                        <td>{{ item.sumber_dana }}</td>
+                        <td>{{ item.sumber_dana_nama }}</td>
                         <td>
                             <div class="action-wrapper">
                                 <button class="action-btn" @click="openModal(item)">
@@ -75,7 +75,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>
-                        {{ form.id ? "Edit" : "Tambah" }} Pengeluaran
+                        {{ form.pengeluaran_id ? "Edit" : "Tambah" }} Pengeluaran
                     </h2>
                     <button @click="closeModal">
                         ✕
@@ -104,8 +104,8 @@
                             <option value="">
                                 Pilih Jenis Pengeluaran
                             </option>
-                            <option v-for="item in jenisPengeluaran" :key="item" :value="item">
-                                {{ item }}
+                            <option v-for="item in jenisPengeluaran" :key="item.jenis_pengeluaran_id" :value="item.jenis_pengeluaran_id">
+                                {{ item.jenis_pengeluaran_nama }}
                             </option>
                         </select>
                         <small v-if="errors.jenis_pengeluaran">
@@ -118,8 +118,8 @@
                             <option value="">
                                 Pilih Divisi
                             </option>
-                            <option v-for="item in divisiList" :key="item" :value="item">
-                                {{ item }}
+                            <option v-for="item in divisiList" :key="item.divisi_id" :value="item.divisi_id">
+                                {{ item.divisi_nama }}
                             </option>
                         </select>
 
@@ -150,8 +150,8 @@
                             <option value="">
                                 Pilih Sumber Dana
                             </option>
-                            <option v-for="item in sumberDanaList" :key="item" :value="item">
-                                {{ item }}
+                            <option v-for="item in sumberDanaList" :key="item.sumber_dana_id" :value="item.sumber_dana_id">
+                                {{ item.sumber_dana_nama }}
                             </option>
                         </select>
                         <small v-if="errors.sumber_dana">
@@ -167,8 +167,8 @@
                                 Pilih Jenis Pembayaran
                             </option>
 
-                            <option v-for="item in metodePembayaran" :key="item" :value="item">
-                                {{ item }}
+                            <option v-for="item in metodePembayaran" :key="item.id" :value="item.id">
+                                {{ item.carabayar_nama }}
                             </option>
                         </select>
 

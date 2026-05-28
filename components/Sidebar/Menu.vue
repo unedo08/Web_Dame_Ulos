@@ -67,6 +67,18 @@ const items = ref([
         path: "/setting/jenis-pengiriman",
       },
       {
+        title: "Jenis Pengeluaran",
+        path: "/setting/pengeluaran",
+      },
+      {
+        title: "Divisi",
+        path: "/setting/divisi",
+      },
+      {
+        title: "Sumber Dana",
+        path: "/setting/sumber-dana",
+      },
+      {
         title: "Platform",
         path: "/setting/platform",
       },
