@@ -107,4 +107,20 @@ Route::middleware(['jwt'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         require __DIR__ . '/api/dashboard.php';  // Relative path
     });
+
+    Route::prefix('/jenis-pengeluaran')->group(function () {
+        require __DIR__ . '/api/jenisPengeluaranM.php';
+    });
+
+    Route::prefix('/divisi')->group(function () {
+        require __DIR__ . '/api/divisiM.php';
+    });
+
+    Route::prefix('/sumber-dana')->group(function () {
+        require __DIR__ . '/api/sumberDanaM.php';
+    });
+
+    Route::prefix('/pengeluaran')->group(function () {
+        require __DIR__ . '/api/pengeluaranT.php';
+    });
 });
