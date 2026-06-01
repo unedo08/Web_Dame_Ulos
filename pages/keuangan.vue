@@ -54,10 +54,10 @@
                         <td>
                             <div class="action-wrapper">
                                 <button class="action-btn" @click="openModal(item)">
-                                    <PencilSquareIcon class="pm-icon" />
+                                    <PencilSquareIcon class="keuangan-icon" />
                                 </button>
                                 <button class="action-btn delete" @click="deleteData(item)">
-                                    <TrashIcon class="pm-icon" />
+                                    <TrashIcon class="keuangan-icon" />
                                 </button>
                             </div>
                         </td>
