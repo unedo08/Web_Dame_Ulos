@@ -123,4 +123,8 @@ Route::middleware(['jwt'])->group(function () {
     Route::prefix('/pengeluaran')->group(function () {
         require __DIR__ . '/api/pengeluaranT.php';
     });
+
+    Route::prefix('/barang-keluar')->group(function () {
+        require __DIR__ . '/api/barangKeluarT.php';
+    });
 });
