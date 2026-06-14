@@ -36,6 +36,26 @@ const routeRoleMap = {
   "/databasePenjualan": ["super-admin", "admin"],
 
   "/databaseInventory": ["super-admin", "admin"],
+
+  "/keuangan": ["super-admin", "admin"],
+
+  "/setting/divisi": ["super-admin"],
+
+  "/setting/jenis-benang": ["super-admin"],
+
+  "/setting/jenis-pengiriman": ["super-admin"],
+
+  "/setting/metode-pembayaran": ["super-admin"],
+
+  "/setting/pengeluaran": ["super-admin"],
+
+  "/setting/platform": ["super-admin"],
+
+  "/setting/sumber-dana": ["super-admin"],
+
+  "/cek-produk": ["super-admin", "admin", "marketing", "quality-control", "packaging", "sosial-media"],
+
+
 };
 
 export default defineNuxtRouteMiddleware((to) => {
@@ -46,15 +66,20 @@ export default defineNuxtRouteMiddleware((to) => {
     return navigateTo("/");
   }
 
-  const allowedRoles =
-    to.meta.roles || routeRoleMap[to.path];
-  // if (!allowedRoles) {
-  //   return role === "super-admin"
-  //     ? true
-  //     : navigateTo("/403");
-  // }
+  const matchedKey = Object.keys(routeRoleMap).find((pattern) => {
+    if (pattern.endsWith("/*")) {
+      return to.path.startsWith(pattern.slice(0, -2));
+    }
+    return to.path === pattern;
+  });
 
-  // if (!allowedRoles.includes(role)) {
-  //   return navigateTo("/403");
-  // }
+  const allowedRoles = to.meta.roles || (matchedKey ? routeRoleMap[matchedKey] : null);
+
+  if (!allowedRoles) {
+    return role === "super-admin" ? true : navigateTo("/403");
+  }
+
+  if (!allowedRoles.includes(role)) {
+    return navigateTo("/403");
+  }
 });

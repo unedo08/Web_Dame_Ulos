@@ -90,7 +90,7 @@
                   Print
                 </button>
 
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(trx.transaksi_id)">
+                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(trx.transaksidetail_id)">
                   Delete
                 </button>
               </div>
@@ -302,7 +302,7 @@ const deleteTransaksi = async (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const response = await $api.delete(`${url.value}/api/transaksi/${id}`);
+        const response = await $api.delete(`${url.value}/api/transaksi-detail/${id}`);
 
         if (response.status === 200) {
           transaksi.value = transaksi.value.filter(

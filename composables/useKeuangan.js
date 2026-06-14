@@ -1,6 +1,8 @@
 import { ref, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
 import { useRuntimeConfig, useNuxtApp } from "#imports";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export function useKeuangan() {
 
@@ -9,6 +11,9 @@ export function useKeuangan() {
     const { $api } = useNuxtApp();
     const financeData = ref([]);
     const search = ref("");
+    const today = new Date().toISOString().slice(0, 10);
+    const startDate = ref(today);
+    const endDate = ref(today);
     const isModalOpen = ref(false);
     const jenisPengeluaran = ref([]);
     const divisiList = ref([]);
@@ -302,6 +307,96 @@ export function useKeuangan() {
         form.value.jumlah_pengeluaran = raw;
     };
 
+    const exportExcel = async () => {
+        try {
+            const res = await $api.get(`${url.value}/api/pengeluaran`, {
+                params: {
+                    start_date: startDate.value,
+                    end_date: endDate.value,
+                },
+            });
+
+            if (!res.data.data || !res.data.data.length) {
+                Swal.fire("Info", "Data tidak tersedia", "info");
+                return;
+            }
+
+            const rows = res.data.data;
+
+            const excelData = rows.map((r, i) => ({
+                No: i + 1,
+                Tanggal: r.pengeluaran_tanggal,
+                Pengeluaran: r.pengeluaran_nama,
+                "Jenis Pengeluaran": r.jenis_pengeluaran_nama || "-",
+                Divisi: r.divisi_nama || "-",
+                "Jumlah Pengeluaran": Number(r.pengeluaran_jumlah),
+                "Sumber Dana": r.sumber_dana_nama || "-",
+                "Metode Pembayaran": r.cara_bayar_nama || "-",
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            const rupiahFormat = '"Rp" #,##0';
+            const range = XLSX.utils.decode_range(ws["!ref"]);
+
+            for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+                const cell = XLSX.utils.encode_cell({ r: R, c: 5 });
+                if (ws[cell]) {
+                    ws[cell].t = "n";
+                    ws[cell].z = rupiahFormat;
+                }
+            }
+
+            const totalRow = range.e.r + 1;
+            ws[`A${totalRow + 1}`] = { v: "TOTAL", t: "s" };
+            ws[`F${totalRow + 1}`] = {
+                f: `SUM(F2:F${totalRow})`,
+                t: "n",
+                z: rupiahFormat,
+            };
+
+            ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+            ws["!cols"] = [
+                { wch: 5 },
+                { wch: 15 },
+                { wch: 25 },
+                { wch: 20 },
+                { wch: 15 },
+                { wch: 20 },
+                { wch: 18 },
+                { wch: 20 },
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Report Pengeluaran");
+
+            const buffer = XLSX.write(wb, {
+                bookType: "xlsx",
+                type: "array",
+                cellStyles: true,
+            });
+
+            saveAs(
+                new Blob([buffer], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                }),
+                `Report_Pengeluaran_${startDate.value}_${endDate.value}.xlsx`
+            );
+
+            Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "File Excel berhasil diunduh",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        } catch (err) {
+            console.error(err);
+            Swal.fire("Error", "Gagal export Excel", "error");
+        }
+    };
+
     return {
         financeData,
         search,
@@ -313,6 +408,9 @@ export function useKeuangan() {
         sumberDanaList,
         metodePembayaran,
         filteredFinanceData,
+        startDate,
+        endDate,
+        exportExcel,
         openModal,
         closeModal,
         saveData,

@@ -14,8 +14,10 @@
                 <MagnifyingGlassIcon class="keuangan-search-icon" />
             </div>
             <div class="header-action">
-                <button class="keuangan-btn-export">
-                    Export
+                <input type="date" v-model="startDate" class="keuangan-date-input" />
+                <input type="date" v-model="endDate" class="keuangan-date-input" />
+                <button class="keuangan-btn-export" @click="exportExcel">
+                    Export Excel
                 </button>
                 <button class="keuangan-btn-add" @click="openModal()">
                     + Tambah
@@ -214,5 +216,8 @@ const {
     handleJumlahInput,
     search,
     filteredFinanceData,
+    startDate,
+    endDate,
+    exportExcel,
 } = useKeuangan();
 </script>
