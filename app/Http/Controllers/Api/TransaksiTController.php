@@ -242,6 +242,7 @@ class TransaksiTController extends Controller
                             'transaksi_catatan' => $d->transaksi_catatan ?? null,
                             'transaksi_status' => $d->transaksidetail_status_penjualan ?? null,
                             'transaksi_platform' => $d->transaksidetail_platform ?? null,
+                            'transaksidetail_id' => $d->transaksidetail_id ?? null,
                         ];
                     });
                 })
