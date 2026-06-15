@@ -10,17 +10,21 @@
         <div class="bk-toolbar">
             <div class="bk-search-box">
                 <MagnifyingGlassIcon class="bk-search-icon" />
-                <input
-                    v-model="search"
-                    type="text"
-                    placeholder="Cari nama outsource..."
-                    class="bk-search-input"
-                    @input="getData"
-                />
+                <input v-model="search" type="text" placeholder="Cari nama outsource..." class="bk-search-input"
+                    @input="getData" />
             </div>
             <div class="bk-actions">
-                <button class="bk-btn-export" @click="exportExcel">Export Excel</button>
-                <button class="bk-btn-add" @click="openTambah">+ Tambah</button>
+                <input type="date" v-model="startDate" class="bk-date-input" @change="getData" />
+
+                <input type="date" v-model="endDate" class="bk-date-input" @change="getData" />
+
+                <button class="bk-btn-export" @click="exportExcel">
+                    Export Excel
+                </button>
+
+                <button class="bk-btn-add" @click="openTambah">
+                    + Tambah
+                </button>
             </div>
         </div>
 
@@ -52,20 +56,14 @@
                         <td>{{ row.barang_keluar_nama_outsource }}</td>
                         <td>
                             <ul class="bk-items-list">
-                                <li
-                                    v-for="d in row.details"
-                                    :key="d.barang_keluar_detail_id"
-                                >
+                                <li v-for="d in row.details" :key="d.barang_keluar_detail_id">
                                     {{ d.barang_keluar_detail_nama_ulos || "-" }}
                                 </li>
                             </ul>
                         </td>
                         <td>
                             <ul class="bk-items-list">
-                                <li
-                                    v-for="d in row.details"
-                                    :key="d.barang_keluar_detail_id"
-                                >
+                                <li v-for="d in row.details" :key="d.barang_keluar_detail_id">
                                     {{ d.barang_keluar_detail_jumlah }} pcs
                                 </li>
                             </ul>
@@ -75,29 +73,17 @@
                         <td>
                             <div class="bk-action-group">
                                 <!-- Edit: only for PENDING -->
-                                <button
-                                    v-if="row.barang_keluar_status === 'PENDING'"
-                                    class="bk-btn-icon"
-                                    title="Konfirmasi Pengambilan"
-                                    @click="openEdit(row)"
-                                >
+                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-btn-icon"
+                                    title="Konfirmasi Pengambilan" @click="openEdit(row)">
                                     <PencilIcon class="bk-icon" />
                                 </button>
                                 <!-- View: only for SELESAI -->
-                                <button
-                                    v-if="row.barang_keluar_status === 'SELESAI'"
-                                    class="bk-btn-icon"
-                                    title="Lihat Detail"
-                                    @click="openView(row)"
-                                >
+                                <button v-if="row.barang_keluar_status === 'SELESAI'" class="bk-btn-icon"
+                                    title="Lihat Detail" @click="openView(row)">
                                     <EyeIcon class="bk-icon bk-icon-view" />
                                 </button>
                                 <!-- Delete -->
-                                <button
-                                    class="bk-btn-icon"
-                                    title="Hapus"
-                                    @click="deleteRecord(row)"
-                                >
+                                <button class="bk-btn-icon" title="Hapus" @click="deleteRecord(row)">
                                     <TrashIcon class="bk-icon bk-icon-delete" />
                                 </button>
                             </div>
@@ -119,11 +105,7 @@
                     <!-- Nama Outsource -->
                     <div class="bk-form-group">
                         <label>Nama Outsource <span class="bk-required">*</span></label>
-                        <input
-                            v-model="tambahForm.nama_outsource"
-                            type="text"
-                            placeholder="Masukkan nama outsource"
-                        />
+                        <input v-model="tambahForm.nama_outsource" type="text" placeholder="Masukkan nama outsource" />
                         <small v-if="tambahErrors.nama_outsource">{{ tambahErrors.nama_outsource }}</small>
                     </div>
 
@@ -136,7 +118,8 @@
                         <div v-if="tambahItems.length === 0" class="bk-empty-items">
                             Belum ada item ulos. Tambahkan diatas.
                         </div>
-                        <small v-if="tambahErrors.items && tambahItems.length === 0" style="color:#dc2626;font-size:11px">
+                        <small v-if="tambahErrors.items && tambahItems.length === 0"
+                            style="color:#dc2626;font-size:11px">
                             {{ tambahErrors.items }}
                         </small>
 
@@ -144,36 +127,27 @@
                             <div class="bk-item-row">
                                 <!-- Kode Barang -->
                                 <div class="bk-item-input-wrap">
-                                    <input
-                                        v-model="item.kode_barang"
-                                        type="text"
-                                        placeholder="Kode barang"
-                                        :class="{ 'is-invalid': item.error }"
-                                        @blur="validateCodeInput(idx)"
-                                    />
+                                    <input v-model="item.kode_barang" type="text" placeholder="Kode barang"
+                                        :class="{ 'is-invalid': item.error }" @blur="validateCodeInput(idx)" />
                                     <small v-if="item.error">{{ item.error }}</small>
                                 </div>
 
                                 <!-- Jumlah -->
                                 <div class="bk-item-input-wrap">
-                                    <input
-                                        v-model="item.jumlah"
-                                        type="number"
-                                        min="1"
-                                        placeholder="Jumlah"
-                                        :class="{ 'is-invalid': item.errorJumlah }"
-                                    />
+                                    <input v-model="item.jumlah" type="number" min="1" placeholder="Jumlah"
+                                        :class="{ 'is-invalid': item.errorJumlah }" />
                                     <small v-if="item.errorJumlah">{{ item.errorJumlah }}</small>
                                 </div>
 
-                                <button class="bk-btn-remove-item" @click="removeItemRow(idx)">✕</button>
+                                <button v-if="tambahItems.length > 1" class="bk-btn-remove-item"
+                                    @click="removeItemRow(idx)">
+                                    <TrashIcon class="bk-icon bk-icon-delete" />
+                                </button>
                             </div>
 
                             <!-- Nama Ulos resolved -->
-                            <div
-                                v-if="item.nama_ulos"
-                                style="font-size:12px;color:#059669;margin:-6px 0 8px;padding-left:2px"
-                            >
+                            <div v-if="item.nama_ulos"
+                                style="font-size:12px;color:#059669;margin:-6px 0 8px;padding-left:2px">
                                 ✓ {{ item.nama_ulos }}
                             </div>
                         </div>
@@ -204,30 +178,16 @@
                         Outsource: <strong>{{ editRecord?.barang_keluar_nama_outsource }}</strong>
                     </p>
 
-                    <div
-                        v-for="d in editRecord?.details"
-                        :key="d.barang_keluar_detail_id"
-                        class="bk-check-row"
-                    >
-                        <input
-                            type="checkbox"
-                            :id="`chk-${d.barang_keluar_detail_id}`"
-                            v-model="editChecked[d.barang_keluar_detail_id]"
-                        />
-                        <label
-                            :for="`chk-${d.barang_keluar_detail_id}`"
-                            class="bk-check-label"
-                        >
+                    <div v-for="d in editRecord?.details" :key="d.barang_keluar_detail_id" class="bk-check-row">
+                        <input type="checkbox" :id="`chk-${d.barang_keluar_detail_id}`"
+                            v-model="editChecked[d.barang_keluar_detail_id]" />
+                        <label :for="`chk-${d.barang_keluar_detail_id}`" class="bk-check-label">
                             {{ d.barang_keluar_detail_nama_ulos || "-" }}
                             <small>{{ d.barang_keluar_detail_kode_barang }}</small>
                         </label>
-                        <input
-                            type="number"
-                            min="1"
-                            :max="d.barang_keluar_detail_jumlah"
+                        <input type="number" min="1" :max="d.barang_keluar_detail_jumlah"
                             v-model.number="editQty[d.barang_keluar_detail_id]"
-                            :disabled="!editChecked[d.barang_keluar_detail_id]"
-                        />
+                            :disabled="!editChecked[d.barang_keluar_detail_id]" />
                     </div>
 
                     <p v-if="editError" class="bk-alert-required">{{ editError }}</p>
@@ -235,11 +195,7 @@
 
                 <div class="bk-modal-footer">
                     <button class="bk-btn-cancel" @click="closeEdit">Batal</button>
-                    <button
-                        class="bk-btn-save"
-                        :disabled="isSavingEdit"
-                        @click="submitEdit"
-                    >
+                    <button class="bk-btn-save" :disabled="isSavingEdit" @click="submitEdit">
                         {{ isSavingEdit ? "Menyimpan..." : "Selesai" }}
                     </button>
                 </div>
@@ -262,11 +218,7 @@
                         <p><strong>Author:</strong> {{ viewRecord?.completer?.name || "-" }}</p>
                     </div>
 
-                    <div
-                        v-for="d in viewRecord?.details"
-                        :key="d.barang_keluar_detail_id"
-                        class="bk-view-item"
-                    >
+                    <div v-for="d in viewRecord?.details" :key="d.barang_keluar_detail_id" class="bk-view-item">
                         <div>
                             <div class="bk-view-item-name">{{ d.barang_keluar_detail_nama_ulos || "-" }}</div>
                             <div class="bk-view-item-meta">{{ d.barang_keluar_detail_kode_barang }}</div>
@@ -288,13 +240,15 @@
                     <div class="bk-confirm-icon-wrap">
                         <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="bk-confirm-svg">
                             <circle cx="40" cy="40" r="34" stroke="#f87171" stroke-width="4" />
-                            <line x1="40" y1="26" x2="40" y2="44" stroke="#f87171" stroke-width="4.5" stroke-linecap="round" />
+                            <line x1="40" y1="26" x2="40" y2="44" stroke="#f87171" stroke-width="4.5"
+                                stroke-linecap="round" />
                             <circle cx="40" cy="53" r="2.5" fill="#f87171" />
                         </svg>
                     </div>
                     <div class="bk-confirm-title">Hapus Data Barang Keluar?</div>
                     <div class="bk-confirm-subtitle">
-                        Data <strong>{{ pendingDeleteRecord?.barang_keluar_nama_outsource }}</strong> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                        Data <strong>{{ pendingDeleteRecord?.barang_keluar_nama_outsource }}</strong> akan dihapus
+                        secara permanen. Tindakan ini tidak dapat dibatalkan.
                     </div>
                     <div style="display:flex;gap:12px;justify-content:center">
                         <button class="bk-confirm-cancel-btn" @click="cancelDelete">Batal</button>
@@ -311,8 +265,7 @@
                     <!-- Success icon -->
                     <div v-if="confirmType === 'success'" class="bk-confirm-icon-wrap">
                         <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="bk-confirm-svg">
-                            <circle cx="40" cy="40" r="34" stroke="#4ade80" stroke-width="4" stroke-linecap="round"
-                                stroke-dasharray="160" stroke-dashoffset="40" />
+                            <circle cx="40" cy="40" r="29" stroke="#4ade80" stroke-width="4" stroke-linecap="round" />
                             <polyline points="24,42 35,53 56,30" stroke="#4ade80" stroke-width="4.5"
                                 stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -320,7 +273,7 @@
                     <!-- Error icon -->
                     <div v-else class="bk-confirm-icon-wrap">
                         <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="bk-confirm-svg">
-                            <circle cx="40" cy="40" r="34" stroke="#f87171" stroke-width="4" />
+                            <circle cx="40" cy="40" r="29" stroke="#f87171" stroke-width="4" />
                             <line x1="27" y1="27" x2="53" y2="53" stroke="#f87171" stroke-width="4.5"
                                 stroke-linecap="round" />
                             <line x1="53" y1="27" x2="27" y2="53" stroke="#f87171" stroke-width="4.5"
@@ -385,5 +338,7 @@ const {
     formatDate,
     formatDateTime,
     getData,
+    startDate,
+    endDate,
 } = useBarangKeluar();
 </script>

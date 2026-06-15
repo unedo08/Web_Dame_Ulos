@@ -673,7 +673,7 @@
 
 .bk-btn-save {
     border: none;
-    background: #2563eb;
+    background: #06b6d4;
     color: white;
     border-radius: 6px;
     padding: 9px 18px;
@@ -681,12 +681,24 @@
     font-size: 13px;
 }
 
+.bk-date-input {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+}
+
+.bk-date-input:focus {
+    border-color: #2563eb;
+}
+
 /* ---- Confirm popup card ---- */
 .bk-confirm-card {
     background: white;
     border-radius: 14px;
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
     overflow: hidden;
 }
@@ -720,7 +732,7 @@
     color: #6b7280;
     margin-bottom: 32px;
     line-height: 1.6;
-    max-width: 300px;
+    max-width: 350px;
     white-space: pre-line;
 }
 

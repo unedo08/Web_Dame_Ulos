@@ -41,6 +41,9 @@ export function useBarangKeluar() {
     const confirmType = ref("success"); // "success" | "error"
     const confirmTitle = ref("");
     const confirmSubtitle = ref("");
+    const today = new Date().toISOString().slice(0, 10);
+    const startDate = ref(today);
+    const endDate = ref(today);
 
     // ========================
     // Data fetching
@@ -88,9 +91,23 @@ export function useBarangKeluar() {
     // ========================
     // Tambah Modal
     // ========================
+
     const openTambah = () => {
         tambahForm.value = { nama_outsource: "" };
-        tambahItems.value = [];
+
+        tambahItems.value = [
+            {
+                _key: Date.now(),
+                kode_barang: "",
+                nama_ulos: "",
+                code_id: null,
+                jumlah: "",
+                error: "",
+                errorJumlah: "",
+                loading: false,
+            }
+        ];
+
         tambahErrors.value = {};
         isTambahOpen.value = true;
     };
@@ -247,8 +264,8 @@ export function useBarangKeluar() {
             closeEdit();
             showConfirm(
                 "error",
-                "Data gagal disimpan!",
-                "Transaksi gagal diselesaikan. Silakan coba kembali."
+                "Data gagal ditambahkan!",
+                "Data pengeluaran baru gagal disimpan ke sistem.\nSilakan coba kembali."
             );
         } finally {
             isSavingEdit.value = false;
@@ -313,7 +330,14 @@ export function useBarangKeluar() {
     // ========================
     const exportExcel = async () => {
         try {
-            const res = await $api.get(`${url.value}/api/barang-keluar/export`);
+            const res = await $api.get(`${url.value}/api/barang-keluar/export`,
+                {
+                    params: {
+                        start_date: startDate.value,
+                        end_date: endDate.value
+                    }
+                }
+            );
             const rows = res.data.data || [];
             if (!rows.length) {
                 Swal.fire("Info", "Data tidak tersedia", "info");
@@ -351,7 +375,7 @@ export function useBarangKeluar() {
                 new Blob([buffer], {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 }),
-                `Barang_Keluar_${new Date().toISOString().slice(0, 10)}.xlsx`
+                `Barang_Keluar_${startDate.value}_${endDate.value}.xlsx`
             );
         } catch (e) {
             console.error(e);
@@ -433,5 +457,7 @@ export function useBarangKeluar() {
         formatDate,
         formatDateTime,
         getData,
+        startDate,
+        endDate,
     };
 }
