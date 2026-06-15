@@ -214,12 +214,19 @@ class BarangKeluarTController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date'   => 'nullable|date|after_or_equal:start_date',
+        ]);
+
         $data = DB::table('barang_keluar_t as bk')
             ->join('barang_keluar_detail_t as bkd', 'bkd.barang_keluar_detail_barang_keluar_id', '=', 'bk.barang_keluar_id')
             ->leftJoin('users as creator', 'creator.id', '=', 'bk.create_id')
             ->leftJoin('users as completer', 'completer.id', '=', 'bk.barang_keluar_complete_id')
             ->whereNull('bk.deleted_at')
             ->whereNull('bkd.deleted_at')
+            ->when($request->start_date, fn($q) => $q->whereDate('bk.created_at', '>=', $request->start_date))
+            ->when($request->end_date,   fn($q) => $q->whereDate('bk.created_at', '<=', $request->end_date))
             ->select(
                 'bk.barang_keluar_id',
                 'bk.created_at as tanggal_keluar',
