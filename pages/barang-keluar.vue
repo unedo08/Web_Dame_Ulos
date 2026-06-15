@@ -14,9 +14,9 @@
                     @input="getData" />
             </div>
             <div class="bk-actions">
-                <input type="date" v-model="startDate" class="bk-date-input" @change="getData" />
+                <input type="date" v-model="startDate" class="bk-date-input" />
 
-                <input type="date" v-model="endDate" class="bk-date-input" @change="getData" />
+                <input type="date" v-model="endDate" class="bk-date-input" />
 
                 <button class="bk-btn-export" @click="exportExcel">
                     Export Excel
