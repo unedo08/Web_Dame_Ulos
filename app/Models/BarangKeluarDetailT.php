@@ -14,9 +14,7 @@ class BarangKeluarDetailT extends Model
 
     protected $fillable = [
         'barang_keluar_detail_barang_keluar_id',
-        'barang_keluar_detail_code_id',
-        'barang_keluar_detail_kode_barang',
-        'barang_keluar_detail_nama_ulos',
+        'barang_keluar_detail_nama_barang',
         'barang_keluar_detail_jumlah',
         'create_id',
         'update_id',

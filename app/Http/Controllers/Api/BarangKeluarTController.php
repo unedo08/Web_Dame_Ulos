@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\BarangEntryM;
 use App\Models\BarangKeluarDetailT;
 use App\Models\BarangKeluarT;
-use App\Models\CodeM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -44,9 +42,7 @@ class BarangKeluarTController extends Controller
         $request->validate([
             'barang_keluar_nama_outsource' => 'required|string|max:255',
             'items'                        => 'required|array|min:1',
-            'items.*.code_id'              => 'required|integer|exists:code_m,code_id',
-            'items.*.kode_barang'          => 'required|string',
-            'items.*.nama_ulos'            => 'required|string',
+            'items.*.nama_barang'          => 'required|string|max:255',
             'items.*.jumlah'               => 'required|integer|min:1',
         ]);
 
@@ -61,9 +57,7 @@ class BarangKeluarTController extends Controller
             foreach ($request->items as $item) {
                 BarangKeluarDetailT::create([
                     'barang_keluar_detail_barang_keluar_id' => $barangKeluar->barang_keluar_id,
-                    'barang_keluar_detail_code_id'          => $item['code_id'],
-                    'barang_keluar_detail_kode_barang'      => $item['kode_barang'],
-                    'barang_keluar_detail_nama_ulos'        => $item['nama_ulos'],
+                    'barang_keluar_detail_nama_barang'      => $item['nama_barang'],
                     'barang_keluar_detail_jumlah'           => $item['jumlah'],
                     'create_id'                             => Auth::id(),
                 ]);
@@ -130,7 +124,7 @@ class BarangKeluarTController extends Controller
                 }
                 if ($submitted['jumlah'] > $detail->barang_keluar_detail_jumlah) {
                     DB::rollBack();
-                    return $this->fail("Jumlah yang diselesaikan melebihi jumlah barang pada item {$detail->barang_keluar_detail_nama_ulos}", 422);
+                    return $this->fail("Jumlah yang diselesaikan melebihi jumlah barang pada item {$detail->barang_keluar_detail_nama_barang}", 422);
                 }
             }
 
@@ -149,9 +143,7 @@ class BarangKeluarTController extends Controller
 
                 BarangKeluarDetailT::create([
                     'barang_keluar_detail_barang_keluar_id' => $selesaiRecord->barang_keluar_id,
-                    'barang_keluar_detail_code_id'          => $detail->barang_keluar_detail_code_id,
-                    'barang_keluar_detail_kode_barang'      => $detail->barang_keluar_detail_kode_barang,
-                    'barang_keluar_detail_nama_ulos'        => $detail->barang_keluar_detail_nama_ulos,
+                    'barang_keluar_detail_nama_barang'      => $detail->barang_keluar_detail_nama_barang,
                     'barang_keluar_detail_jumlah'           => $submitted['jumlah'],
                     'create_id'                             => Auth::id(),
                 ]);
@@ -232,8 +224,7 @@ class BarangKeluarTController extends Controller
                 'bk.created_at as tanggal_keluar',
                 'creator.name as petugas',
                 'bk.barang_keluar_nama_outsource',
-                'bkd.barang_keluar_detail_kode_barang',
-                'bkd.barang_keluar_detail_nama_ulos',
+                'bkd.barang_keluar_detail_nama_barang',
                 'bkd.barang_keluar_detail_jumlah',
                 'bk.barang_keluar_status',
                 'bk.barang_keluar_tanggal_masuk as tanggal_masuk',
