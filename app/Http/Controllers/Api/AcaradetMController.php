@@ -129,7 +129,9 @@ class AcaradetMController extends Controller
             'acaradet_barangentry_id' => 'sometimes|exists:barangentry_m,barangentry_id',
         ]);
 
-        $data->update($request->all());
+        $data->update(array_merge($request->all(), [
+            'update_id' => Auth::id(),
+        ]));
 
         return response()->json([
             'message' => 'Data updated',

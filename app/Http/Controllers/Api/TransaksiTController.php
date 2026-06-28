@@ -52,10 +52,10 @@ class TransaksiTController extends Controller
             /** ---------------- CUSTOMER ---------------- */
             $customer = CustomerM::firstOrCreate(
                 [
+                    'customer_nama'      => $validated['transaksi_nama_customer'],
                     'customer_notelepon' => $validated['transaksi_nomor_telepon'],
                 ],
                 [
-                    'customer_nama'     => $validated['transaksi_nama_customer'],
                     'customer_alamat'   => '-',
                     'customer_akun'     => null,
                     'customer_platform' => $validated['transaksi_platform'] ?? '-',

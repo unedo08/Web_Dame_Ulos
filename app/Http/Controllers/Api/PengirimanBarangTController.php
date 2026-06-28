@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PengirimanBarangT;
 use App\Models\CustomerM;
 use App\Models\TransaksiDetailT;
+use App\Models\BarangEntryM;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -44,13 +45,13 @@ class PengirimanBarangTController extends Controller
         ]);
 
         try {
-            $customer = CustomerM::updateOrCreate(
+            $customer = CustomerM::firstOrCreate(
                 [
+                    'customer_nama'      => $validated['pengirimanBarang_nama_penerima'],
                     'customer_notelepon' => $validated['pengirimanBarang_no_telepon'] ?? null,
                 ],
                 [
                     'customer_akun'      => $validated['pengirimanBarang_akun_penerima'] ?? null,
-                    'customer_nama'      => $validated['pengirimanBarang_nama_penerima'],
                     'customer_alamat'    => $validated['pengirimanBarang_alamat_pengiriman_barang'],
                     'customer_platform'  => '-',
                 ]
@@ -174,6 +175,14 @@ class PengirimanBarangTController extends Controller
 
         try {
             $item = PengirimanBarangT::findOrFail($id);
+
+            $details = TransaksiDetailT::where('transaksidetail_transaksi_id', $item->pengirimanBarang_transaksi_id)->get();
+            foreach ($details as $detail) {
+                $barang = BarangEntryM::find($detail->transaksidetail_barang_id);
+                if ($barang) {
+                    $barang->increment('barangentry_jumlah_barang', $detail->transaksidetail_jumlah_barang);
+                }
+            }
 
             // simpan delete_id sebelum soft delete
             $item->delete_id = Auth::id();

@@ -130,6 +130,11 @@ class TransaksiDetailTController extends Controller
             return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
+        $barang = BarangEntryM::find($detail->transaksidetail_barang_id);
+        if ($barang) {
+            $barang->increment('barangentry_jumlah_barang', $detail->transaksidetail_jumlah_barang);
+        }
+
         $detail->delete_id = Auth::id();
         $detail->save();
         $detail->delete();

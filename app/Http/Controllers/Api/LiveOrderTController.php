@@ -171,7 +171,7 @@ class LiveOrderTController extends Controller
         $barang_entry->save();
 
         // simpan delete_id
-        $order->delete_id = 3;//Auth::id();
+        $order->delete_id = Auth::id();
         $order->save();
 
         // soft delete
