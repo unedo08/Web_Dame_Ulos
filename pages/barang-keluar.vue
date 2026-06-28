@@ -57,7 +57,7 @@
                         <td>
                             <ul class="bk-items-list">
                                 <li v-for="d in row.details" :key="d.barang_keluar_detail_id">
-                                    {{ d.barang_keluar_detail_nama_ulos || "-" }}
+                                    {{ d.barang_keluar_detail_nama_barang || "-" }}
                                 </li>
                             </ul>
                         </td>
@@ -125,10 +125,10 @@
 
                         <div v-for="(item, idx) in tambahItems" :key="item._key">
                             <div class="bk-item-row">
-                                <!-- Kode Barang -->
+                                <!-- Nama Barang -->
                                 <div class="bk-item-input-wrap">
-                                    <input v-model="item.kode_barang" type="text" placeholder="Kode barang"
-                                        :class="{ 'is-invalid': item.error }" @blur="validateCodeInput(idx)" />
+                                    <input v-model="item.nama_barang" type="text" placeholder="Nama barang"
+                                        :class="{ 'is-invalid': item.error }" />
                                     <small v-if="item.error">{{ item.error }}</small>
                                 </div>
 
@@ -143,12 +143,6 @@
                                     @click="removeItemRow(idx)">
                                     <TrashIcon class="bk-icon bk-icon-delete" />
                                 </button>
-                            </div>
-
-                            <!-- Nama Ulos resolved -->
-                            <div v-if="item.nama_ulos"
-                                style="font-size:12px;color:#059669;margin:-6px 0 8px;padding-left:2px">
-                                ✓ {{ item.nama_ulos }}
                             </div>
                         </div>
 
@@ -182,8 +176,7 @@
                         <input type="checkbox" :id="`chk-${d.barang_keluar_detail_id}`"
                             v-model="editChecked[d.barang_keluar_detail_id]" />
                         <label :for="`chk-${d.barang_keluar_detail_id}`" class="bk-check-label">
-                            {{ d.barang_keluar_detail_nama_ulos || "-" }}
-                            <small>{{ d.barang_keluar_detail_kode_barang }}</small>
+                            {{ d.barang_keluar_detail_nama_barang || "-" }}
                         </label>
                         <input type="number" min="1" :max="d.barang_keluar_detail_jumlah"
                             v-model.number="editQty[d.barang_keluar_detail_id]"
@@ -220,8 +213,7 @@
 
                     <div v-for="d in viewRecord?.details" :key="d.barang_keluar_detail_id" class="bk-view-item">
                         <div>
-                            <div class="bk-view-item-name">{{ d.barang_keluar_detail_nama_ulos || "-" }}</div>
-                            <div class="bk-view-item-meta">{{ d.barang_keluar_detail_kode_barang }}</div>
+                            <div class="bk-view-item-name">{{ d.barang_keluar_detail_nama_barang || "-" }}</div>
                         </div>
                         <div><strong>{{ d.barang_keluar_detail_jumlah }} pcs</strong></div>
                     </div>
@@ -309,7 +301,6 @@ const {
     closeTambah,
     addItemRow,
     removeItemRow,
-    validateCodeInput,
     submitTambah,
     isEditOpen,
     editRecord,

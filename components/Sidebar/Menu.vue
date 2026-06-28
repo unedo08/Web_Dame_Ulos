@@ -133,14 +133,14 @@ const filteredMenu = computed(() => {
 </script>
 
 <template>
-  <aside class="w-56 min-h-screen text-white overflow-y-auto">
-    <header class="flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer">
+  <aside class="w-56 h-full flex flex-col text-white">
+    <header class="flex-shrink-0 flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer">
       <NuxtLink to="/beranda" class="flex items-center gap-2">
         <Logo />
       </NuxtLink>
     </header>
 
-    <div class="grow">
+    <div class="flex-1 overflow-y-auto">
       <div class="grid gap-2 text-left">
         <div v-for="(item, index) in filteredMenu" :key="index">
           <NuxtLink v-if="!item.children" :to="item.path"

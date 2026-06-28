@@ -62,19 +62,6 @@ export function useBarangKeluar() {
         }
     };
 
-    // Lookup code → barangentry info
-    const lookupCode = async (kodeBarang) => {
-        try {
-            const res = await $api.get(
-                `${url.value}/api/entrybarang/getDataByCode/${kodeBarang}`
-            );
-            if (res.data.code === 200) return res.data.data;
-            return null;
-        } catch {
-            return null;
-        }
-    };
-
     onMounted(getData);
 
     // ========================
@@ -98,13 +85,10 @@ export function useBarangKeluar() {
         tambahItems.value = [
             {
                 _key: Date.now(),
-                kode_barang: "",
-                nama_ulos: "",
-                code_id: null,
+                nama_barang: "",
                 jumlah: "",
                 error: "",
                 errorJumlah: "",
-                loading: false,
             }
         ];
 
@@ -119,42 +103,15 @@ export function useBarangKeluar() {
     const addItemRow = () => {
         tambahItems.value.push({
             _key: Date.now(),
-            kode_barang: "",
-            nama_ulos: "",
-            code_id: null,
+            nama_barang: "",
             jumlah: "",
             error: "",
             errorJumlah: "",
-            loading: false,
         });
     };
 
     const removeItemRow = (idx) => {
         tambahItems.value.splice(idx, 1);
-    };
-
-    const validateCodeInput = async (idx) => {
-        const item = tambahItems.value[idx];
-        const kode = item.kode_barang.trim();
-        if (!kode) {
-            item.nama_ulos = "";
-            item.code_id = null;
-            item.error = "";
-            return;
-        }
-        item.loading = true;
-        item.error = "";
-        const data = await lookupCode(kode);
-        item.loading = false;
-        if (data) {
-            item.code_id = data.barangentry_code_id;
-            item.nama_ulos = data.barangentry_nama || "";
-            item.error = "";
-        } else {
-            item.code_id = null;
-            item.nama_ulos = "";
-            item.error = "Kode barang tidak tersedia";
-        }
     };
 
     const validateTambah = () => {
@@ -166,8 +123,10 @@ export function useBarangKeluar() {
             errs.items = "Tambahkan minimal 1 item ulos";
         }
         tambahItems.value.forEach((item) => {
-            if (!item.kode_barang.trim()) {
+            if (!item.nama_barang.trim()) {
                 item.error = "Data wajib diisi";
+            } else {
+                item.error = "";
             }
             if (!item.jumlah || Number(item.jumlah) < 1) {
                 item.errorJumlah = "Data wajib diisi";
@@ -187,9 +146,7 @@ export function useBarangKeluar() {
             const payload = {
                 barang_keluar_nama_outsource: tambahForm.value.nama_outsource.trim(),
                 items: tambahItems.value.map((item) => ({
-                    code_id: item.code_id,
-                    kode_barang: item.kode_barang.trim(),
-                    nama_ulos: item.nama_ulos,
+                    nama_barang: item.nama_barang.trim(),
                     jumlah: Number(item.jumlah),
                 })),
             };
@@ -351,8 +308,7 @@ export function useBarangKeluar() {
                     : "-",
                 Petugas: r.petugas || "-",
                 "Nama Outsource": r.barang_keluar_nama_outsource || "-",
-                "Kode Barang": r.barang_keluar_detail_kode_barang || "-",
-                "Nama Ulos": r.barang_keluar_detail_nama_ulos || "-",
+                "Nama Barang": r.barang_keluar_detail_nama_barang || "-",
                 "Jumlah Barang": r.barang_keluar_detail_jumlah,
                 Status: r.barang_keluar_status,
                 "Tanggal Masuk": r.tanggal_masuk
@@ -364,7 +320,7 @@ export function useBarangKeluar() {
             const ws = XLSX.utils.json_to_sheet(excelData);
             ws["!cols"] = [
                 { wch: 5 }, { wch: 16 }, { wch: 18 }, { wch: 22 },
-                { wch: 14 }, { wch: 22 }, { wch: 14 }, { wch: 10 },
+                { wch: 22 }, { wch: 14 }, { wch: 10 },
                 { wch: 16 }, { wch: 18 },
             ];
 
@@ -422,7 +378,6 @@ export function useBarangKeluar() {
         closeTambah,
         addItemRow,
         removeItemRow,
-        validateCodeInput,
         submitTambah,
         // edit
         isEditOpen,
