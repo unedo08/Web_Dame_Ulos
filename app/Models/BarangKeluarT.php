@@ -16,6 +16,7 @@ class BarangKeluarT extends Model
         'barang_keluar_nama_outsource',
         'barang_keluar_status',
         'barang_keluar_tanggal_masuk',
+        'barang_keluar_tanggal_keluar',
         'barang_keluar_complete_id',
         'create_id',
         'update_id',

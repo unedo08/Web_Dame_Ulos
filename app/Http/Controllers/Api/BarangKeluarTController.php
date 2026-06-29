@@ -132,6 +132,7 @@ class BarangKeluarTController extends Controller
             $selesaiRecord = BarangKeluarT::create([
                 'barang_keluar_nama_outsource' => $barangKeluar->barang_keluar_nama_outsource,
                 'barang_keluar_status'         => 'SELESAI',
+                'barang_keluar_tanggal_keluar' => $barangKeluar->created_at,
                 'barang_keluar_tanggal_masuk'  => now(),
                 'barang_keluar_complete_id'    => Auth::id(),
                 'create_id'                    => $barangKeluar->create_id,
@@ -221,7 +222,7 @@ class BarangKeluarTController extends Controller
             ->when($request->end_date,   fn($q) => $q->whereDate('bk.created_at', '<=', $request->end_date))
             ->select(
                 'bk.barang_keluar_id',
-                'bk.created_at as tanggal_keluar',
+                DB::raw('COALESCE(bk.barang_keluar_tanggal_keluar, bk.created_at) as tanggal_keluar'),
                 'creator.name as petugas',
                 'bk.barang_keluar_nama_outsource',
                 'bkd.barang_keluar_detail_nama_barang',
