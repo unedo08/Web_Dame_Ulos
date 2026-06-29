@@ -39,22 +39,19 @@ onMounted(() => {
 
 const items = ref([
   { title: "Beranda", path: "/beranda", icon: HomeIcon },
-  { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
-  { title: "Staff", path: "/staff", icon: UserIcon },
   { title: "Code", path: "/code", icon: CodeBracketIcon },
   { title: "Barang Masuk", path: "/entry", icon: ArrowDownTrayIcon },
-  { title: "Live", path: "/live", icon: TvIcon },
-  { title: "Kasir", path: "/kasir", icon: CreditCardIcon },
-  { title: "Packaging", path: "/packaging-page", icon: CubeIcon },
-  // { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
-  { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
-  // { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
-  // { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
-  { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
-  { title: "Cek Produk", path: "/cek-produk", icon: DocumentChartBarIcon },
-  { title: "Keuangan", path: "/keuangan", icon: CreditCardIcon },
   { title: "Barang Keluar", path: "/barang-keluar", icon: ArchiveBoxIcon },
-  // { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
+  { title: "Cek Produk", path: "/cek-produk", icon: DocumentChartBarIcon },
+  { title: "Kasir", path: "/kasir", icon: CreditCardIcon },
+  { title: "Live", path: "/live", icon: TvIcon },
+  { title: "Packaging", path: "/packaging-page", icon: CubeIcon },
+  { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
+  { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
+  { title: "Keuangan", path: "/keuangan", icon: CreditCardIcon },
+  { title: "Benang", path: "/staff", icon: UserIcon },
+  { title: "Staff", path: "/staff", icon: UserIcon },
+  { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
   {
     title: "Settings",
     icon: Cog6ToothIcon,
@@ -89,6 +86,10 @@ const items = ref([
       },
     ],
   },
+  // { title: "Inventory", path: "/inventory", icon: ArchiveBoxIcon },
+  // { title: "Pewarna Alam", path: "/pewarnaAlam", icon: PaintBrushIcon },
+  // { title: "Statistik", path: "/statistik", icon: ChartPieIcon },
+  // { title: "Database Inventory", path: "/databaseInventory", icon: ClipboardDocumentIcon },
 ]);
 
 const activeDropdown = ref(null);
