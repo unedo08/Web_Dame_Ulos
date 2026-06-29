@@ -49,7 +49,7 @@ const items = ref([
   { title: "Acara", path: "/acara", icon: CalendarDaysIcon },
   { title: "Database Penjualan", path: "/databasePenjualan", icon: DocumentChartBarIcon },
   { title: "Keuangan", path: "/keuangan", icon: CreditCardIcon },
-  { title: "Benang", path: "/staff", icon: UserIcon },
+  { title: "Benang", path: "/pewarnaAlam", icon: UserIcon },
   { title: "Staff", path: "/staff", icon: UserIcon },
   { title: "Akun Pembeli", path: "/customer", icon: UserIcon },
   {
