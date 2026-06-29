@@ -172,6 +172,10 @@
     color: #2563eb;
 }
 
+.bk-icon-edit {
+    color: #16a34a;
+}
+
 /* ---- Modals ---- */
 .bk-modal-overlay {
     position: fixed;

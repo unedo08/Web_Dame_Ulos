@@ -51,7 +51,7 @@
                         <td colspan="8">Data tidak ditemukan</td>
                     </tr>
                     <tr v-else v-for="row in filteredData" :key="row.barang_keluar_id">
-                        <td>{{ formatDate(row.created_at) }}</td>
+                        <td>{{ formatDate(row.barang_keluar_tanggal_keluar || row.created_at) }}</td>
                         <td>{{ row.creator?.name || "-" }}</td>
                         <td>{{ row.barang_keluar_nama_outsource }}</td>
                         <td>
@@ -73,9 +73,9 @@
                         <td>
                             <div class="bk-action-group">
                                 <!-- Edit: only for PENDING -->
-                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-btn-icon"
+                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-icon-edit"
                                     title="Konfirmasi Pengambilan" @click="openEdit(row)">
-                                    <PencilIcon class="bk-icon" />
+                                    <PencilIcon class="bk-icon bk-icon-edit" />
                                 </button>
                                 <!-- View: only for SELESAI -->
                                 <button v-if="row.barang_keluar_status === 'SELESAI'" class="bk-btn-icon"
@@ -206,7 +206,7 @@
                 <div class="bk-modal-body">
                     <div class="bk-view-info">
                         <p><strong>Outsource:</strong> {{ viewRecord?.barang_keluar_nama_outsource }}</p>
-                        <p><strong>Tanggal Keluar:</strong> {{ formatDate(viewRecord?.created_at) }}</p>
+                        <p><strong>Tanggal Keluar:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_keluar || viewRecord?.created_at) }}</p>
                         <p><strong>Tanggal Masuk:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_masuk) }}</p>
                         <p><strong>Author:</strong> {{ viewRecord?.completer?.name || "-" }}</p>
                     </div>
