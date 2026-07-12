@@ -127,4 +127,16 @@ Route::middleware(['jwt'])->group(function () {
     Route::prefix('/barang-keluar')->group(function () {
         require __DIR__ . '/api/barangKeluarT.php';
     });
+
+    Route::prefix('/pewarna')->group(function () {
+        require __DIR__ . '/api/pewarnaM.php';
+    });
+
+    Route::prefix('/benang-masuk')->group(function () {
+        require __DIR__ . '/api/benangMasuk.php';
+    });
+
+    Route::prefix('/benang-keluar')->group(function () {
+        require __DIR__ . '/api/benangKeluar.php';
+    });
 });
