@@ -90,7 +90,7 @@
                   Print
                 </button>
 
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(trx.transaksidetail_id)">
+                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(item.transaksidetail_id)">
                   Delete
                 </button>
               </div>
