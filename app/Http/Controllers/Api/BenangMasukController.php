@@ -60,14 +60,15 @@ class BenangMasukController extends Controller
     }
 
     /**
-     * Sumber warna dropdown = distinct colors from Pewarna Alam stock.
+     * Sumber warna dropdown (Pewarna Alam form) = distinct colors from Textile
+     * stock — the undyed base threads that natural dye is applied to.
      * "Putih" is always available (mixable base) and is returned first.
      */
     public function sumberWarna()
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $colors = BenangMasukT::where('benang_masuk_tipe', self::TIPE_PEWARNA_ALAM)
+        $colors = BenangMasukT::where('benang_masuk_tipe', self::TIPE_TEXTILE)
             ->whereNull('deleted_at')
             ->distinct()
             ->orderBy('benang_masuk_warna')
