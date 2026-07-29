@@ -61,18 +61,23 @@ export function useBenang() {
     const sumberWarnaList = ref([]); // ["Putih", ...]
 
     const loadDropdowns = async () => {
-        try {
-            const [jb, pw, sw] = await Promise.all([
-                $api.get(`${url.value}/api/jenisbenang`),
-                $api.get(`${url.value}/api/pewarna`),
-                $api.get(`${url.value}/api/benang-masuk/sumber-warna`),
-            ]);
-            jenisBenangList.value = jb.data.data || [];
-            pewarnaList.value = pw.data.data || [];
-            sumberWarnaList.value = sw.data.data || [];
-        } catch (e) {
-            console.error("Gagal memuat dropdown benang:", e);
-        }
+        // Settle each request independently so one failing endpoint can't
+        // blank the other dropdowns (e.g. Jenis Benang staying empty just
+        // because /api/pewarna or /api/benang-masuk/sumber-warna errored).
+        const [jb, pw, sw] = await Promise.allSettled([
+            $api.get(`${url.value}/api/jenisbenang`),
+            $api.get(`${url.value}/api/pewarna`),
+            $api.get(`${url.value}/api/benang-masuk/sumber-warna`),
+        ]);
+
+        if (jb.status === "fulfilled") jenisBenangList.value = jb.value.data.data || [];
+        else console.error("Gagal memuat jenis benang:", jb.reason);
+
+        if (pw.status === "fulfilled") pewarnaList.value = pw.value.data.data || [];
+        else console.error("Gagal memuat pewarna:", pw.reason);
+
+        if (sw.status === "fulfilled") sumberWarnaList.value = sw.value.data.data || [];
+        else console.error("Gagal memuat sumber warna:", sw.reason);
     };
 
     // ============================================================
