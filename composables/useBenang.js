@@ -86,6 +86,63 @@ export function useBenang() {
     const masukData = ref([]);
     const masukSearch = ref("");
     const masukLoading = ref(false);
+    const masukPage = ref(1);
+    const masukPerPage = ref(10);
+
+    const masukItemsPerPage = computed(() => {
+        return masukPerPage.value === "all"
+            ? masukData.value.length || 1
+            : Number(masukPerPage.value);
+    });
+
+    const masukTotalPage = computed(() =>
+        Math.ceil(masukData.value.length / masukItemsPerPage.value)
+    );
+
+    const masukPaginated = computed(() => {
+        if (masukPerPage.value === "all") {
+            return masukData.value;
+        }
+
+        const start = (masukPage.value - 1) * masukItemsPerPage.value;
+
+        return masukData.value.slice(
+            start,
+            start + masukItemsPerPage.value
+        );
+    });
+
+    const masukPaginatedPages = computed(() => {
+        const total = masukTotalPage.value;
+        const current = masukPage.value;
+
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        const pages = [];
+
+        pages.push(1);
+
+        if (current > 3) {
+            pages.push("...");
+        }
+
+        const start = Math.max(2, current - 1);
+        const end = Math.min(total - 1, current + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        if (current < total - 2) {
+            pages.push("...");
+        }
+
+        pages.push(total);
+
+        return pages;
+    });
 
     const getMasuk = async () => {
         masukLoading.value = true;
@@ -139,7 +196,7 @@ export function useBenang() {
             await Promise.all([getMasuk(), loadDropdowns()]);
         } catch (e) {
             closePa();
-            showConfirm("error", "Data gagal ditambahkan!!", "Data pewarna alam baru gagal disimpan ke sistem. Silakan coba kembali..");
+            showConfirm("error", "Data gagal ditambahkan!", "Data pewarna alam baru gagal disimpan ke sistem. Silakan coba kembali.");
         } finally {
             paSubmitting.value = false;
         }
@@ -181,7 +238,7 @@ export function useBenang() {
             await Promise.all([getMasuk(), loadDropdowns()]);
         } catch (e) {
             closeTx();
-            showConfirm("error", "Data gagal ditambahkan!!", "Data textile baru gagal disimpan ke sistem. Silakan coba kembali.");
+            showConfirm("error", "Data gagal ditambahkan!", "Data textile baru gagal disimpan ke sistem. Silakan coba kembali.");
         } finally {
             txSubmitting.value = false;
         }
@@ -275,6 +332,58 @@ export function useBenang() {
     const stokLoading = ref(false);
     const stokFilter = ref("ALL"); // ALL | PEWARNA_ALAM | TEXTILE
 
+    const stokPage = ref(1);
+    const stokPerPage = ref(10);
+
+    const stokItemsPerPage = computed(() => {
+        return stokPerPage.value === "all"
+            ? stokData.value.length || 1
+            : Number(stokPerPage.value);
+    });
+
+    const stokTotalPage = computed(() =>
+        Math.ceil(stokData.value.length / stokItemsPerPage.value)
+    );
+
+    const stokPaginated = computed(() => {
+        if (stokPerPage.value === "all") {
+            return stokData.value;
+        }
+
+        const start = (stokPage.value - 1) * stokItemsPerPage.value;
+
+        return stokData.value.slice(
+            start,
+            start + stokItemsPerPage.value
+        );
+    });
+
+    const stokPaginatedPages = computed(() => {
+        const total = stokTotalPage.value;
+        const current = stokPage.value;
+
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        const pages = [1];
+
+        if (current > 3) pages.push("...");
+
+        const start = Math.max(2, current - 1);
+        const end = Math.min(total - 1, current + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        if (current < total - 2) pages.push("...");
+
+        pages.push(total);
+
+        return pages;
+    });
+
     const getStok = async () => {
         stokLoading.value = true;
         try {
@@ -303,6 +412,55 @@ export function useBenang() {
     const today = new Date().toISOString().slice(0, 10);
     const startDate = ref(today);
     const endDate = ref(today);
+
+    const keluarPage = ref(1);
+    const keluarPerPage = ref(10);
+
+    const keluarItemsPerPage = computed(() => {
+        return keluarPerPage.value === "all"
+            ? keluarData.value.length || 1
+            : Number(keluarPerPage.value);
+    });
+
+    const keluarTotalPage = computed(() =>
+        Math.ceil(keluarData.value.length / keluarItemsPerPage.value)
+    );
+
+    const keluarPaginated = computed(() => {
+
+        if (keluarPerPage.value === "all") {
+            return keluarData.value;
+        }
+
+        const start = (keluarPage.value - 1) * keluarItemsPerPage.value;
+
+        return keluarData.value.slice(
+            start,
+            start + keluarItemsPerPage.value
+        );
+    });
+
+    const keluarPaginatedPages = computed(() => {
+        const total = keluarTotalPage.value;
+        const current = keluarPage.value;
+
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        const pages = [1];
+
+        if (current > 3)
+            pages.push("...");
+        const start = Math.max(2, current - 1);
+        const end = Math.min(total - 1, current + 1);
+        for (let i = start; i <= end; i++)
+            pages.push(i);
+        if (current < total - 2)
+            pages.push("...");
+        pages.push(total);
+        return pages;
+    });
 
     const getKeluar = async () => {
         keluarLoading.value = true;
@@ -628,5 +786,7 @@ export function useBenang() {
         openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
         isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,
         isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete,
+        masukPage, masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages, stokPage, stokPerPage, stokPaginated, stokTotalPage,
+        stokPaginatedPages, keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage, keluarPaginatedPages,
     };
 }

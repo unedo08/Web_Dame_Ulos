@@ -21,8 +21,10 @@
             <div class="bk-toolbar">
                 <div class="bk-search-box">
                     <MagnifyingGlassIcon class="bk-search-icon" />
-                    <input v-model="masukSearch" type="text" placeholder="Cari warna..." class="bk-search-input"
-                        @input="getMasuk" />
+                    <input v-model="masukSearch" type="text" placeholder="Cari warna..." class="bk-search-input" @input="
+                        masukPage = 1;
+                    getMasuk();
+                    " />
                 </div>
                 <div class="bk-actions">
                     <button class="bn-btn-pa" @click="openPa">Pewarna Alam</button>
@@ -48,10 +50,10 @@
                             <td :colspan="isSuperAdmin ? 7 : 6" style="text-align:center;padding:32px;color:#9ca3af">
                                 Memuat data...</td>
                         </tr>
-                        <tr v-else-if="masukData.length === 0" class="bk-empty-row">
+                        <tr v-else-if="masukPaginated.length === 0" class="bk-empty-row">
                             <td :colspan="isSuperAdmin ? 7 : 6">Data tidak ditemukan</td>
                         </tr>
-                        <tr v-else v-for="row in masukData" :key="row.benang_masuk_id">
+                        <tr v-else v-for="row in masukPaginated" :key="row.benang_masuk_id">
                             <td>{{ formatDate(row.tanggal) }}</td>
                             <td>
                                 <span class="bn-chip"
@@ -76,6 +78,34 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="bk-pagination" v-if="masukData.length">
+                <div class="bk-pagination-left">
+                    <label>Tampilkan:</label>
+                    <select v-model="masukPerPage" @change="masukPage = 1">
+                        <option :value="5">5</option>
+                        <option :value="10">10</option>
+                        <option :value="20">20</option>
+                        <option :value="50">50</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div class="bk-pagination-right">
+                    <button class="bk-page-btn" :disabled="masukPage === 1" @click="masukPage--">
+                        Sebelumnya
+                    </button>
+                    <button v-for="(page, index) in masukPaginatedPages" :key="index"
+                        @click="typeof page === 'number' && (masukPage = page)" :disabled="page === '...'" :class="[
+                            'bk-page-number',
+                            page === masukPage ? 'active' : '',
+                            page === '...' ? 'ellipsis' : ''
+                        ]">
+                        {{ page }}
+                    </button>
+                    <button class="bk-page-btn" :disabled="masukPage === masukTotalPage" @click="masukPage++">
+                        Selanjutnya
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -106,10 +136,10 @@
                         <tr v-if="stokLoading">
                             <td colspan="4" style="text-align:center;padding:32px;color:#9ca3af">Memuat data...</td>
                         </tr>
-                        <tr v-else-if="stokData.length === 0" class="bk-empty-row">
+                        <tr v-else-if="stokPaginated.length === 0" class="bk-empty-row">
                             <td colspan="4">Data tidak ditemukan</td>
                         </tr>
-                        <tr v-else v-for="(row, i) in stokData" :key="i">
+                        <tr v-else v-for="(row, i) in stokPaginated" :key="i">
                             <td>
                                 <span class="bn-chip"
                                     :class="row.benang_masuk_tipe === 'PEWARNA_ALAM' ? 'bn-chip-pa' : 'bn-chip-tx'">
@@ -122,6 +152,38 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="bk-pagination" v-if="stokData.length">
+
+                <div class="bk-pagination-left">
+                    <label>Tampilkan:</label>
+
+                    <select v-model="stokPerPage" @change="stokPage = 1">
+
+                        <option :value="5">5</option>
+                        <option :value="10">10</option>
+                        <option :value="20">20</option>
+                        <option :value="50">50</option>
+                        <option value="all">All</option>
+
+                    </select>
+                </div>
+                <div class="bk-pagination-right">
+                    <button class="bk-page-btn" :disabled="stokPage === 1" @click="stokPage--">
+                        Sebelumnya
+                    </button>
+                    <button v-for="(page, index) in stokPaginatedPages" :key="index"
+                        @click="typeof page === 'number' && (stokPage = page)" :disabled="page === '...'" :class="[
+                            'bk-page-number',
+                            stokPage === page ? 'active' : '',
+                            page === '...' ? 'ellipsis' : ''
+                        ]">
+                        {{ page }}
+                    </button>
+                    <button class="bk-page-btn" :disabled="stokPage === stokTotalPage" @click="stokPage++">
+                        Selanjutnya
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -162,10 +224,10 @@
                         <tr v-if="keluarLoading">
                             <td colspan="11" style="text-align:center;padding:32px;color:#9ca3af">Memuat data...</td>
                         </tr>
-                        <tr v-else-if="keluarData.length === 0" class="bk-empty-row">
+                        <tr v-else-if="keluarPaginated.length === 0" class="bk-empty-row">
                             <td colspan="11">Data tidak ditemukan</td>
                         </tr>
-                        <tr v-else v-for="row in keluarData" :key="row.benang_keluar_id">
+                        <tr v-else v-for="row in keluarPaginated" :key="row.benang_keluar_id">
                             <td>{{ row.petugas || "-" }}</td>
                             <td>{{ formatDate(row.tanggal_keluar) }}</td>
                             <td>{{ row.tanggal_selesai ? formatDate(row.tanggal_selesai) : "-" }}</td>
@@ -186,7 +248,8 @@
                                         style="padding:6px 12px;font-size:12px" @click="openSelesai(row)">
                                         Selesai
                                     </button>
-                                    <button v-else class="bk-btn-icon" title="Lihat Detail" @click="openKeluarView(row)">
+                                    <button v-else class="bk-btn-icon" title="Lihat Detail"
+                                        @click="openKeluarView(row)">
                                         <EyeIcon class="bk-icon bk-icon-view" />
                                     </button>
                                     <button class="bk-btn-icon" title="Hapus" @click="askKeluarDelete(row)">
@@ -197,6 +260,34 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="bk-pagination" v-if="keluarData.length">
+                <div class="bk-pagination-left">
+                    <label>Tampilkan:</label>
+                    <select v-model="keluarPerPage" @change="keluarPage = 1">
+                        <option :value="5">5</option>
+                        <option :value="10">10</option>
+                        <option :value="20">20</option>
+                        <option :value="50">50</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div class="bk-pagination-right">
+                    <button class="bk-page-btn" :disabled="keluarPage === 1" @click="keluarPage--">
+                        Sebelumnya
+                    </button>
+                    <button v-for="(page, index) in keluarPaginatedPages" :key="index"
+                        @click="typeof page === 'number' && (keluarPage = page)" :disabled="page === '...'" :class="[
+                            'bk-page-number',
+                            keluarPage === page ? 'active' : '',
+                            page === '...' ? 'ellipsis' : ''
+                        ]">
+                        {{ page }}
+                    </button>
+                    <button class="bk-page-btn" :disabled="keluarPage === keluarTotalPage" @click="keluarPage++">
+                        Selanjutnya
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -378,7 +469,7 @@
                                 <select v-model="item.jenis_id" :class="{ 'is-invalid': item.errJenis }">
                                     <option value="" disabled>Jenis</option>
                                     <option v-for="j in jenisBenangList" :key="j.id" :value="j.id">{{ j.jenisbenang_nama
-                                        }}</option>
+                                    }}</option>
                                 </select>
                                 <small v-if="item.errJenis">{{ item.errJenis }}</small>
                             </div>
@@ -454,7 +545,8 @@
                     </div>
                     <div class="bk-form-group">
                         <label>Foto Hasil</label>
-                        <img v-if="keluarViewRecord?.foto_hasil" :src="keluarViewRecord.foto_hasil" class="bn-view-foto" />
+                        <img v-if="keluarViewRecord?.foto_hasil" :src="keluarViewRecord.foto_hasil"
+                            class="bn-view-foto" />
                         <p v-else style="font-size:13px;color:#9ca3af;margin:0">Tidak ada foto</p>
                     </div>
                 </div>
@@ -560,6 +652,8 @@ const {
     isSelesaiOpen, selesaiRecord, selesaiForm, selesaiErrors, fotoPreview, selesaiSubmitting,
     openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
     isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,
-    isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete,
+    isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete, masukPage,
+    masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages, stokPage,stokPerPage, stokPaginated, stokTotalPage, 
+    stokPaginatedPages, keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage,keluarPaginatedPages,
 } = useBenang();
 </script>

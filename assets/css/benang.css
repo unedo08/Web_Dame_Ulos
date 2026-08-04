@@ -15,7 +15,7 @@
     padding: 10px 18px;
     font-size: 14px;
     font-weight: 500;
-    color: #6b7280;
+    color: #A0AEC0;
     cursor: pointer;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
@@ -26,8 +26,8 @@
 }
 
 .bn-tab.is-active {
-    color: #06b6d4;
-    border-bottom-color: #06b6d4;
+    color: #7f1d1d;
+    border-bottom-color: #7f1d1d;
     font-weight: 600;
 }
 
@@ -211,4 +211,72 @@
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     margin-top: 8px;
+}
+
+.bk-pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    font-size:12px;
+}
+
+.bk-pagination-left{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.bk-pagination-left label{
+    font-size:12px;
+}
+
+.bk-pagination-left select{
+    padding:2px 6px;
+    font-size:12px;
+    height:28px;
+    border:1px solid #d1d5db;
+    border-radius:5px;
+}
+
+.bk-pagination-right{
+    display:flex;
+    gap:4px;
+    align-items:center;
+}
+
+.bk-page-btn{
+    padding:5px 10px;
+    font-size:12px;
+    border:none;
+    border-radius:5px;
+    background:#e5e7eb;
+    cursor:pointer;
+    height:30px;
+}
+
+.bk-page-number{
+    min-width:30px;
+    height:30px;
+    padding:0 8px;
+    font-size:12px;
+    border:none;
+    border-radius:5px;
+    background:#f3f4f6;
+    cursor:pointer;
+}
+
+.bk-page-number.active{
+    background:#3B82F6;
+    color:#fff;
+}
+
+.bk-page-number.ellipsis{
+    background:transparent;
+    cursor:default;
+}
+
+.bk-page-btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
 }
