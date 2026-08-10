@@ -452,7 +452,7 @@
                             <div class="bn-cell">
                                 <select v-model="item.warna" :class="{ 'is-invalid': item.errWarna }">
                                     <option value="" disabled>Warna</option>
-                                    <option v-for="(w, i) in sumberWarnaList" :key="i" :value="w">{{ w }}</option>
+                                    <option v-for="(w, i) in warnaAlamList" :key="i" :value="w">{{ w }}</option>
                                 </select>
                                 <small v-if="item.errWarna">{{ item.errWarna }}</small>
                             </div>
@@ -637,7 +637,7 @@ import { useBenang } from "@/composables/useBenang";
 
 const {
     isSuperAdmin, activeTab, setTab,
-    jenisBenangList, pewarnaList, sumberWarnaList,
+    jenisBenangList, pewarnaList, sumberWarnaList, warnaAlamList,
     isConfirmOpen, confirmType, confirmTitle, confirmSubtitle, confirmButtonText, onConfirmButton,
     formatDate,
     masukData, masukSearch, masukLoading, getMasuk,

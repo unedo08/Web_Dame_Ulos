@@ -58,16 +58,18 @@ export function useBenang() {
     // ============================================================
     const jenisBenangList = ref([]); // { id, jenisbenang_nama }
     const pewarnaList = ref([]);     // { pewarna_id, pewarna_nama, pewarna_kode }
-    const sumberWarnaList = ref([]); // ["Putih", ...]
+    const sumberWarnaList = ref([]); // ["Putih", ...] — warna Textile (form Pewarna Alami)
+    const warnaAlamList = ref([]);   // ["Merah", ...] — warna Pewarna Alam (form Benang Keluar)
 
     const loadDropdowns = async () => {
         // Settle each request independently so one failing endpoint can't
         // blank the other dropdowns (e.g. Jenis Benang staying empty just
         // because /api/pewarna or /api/benang-masuk/sumber-warna errored).
-        const [jb, pw, sw] = await Promise.allSettled([
+        const [jb, pw, sw, wa] = await Promise.allSettled([
             $api.get(`${url.value}/api/jenisbenang`),
             $api.get(`${url.value}/api/pewarna`),
             $api.get(`${url.value}/api/benang-masuk/sumber-warna`),
+            $api.get(`${url.value}/api/benang-masuk/warna-pewarna-alam`),
         ]);
 
         if (jb.status === "fulfilled") jenisBenangList.value = jb.value.data.data || [];
@@ -78,6 +80,9 @@ export function useBenang() {
 
         if (sw.status === "fulfilled") sumberWarnaList.value = sw.value.data.data || [];
         else console.error("Gagal memuat sumber warna:", sw.reason);
+
+        if (wa.status === "fulfilled") warnaAlamList.value = wa.value.data.data || [];
+        else console.error("Gagal memuat warna pewarna alam:", wa.reason);
     };
 
     // ============================================================
@@ -763,7 +768,7 @@ export function useBenang() {
     return {
         // shared
         isSuperAdmin, activeTab, setTab,
-        jenisBenangList, pewarnaList, sumberWarnaList,
+        jenisBenangList, pewarnaList, sumberWarnaList, warnaAlamList,
         isConfirmOpen, confirmType, confirmTitle, confirmSubtitle, confirmButtonText,
         closeConfirm, onConfirmButton,
         formatDate, formatDateTime,
