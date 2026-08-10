@@ -81,6 +81,26 @@ class BenangMasukController extends Controller
         return $this->ok($data, 'Berhasil mendapatkan sumber warna');
     }
 
+    /**
+     * Warna dropdown (Benang Keluar form) = distinct colors from Pewarna Alam
+     * stock only — thread that goes out to a penenun is already dyed, so the
+     * Textile base colors used by sumberWarna() must not appear here.
+     */
+    public function warnaPewarnaAlam()
+    {
+        if ($resp = $this->checkAuth()) return $resp;
+
+        $data = BenangMasukT::where('benang_masuk_tipe', self::TIPE_PEWARNA_ALAM)
+            ->whereNull('deleted_at')
+            ->distinct()
+            ->orderBy('benang_masuk_warna')
+            ->pluck('benang_masuk_warna')
+            ->filter()
+            ->values();
+
+        return $this->ok($data, 'Berhasil mendapatkan warna pewarna alam');
+    }
+
     /** Tambah Pewarna Alami */
     public function storePewarnaAlam(Request $request)
     {
