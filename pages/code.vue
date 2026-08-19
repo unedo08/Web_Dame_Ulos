@@ -3,46 +3,52 @@
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-        placeholder="Search barang..." />
+      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
 
       <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]" @click="openModal">
         + Tambah
       </button>
     </div>
 
-    <table class="datatable w-full rounded-md overflow-hidden mt-4">
-      <thead class="bg-blue-100">
-        <tr>
-          <th class="px-4 py-2 text-left">No.</th>
-          <th class="px-4 py-2 text-left">Kode Barang</th>
-          <th class="px-4 py-2 text-left">Nama Barang</th>
-          <th class="px-4 py-2 text-left">Jumlah Barang</th>
-          <th class="px-4 py-2 text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-          <td class="px-4 py-2">{{ index + 1 }}</td>
-          <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
-          <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
-          <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
-          <td class="px-4 py-2">
-            <div class="flex space-x-2">
-              <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
-                @click="openModelPrint(barang)">
-                Print
-              </button>
-              <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
-                @click="deleteProduct(barang.jenisbarang_id, barang.jenisbarang_kode)">
-                Delete
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="datatable-wrapper">
+      <table class="datatable w-full rounded-md overflow-hidden mt-4">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="px-4 py-2 text-left">No.</th>
+            <th class="px-4 py-2 text-left">Kode Barang</th>
+            <th class="px-4 py-2 text-left">Nama Barang</th>
+            <th class="px-4 py-2 text-left">Jumlah Barang</th>
+            <th class="px-4 py-2 text-left">Aksi</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <td class="px-4 py-2">{{ index + 1 }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
+            <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
+
+            <td class="px-4 py-2">
+              <div class="flex space-x-2">
+                <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
+                  @click="openModelPrint(barang)">
+                  Print
+                </button>
+
+                <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs" @click="deleteProduct(
+                  barang.jenisbarang_id,
+                  barang.jenisbarang_kode
+                )">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div class="flex justify-between items-center mt-8 mb-4 text-xs">
       <div class="flex items-center space-x-2">
@@ -473,5 +479,254 @@ watch(isModalOpen, async (val) => {
   outline: none;
   border-color: #8e9196;
   color: #111827;
+}
+
+/* =========================================================
+   RESPONSIVE - CODE PAGE
+   
+   TABLE WRAPPER
+   ========================= */
+
+.datatable-wrapper {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.datatable {
+  width: 100%;
+  min-width: 760px;
+  max-width: none;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.datatable th,
+.datatable td {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.search-box {
+  width: 385px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLET
+   768px - 1024px
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .search-box {
+    width: 300px;
+    max-width: 100%;
+  }
+
+  .datatable-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 800px !important;
+    min-width: 800px !important;
+    max-width: none !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   <= 767px
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .judul {
+    font-size: 18px !important;
+  }
+
+
+  .flex.items-center.justify-between.pt-2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+    height: 40px;
+    box-sizing: border-box;
+  }
+
+  .btn-add {
+    width: 104px !important;
+    height: 34px !important;
+    padding: 0 12px;
+    align-self: flex-end;
+    font-size: 11px;
+  }
+
+  .datatable-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+
+    width: 760px !important;
+    min-width: 760px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 10px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:first-child {
+    justify-content: flex-start;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child button {
+    white-space: nowrap;
+  }
+
+  .fixed.inset-0 {
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0>div {
+    width: 100%;
+    max-width: none;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0 form .flex.justify-end {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .fixed.inset-0 form .flex.justify-end button {
+    width: 100%;
+    margin: 0 !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   <= 480px
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .search-box {
+    height: 40px;
+    padding: 10px;
+  }
+
+  .btn-add {
+    width: 90px !important;
+    height: 32px !important;
+    font-size: 10px;
+    padding: 0 10px;
+  }
+
+  .datatable-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .datatable {
+    display: table;
+
+    width: 760px !important;
+    min-width: 760px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child button {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .fixed.inset-0 {
+    padding: 8px;
+  }
+
+  .fixed.inset-0>div {
+    max-height: calc(100vh - 16px);
+  }
 }
 </style>

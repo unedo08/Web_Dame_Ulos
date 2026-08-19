@@ -50,7 +50,7 @@
                     <tr v-else-if="filteredData.length === 0" class="bk-empty-row">
                         <td colspan="8">Data tidak ditemukan</td>
                     </tr>
-                    <tr v-else v-for="row in filteredData" :key="row.barang_keluar_id">
+                    <tr v-else v-for="row in paginatedData" :key="row.barang_keluar_id">
                         <td>{{ formatDate(row.barang_keluar_tanggal_keluar || row.created_at) }}</td>
                         <td>{{ row.creator?.name || "-" }}</td>
                         <td>{{ row.barang_keluar_nama_outsource }}</td>
@@ -91,6 +91,58 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+
+            <!-- Per Page -->
+            <div class="flex items-center space-x-2">
+                <label for="perPage">Tampilkan:</label>
+
+                <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+                    <option :value="5">5</option>
+                    <option :value="10">10</option>
+                    <option :value="20">20</option>
+                    <option :value="50">50</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+
+            <!-- Pagination -->
+            <div class="flex items-center space-x-2">
+
+                <!-- Sebelumnya -->
+                <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
+                    @click="currentPage--">
+                    Sebelumnya
+                </button>
+
+
+                <!-- Number -->
+                <button v-for="(page, index) in paginatedPages" :key="index" @click="
+                    typeof page === 'number' &&
+                    (currentPage = page)
+                    " :class="[
+                        'px-3 py-1 rounded',
+                        currentPage === page
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-200',
+                        page === '...'
+                            ? 'cursor-default'
+                            : 'cursor-pointer'
+                    ]" :disabled="page === '...'">
+                    {{ page }}
+                </button>
+
+
+                <!-- Selanjutnya -->
+                <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
+                    @click="currentPage++">
+                    Selanjutnya
+                </button>
+
+            </div>
         </div>
 
         <!-- ===== Modal: Tambah Barang Keluar ===== -->
@@ -206,7 +258,8 @@
                 <div class="bk-modal-body">
                     <div class="bk-view-info">
                         <p><strong>Outsource:</strong> {{ viewRecord?.barang_keluar_nama_outsource }}</p>
-                        <p><strong>Tanggal Keluar:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_keluar || viewRecord?.created_at) }}</p>
+                        <p><strong>Tanggal Keluar:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_keluar ||
+                            viewRecord?.created_at) }}</p>
                         <p><strong>Tanggal Masuk:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_masuk) }}</p>
                         <p><strong>Author:</strong> {{ viewRecord?.completer?.name || "-" }}</p>
                     </div>
@@ -331,5 +384,10 @@ const {
     getData,
     startDate,
     endDate,
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    paginatedPages,
+    paginatedData,
 } = useBarangKeluar();
 </script>

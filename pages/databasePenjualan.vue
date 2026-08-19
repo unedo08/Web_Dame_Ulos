@@ -12,93 +12,97 @@
 
       <input type="date" v-model="endDate" class="border rounded px-2 py-1 text-sm" />
 
-      <button class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm" @click="exportExcel">
+      <button class="penjualan-export-btn" @click="exportExcel">
         Export Excel
       </button>
     </div>
 
-    <table class="datatable w-full rounded-md overflow-hidden">
-      <thead class="bg-blue-100">
-        <tr>
-          <th class="px-4 py-2 text-left">Tanggal Transaksi</th>
-          <th class="px-4 py-2 text-left">Nama Akun</th>
-          <th class="px-4 py-2 text-left">Jenis Transaksi</th>
-          <th class="px-4 py-2 text-left">Acara</th>
-          <th class="px-4 py-2 text-left">Platform</th>
-          <th class="px-4 py-2 text-left">Kode Barang</th>
-          <th class="px-4 py-2 text-left">Nama Ulos</th>
-          <th class="px-4 py-2 text-left">Jumlah</th>
-          <th class="px-4 py-2 text-left">Harga</th>
-          <th class="px-4 py-2 text-left">Subtotal</th>
-          <th class="px-4 py-2 text-left">Status</th>
-          <th class="px-4 py-2 text-left">Pembayaran</th>
-          <th class="px-4 py-2 text-left">Catatan</th>
-          <th class="px-4 py-2 text-left">Aksi</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <template v-for="(trx, trxIndex) in paginatedTransaksi" :key="trx.transaksi_id">
-          <tr v-for="(item, i) in trx.items" :key="item.transaksidetail_id" :class="[
-            trxIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50',
-            i === 0 ? 'group-start' : ''
-          ]">
-            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ formatDate(trx.created_at) }}
-            </td>
-
-            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ trx.customer_nama }}
-            </td>
-
-            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ trx.transaksi_tipe }}
-            </td>
-
-            <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
-              {{ trx.transaksi_acara || "-" }}
-            </td>
-
-            <td class="text-left align-top px-2 py-1">
-              {{ trx.transaksi_tipe === 'Offline' ? "Offline" : item.transaksi_platform }}
-            </td>
-            <td>{{ item.code_nama || "-" }}</td>
-            <td>{{ item.barang_nama || "-" }}</td>
-            <td>{{ item.jumlah_barang }}</td>
-            <td>{{ formatCurrency(Number(item.harga_barang)) }}</td>
-            <td>{{ formatCurrency(Number(item.harga_barang) * item.jumlah_barang) }}</td>
-
-            <td>
-              <span class="text-status px-2 py-1" :class="statusChipClass(item.transaksi_status)">
-                {{ item.transaksi_status === 1 ? "Closed" : "Open" }}
-              </span>
-            </td>
-
-            <td>{{ trx.cara_bayar }}</td>
-
-            <td v-if="i === 0" :rowspan="trx.items.length">
-              {{ trx.catatan || "-" }}
-            </td>
-
-            <td>
-              <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-yellow-500 text-white rounded" @click="openViewDetail(trx.transaksi_id)">
-                  View
-                </button>
-
-                <button class="px-2 py-1 bg-green-500 text-white rounded" @click="handlePrint(trx.transaksi_id)">
-                  Print
-                </button>
-
-                <button class="px-2 py-1 bg-red-500 text-white rounded" @click="deleteTransaksi(item.transaksidetail_id)">
-                  Delete
-                </button>
-              </div>
-            </td>
+    <div class="penjualan-table-wrapper">
+      <table class="datatable rounded-md overflow-hidden">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="px-4 py-2 text-left">Tanggal Transaksi</th>
+            <th class="px-4 py-2 text-left">Nama Akun</th>
+            <th class="px-4 py-2 text-left">Jenis Transaksi</th>
+            <th class="px-4 py-2 text-left">Acara</th>
+            <th class="px-4 py-2 text-left">Platform</th>
+            <th class="px-4 py-2 text-left">Kode Barang</th>
+            <th class="px-4 py-2 text-left">Nama Ulos</th>
+            <th class="px-4 py-2 text-left">Jumlah</th>
+            <th class="px-4 py-2 text-left">Harga</th>
+            <th class="px-4 py-2 text-left">Subtotal</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Pembayaran</th>
+            <th class="px-4 py-2 text-left">Catatan</th>
+            <th class="px-4 py-2 text-left">Aksi</th>
           </tr>
-        </template>
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          <template v-for="(trx, trxIndex) in paginatedTransaksi" :key="trx.transaksi_id">
+            <tr v-for="(item, i) in trx.items" :key="item.transaksidetail_id" :class="[
+              trxIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50',
+              i === 0 ? 'group-start' : ''
+            ]">
+              <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
+                {{ formatDate(trx.created_at) }}
+              </td>
+
+              <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
+                {{ trx.customer_nama }}
+              </td>
+
+              <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
+                {{ trx.transaksi_tipe }}
+              </td>
+
+              <td v-if="i === 0" :rowspan="trx.items.length" class="text-left align-top px-2 py-1">
+                {{ trx.transaksi_acara || "-" }}
+              </td>
+
+              <td class="text-left align-top px-2 py-1">
+                {{ trx.transaksi_tipe === 'Offline' ? "Offline" : item.transaksi_platform }}
+              </td>
+              <td>{{ item.code_nama || "-" }}</td>
+              <td>{{ item.barang_nama || "-" }}</td>
+              <td>{{ item.jumlah_barang }}</td>
+              <td>{{ formatCurrency(Number(item.harga_barang)) }}</td>
+              <td>{{ formatCurrency(Number(item.harga_barang) * item.jumlah_barang) }}</td>
+
+              <td>
+                <span class="text-status px-2 py-1" :class="statusChipClass(item.transaksi_status)">
+                  {{ item.transaksi_status === 1 ? "Closed" : "Open" }}
+                </span>
+              </td>
+
+              <td>{{ trx.cara_bayar }}</td>
+
+              <td v-if="i === 0" :rowspan="trx.items.length">
+                {{ trx.catatan || "-" }}
+              </td>
+
+              <td>
+                <div class="flex space-x-2">
+                  <button class="penjualan-action-btn bg-yellow-500 text-white"
+                    @click="openViewDetail(trx.transaksi_id)">
+                    View
+                  </button>
+
+                  <button class="penjualan-action-btn bg-green-500 text-white" @click="handlePrint(trx.transaksi_id)">
+                    Print
+                  </button>
+
+                  <button class="penjualan-action-btn bg-red-500 text-white"
+                    @click="deleteTransaksi(item.transaksidetail_id)">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
 
     <div class="flex justify-between items-center mt-8 mb-4 text-xs">
       <div class="flex items-center space-x-2 text-xs mb-4">
@@ -735,18 +739,38 @@ watch(itemsPerPage, () => {
   height: 34px;
 }
 
+.penjualan-table-wrapper {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 .datatable {
   width: 100%;
+  min-width: 1500px;
+  max-width: none;
   border-collapse: collapse;
+  table-layout: auto;
   margin-top: 20px;
 }
 
 .datatable th,
 .datatable td {
-  padding: 10px;
-  /* border: 1px solid #ddd; */
+  padding: 10px 12px;
+
   text-align: left;
   font-size: 12px;
+
+  white-space: nowrap;
+}
+
+.datatable th {
+  background-color: #f4f4f4;
 }
 
 .datatable tbody tr:first-child td {
@@ -755,10 +779,6 @@ watch(itemsPerPage, () => {
 
 .group-start td {
   border-top: 2px solid #d1d5db;
-}
-
-.datatable th {
-  background-color: #f4f4f4;
 }
 
 .search-box::placeholder {
@@ -809,5 +829,200 @@ watch(itemsPerPage, () => {
 .nav-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.penjualan-export-btn {
+  width: 105px;
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 5px;
+  background: #059669;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.penjualan-export-btn:hover {
+  background: #047857;
+}
+
+.penjualan-action-btn {
+  height: 30px;
+  min-width: 48px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 10px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.penjualan-action-group {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .search-box {
+    width: 300px;
+  }
+}
+
+@media (max-width: 767px) {
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+    height: 38px;
+    box-sizing: border-box;
+    font-size: 12px;
+  }
+
+  .flex.items-center.gap-3.mb-4 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .flex.items-center.gap-3.mb-4 input[type="date"] {
+    flex: 1 1 140px;
+    min-width: 130px;
+    height: 32px;
+    box-sizing: border-box;
+    font-size: 11px;
+  }
+
+  .penjualan-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+    width: 1500px !important;
+    min-width: 1500px !important;
+    max-width: none !important;
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 11px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .text-status {
+    font-size: 10px !important;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+
+  .penjualan-action-group {
+    gap: 5px;
+    flex-wrap: nowrap;
+  }
+
+  .penjualan-action-btn {
+    height: 30px;
+    min-width: 48px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .penjualan-export-btn {
+    width: 105px !important;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs
+    > div:first-child {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .page-btn,
+  .nav-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .search-box {
+    height: 36px;
+    font-size: 11px;
+  }
+
+  .penjualan-export-btn {
+    width: 100px !important;
+    height: 31px;
+    font-size: 10px;
+  }
+
+  .datatable {
+    width: 1500px !important;
+    min-width: 1500px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .penjualan-action-btn {
+    height: 30px;
+    min-width: 46px;
+    padding: 0 8px;
+    font-size: 10px;
+  }
 }
 </style>

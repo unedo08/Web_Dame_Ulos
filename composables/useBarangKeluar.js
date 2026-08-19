@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import Swal from "sweetalert2";
 import { useRuntimeConfig, useNuxtApp } from "#imports";
 import * as XLSX from "xlsx";
@@ -12,6 +12,8 @@ export function useBarangKeluar() {
     const tableData = ref([]);
     const search = ref("");
     const isLoading = ref(false);
+    const currentPage = ref(1);
+    const itemsPerPage = ref(10);
 
     // ---- Tambah modal ----
     const isTambahOpen = ref(false);
@@ -52,9 +54,14 @@ export function useBarangKeluar() {
         isLoading.value = true;
         try {
             const res = await $api.get(`${url.value}/api/barang-keluar`, {
-                params: { search: search.value },
+                params: {
+                    search: search.value,
+                },
             });
+
             tableData.value = res.data.data || [];
+
+            currentPage.value = 1;
         } catch (e) {
             console.error(e);
         } finally {
@@ -73,6 +80,67 @@ export function useBarangKeluar() {
         return tableData.value.filter((r) =>
             r.barang_keluar_nama_outsource?.toLowerCase().includes(kw)
         );
+    });
+
+    const paginatedData = computed(() => {
+        const data = filteredData.value;
+
+        if (itemsPerPage.value === "all") {
+            return data;
+        }
+
+        const start = (currentPage.value - 1) * Number(itemsPerPage.value);
+        const end = start + Number(itemsPerPage.value);
+
+        return data.slice(start, end);
+    });
+
+    const totalPages = computed(() => {
+        if (itemsPerPage.value === "all") {
+            return 1;
+        }
+
+        return Math.max(
+            1,
+            Math.ceil(
+                filteredData.value.length / Number(itemsPerPage.value)
+            )
+        );
+    });
+
+    const paginatedPages = computed(() => {
+        const total = totalPages.value;
+        const current = currentPage.value;
+
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        if (current <= 4) {
+            return [1, 2, 3, 4, 5, "...", total];
+        }
+
+        if (current >= total - 3) {
+            return [
+                1,
+                "...",
+                total - 4,
+                total - 3,
+                total - 2,
+                total - 1,
+                total,
+            ];
+        }
+
+        return [
+            1,
+            "...",
+            current - 1,
+            current,
+            current + 1,
+            "...",
+            total,
+        ];
     });
 
     // ========================
@@ -362,6 +430,14 @@ export function useBarangKeluar() {
         });
     };
 
+    watch(search, () => {
+        currentPage.value = 1;
+    });
+
+    watch(itemsPerPage, () => {
+        currentPage.value = 1;
+    });
+
     return {
         // state
         tableData,
@@ -414,5 +490,10 @@ export function useBarangKeluar() {
         getData,
         startDate,
         endDate,
+        currentPage,
+        itemsPerPage,
+        totalPages,
+        paginatedPages,
+        paginatedData,
     };
 }

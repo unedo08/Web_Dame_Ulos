@@ -1,92 +1,203 @@
 .pm-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 24px 0;
+
+  box-sizing: border-box;
 }
 
 .pm-title {
   font-size: 20px;
   font-weight: 700;
+
   color: #111;
+
   margin-bottom: 20px;
 }
 
 .pm-toolbar {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
+  gap: 12px;
+
   margin-bottom: 16px;
+
+  width: 100%;
 }
 
 .pm-search-wrap {
   position: relative;
+
   width: 320px;
+  max-width: 100%;
 }
 
 .pm-search-icon {
   position: absolute;
+
   left: 10px;
   top: 50%;
+
   transform: translateY(-50%);
+
   width: 16px;
   height: 16px;
+
   color: #9ca3af;
+
+  pointer-events: none;
 }
 
 .pm-search-input {
   width: 100%;
+
   padding: 8px 12px 8px 34px;
+
   border: 1px solid #d1d5db;
   border-radius: 6px;
+
   font-size: 13px;
+
   outline: none;
+
   background: #fff;
+
+  box-sizing: border-box;
 }
 
 .pm-search-input:focus {
   border-color: #06b6d4;
+
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
 }
 
+
+/* =========================================================
+   TAMBAH BUTTON
+   ========================================================= */
+
 .pm-btn-tambah {
+  width: 90px;
+  height: 32px;
+
+  padding: 0 14px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
   background: #06b6d4;
+
   color: #fff;
-  font-size: 14px;
+
+  font-size: 12px;
   font-weight: 600;
-  padding: 8px 24px;
+
   border-radius: 6px;
+
   border: none;
+
   cursor: pointer;
+
   transition: background 0.15s;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
 .pm-btn-tambah:hover {
   background: #0891b2;
 }
 
+
+/* =========================================================
+   TABLE WRAPPER
+   HANYA TABLE YANG HORIZONTAL SCROLL
+   ========================================================= */
+
 .pm-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   background: #fff;
+
   border-radius: 8px;
-  overflow: hidden;
+
   border: 1px solid #e5e7eb;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+
+  box-sizing: border-box;
 }
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
 
 .pm-table {
   width: 100%;
+
+  min-width: 760px;
+
+  max-width: none;
+
   border-collapse: collapse;
+
+  table-layout: auto;
 }
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
 
 .pm-th {
   background: #f3f4f6;
+
   text-align: left;
+
   padding: 12px 16px;
+
   font-size: 13px;
   font-weight: 600;
+
   color: #374151;
+
   border-bottom: 1px solid #e5e7eb;
+
+  white-space: nowrap;
 }
 
-.pm-th-no   { width: 48px; }
-.pm-th-status { width: 140px; }
-.pm-th-aksi   { width: 100px; }
+.pm-th-no {
+  width: 48px;
+}
+
+.pm-th-status {
+  width: 140px;
+}
+
+.pm-th-aksi {
+  width: 100px;
+}
+
+
+/* =========================================================
+   TABLE ROW
+   ========================================================= */
 
 .pm-tr {
   border-bottom: 1px solid #f3f4f6;
@@ -98,51 +209,112 @@
 
 .pm-td {
   padding: 14px 16px;
+
   font-size: 13px;
+
   color: #374151;
+
   vertical-align: middle;
+
+  white-space: nowrap;
 }
 
-.pm-td-no     { color: #6b7280; }
-.pm-td-status { }
-.pm-td-aksi   { }
+.pm-td-no {
+  color: #6b7280;
+}
+
+.pm-td-status {
+  white-space: nowrap;
+}
+
+.pm-td-aksi {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   STATUS CHIP
+   ========================================================= */
 
 .pm-chip {
-  display: inline-block;
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
   padding: 4px 12px;
+
   border-radius: 999px;
+
   font-size: 12px;
   font-weight: 600;
+
+  white-space: nowrap;
 }
 
 .chip-aktif {
   background: #ecfdf5;
+
   color: #16a34a;
+
   border: 1px solid #bbf7d0;
 }
 
 .chip-nonaktif {
   background: #fff1f2;
+
   color: #e11d48;
+
   border: 1px solid #fecdd3;
 }
 
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
+
 .pm-btn-icon {
-  background: none;
-  border: none;
+  width: 32px;
+  height: 32px;
+
+  background: #fff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 6px;
+
   cursor: pointer;
-  padding: 4px;
+
+  padding: 0;
+
   color: #9ca3af;
-  transition: color 0.15s;
+
+  transition:
+    color 0.15s,
+    background 0.15s;
+
   display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  vertical-align: middle;
+}
+
+.pm-btn-icon+.pm-btn-icon {
+  margin-left: 6px;
 }
 
 .pm-btn-icon:hover {
   color: #3b82f6;
+
+  background: #f9fafb;
 }
 
 .pm-btn-delete:hover {
   color: #ef4444;
+
+  background: #fff5f5;
 }
 
 .pm-icon {
@@ -151,53 +323,99 @@
 }
 
 .pm-icon.delete {
-    color: red;
+  color: red;
 }
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
 
 .pm-empty {
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
+
   padding: 56px 0;
+
   gap: 12px;
+
+  min-width: 760px;
 }
 
 .pm-empty-icon {
   width: 64px;
   height: 64px;
+
   opacity: 0.35;
 }
 
 .pm-empty-text {
   font-size: 14px;
+
   color: #9ca3af;
 }
 
+
+/* =========================================================
+   PAGINATION
+   TETAP DI LUAR TABLE
+   ========================================================= */
+
 .pm-pagination {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
   margin-top: 16px;
+
   font-size: 12px;
+
   color: #6b7280;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  gap: 12px;
 }
 
 .pm-pagination-left {
   display: flex;
+
   align-items: center;
+
   gap: 12px;
+
+  flex-wrap: wrap;
+}
+
+.pm-pagination-info {
+  white-space: nowrap;
 }
 
 .pm-per-page {
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   padding: 4px 8px;
+
   font-size: 12px;
+
   color: #374151;
+
   background: #fff;
+
   cursor: pointer;
+
   outline: none;
+
+  height: 28px;
 }
 
 .pm-per-page:focus {
@@ -206,21 +424,40 @@
 
 .pm-pagination-controls {
   display: flex;
+
   align-items: center;
+
   gap: 4px;
+
+  flex-wrap: wrap;
 }
 
 .pm-page-btn {
   min-width: 32px;
   height: 32px;
+
   padding: 0 6px;
+
   border: 1px solid #e5e7eb;
+
   border-radius: 6px;
+
   background: #fff;
+
   font-size: 13px;
+
   color: #374151;
+
   cursor: pointer;
+
   transition: background 0.15s;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
 }
 
 .pm-page-btn:hover:not(:disabled) {
@@ -229,64 +466,113 @@
 
 .pm-page-btn:disabled {
   opacity: 0.4;
+
   cursor: default;
 }
 
 .pm-page-active {
   background: #06b6d4 !important;
+
   color: #fff !important;
+
   border-color: #06b6d4 !important;
 }
 
 .pm-page-ellipsis {
   border: none;
+
   background: none !important;
+
   cursor: default !important;
 }
 
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
 .pm-modal-overlay {
   position: fixed;
+
   inset: 0;
+
   background: rgba(0, 0, 0, 0.4);
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   z-index: 50;
+
+  padding: 16px;
+
+  box-sizing: border-box;
 }
 
 .pm-modal {
   background: #fff;
+
   width: 440px;
-  max-width: 94vw;
+
+  max-width: 100%;
+
+  max-height: calc(100vh - 32px);
+
   border-radius: 12px;
+
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
-  overflow: hidden;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
 }
 
 .pm-modal-header {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
   padding: 20px 24px 0;
 }
 
 .pm-modal-title {
   font-size: 16px;
+
   font-weight: 700;
+
   color: #111;
 }
 
 .pm-modal-close {
+  width: 32px;
+  height: 32px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
   background: none;
+
   border: none;
+
   font-size: 18px;
+
   color: #6b7280;
+
   cursor: pointer;
+
   line-height: 1;
+
+  border-radius: 5px;
 }
 
 .pm-modal-close:hover {
   color: #111;
+
+  background: #f3f4f6;
 }
 
 .pm-modal-body {
@@ -295,9 +581,13 @@
 
 .pm-label {
   display: block;
+
   font-size: 13px;
+
   font-weight: 600;
+
   color: #374151;
+
   margin-bottom: 6px;
 }
 
@@ -307,57 +597,90 @@
 
 .pm-required {
   color: #ef4444;
+
   margin-left: 2px;
 }
 
 .pm-input {
   width: 100%;
+
   padding: 10px 12px;
+
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   font-size: 13px;
+
   background: #f9fafb;
+
   outline: none;
+
   box-sizing: border-box;
 }
 
 .pm-input:focus {
   border-color: #06b6d4;
+
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
+
   background: #fff;
 }
 
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
 .pm-toggle-box {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
+  gap: 12px;
+
   border: 1px solid #e5e7eb;
+
   border-radius: 8px;
+
   padding: 12px 16px;
+
   background: #f9fafb;
+
+  box-sizing: border-box;
 }
 
 .pm-toggle-info {
   display: flex;
+
   flex-direction: column;
+
   gap: 2px;
+
+  min-width: 0;
 }
 
 .pm-toggle-title {
   font-size: 13px;
+
   font-weight: 600;
+
   color: #374151;
 }
 
 .pm-toggle-desc {
   font-size: 12px;
+
   color: #9ca3af;
 }
 
 .pm-switch {
   position: relative;
+
   width: 44px;
   height: 24px;
+
   flex-shrink: 0;
 }
 
@@ -367,49 +690,80 @@
 
 .pm-slider {
   position: absolute;
+
   inset: 0;
+
   background: #d1d5db;
+
   border-radius: 999px;
+
   transition: background 0.2s;
+
   cursor: pointer;
 }
 
 .pm-slider:before {
   content: "";
+
   position: absolute;
+
   width: 18px;
   height: 18px;
+
   left: 3px;
   top: 3px;
+
   background: #fff;
+
   border-radius: 50%;
+
   transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.pm-switch input:checked + .pm-slider {
+.pm-switch input:checked+.pm-slider {
   background: #06b6d4;
 }
 
-.pm-switch input:checked + .pm-slider:before {
+.pm-switch input:checked+.pm-slider:before {
   transform: translateX(20px);
 }
 
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
 .pm-modal-footer {
   display: flex;
+
   justify-content: flex-end;
-  gap: 12px;
+  align-items: center;
+
+  gap: 10px;
+
   padding: 0 24px 24px;
 }
 
 .pm-btn-batal {
-  padding: 9px 20px;
+  min-width: 80px;
+  height: 34px;
+
+  padding: 0 16px;
+
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   background: #f3f4f6;
+
   color: #374151;
-  font-size: 14px;
+
+  font-size: 12px;
+
   cursor: pointer;
+
   transition: background 0.15s;
 }
 
@@ -418,14 +772,25 @@
 }
 
 .pm-btn-simpan {
-  padding: 9px 24px;
+  min-width: 80px;
+  height: 34px;
+
+  padding: 0 18px;
+
   background: #06b6d4;
+
   color: #fff;
+
   border: none;
+
   border-radius: 6px;
-  font-size: 14px;
+
+  font-size: 12px;
+
   font-weight: 600;
+
   cursor: pointer;
+
   transition: background 0.15s;
 }
 
@@ -435,5 +800,391 @@
 
 .pm-btn-simpan:disabled {
   opacity: 0.5;
+
   cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLET
+   768px - 1024px
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .pm-page {
+    padding: 20px 0;
+  }
+
+  .pm-toolbar {
+    gap: 10px;
+  }
+
+  .pm-search-wrap {
+    width: 300px;
+  }
+
+  .pm-table {
+    width: 760px !important;
+    min-width: 760px !important;
+  }
+
+  .pm-btn-tambah {
+    width: 90px;
+    height: 32px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .pm-page {
+    width: 100%;
+
+    padding: 16px 0;
+
+    overflow: hidden;
+  }
+
+
+  /* ---------- Title ---------- */
+
+  .pm-title {
+    font-size: 18px;
+
+    margin-bottom: 14px;
+  }
+
+
+  /* ---------- Toolbar ---------- */
+
+  .pm-toolbar {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    justify-content: flex-start;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+  }
+
+  .pm-search-wrap {
+    width: 100%;
+    max-width: none;
+  }
+
+  .pm-search-input {
+    height: 38px;
+
+    font-size: 12px;
+  }
+
+  .pm-btn-tambah {
+    width: 90px !important;
+    height: 32px !important;
+
+    padding: 0 12px;
+
+    align-self: flex-end;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------- Table ---------- */
+
+  .pm-table-wrap {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border-radius: 8px;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pm-table {
+    display: table;
+
+    width: 760px !important;
+    min-width: 760px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .pm-th {
+    padding: 10px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+  .pm-td {
+    padding: 10px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+
+  /* ---------- Status ---------- */
+
+  .pm-chip {
+    padding: 4px 10px;
+
+    font-size: 10px;
+  }
+
+
+  /* ---------- Action ---------- */
+
+  .pm-btn-icon {
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+  }
+
+  .pm-btn-icon+.pm-btn-icon {
+    margin-left: 6px;
+  }
+
+  .pm-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+
+  /* ---------- Pagination ---------- */
+
+  .pm-pagination {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    margin-top: 12px;
+  }
+
+  .pm-pagination-left {
+    justify-content: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    font-size: 11px;
+  }
+
+  .pm-pagination-info {
+    white-space: normal;
+  }
+
+  .pm-pagination-controls {
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+  }
+
+  .pm-page-btn {
+    min-width: 30px;
+    height: 30px;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+  }
+
+  .pm-per-page {
+    height: 28px;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------- Modal ---------- */
+
+  .pm-modal-overlay {
+    padding: 10px;
+  }
+
+  .pm-modal {
+    width: 100%;
+
+    max-width: 100%;
+
+    max-height: calc(100vh - 20px);
+
+    border-radius: 10px;
+  }
+
+  .pm-modal-header {
+    padding: 16px 16px 0;
+  }
+
+  .pm-modal-title {
+    font-size: 15px;
+  }
+
+  .pm-modal-body {
+    padding: 16px;
+  }
+
+  .pm-label {
+    font-size: 12px;
+  }
+
+  .pm-input {
+    padding: 9px 10px;
+
+    font-size: 12px;
+  }
+
+  .pm-toggle-box {
+    padding: 11px 12px;
+  }
+
+  .pm-toggle-title {
+    font-size: 12px;
+  }
+
+  .pm-toggle-desc {
+    font-size: 11px;
+  }
+
+  .pm-modal-footer {
+    padding: 0 16px 16px;
+
+    gap: 8px;
+  }
+
+  .pm-btn-batal,
+  .pm-btn-simpan {
+    min-width: 78px;
+    height: 34px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   <= 480px
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .pm-page {
+    padding: 14px 0;
+  }
+
+  .pm-title {
+    font-size: 17px;
+
+    margin-bottom: 12px;
+  }
+
+  .pm-search-input {
+    height: 36px;
+
+    font-size: 11px;
+  }
+
+  .pm-btn-tambah {
+    width: 88px !important;
+    height: 32px !important;
+
+    font-size: 10px;
+  }
+
+
+  /* Table tetap lebar */
+  .pm-table {
+    width: 760px !important;
+    min-width: 760px !important;
+  }
+
+  .pm-th {
+    padding: 8px 10px;
+
+    font-size: 10px;
+  }
+
+  .pm-td {
+    padding: 8px 10px;
+
+    font-size: 10px;
+  }
+
+
+  /* Action tetap nyaman */
+  .pm-btn-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .pm-btn-icon+.pm-btn-icon {
+    margin-left: 6px;
+  }
+
+  .pm-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+
+  /* Pagination */
+  .pm-pagination-info {
+    font-size: 10px;
+  }
+
+  .pm-page-btn {
+    min-width: 29px;
+    height: 29px;
+
+    font-size: 10px;
+  }
+
+
+  /* Modal */
+  .pm-modal-title {
+    font-size: 14px;
+  }
+
+  .pm-toggle-box {
+    align-items: flex-start;
+  }
+
+  .pm-modal-footer {
+    justify-content: flex-end;
+  }
+
+  .pm-btn-batal,
+  .pm-btn-simpan {
+    min-width: 76px;
+    height: 33px;
+
+    font-size: 10px;
+  }
 }

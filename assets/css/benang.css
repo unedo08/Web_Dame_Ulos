@@ -280,3 +280,583 @@
     opacity:.5;
     cursor:not-allowed;
 }
+
+/* =========================
+   TABLET
+   768px - 1024px
+   ========================= */
+@media (max-width: 1024px) {
+
+    /* Page */
+    .bk-page-title {
+        font-size: 19px;
+    }
+
+    /* Toolbar */
+    .bk-toolbar {
+        align-items: stretch;
+    }
+
+    .bk-search-box {
+        flex: 1 1 280px;
+        max-width: none;
+    }
+
+    .bk-actions {
+        flex: 1 1 auto;
+        justify-content: flex-end;
+    }
+
+    .bk-actions button,
+    .bk-actions input {
+        min-height: 36px;
+    }
+
+    /* Tabs */
+    .bn-tabs {
+        gap: 2px;
+    }
+
+    .bn-tab {
+        padding: 9px 14px;
+    }
+
+    /* Table */
+    .bk-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bk-table {
+        min-width: 800px;
+    }
+
+    /* Benang Keluar dynamic row */
+    .bn-keluar-row,
+    .bn-keluar-head {
+        grid-template-columns:
+            1.2fr
+            1fr
+            1fr
+            0.8fr
+            auto;
+    }
+
+    /* Modal */
+    .bk-modal {
+        width: calc(100% - 32px);
+        max-width: 600px;
+    }
+
+    .bk-modal-lg {
+        max-width: 700px;
+    }
+
+    /* Pagination */
+    .bk-pagination {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .bk-pagination-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+}
+
+
+/* =========================
+   MOBILE
+   <= 767px
+   ========================= */
+@media (max-width: 767px) {
+
+    .bk-page-header {
+        padding-top: 6px;
+    }
+
+    .bk-page-title {
+        font-size: 18px;
+    }
+
+
+    .bn-tabs {
+        width: 100%;
+        gap: 0;
+        margin: 12px 0 16px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+    }
+
+    .bn-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bn-tab {
+        flex: 0 0 auto;
+        padding: 9px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+
+    /* =====================
+       TOOLBAR
+       ===================== */
+
+    .bk-toolbar {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin: 12px 0;
+    }
+
+    .bk-search-box {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        flex: none;
+    }
+
+    .bk-search-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 12px 10px 36px;
+        min-height: 40px;
+    }
+
+    .bk-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .bk-actions button,
+    .bk-actions input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* Khusus toolbar Benang Keluar:
+       date + date + export + add */
+    .bk-actions .bk-date-input {
+        width: 100%;
+    }
+
+    .bk-btn-export,
+    .bk-btn-add,
+    .bn-btn-pa,
+    .bn-btn-tx {
+        width: 100%;
+        min-height: 40px;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+
+    /* =====================
+       STOK FILTER
+       ===================== */
+
+    .bn-filter-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .bn-filter-btn {
+        width: 100%;
+        padding: 9px 6px;
+        font-size: 12px;
+    }
+
+
+    /* =====================
+       TABLE
+       ===================== */
+
+    .bk-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bk-table {
+        min-width: 760px;
+    }
+
+    .bk-table th {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .bk-table td {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .bk-action-group {
+        gap: 5px;
+        flex-wrap: nowrap;
+    }
+
+    .bk-btn-icon {
+        padding: 5px;
+    }
+
+    .bk-icon {
+        width: 17px;
+        height: 17px;
+    }
+
+    .bk-pagination {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .bk-pagination-left {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .bk-pagination-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .bk-page-btn {
+        padding: 6px 9px;
+        font-size: 11px;
+        height: 30px;
+    }
+
+    .bk-page-number {
+        min-width: 28px;
+        height: 30px;
+        padding: 0 6px;
+        font-size: 11px;
+    }
+
+    .bk-modal-overlay {
+        padding: 12px;
+        box-sizing: border-box;
+        align-items: center;
+    }
+
+    .bk-modal,
+    .bk-modal-lg {
+        width: 100%;
+        max-width: none;
+        max-height: calc(100vh - 24px);
+        border-radius: 10px;
+    }
+
+    .bk-modal-header {
+        padding: 14px 16px;
+    }
+
+    .bk-modal-header h2 {
+        font-size: 15px;
+        padding-right: 10px;
+    }
+
+    .bk-modal-body {
+        padding: 16px;
+    }
+
+    .bk-modal-footer {
+        padding: 12px 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .bk-btn-cancel,
+    .bk-btn-save {
+        width: 100%;
+        min-height: 40px;
+    }
+
+    .bk-form-group {
+        margin-bottom: 14px;
+    }
+
+    .bk-form-group input,
+    .bk-form-group select {
+        min-height: 40px;
+        font-size: 13px;
+    }
+
+
+    /* =====================
+       BENANG KELUAR ROW
+       ===================== */
+
+
+    .bn-keluar-head {
+        display: none;
+    }
+
+    .bn-keluar-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+
+    .bn-keluar-row .bn-cell {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .bn-keluar-row .bn-cell:nth-child(4) {
+        grid-column: 1;
+    }
+
+    .bn-keluar-row .bn-btn-remove {
+        grid-column: 2;
+        grid-row: 4;
+        align-self: end;
+        height: 40px;
+        width: 40px;
+    }
+
+    .bn-keluar-row input,
+    .bn-keluar-row select {
+        min-height: 40px;
+        font-size: 13px;
+    }
+
+    .bn-foto-input {
+        width: 100%;
+        max-width: 100%;
+        font-size: 12px;
+    }
+
+    .bn-foto-preview {
+        width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+    }
+
+    .bn-view-foto {
+        width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+    }
+
+    .bn-textarea {
+        min-height: 100px;
+        font-size: 13px;
+    }
+
+    .bk-confirm-card {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        border-radius: 12px;
+    }
+
+    .bk-confirm-body {
+        padding: 32px 20px 24px;
+    }
+
+    .bk-confirm-icon-wrap {
+        margin-bottom: 20px;
+    }
+
+    .bk-confirm-svg {
+        width: 76px;
+        height: 76px;
+    }
+
+    .bk-confirm-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .bk-confirm-subtitle {
+        font-size: 13px;
+        margin-bottom: 24px;
+        max-width: 280px;
+    }
+
+    .bk-confirm-close-btn {
+        width: 100%;
+        padding: 11px 20px;
+    }
+
+    .bk-confirm-cancel-btn,
+    .bk-confirm-delete-btn {
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .bk-page-title {
+        font-size: 17px;
+    }
+
+    .bn-tab {
+        padding: 8px 11px;
+        font-size: 12px;
+    }
+
+    .bk-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .bk-actions .bk-date-input {
+        width: 100%;
+    }
+
+    .bn-filter-group {
+        grid-template-columns: 1fr;
+    }
+
+    .bk-table {
+        min-width: 700px;
+    }
+
+    .bk-modal-overlay {
+        padding: 8px;
+    }
+
+    .bk-modal,
+    .bk-modal-lg {
+        max-height: calc(100vh - 16px);
+    }
+
+    .bk-modal-header {
+        padding: 12px 14px;
+    }
+
+    .bk-modal-body {
+        padding: 14px;
+    }
+
+    .bk-modal-footer {
+        padding: 10px 14px;
+    }
+
+    .bn-keluar-row {
+        padding: 10px;
+    }
+
+    .bk-confirm-body {
+        padding: 28px 16px 20px;
+    }
+
+    .bk-confirm-svg {
+        width: 68px;
+        height: 68px;
+    }
+
+    .bk-confirm-title {
+        font-size: 15px;
+    }
+
+    .bk-confirm-subtitle {
+        font-size: 12px;
+    }
+
+    .bk-confirm-cancel-btn,
+    .bk-confirm-delete-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+
+    .bk-modal {
+        max-height: 92vh;
+    }
+
+    .bk-modal-body {
+        max-height: 60vh;
+    }
+
+    .bk-confirm-body {
+        padding: 20px;
+    }
+
+    .bk-confirm-icon-wrap {
+        margin-bottom: 12px;
+    }
+
+    .bk-confirm-svg {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+.bk-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.bk-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .bk-table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .bk-table {
+        min-width: 800px;
+    }
+}
+
+/* Handphone */
+@media (max-width: 767px) {
+    .bk-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bk-table {
+        min-width: 760px;
+    }
+
+    .bk-table th,
+    .bk-table td {
+        white-space: nowrap;
+    }
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+    .bk-table {
+        min-width: 700px;
+    }
+}

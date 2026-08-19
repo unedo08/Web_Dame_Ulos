@@ -3,47 +3,48 @@
         <title>Staff</title>
         <div class="judul text-xl font-semibold mb-4">Manajemen Staff</div>
         <div class="flex items-center justify-between pt-2">
-            <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text"
-                placeholder="Search staff..." />
+            <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search staff..." />
             <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
                 @click="openAddModal">
                 + Tambah Staff
             </button>
         </div>
 
-        <table class="datatable w-full rounded-md overflow-hidden mt-4">
-            <thead class="bg-blue-100">
-                <tr>
-                    <th class="px-4 py-2 text-left">No.</th>
-                    <th class="px-4 py-2 text-left">Nama</th>
-                    <th class="px-4 py-2 text-left">Email</th>
-                    <th class="px-4 py-2 text-left">Role</th>
-                    <th class="px-4 py-2 text-left">Aksi</th>
-                </tr>
-            </thead>
+        <div class="staff-table-wrapper">
+            <table class="datatable rounded-md overflow-hidden">
+                <thead class="bg-blue-100">
+                    <tr>
+                        <th class="px-4 py-2 text-left">No.</th>
+                        <th class="px-4 py-2 text-left">Nama</th>
+                        <th class="px-4 py-2 text-left">Email</th>
+                        <th class="px-4 py-2 text-left">Role</th>
+                        <th class="px-4 py-2 text-left">Aksi</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr v-for="(user, index) in pagination" :key="user.id"
-                    :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-                    <td class="px-4 py-2">{{ index + 1 }}</td>
-                    <td class="px-4 py-2">{{ user.name }}</td>
-                    <td class="px-4 py-2">{{ user.email }}</td>
-                    <td class="px-4 py-2">{{ user.role?.name }}</td>
+                <tbody>
+                    <tr v-for="(user, index) in pagination" :key="user.id"
+                        :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+                        <td class="px-4 py-2">{{ index + 1 }}</td>
+                        <td class="px-4 py-2">{{ user.name }}</td>
+                        <td class="px-4 py-2">{{ user.email }}</td>
+                        <td class="px-4 py-2">{{ user.role?.name }}</td>
 
-                    <td class="px-4 py-2 flex gap-2">
-                        <button class="px-2 py-1 bg-yellow-500 text-white rounded text-xs hover:bg-yellow-600"
-                            @click="openEditModal(user)">
-                            Edit
-                        </button>
+                        <td class="px-4 py-2 flex gap-2">
+                            <button class="px-2 py-1 bg-yellow-500 text-white rounded text-xs hover:bg-yellow-600"
+                                @click="openEditModal(user)">
+                                Edit
+                            </button>
 
-                        <button class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
-                            @click="deleteUser(user.id, user.name)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                            <button class="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
+                                @click="deleteUser(user.id, user.name)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div class="flex justify-between items-center mt-8 mb-4 text-xs">
             <div class="flex items-center space-x-2">
@@ -210,10 +211,10 @@ const addForm = ref({
 });
 
 const editForm = ref({
-  id: "",
-  name: "",
-  email: "",
-  role_id: "",
+    id: "",
+    name: "",
+    email: "",
+    role_id: "",
 });
 
 const fetchUsers = async () => {
@@ -226,39 +227,39 @@ const fetchUsers = async () => {
 };
 
 const openEditModal = (user) => {
-  editForm.value = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role_id: user.role?.id || "",
-  };
-  isEditModal.value = true;
+    editForm.value = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role_id: user.role?.id || "",
+    };
+    isEditModal.value = true;
 };
 
 const closeEditModal = () => {
-  isEditModal.value = false;
+    isEditModal.value = false;
 };
 
 const submitUpdateUser = async () => {
-  try {
-    await $api.put(
-      `${url.value}/api/user/${editForm.value.id}`,
-      {
-        name: editForm.value.name,
-        email: editForm.value.email,
-        role_id: editForm.value.role_id
-      });
+    try {
+        await $api.put(
+            `${url.value}/api/user/${editForm.value.id}`,
+            {
+                name: editForm.value.name,
+                email: editForm.value.email,
+                role_id: editForm.value.role_id
+            });
 
-    Swal.fire("Berhasil", "User berhasil diperbarui", "success");
-    isEditModal.value = false;
-    fetchUsers();
-  } catch (err) {
-    Swal.fire(
-      "Gagal",
-      err.response?.data?.message || "Update user gagal",
-      "error"
-    );
-  }
+        Swal.fire("Berhasil", "User berhasil diperbarui", "success");
+        isEditModal.value = false;
+        fetchUsers();
+    } catch (err) {
+        Swal.fire(
+            "Gagal",
+            err.response?.data?.message || "Update user gagal",
+            "error"
+        );
+    }
 };
 
 const filteredUsers = computed(() => {
@@ -415,7 +416,7 @@ const deleteUser = async (id, name) => {
     if (!confirm.isConfirmed) return;
 
     try {
-        
+
         await $api.delete(`${url.value}/api/users/${id}`);
 
         users.value = users.value.filter((u) => u.id !== id);
@@ -432,38 +433,295 @@ const deleteUser = async (id, name) => {
 }
 
 .search-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 385px;
-  height: 34px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 385px;
+    height: 34px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.search-box:focus {
+    border-color: #3d8bfd;
+}
+
+.btn-add {
+    width: 115px !important;
+    height: 32px !important;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3d8bfd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.btn-add:hover {
+    background-color: #2563eb;
+}
+
+.staff-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 }
 
 .datatable {
     width: 100%;
+    min-width: 650px;
+    max-width: none;
     border-collapse: collapse;
-    margin-top: 20px;
+    table-layout: auto;
+    margin-top: 16px;
 }
 
 .datatable th,
 .datatable td {
-    padding: 10px;
+    padding: 10px 12px;
     text-align: left;
     font-size: 12px;
+    white-space: nowrap;
 }
 
 .datatable th {
     background-color: #f4f4f4;
 }
 
-.btn-add {
-    background-color: #3d8bfd;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
+.datatable td:last-child {
+    white-space: nowrap;
 }
 
-.btn-add:hover {
-    background-color: #3d8bfd;
+.datatable td:last-child button {
+    min-width: 48px;
+    height: 30px;
+    padding: 0 9px;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.datatable td:last-child button + button {
+    margin-left: 6px;
+}
+
+.flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+
+    .fixed.inset-0 {
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .fixed.inset-0 > .bg-white {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 16px !important;
+        border-radius: 9px;
+    }
+
+    .fixed.inset-0 h3 {
+        font-size: 15px;
+    }
+
+    .fixed.inset-0 input,
+    .fixed.inset-0 select {
+        width: 100% !important;
+
+        box-sizing: border-box;
+
+        font-size: 12px;
+    }
+
+    .fixed.inset-0 .flex.justify-end {
+        gap: 8px;
+    }
+
+    .fixed.inset-0 .flex.justify-end button {
+        padding: 8px 14px;
+        font-size: 11px;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    .search-box {
+        width: 300px;
+    }
+
+    .btn-add {
+        width: 115px !important;
+        height: 32px !important;
+        font-size: 11px;
+    }
+
+    .datatable {
+        min-width: 650px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .judul {
+        font-size: 18px !important;
+    }
+
+    .flex.items-center.justify-between.pt-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .search-box {
+        width: 100% !important;
+        max-width: none;
+        height: 38px;
+        margin-bottom: 0 !important;
+        font-size: 12px;
+    }
+
+    .flex.items-center.justify-between.pt-2 .btn-add {
+        align-self: flex-end;
+        width: 115px !important;
+        height: 32px !important;
+        font-size: 11px;
+    }
+
+    .staff-table-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .datatable {
+        width: 650px !important;
+        min-width: 650px !important;
+        max-width: none !important;
+        margin-top: 12px;
+    }
+
+    .datatable th,
+    .datatable td {
+        padding: 9px 11px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .datatable td:last-child button {
+        min-width: 48px;
+        height: 30px;
+        padding: 0 9px;
+        font-size: 10px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs
+        > div:first-child {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs
+        > div:last-child {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 8px;
+        font-size: 10px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .judul {
+        font-size: 17px !important;
+    }
+
+    .search-box {
+        height: 36px;
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .flex.items-center.justify-between.pt-2 .btn-add {
+        width: 110px !important;
+        height: 32px !important;
+        font-size: 10px;
+    }
+
+    .datatable {
+        width: 650px !important;
+        min-width: 650px !important;
+    }
+
+    .datatable th,
+    .datatable td {
+        padding: 8px 10px;
+
+        font-size: 10px;
+    }
+
+    .datatable td:last-child button {
+        min-width: 46px;
+        height: 30px;
+        padding: 0 8px;
+        font-size: 10px;
+    }
 }
 </style>

@@ -1,61 +1,111 @@
 .dv-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 24px 0;
+
+  box-sizing: border-box;
 }
 
 .dv-title {
   font-size: 20px;
   font-weight: 700;
+
   color: #111;
+
   margin-bottom: 20px;
 }
 
 .dv-toolbar {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
+  gap: 12px;
+
   margin-bottom: 16px;
+
+  width: 100%;
 }
 
 .dv-search-wrap {
   position: relative;
+
   width: 320px;
+  max-width: 100%;
 }
 
 .dv-search-icon {
   position: absolute;
+
   left: 10px;
   top: 50%;
+
   transform: translateY(-50%);
+
   width: 16px;
   height: 16px;
+
   color: #9ca3af;
+
+  pointer-events: none;
 }
 
 .dv-search-input {
   width: 100%;
+
   padding: 8px 12px 8px 34px;
+
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   font-size: 13px;
+
   outline: none;
+
   background: #fff;
+
+  box-sizing: border-box;
 }
 
 .dv-search-input:focus {
   border-color: #06b6d4;
+
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
 }
 
 .dv-btn-tambah {
+  width: 90px;
+  height: 32px;
+
+  padding: 0 14px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
   background: #06b6d4;
+
   color: #fff;
-  font-size: 14px;
+
+  font-size: 12px;
   font-weight: 600;
-  padding: 8px 24px;
+
   border-radius: 6px;
+
   border: none;
+
   cursor: pointer;
+
   transition: background 0.15s;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
 .dv-btn-tambah:hover {
@@ -63,16 +113,39 @@
 }
 
 .dv-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   background: #fff;
+
   border-radius: 8px;
-  overflow: hidden;
+
   border: 1px solid #e5e7eb;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+
+  box-sizing: border-box;
 }
+
 
 .dv-table {
   width: 100%;
+
+  min-width: 760px;
+
+  max-width: none;
+
   border-collapse: collapse;
+
+  table-layout: auto;
 }
+
 
 .dv-th {
   background: #f3f4f6;
@@ -82,11 +155,20 @@
   font-weight: 600;
   color: #374151;
   border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
-.dv-th-no   { width: 48px; }
-.dv-th-status { width: 140px; }
-.dv-th-aksi   { width: 100px; }
+.dv-th-no {
+  width: 48px;
+}
+
+.dv-th-status {
+  width: 140px;
+}
+
+.dv-th-aksi {
+  width: 100px;
+}
 
 .dv-tr {
   border-bottom: 1px solid #f3f4f6;
@@ -101,18 +183,30 @@
   font-size: 13px;
   color: #374151;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
-.dv-td-no     { color: #6b7280; }
-.dv-td-status { }
-.dv-td-aksi   { }
+.dv-td-no {
+  color: #6b7280;
+}
+
+.dv-td-status {
+  white-space: nowrap;
+}
+
+.dv-td-aksi {
+  white-space: nowrap;
+}
 
 .dv-chip {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .chip-aktif {
@@ -128,21 +222,40 @@
 }
 
 .dv-btn-icon {
-  background: none;
-  border: none;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
   color: #9ca3af;
-  transition: color 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
+
   display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  vertical-align: middle;
+}
+
+.dv-btn-icon+.dv-btn-icon {
+  margin-left: 6px;
 }
 
 .dv-btn-icon:hover {
   color: #3b82f6;
+
+  background: #f9fafb;
 }
 
 .dv-btn-delete:hover {
   color: #ef4444;
+
+  background: #fff5f5;
 }
 
 .dv-icon {
@@ -151,7 +264,7 @@
 }
 
 .dv-icon.delete {
-    color: red;
+  color: red;
 }
 
 .dv-empty {
@@ -161,6 +274,7 @@
   justify-content: center;
   padding: 56px 0;
   gap: 12px;
+  min-width: 760px;
 }
 
 .dv-empty-icon {
@@ -181,12 +295,16 @@
   margin-top: 16px;
   font-size: 12px;
   color: #6b7280;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 12px;
 }
 
 .dv-pagination-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .dv-per-page {
@@ -198,6 +316,7 @@
   background: #fff;
   cursor: pointer;
   outline: none;
+  height: 28px;
 }
 
 .dv-per-page:focus {
@@ -208,6 +327,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
 }
 
 .dv-page-btn {
@@ -221,6 +341,10 @@
   color: #374151;
   cursor: pointer;
   transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .dv-page-btn:hover:not(:disabled) {
@@ -229,12 +353,15 @@
 
 .dv-page-btn:disabled {
   opacity: 0.4;
+
   cursor: default;
 }
 
 .dv-page-active {
   background: #06b6d4 !important;
+
   color: #fff !important;
+
   border-color: #06b6d4 !important;
 }
 
@@ -252,15 +379,19 @@
   align-items: center;
   justify-content: center;
   z-index: 50;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .dv-modal {
   background: #fff;
   width: 440px;
-  max-width: 94vw;
+  max-width: 100%;
+  max-height: calc(100vh - 32px);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
-  overflow: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .dv-modal-header {
@@ -277,16 +408,33 @@
 }
 
 .dv-modal-close {
+  width: 32px;
+  height: 32px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
   background: none;
+
   border: none;
+
   font-size: 18px;
+
   color: #6b7280;
+
   cursor: pointer;
+
   line-height: 1;
+
+  border-radius: 5px;
 }
 
 .dv-modal-close:hover {
   color: #111;
+
+  background: #f3f4f6;
 }
 
 .dv-modal-body {
@@ -295,9 +443,13 @@
 
 .dv-label {
   display: block;
+
   font-size: 13px;
+
   font-weight: 600;
+
   color: #374151;
+
   margin-bottom: 6px;
 }
 
@@ -307,57 +459,90 @@
 
 .dv-required {
   color: #ef4444;
+
   margin-left: 2px;
 }
 
 .dv-input {
   width: 100%;
+
   padding: 10px 12px;
+
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   font-size: 13px;
+
   background: #f9fafb;
+
   outline: none;
+
   box-sizing: border-box;
 }
 
 .dv-input:focus {
   border-color: #06b6d4;
+
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15);
+
   background: #fff;
 }
 
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
 .dv-toggle-box {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
+  gap: 12px;
+
   border: 1px solid #e5e7eb;
+
   border-radius: 8px;
+
   padding: 12px 16px;
+
   background: #f9fafb;
+
+  box-sizing: border-box;
 }
 
 .dv-toggle-info {
   display: flex;
+
   flex-direction: column;
+
   gap: 2px;
+
+  min-width: 0;
 }
 
 .dv-toggle-title {
   font-size: 13px;
+
   font-weight: 600;
+
   color: #374151;
 }
 
 .dv-toggle-desc {
   font-size: 12px;
+
   color: #9ca3af;
 }
 
 .dv-switch {
   position: relative;
+
   width: 44px;
   height: 24px;
+
   flex-shrink: 0;
 }
 
@@ -367,49 +552,80 @@
 
 .dv-slider {
   position: absolute;
+
   inset: 0;
+
   background: #d1d5db;
+
   border-radius: 999px;
+
   transition: background 0.2s;
+
   cursor: pointer;
 }
 
 .dv-slider:before {
   content: "";
+
   position: absolute;
+
   width: 18px;
   height: 18px;
+
   left: 3px;
   top: 3px;
+
   background: #fff;
+
   border-radius: 50%;
+
   transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.dv-switch input:checked + .dv-slider {
+.dv-switch input:checked+.dv-slider {
   background: #06b6d4;
 }
 
-.dv-switch input:checked + .dv-slider:before {
+.dv-switch input:checked+.dv-slider:before {
   transform: translateX(20px);
 }
 
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
 .dv-modal-footer {
   display: flex;
+
   justify-content: flex-end;
-  gap: 12px;
+  align-items: center;
+
+  gap: 10px;
+
   padding: 0 24px 24px;
 }
 
 .dv-btn-batal {
-  padding: 9px 20px;
+  min-width: 80px;
+  height: 34px;
+
+  padding: 0 16px;
+
   border: 1px solid #d1d5db;
+
   border-radius: 6px;
+
   background: #f3f4f6;
+
   color: #374151;
-  font-size: 14px;
+
+  font-size: 12px;
+
   cursor: pointer;
+
   transition: background 0.15s;
 }
 
@@ -418,14 +634,25 @@
 }
 
 .dv-btn-simpan {
-  padding: 9px 24px;
+  min-width: 80px;
+  height: 34px;
+
+  padding: 0 18px;
+
   background: #06b6d4;
+
   color: #fff;
+
   border: none;
+
   border-radius: 6px;
-  font-size: 14px;
+
+  font-size: 12px;
+
   font-weight: 600;
+
   cursor: pointer;
+
   transition: background 0.15s;
 }
 
@@ -435,43 +662,490 @@
 
 .dv-btn-simpan:disabled {
   opacity: 0.5;
+
   cursor: not-allowed;
 }
 
-.dv-swal-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
 
-    margin-top: 24px;
+/* =========================================================
+   SWEETALERT BUTTON
+   ========================================================= */
+
+.dv-swal-actions {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 24px;
 }
 
 .dv-swal-confirm-btn,
 .dv-swal-cancel-btn {
-    min-width: 110px;
+  min-width: 110px;
 
-    height: 42px;
+  height: 42px;
 
-    border: none;
-    border-radius: 6px;
+  border: none;
 
-    font-size: 13px;
-    font-weight: 600;
+  border-radius: 6px;
 
-    cursor: pointer;
+  font-size: 13px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
 }
 
 .dv-swal-confirm-btn {
-    background: #06b6d4;
-    color: white;
+  background: #06b6d4;
+
+  color: white;
 }
 
 .dv-swal-cancel-btn {
-    background: #e5e7eb;
-    color: #374151;
+  background: #e5e7eb;
+
+  color: #374151;
+}
+
+
+/* =========================================================
+   TABLET
+   768px - 1024px
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .dv-page {
+    padding: 20px 0;
+  }
+
+  .dv-toolbar {
+    gap: 10px;
+  }
+
+  .dv-search-wrap {
+    width: 300px;
+  }
+
+  .dv-table {
+    width: 760px !important;
+
+    min-width: 760px !important;
+  }
+
+  .dv-btn-tambah {
+    width: 90px;
+
+    height: 32px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .dv-page {
+    width: 100%;
+
+    padding: 16px 0;
+
+    overflow: hidden;
+  }
+
+
+  /* ---------- Title ---------- */
+
+  .dv-title {
+    font-size: 18px;
+
+    margin-bottom: 14px;
+  }
+
+
+  /* ---------- Toolbar ---------- */
+
+  .dv-toolbar {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    justify-content: flex-start;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+  }
+
+  .dv-search-wrap {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .dv-search-input {
+    height: 38px;
+
+    font-size: 12px;
+  }
+
+  .dv-btn-tambah {
+    width: 90px !important;
+
+    height: 32px !important;
+
+    padding: 0 12px;
+
+    align-self: flex-end;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------- TABLE ---------- */
+
+  .dv-table-wrap {
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    border-radius: 8px;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dv-table {
+    display: table;
+
+    width: 760px !important;
+
+    min-width: 760px !important;
+
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .dv-th {
+    padding: 10px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+  .dv-td {
+    padding: 10px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+
+  /* ---------- STATUS ---------- */
+
+  .dv-chip {
+    padding: 4px 10px;
+
+    font-size: 10px;
+  }
+
+
+  /* ---------- ACTION ---------- */
+
+  .dv-btn-icon {
+    width: 32px;
+
+    height: 32px;
+
+    padding: 0;
+  }
+
+  .dv-btn-icon+.dv-btn-icon {
+    margin-left: 6px;
+  }
+
+  .dv-icon {
+    width: 17px;
+
+    height: 17px;
+  }
+
+
+  /* ---------- PAGINATION ---------- */
+
+  .dv-pagination {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    margin-top: 12px;
+  }
+
+  .dv-pagination-left {
+    justify-content: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    font-size: 11px;
+  }
+
+  .dv-pagination-controls {
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+  }
+
+  .dv-page-btn {
+    min-width: 30px;
+
+    height: 30px;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+  }
+
+  .dv-per-page {
+    height: 28px;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------- MODAL ---------- */
+
+  .dv-modal-overlay {
+    padding: 10px;
+  }
+
+  .dv-modal {
+    width: 100%;
+
+    max-width: 100%;
+
+    max-height: calc(100vh - 20px);
+
+    border-radius: 10px;
+  }
+
+  .dv-modal-header {
+    padding: 16px 16px 0;
+  }
+
+  .dv-modal-title {
+    font-size: 15px;
+  }
+
+  .dv-modal-body {
+    padding: 16px;
+  }
+
+  .dv-label {
+    font-size: 12px;
+  }
+
+  .dv-input {
+    padding: 9px 10px;
+
+    font-size: 12px;
+  }
+
+  .dv-toggle-box {
+    padding: 11px 12px;
+  }
+
+  .dv-toggle-title {
+    font-size: 12px;
+  }
+
+  .dv-toggle-desc {
+    font-size: 11px;
+  }
+
+  .dv-modal-footer {
+    padding: 0 16px 16px;
+
+    gap: 8px;
+  }
+
+  .dv-btn-batal,
+  .dv-btn-simpan {
+    min-width: 78px;
+
+    height: 34px;
+
+    font-size: 11px;
+  }
+
+
+  /* ---------- SWEETALERT ---------- */
+
+  .dv-swal-actions {
+    gap: 8px;
+
+    margin-top: 18px;
+  }
+
+  .dv-swal-confirm-btn,
+  .dv-swal-cancel-btn {
+    min-width: 90px;
+
+    height: 38px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   <= 480px
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .dv-page {
+    padding: 14px 0;
+  }
+
+  .dv-title {
+    font-size: 17px;
+
+    margin-bottom: 12px;
+  }
+
+  .dv-search-input {
+    height: 36px;
+
+    font-size: 11px;
+  }
+
+  .dv-btn-tambah {
+    width: 88px !important;
+
+    height: 32px !important;
+
+    font-size: 10px;
+  }
+
+
+  /* Table tetap lebar agar bisa di-scroll */
+  .dv-table {
+    width: 760px !important;
+
+    min-width: 760px !important;
+  }
+
+  .dv-th {
+    padding: 8px 10px;
+
+    font-size: 10px;
+  }
+
+  .dv-td {
+    padding: 8px 10px;
+
+    font-size: 10px;
+  }
+
+
+  /* Action tetap nyaman */
+  .dv-btn-icon {
+    width: 30px;
+
+    height: 30px;
+  }
+
+  .dv-btn-icon+.dv-btn-icon {
+    margin-left: 6px;
+  }
+
+  .dv-icon {
+    width: 16px;
+
+    height: 16px;
+  }
+
+
+  /* Pagination */
+  .dv-page-btn {
+    min-width: 29px;
+
+    height: 29px;
+
+    font-size: 10px;
+  }
+
+  .dv-per-page {
+    height: 27px;
+
+    font-size: 10px;
+  }
+
+
+  /* Modal */
+  .dv-modal-title {
+    font-size: 14px;
+  }
+
+  .dv-toggle-box {
+    align-items: flex-start;
+  }
+
+  .dv-btn-batal,
+  .dv-btn-simpan {
+    min-width: 76px;
+
+    height: 33px;
+
+    font-size: 10px;
+  }
+
+
+  /* SweetAlert */
+  .dv-swal-actions {
+    flex-wrap: wrap;
+
+    gap: 8px;
+  }
+
+  .dv-swal-confirm-btn,
+  .dv-swal-cancel-btn {
+    min-width: 85px;
+
+    height: 36px;
+
+    font-size: 10px;
+  }
 }

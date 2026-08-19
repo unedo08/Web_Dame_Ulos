@@ -3,68 +3,72 @@
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
-      <button @click="exportToExcel" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
+        placeholder="Cari Pengiriman Barang..." />
+      <button @click="exportToExcel" class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded">
         Export Excel
       </button>
     </div>
-    <table class="datatable w-full rounded-md overflow-hidden">
-      <thead class="bg-blue-100">
-        <tr>
-          <th class="text-left">No</th>
-          <th class="text-left">Tanggal</th>
-          <th class="text-left">Nama Akun</th>
-          <th class="text-left">Nama Penerima</th>
-          <th class="text-left">Telepon</th>
-          <th class="text-left">Ekspedisi</th>
-          <th class="text-left">Alamat</th>
-          <th class="text-left">Status Kirim</th>
-          <th class="text-left">Barang</th>
-          <th class="text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-          <td>{{ index + 1 }}</td>
-          <td>{{ formatTanggal(row.created_at) }}</td>
-          <td>{{ row.pengirimanBarang_akun_penerima }}</td>
-          <td>{{ row.pengirimanBarang_nama_penerima }}</td>
-          <td>{{ row.pengirimanBarang_no_telepon }}</td>
-          <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
-          <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
-          <td>
-            <span class="text-status px-1 py-1 rounded-full font-semibold" :class="statusChipClass(row.status_pengiriman)">
-              {{ row.status_pengiriman || '-' }}
-            </span>
-          </td>
-          <td>
-            <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
-          </td>
-          <td>
-            <div class="flex gap-2">
-              <template v-if="row.status_pengiriman !== 'DONE'">
-                <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
-                  Edit
-                </button>
+    <div class="packaging-table-wrapper">
+      <table class="datatable rounded-md overflow-hidden">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="text-left">No</th>
+            <th class="text-left">Tanggal</th>
+            <th class="text-left">Nama Akun</th>
+            <th class="text-left">Nama Penerima</th>
+            <th class="text-left">Telepon</th>
+            <th class="text-left">Ekspedisi</th>
+            <th class="text-left">Alamat</th>
+            <th class="text-left">Status Kirim</th>
+            <th class="text-left">Barang</th>
+            <th class="text-left">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <td>{{ index + 1 }}</td>
+            <td>{{ formatTanggal(row.created_at) }}</td>
+            <td>{{ row.pengirimanBarang_akun_penerima }}</td>
+            <td>{{ row.pengirimanBarang_nama_penerima }}</td>
+            <td>{{ row.pengirimanBarang_no_telepon }}</td>
+            <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
+            <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
+            <td>
+              <span class="text-status px-1 py-1 rounded-full font-semibold"
+                :class="statusChipClass(row.status_pengiriman)">
+                {{ row.status_pengiriman || '-' }}
+              </span>
+            </td>
+            <td>
+              <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
+            </td>
+            <td>
+              <div class="flex gap-2">
+                <template v-if="row.status_pengiriman !== 'DONE'">
+                  <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
+                    Edit
+                  </button>
 
-                <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
-                  Selesai
+                  <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
+                    Selesai
+                  </button>
+                </template>
+                <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                  @click="deleteData(row.pengirimanBarang_id)">
+                  Delete
                 </button>
-              </template>
-              <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                @click="deleteData(row.pengirimanBarang_id)">
-                Delete
-              </button>
-              <button v-if="row.status_pengiriman === 'DONE'" class="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
-                @click="printLabel(row)">
-                Print
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <button v-if="row.status_pengiriman === 'DONE'"
+                  class="px-2 py-1 bg-indigo-600 text-white rounded text-xs" @click="printLabel(row)">
+                  Print
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div class="flex justify-between items-center mt-8 mb-4 text-xs">
       <div>
@@ -142,7 +146,7 @@ const openModalEdit = async (row) => {
   selectedPengiriman.value = row;
   const trx_id = row.pengirimanBarang_transaksi_id;
   try {
-    
+
     const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
 
     if (!res.data.data || res.data.data.length === 0) {
@@ -184,7 +188,7 @@ const deleteData = async (id) => {
   });
 
   if (!c.isConfirmed) return;
-  
+
   await $api.delete(`${url}/api/pengiriman-barang/${id}`);
   fetchData();
 
@@ -193,7 +197,7 @@ const deleteData = async (id) => {
 
 const selesaikanPackaging = async (row) => {
   try {
-    
+
     const trxId = row.pengirimanBarang_transaksi_id;
     const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
     const barangList = res.data.data;
@@ -231,7 +235,7 @@ const selesaikanPackaging = async (row) => {
 
 const exportToExcel = async () => {
   try {
-    
+
     Swal.fire({
       title: "Menyiapkan data…",
       text: "Mohon tunggu sebentar",
@@ -549,17 +553,272 @@ const formatCurrency = (val) =>
   height: 34px;
 }
 
+.packaging-table-wrapper {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.datatable {
+  width: 100%;
+  min-width: 1100px;
+  max-width: none;
+
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
 .datatable th,
 .datatable td {
-  padding: 10px;
+  padding: 10px 12px;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .datatable th {
   background-color: #f4f4f4;
 }
 
-.text-status{
+.text-status {
   font-size: 8px !important;
+}
+
+.packaging-export-btn {
+  width: 100px !important;
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* tablet  */
+@media (max-width: 1024px) {
+  .packaging-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+
+  .search-box {
+    width: 300px;
+  }
+
+  .packaging-export-btn {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .judul {
+    font-size: 18px !important;
+  }
+
+  .flex.justify-between.items-center.mb-4 {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+
+    height: 38px;
+    box-sizing: border-box;
+
+    margin-bottom: 0 !important;
+
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+
+  /* Export tetap kecil */
+  .packaging-export-btn {
+    width: 100px !important;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 11px;
+    align-self: flex-end;
+  }
+
+
+  /* =========================
+     TABLE SCROLL
+     ========================= */
+
+  .packaging-table-wrapper {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 11px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+
+  /* =========================
+     ACTION BUTTON
+     ========================= */
+
+  .datatable td .flex {
+    display: flex;
+
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .datatable td button {
+    flex: 0 0 auto;
+
+    padding: 5px 8px;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+  }
+
+
+  /* =========================
+     STATUS
+     ========================= */
+
+  .text-status {
+    font-size: 9px !important;
+    white-space: nowrap;
+  }
+
+
+  /* =========================
+     PAGINATION
+     ========================= */
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 10px;
+
+    margin-top: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .judul {
+    font-size: 17px !important;
+  }
+
+
+  .search-box {
+    height: 36px;
+
+    padding: 8px 10px;
+
+    font-size: 11px;
+  }
+
+
+  .packaging-export-btn {
+    width: 95px !important;
+    height: 31px;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+
+  /* Table tetap lebar */
+  .datatable {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+
+  /* Action buttons */
+  .datatable td button {
+    padding: 4px 7px;
+    font-size: 10px;
+  }
 }
 </style>

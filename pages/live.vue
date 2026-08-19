@@ -30,70 +30,72 @@
           </button>
         </div>
       </div>
-      <table class="datatable w-full rounded-md overflow-hidden">
-        <thead class="bg-blue-100">
-          <tr>
-            <!-- <th>No</th> -->
-            <th class="px-4 py-2 text-left">Nama Akun</th>
-            <th class="px-4 py-2 text-left">Tanggal</th>
-            <th class="px-4 py-2 text-left">Kode Barang</th>
-            <th class="px-4 py-2 text-left">Nama Barang</th>
-            <th class="px-4 py-2 text-left">Nama Platform</th>
-            <th class="px-4 py-2 text-left">Harga Terjual</th>
-            <th class="px-4 py-2 text-left">Total Harga Terjual (Akun)</th>
-            <th class="px-4 py-2 text-left">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(items, akun) in paginatedGroupedData" :key="akun">
-            <!-- :key="pengiriman.pengirimanBarang_id" -->
-            <tr v-for="(pengiriman, index) in items" :class="[
-              index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
-              index === items.length - 1 ? 'border-b-2 border-gray-200' : '',
-            ]">
-              <!-- <td>{{ index + 1 }}</td> -->
-              <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
-                {{ akun }}
-              </td>
-              <td class="px-4 py-2">
-                {{ formatTanggal(pengiriman.created_at) }}
-              </td>
-
-              <td class="px-4 py-2">
-                {{ pengiriman.code_nama }}
-              </td>
-
-              <td class="px-4 py-2">
-                {{ pengiriman.barangentry_nama }}
-              </td>
-              <td class="px-4 py-2">
-                {{ capitalizeFirst(pengiriman.live_order_platform) }}
-              </td>
-              <td class="px-4 py-2">
-                {{ formatCurrency(pengiriman.live_order_harga_terjual) }}
-              </td>
-
-              <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
-                {{ formatCurrency(totalHargaPerAkun[akun]) }}
-              </td>
-              <td class="px-4 py-2">
-                <div class="flex space-x-2">
-                  <button
-                    class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
-                    @click="editOrderLive(pengiriman.live_order_id)">
-                    Edit
-                  </button>
-                  <button
-                    class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
-                    @click="deleteOrder(pengiriman.live_order_id)">
-                    Delete
-                  </button>
-                </div>
-              </td>
+      <div class="live-table-wrapper">
+        <table class="datatable rounded-md overflow-hidden">
+          <thead class="bg-blue-100">
+            <tr>
+              <!-- <th>No</th> -->
+              <th class="px-4 py-2 text-left">Nama Akun</th>
+              <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Kode Barang</th>
+              <th class="px-4 py-2 text-left">Nama Barang</th>
+              <th class="px-4 py-2 text-left">Nama Platform</th>
+              <th class="px-4 py-2 text-left">Harga Terjual</th>
+              <th class="px-4 py-2 text-left">Total Harga Terjual (Akun)</th>
+              <th class="px-4 py-2 text-left">Aksi</th>
             </tr>
-          </template>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <template v-for="(items, akun) in paginatedGroupedData" :key="akun">
+              <!-- :key="pengiriman.pengirimanBarang_id" -->
+              <tr v-for="(pengiriman, index) in items" :class="[
+                index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
+                index === items.length - 1 ? 'border-b-2 border-gray-200' : '',
+              ]">
+                <!-- <td>{{ index + 1 }}</td> -->
+                <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
+                  {{ akun }}
+                </td>
+                <td class="px-4 py-2">
+                  {{ formatTanggal(pengiriman.created_at) }}
+                </td>
+
+                <td class="px-4 py-2">
+                  {{ pengiriman.code_nama }}
+                </td>
+
+                <td class="px-4 py-2">
+                  {{ pengiriman.barangentry_nama }}
+                </td>
+                <td class="px-4 py-2">
+                  {{ capitalizeFirst(pengiriman.live_order_platform) }}
+                </td>
+                <td class="px-4 py-2">
+                  {{ formatCurrency(pengiriman.live_order_harga_terjual) }}
+                </td>
+
+                <td class="px-4 py-2" v-if="index === 0" :rowspan="items.length">
+                  {{ formatCurrency(totalHargaPerAkun[akun]) }}
+                </td>
+                <td class="px-4 py-2">
+                  <div class="flex space-x-2">
+                    <button
+                      class="flex items-center gap-1 px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-[10px] text-s"
+                      @click="editOrderLive(pengiriman.live_order_id)">
+                      Edit
+                    </button>
+                    <button
+                      class="flex items-center gap-1 px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-[10px] text-s"
+                      @click="deleteOrder(pengiriman.live_order_id)">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
       <div class="flex justify-between items-center mt-8 mb-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
@@ -132,29 +134,31 @@
     <div class="mx-auto" v-show="activeTab === 'transaction'">
       <br />
       <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
-      <table class="datatable">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Nama Akun</th>
-            <th>Jumlah</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id">
-            <td>{{ index + 1 }}</td>
-            <td>{{ pengiriman.live_order_nama_akun }}</td>
-            <td>{{ pengiriman.jumlah }}</td>
-            <td>
-              <button class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
-                @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)">
-                Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="live-table-wrapper">
+        <table class="datatable rounded-md overflow-hidden">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Akun</th>
+              <th>Jumlah</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ pengiriman.live_order_nama_akun }}</td>
+              <td>{{ pengiriman.jumlah }}</td>
+              <td>
+                <button class="bg-green-500 hover:bg-green-800 text-white px-3 py-1 rounded-md"
+                  @click="openModalEditTransaksi(pengiriman.live_order_nama_akun)">
+                  Edit
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="flex justify-between items-center mt-8 mb-4 text-xs">
         <div class="flex items-center space-x-2">
           <label for="perPage">Tampilkan:</label>
@@ -786,18 +790,32 @@ watch(isModalOpenAddOrder, async (val) => {
   height: 34px;
 }
 
+.live-table-wrapper {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 .datatable {
   width: 100%;
+  min-width: 1000px;
+  max-width: none;
   border-collapse: collapse;
+  table-layout: auto;
   margin-top: 20px;
 }
 
 .datatable th,
 .datatable td {
   padding: 10px;
-  /* border: 1px solid #ddd; */
   text-align: left;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .datatable th {
@@ -904,5 +922,228 @@ h3 {
 
 .text-red-500 {
   color: #FF5757;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .live-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+  }
+
+  .search-box {
+    width: 300px;
+  }
+
+  .btn-add {
+    width: 104px !important;
+    height: 30px !important;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .judul {
+    font-size: 18px !important;
+  }
+
+  .flex.space-x-6 {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 18px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .flex.space-x-6::-webkit-scrollbar {
+    display: none;
+  }
+
+  .flex.space-x-6 button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .flex.items-center.justify-between.pt-2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+    height: 38px;
+    box-sizing: border-box;
+    margin-bottom: 4px !important;
+  }
+
+  .btn-add {
+    width: auto !important;
+    min-width: 68px;
+    height: 30px !important;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .flex.items-center.justify-between.pt-2 > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .live-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 11px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .datatable td .flex {
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .datatable td button {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs
+    > div:first-child {
+    justify-content: flex-start;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs
+    > div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs
+    button {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+
+  .fixed.inset-0 {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0 > .bg-white.rounded-lg.shadow-lg {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 16px !important;
+  }
+
+  .fixed.inset-0 h3 {
+    font-size: 15px;
+  }
+
+  .fixed.inset-0 input,
+  .fixed.inset-0 select {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+
+  .fixed.inset-0 .flex.justify-end button {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ======================================================== */
+@media (max-width: 480px) {
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .search-box {
+    height: 36px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .btn-add {
+    min-width: 64px;
+    height: 29px !important;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .datatable {
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .datatable td button {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
 }
 </style>

@@ -30,7 +30,6 @@
           <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
-          <br />
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
             @click="openTambahBarang()">
             + Desc
@@ -43,8 +42,8 @@
         </div>
       </div>
 
-      <div class="w-full">
-        <table class="datatable w-full rounded-md overflow-hidden text-sm">
+      <div class="datatable-wrapper">
+        <table class="datatable rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
@@ -102,39 +101,38 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+            <option value="all">All</option>
+          </select>
+        </div>
 
-        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-          <div class="flex items-center space-x-2">
-            <label for="perPage">Tampilkan:</label>
-            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-              <option :value="5">5</option>
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-              <option value="all">All</option>
-            </select>
-          </div>
+        <div class="flex items-center space-x-2">
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
+            Sebelumnya
+          </button>
 
-          <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-              @click="currentPage--">
-              Sebelumnya
-            </button>
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]" :disabled="page === '...'">
+            {{ page }}
+          </button>
 
-            <button v-for="(page, index) in paginatedPages" :key="index"
-              @click="typeof page === 'number' && (currentPage = page)" :class="[
-                'px-3 py-1 rounded text-xs',
-                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-                page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]" :disabled="page === '...'">
-              {{ page }}
-            </button>
-
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages" @click="currentPage++">
-              Selanjutnya
-            </button>
-          </div>
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
+            Selanjutnya
+          </button>
         </div>
       </div>
     </div>
@@ -160,8 +158,8 @@
         </div>
       </div>
 
-      <div class="w-full">
-        <table class="datatable w-full rounded-md overflow-hidden text-sm">
+      <div class="datatable-wrapper">
+        <table class="datatable rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
@@ -214,15 +212,12 @@
                 <div class="flex space-x-3">
                   <button class="er-btn-view" @click="openRiwayat(barang.barangentry_id)">View</button>
                   <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
-                  <button
-                    :class="['er-btn-edit', { 'er-btn-edit--disabled': barang.barangentry_jumlah_barang <= 0 }]"
+                  <button :class="['er-btn-edit', { 'er-btn-edit--disabled': barang.barangentry_jumlah_barang <= 0 }]"
                     :disabled="barang.barangentry_jumlah_barang <= 0"
-                    @click="barang.barangentry_jumlah_barang > 0 && openModalEditBarang(barang.barangentry_id)"
-                  >
+                    @click="barang.barangentry_jumlah_barang > 0 && openModalEditBarang(barang.barangentry_id)">
                     Edit
                   </button>
-                  <button class="er-btn-delete"
-                    @click="deleteBarang(barang.barangentry_id)">
+                  <button class="er-btn-delete" @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
                 </div>
@@ -230,39 +225,38 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+            <option value="all">All</option>
+          </select>
+        </div>
 
-        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-          <div class="flex items-center space-x-2">
-            <label for="perPage">Tampilkan:</label>
-            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-              <option :value="5">5</option>
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-              <option value="all">All</option>
-            </select>
-          </div>
+        <div class="flex items-center space-x-2">
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
+            Sebelumnya
+          </button>
 
-          <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-              @click="currentPage--">
-              Sebelumnya
-            </button>
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]" :disabled="page === '...'">
+            {{ page }}
+          </button>
 
-            <button v-for="(page, index) in paginatedPages" :key="index"
-              @click="typeof page === 'number' && (currentPage = page)" :class="[
-                'px-3 py-1 rounded text-xs',
-                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-                page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]" :disabled="page === '...'">
-              {{ page }}
-            </button>
-
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages" @click="currentPage++">
-              Selanjutnya
-            </button>
-          </div>
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
+            Selanjutnya
+          </button>
         </div>
       </div>
     </div>
@@ -281,8 +275,8 @@
         </div>
       </div>
 
-      <div class="w-full">
-        <table class="datatable w-full rounded-md overflow-hidden text-sm">
+      <div class="datatable-wrapper">
+        <table class="datatable rounded-md overflow-hidden text-sm">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
@@ -371,39 +365,38 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <label for="perPage">Tampilkan:</label>
+          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
+            <option :value="5">5</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+            <option value="all">All</option>
+          </select>
+        </div>
 
-        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-          <div class="flex items-center space-x-2">
-            <label for="perPage">Tampilkan:</label>
-            <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-              <option :value="5">5</option>
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-              <option value="all">All</option>
-            </select>
-          </div>
+        <div class="flex items-center space-x-2">
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
+            @click="currentPage--">
+            Sebelumnya
+          </button>
 
-          <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-              @click="currentPage--">
-              Sebelumnya
-            </button>
+          <button v-for="(page, index) in paginatedPages" :key="index"
+            @click="typeof page === 'number' && (currentPage = page)" :class="[
+              'px-3 py-1 rounded text-xs',
+              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
+              page === '...' ? 'cursor-default' : 'cursor-pointer',
+            ]" :disabled="page === '...'">
+            {{ page }}
+          </button>
 
-            <button v-for="(page, index) in paginatedPages" :key="index"
-              @click="typeof page === 'number' && (currentPage = page)" :class="[
-                'px-3 py-1 rounded text-xs',
-                currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-                page === '...' ? 'cursor-default' : 'cursor-pointer',
-              ]" :disabled="page === '...'">
-              {{ page }}
-            </button>
-
-            <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs"
-              :disabled="currentPage === totalPages" @click="currentPage++">
-              Selanjutnya
-            </button>
-          </div>
+          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
+            @click="currentPage++">
+            Selanjutnya
+          </button>
         </div>
       </div>
     </div>
@@ -804,8 +797,8 @@ const selectedId = ref(null);
 const showSendModal = ref(false);
 
 const showRiwayatModal = ref(false);
-const riwayatLoading  = ref(false);
-const riwayatData     = ref([]);
+const riwayatLoading = ref(false);
+const riwayatData = ref([]);
 
 const barangDatabase = ref([]);
 const listBarang = ref([]);
@@ -1760,7 +1753,7 @@ async function printPreOrder(id) {
 
   console.log('dsdd', data);
   printData(data, barangEntry, code_nama);
-  
+
 
 }
 
@@ -2012,6 +2005,7 @@ watch(activeTab, () => {
 
 <style>
 @import '~/assets/css/entry-riwayat.css';
+
 .judul {
   font-size: 20px;
 }
@@ -2028,12 +2022,26 @@ watch(activeTab, () => {
   height: 34px;
 }
 
+.datatable-wrapper {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 .datatable {
   width: 100%;
+  min-width: 1100px;
+  max-width: none;
   border-collapse: collapse;
   table-layout: auto;
   margin-top: 20px;
-  margin-left: 0 !important;
 }
 
 .datatable th,
@@ -2041,8 +2049,8 @@ watch(activeTab, () => {
   padding: 10px;
   text-align: left;
   font-size: 12px;
-  word-wrap: break-word;
-  white-space: normal;
+  white-space: nowrap;
+  word-wrap: normal;
 }
 
 .datatable th {
@@ -2106,5 +2114,236 @@ button {
 
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================================
+   TABLET
+   768px - 1024px
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .datatable-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   <= 767px
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .judul {
+    font-size: 18px !important;
+  }
+
+  .flex.space-x-6 {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+
+    gap: 18px;
+    padding-bottom: 4px;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .flex.space-x-6::-webkit-scrollbar {
+    display: none;
+  }
+
+  .flex.space-x-6 button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .flex.items-center.justify-between.pt-2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+
+    height: 38px;
+    box-sizing: border-box;
+
+    margin-bottom: 4px !important;
+  }
+
+  .flex.flex-wrap.justify-end.gap-4 {
+    width: 100%;
+    justify-content: flex-end;
+
+    gap: 6px;
+  }
+
+  .btn-add,
+  .btn-print {
+    width: auto !important;
+    min-width: 60px;
+    height: 30px !important;
+
+    padding: 0 10px;
+
+    font-size: 11px;
+  }
+
+  .datatable-wrapper {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+  .datatable td .flex {
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .datatable td button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 10px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:first-child {
+    justify-content: flex-start;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .fixed.inset-0 {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0>div {
+    width: 100% !important;
+    max-width: none !important;
+
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+
+    box-sizing: border-box;
+    padding: 16px !important;
+  }
+
+  /* Form 2 kolom -> 1 kolom */
+  .fixed.inset-0 .grid.grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tombol modal */
+  .fixed.inset-0 .flex.justify-end {
+    gap: 8px;
+  }
+
+  .fixed.inset-0 .flex.justify-end button {
+    font-size: 12px;
+    padding: 9px 14px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   <= 480px
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .search-box {
+    height: 36px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .btn-add,
+  .btn-print {
+    min-width: 58px;
+    height: 29px !important;
+
+    padding: 0 9px;
+
+    font-size: 10px;
+  }
+
+  .datatable {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+    font-size: 10px;
+
+    white-space: nowrap;
+  }
 }
 </style>

@@ -4,72 +4,74 @@
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
     <div class="flex items-center justify-end">
-      <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[100px] h-[25px]"
-        @click="openModal">
+      <button class="btn-add" @click="openModal">
         + Tambah Acara
       </button>
     </div>
 
     <!-- Product Table -->
     <div>
-      <table class="datatable w-full rounded-md overflow-hidde">
-        <thead class="bg-blue-100">
-          <tr>
-            <th class="px-4 py-2 text-left">Nama Acara</th>
-            <th class="px-4 py-2 text-left">Jumlah Barang</th>
-            <th class="px-4 py-2 text-left">Modal Barang</th>
-            <th class="px-4 py-2 text-left">Harga Net</th>
-            <th class="px-4 py-2 text-left">Harga Price Tag</th>
-            <th class="px-4 py-2 text-left">Keterangan</th>
-            <th class="px-4 py-2 text-left">Status</th>
-            <th class="px-4 py-2 text-left">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="acara in pagination" :key="acara.acara_id" class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
-            <td class="px-4 py-2">{{ acara.acara_nama }}</td>
-            <td class="px-4 py-2">{{ acara.acara_jumlahbarang }}</td>
-            <td class="px-4 py-2">
-              {{ formatRupiah(acara.acara_modalbarang) }}
-            </td>
-            <td class="px-4 py-2">
-              {{ formatRupiah(acara.acara_harganetbarang) }}
-            </td>
-            <td class="px-4 py-2">
-              {{ formatRupiah(acara.acara_hargapricetagbarang) }}
-            </td>
-            <td class="px-4 py-2">{{ acara.acara_keterangan }}</td>
-            <td class="px-4 py-2">{{ acara.acara_status }}</td>
-            <td class="space-x-2 px-4 py-2">
-              <template v-if="acara.acara_status !== 'Selesai'">
-                <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
-                  <PlusIcon class="w-5 h-5" />
-                </button>
+      <div class="acara-table-wrapper">
+        <table class="datatable rounded-md overflow-hidden">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-4 py-2 text-left">Nama Acara</th>
+              <th class="px-4 py-2 text-left">Jumlah Barang</th>
+              <th class="px-4 py-2 text-left">Modal Barang</th>
+              <th class="px-4 py-2 text-left">Harga Net</th>
+              <th class="px-4 py-2 text-left">Harga Price Tag</th>
+              <th class="px-4 py-2 text-left">Keterangan</th>
+              <th class="px-4 py-2 text-left">Status</th>
+              <th class="px-4 py-2 text-left">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="acara in pagination" :key="acara.acara_id"
+              class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
+              <td class="px-4 py-2">{{ acara.acara_nama }}</td>
+              <td class="px-4 py-2">{{ acara.acara_jumlahbarang }}</td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(acara.acara_modalbarang) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(acara.acara_harganetbarang) }}
+              </td>
+              <td class="px-4 py-2">
+                {{ formatRupiah(acara.acara_hargapricetagbarang) }}
+              </td>
+              <td class="px-4 py-2">{{ acara.acara_keterangan }}</td>
+              <td class="px-4 py-2">{{ acara.acara_status }}</td>
+              <td class="space-x-2 px-4 py-2">
+                <template v-if="acara.acara_status !== 'Selesai'">
+                  <button class="text-blue-500 hover:text-blue-700" @click="editItem(acara)" title="Edit">
+                    <PlusIcon class="w-5 h-5" />
+                  </button>
 
-                <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
-                  <CheckCircleIcon class="w-5 h-5" />
-                </button>
+                  <button class="text-green-500 hover:text-green-700" @click="markAsDone(acara)" title="Selesai">
+                    <CheckCircleIcon class="w-5 h-5" />
+                  </button>
 
-                <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
-                  title="Export">
-                  <ArrowDownTrayIcon class="w-5 h-5" />
-                </button>
+                  <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
+                    title="Export">
+                    <ArrowDownTrayIcon class="w-5 h-5" />
+                  </button>
 
-                <button class="text-red-500 hover:text-red-700" @click="deleteProduct(acara.acara_id, acara.acara_nama)"
-                  title="Delete">
-                  <TrashIcon class="w-5 h-5" />
-                </button>
-              </template>
-              <template v-else>
-                <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
-                  title="Export">
-                  <ArrowDownTrayIcon class="w-5 h-5" />
-                </button>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  <button class="text-red-500 hover:text-red-700"
+                    @click="deleteProduct(acara.acara_id, acara.acara_nama)" title="Delete">
+                    <TrashIcon class="w-5 h-5" />
+                  </button>
+                </template>
+                <template v-else>
+                  <button class="text-yellow-500 hover:text-yellow-700" @click="exportItem(acara.acara_id)"
+                    title="Export">
+                    <ArrowDownTrayIcon class="w-5 h-5" />
+                  </button>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="flex justify-between items-center mt-8 mb-4 text-xs">
         <div class="flex items-center space-x-2">
@@ -115,7 +117,7 @@
             <label for="acara_nama" class="block text-sm font-medium text-gray-700">Nama Acara <span
                 class="required">*</span></label>
             <input v-model="newProduct.acara_nama" type="text" id="acara_nama"
-              class="mt-1 block w-full border border-gray-300 pl-3 border-gray bg-[#FDFDFF] rounded-md shadow-sm w-[382px] h-[41px]"
+              class="mt-1 block w-full border border-gray-300 pl-3 bg-[#FDFDFF] rounded-md shadow-sm h-[41px]"
               placeholder="Masukkan Nama Acara" required />
             <p v-if="errors.acara_nama" class="text-red-500 text-sm mt-1">
               {{ errors.acara_nama }}
@@ -191,30 +193,32 @@
           Tambah ke List
         </button>
 
-        <table class="datatable w-full mb-4">
-          <thead class="bg-blue-100">
-            <tr>
-              <th>Kode</th>
-              <th>Modal</th>
-              <th>Harga Net</th>
-              <th>Price Tag</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in listBarangAcara" :key="item.barangentry_id">
-              <td>{{ item.code_nama }}</td>
-              <td>{{ formatRupiah(item.barangentry_modal) }}</td>
-              <td>{{ formatRupiah(item.barangentry_harga_net) }}</td>
-              <td>{{ formatRupiah(item.barangentry_price_tag) }}</td>
-              <td>
-                <button class="text-red-500" @click="removeItem(item.barangentry_id)">
-                  <TrashIcon class="w-5 h-5" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="acara-modal-table-wrapper">
+          <table class="datatable mb-4">
+            <thead class="bg-blue-100">
+              <tr>
+                <th>Kode</th>
+                <th>Modal</th>
+                <th>Harga Net</th>
+                <th>Price Tag</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in listBarangAcara" :key="item.barangentry_id">
+                <td>{{ item.code_nama }}</td>
+                <td>{{ formatRupiah(item.barangentry_modal) }}</td>
+                <td>{{ formatRupiah(item.barangentry_harga_net) }}</td>
+                <td>{{ formatRupiah(item.barangentry_price_tag) }}</td>
+                <td>
+                  <button class="text-red-500" @click="removeItem(item.barangentry_id)">
+                    <TrashIcon class="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="flex justify-end gap-2">
           <button @click="closeEditModal" class="px-4 py-2 bg-gray-300 rounded">
@@ -727,18 +731,39 @@ const handlePrint = () => {
   height: 34px;
 }
 
+.acara-table-wrapper {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 .datatable {
   width: 100%;
+  min-width: 900px;
+  max-width: none;
+
   border-collapse: collapse;
+  table-layout: auto;
+
   margin-top: 20px;
 }
 
 .datatable th,
 .datatable td {
-  padding: 10px;
-  /* border: 1px solid #ddd; */
+  padding: 10px 12px;
+
   text-align: left;
   font-size: 12px;
+
+  white-space: nowrap;
 }
 
 .datatable th {
@@ -746,11 +771,20 @@ const handlePrint = () => {
 }
 
 .btn-add {
+  width: 115px;
+  height: 32px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #3d8bfd;
   color: white;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .btn-add:hover {
@@ -764,5 +798,226 @@ const handlePrint = () => {
 
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.acara-modal-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.acara-modal-table-wrapper .datatable {
+  min-width: 600px;
+  margin-top: 0;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .acara-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 900px !important;
+    min-width: 900px !important;
+    max-width: none !important;
+  }
+
+  .btn-add {
+    width: 115px;
+    height: 32px;
+
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+@media (max-width: 767px) {
+  .judul {
+    font-size: 18px !important;
+  }
+
+  .flex.items-center.justify-end {
+    width: 100%;
+  }
+
+  .btn-add {
+    width: 115px !important;
+    height: 34px !important;
+    padding: 0 10px;
+    font-size: 11px;
+    align-self: flex-end;
+  }
+
+  .acara-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+    width: 900px !important;
+    min-width: 900px !important;
+    max-width: none !important;
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 11px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .datatable td:last-child {
+    white-space: nowrap;
+  }
+
+  .datatable td:last-child button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    margin-right: 3px;
+  }
+
+  .datatable td:last-child svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:first-child {
+    justify-content: flex-start;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .fixed.inset-0 {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0>.bg-white {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 16px !important;
+  }
+
+  .fixed.inset-0 h3 {
+    font-size: 16px;
+  }
+
+  .fixed.inset-0 input,
+  .fixed.inset-0 textarea {
+    width: 100% !important;
+    box-sizing: border-box;
+    font-size: 12px;
+  }
+
+  .fixed.inset-0 .flex.justify-end {
+    gap: 8px;
+  }
+
+  .fixed.inset-0 .flex.justify-end button {
+    margin-right: 0;
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  .acara-modal-table-wrapper .datatable {
+    width: 600px !important;
+    min-width: 600px !important;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .btn-add {
+    width: 110px !important;
+    height: 32px !important;
+
+    font-size: 10px;
+  }
+
+
+  .datatable {
+    width: 900px !important;
+    min-width: 900px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+  }
+
+
+  /* Action */
+  .datatable td:last-child button {
+    width: 30px;
+    height: 30px;
+
+    padding: 4px;
+  }
+
+  .datatable td:last-child svg {
+    width: 17px;
+    height: 17px;
+  }
 }
 </style>

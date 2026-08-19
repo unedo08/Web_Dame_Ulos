@@ -1,14 +1,13 @@
-/* =========================================
-   Customer List Page — customer/index.vue
-   ========================================= */
-
-/* ---------- Layout ---------- */
 .cl-page {
+  width: 100%;
+  max-width: 100%;
+
+  box-sizing: border-box;
+
   font-family: 'Nunito', sans-serif;
   color: #111827;
 }
 
-/* ---------- Title ---------- */
 .cl-title {
   font-size: 20px;
   font-weight: 700;
@@ -16,35 +15,48 @@
   margin-bottom: 20px;
 }
 
-/* ---------- Search ---------- */
 .cl-search-wrap {
   position: relative;
-  margin-bottom: 20px;
+
+  width: 100%;
   max-width: 460px;
+
+  margin-bottom: 20px;
 }
 
 .cl-search-icon {
   position: absolute;
+
   left: 14px;
   top: 50%;
+
   transform: translateY(-50%);
+
   width: 16px;
   height: 16px;
+
   color: #9CA3AF;
+
   pointer-events: none;
 }
 
 .cl-search-input {
   width: 100%;
+
   padding: 9px 16px 9px 40px;
+
   border: 1px solid #E5E7EB;
   border-radius: 999px;
+
   font-size: 13px;
   font-family: 'Nunito', sans-serif;
+
   color: #374151;
   background: #fff;
+
   outline: none;
   box-sizing: border-box;
+
   transition: border-color 0.15s;
 }
 
@@ -56,36 +68,68 @@
   color: #9CA3AF;
 }
 
-/* ---------- Table ---------- */
+
+/* =========================================================
+   TABLE WRAPPER
+   Table saja yang horizontal scroll
+   ========================================================= */
+
 .cl-table-wrap {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   overflow-x: auto;
+  overflow-y: hidden;
+
   border: 1px solid #E5E7EB;
   border-radius: 12px;
+
   background: #fff;
+
   margin-bottom: 16px;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
 }
+
+
+/* ---------- Table ---------- */
 
 .cl-table {
   width: 100%;
+  min-width: 1100px;
+  max-width: none;
+
   border-collapse: collapse;
+
   font-size: 13px;
-  min-width: 860px;
+
+  table-layout: auto;
 }
 
-/* Header */
+
+/* ---------- Header ---------- */
+
 .cl-table thead tr {
   background: #F3F4F6;
 }
 
 .cl-table th {
   padding: 12px 14px;
+
   text-align: left;
+
   font-size: 12px;
   font-weight: 600;
+
   color: #6B7280;
+
   white-space: nowrap;
+
   border-bottom: 1px solid #E5E7EB;
+
   user-select: none;
 }
 
@@ -99,15 +143,22 @@
 
 .cl-th-inner {
   display: flex;
+
   align-items: center;
+
   gap: 4px;
+
+  white-space: nowrap;
 }
 
 .cl-sort-icon {
   display: flex;
   flex-direction: column;
+
   gap: 1px;
+
   opacity: 0.45;
+
   flex-shrink: 0;
 }
 
@@ -121,9 +172,12 @@
   height: 8px;
 }
 
-/* Rows */
+
+/* ---------- Rows ---------- */
+
 .cl-table tbody tr {
   border-bottom: 1px solid #F3F4F6;
+
   transition: background 0.1s;
 }
 
@@ -136,36 +190,62 @@
 }
 
 .cl-table td {
-  padding: 14px 14px;
+  padding: 14px;
+
   color: #374151;
+
   vertical-align: middle;
+
+  white-space: nowrap;
 }
 
 .cl-table td.cl-col-num {
   color: #9CA3AF;
+
   font-size: 12px;
+
   width: 36px;
+
   text-align: center;
 }
 
 .cl-table td.cl-col-total {
-  /* font-weight: 600; */
   color: #111827;
 }
 
+
 /* ---------- Buttons ---------- */
+
 .cl-btn {
-  display: inline-block;
-  padding: 5px 16px;
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 50px;
+  height: 30px;
+
+  padding: 0 12px;
+
   border-radius: 999px;
-  font-size: 12px;
+
+  font-size: 11px;
   font-weight: 600;
+
   font-family: 'Nunito', sans-serif;
+
   border: none;
+
   cursor: pointer;
   text-decoration: none;
+
   transition: opacity 0.15s;
-  line-height: 1.4;
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
 .cl-btn:hover {
@@ -184,35 +264,66 @@
 
 .cl-actions {
   display: flex;
+
   align-items: center;
-  gap: 6px;
+
+  gap: 7px;
+
+  flex-wrap: nowrap;
 }
+
 
 /* ---------- Empty state ---------- */
+
 .cl-empty {
   padding: 48px;
+
   text-align: center;
+
   color: #9CA3AF;
+
   font-size: 13px;
+
+  white-space: normal !important;
 }
 
-/* ---------- Pagination ---------- */
+
+/* =========================================================
+   PAGINATION
+   Pagination tetap di luar table
+   ========================================================= */
+
 .cl-pagination {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
+
   flex-wrap: wrap;
+
   gap: 8px;
+
   padding: 4px 0 8px;
+
   font-size: 12px;
+
   color: #6B7280;
+
+  width: 100%;
+
+  box-sizing: border-box;
 }
 
 .cl-pagination-left {
   display: flex;
+
   align-items: center;
+
   gap: 6px;
+
   color: #6B7280;
+
+  flex-wrap: wrap;
 }
 
 .cl-pagination-sep {
@@ -221,37 +332,64 @@
 
 .cl-perpage-select {
   border: 1px solid #E5E7EB;
+
   border-radius: 6px;
+
   padding: 2px 6px;
+
   font-size: 12px;
+
   font-family: 'Nunito', sans-serif;
+
   color: #374151;
+
   background: #fff;
+
   cursor: pointer;
+
   outline: none;
+
+  height: 28px;
 }
 
 .cl-pagination-pages {
   display: flex;
+
   align-items: center;
+
   gap: 4px;
+
+  flex-wrap: wrap;
 }
 
 .cl-page-btn {
   min-width: 32px;
   height: 32px;
+
   padding: 0 6px;
+
   border-radius: 50%;
+
   border: 1px solid #E5E7EB;
+
   background: #fff;
+
   font-size: 12px;
+
   color: #374151;
+
   cursor: pointer;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   transition: background 0.15s;
+
   font-family: 'Nunito', sans-serif;
+
+  box-sizing: border-box;
 }
 
 .cl-page-btn:hover:not(:disabled):not(.cl-page-btn--active) {
@@ -260,38 +398,58 @@
 
 .cl-page-btn--active {
   background: #2563EB;
+
   border-color: #2563EB;
+
   color: #fff;
+
   font-weight: 700;
 }
 
 .cl-page-btn--dots {
   border: none;
+
   background: transparent;
+
   cursor: default;
+
   min-width: 20px;
 }
 
 .cl-page-btn:disabled {
   opacity: 0.35;
+
   cursor: not-allowed;
 }
 
 .cl-page-nav {
   min-width: 32px;
   height: 32px;
+
   padding: 0 8px;
+
   border-radius: 8px;
+
   border: 1px solid #E5E7EB;
+
   background: #fff;
+
   font-size: 12px;
+
   color: #374151;
+
   cursor: pointer;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   transition: background 0.15s;
+
   font-family: 'Nunito', sans-serif;
+
+  box-sizing: border-box;
 }
 
 .cl-page-nav:hover:not(:disabled) {
@@ -300,5 +458,290 @@
 
 .cl-page-nav:disabled {
   opacity: 0.35;
+
   cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLET
+   768px - 1024px
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .cl-table-wrap {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .cl-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+
+  .cl-search-wrap {
+    max-width: 380px;
+  }
+
+  .cl-btn {
+    min-width: 50px;
+    height: 30px;
+
+    padding: 0 11px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .cl-page {
+    width: 100%;
+    max-width: 100%;
+
+    overflow: hidden;
+  }
+
+
+  /* ---------- Title ---------- */
+
+  .cl-title {
+    font-size: 18px;
+
+    margin-bottom: 14px;
+  }
+
+
+  /* ---------- Search ---------- */
+
+  .cl-search-wrap {
+    width: 100%;
+    max-width: none;
+
+    margin-bottom: 14px;
+  }
+
+  .cl-search-input {
+    height: 38px;
+
+    padding: 9px 14px 9px 38px;
+
+    font-size: 12px;
+  }
+
+
+  /* ---------- Table ---------- */
+
+  .cl-table-wrap {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border-radius: 9px;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+  }
+
+  .cl-table {
+    display: table;
+
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+
+    table-layout: auto;
+  }
+
+  .cl-table th,
+  .cl-table td {
+    padding: 10px 12px;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+  }
+
+
+  /* ---------- Action ---------- */
+
+  .cl-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    flex-wrap: nowrap;
+  }
+
+  .cl-btn {
+    min-width: 52px;
+
+    height: 30px;
+
+    padding: 0 12px;
+
+    font-size: 10px;
+  }
+
+
+  /* ---------- Pagination ---------- */
+
+  .cl-pagination {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    padding: 4px 0 10px;
+  }
+
+  .cl-pagination-left {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    font-size: 11px;
+  }
+
+  .cl-pagination-pages {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+  }
+
+  .cl-page-btn {
+    min-width: 30px;
+    height: 30px;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+  }
+
+  .cl-page-nav {
+    min-width: 30px;
+    height: 30px;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+  }
+
+  .cl-perpage-select {
+    height: 28px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   <= 480px
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .cl-title {
+    font-size: 17px;
+
+    margin-bottom: 12px;
+  }
+
+
+  .cl-search-input {
+    height: 36px;
+
+    padding: 8px 12px 8px 36px;
+
+    font-size: 11px;
+  }
+
+
+  /* Table tetap lebar */
+  .cl-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: none !important;
+  }
+
+  .cl-table th,
+  .cl-table td {
+    padding: 8px 10px;
+
+    font-size: 10px;
+  }
+
+
+  /* Button tetap nyaman, jangan terlalu kecil */
+  .cl-btn {
+    min-width: 50px;
+
+    height: 30px;
+
+    padding: 0 10px;
+
+    font-size: 10px;
+  }
+
+  .cl-actions {
+    gap: 7px;
+  }
+
+
+  /* Pagination */
+  .cl-pagination-left {
+    font-size: 10px;
+
+    gap: 4px;
+  }
+
+  .cl-page-btn {
+    min-width: 29px;
+    height: 29px;
+
+    font-size: 10px;
+  }
+
+  .cl-page-nav {
+    min-width: 29px;
+    height: 29px;
+
+    font-size: 10px;
+  }
 }
