@@ -392,11 +392,11 @@ class DashboardController extends Controller
         }
 
         $data = $query->select(
-            'cm.customer_akun',
+            DB::raw("COALESCE(NULLIF(cm.customer_akun, ''), cm.customer_nama, '-') as customer_akun"),
             DB::raw('SUM(tt.transaksi_total_harga) as nilai_pembelian'),
             DB::raw('COUNT(tt.transaksi_id) as jumlah_transaksi')
         )
-            ->groupBy('cm.customer_id', 'cm.customer_akun')
+            ->groupBy('cm.customer_id', 'cm.customer_akun', 'cm.customer_nama')
             ->orderBy('nilai_pembelian', 'DESC')
             ->limit(10)
             ->get();
