@@ -31,7 +31,7 @@ const props = defineProps({
 const hasData = computed(() => props.dataCustomer.length > 0)
 
 const chartData = computed(() => ({
-  labels: props.dataCustomer.map(c => c.customer_akun),
+  labels: props.dataCustomer.map(c => c.customer_akun || c.customer_nama || "-"),
   datasets: [
     {
       label: "Nilai Pembelian",
