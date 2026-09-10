@@ -68,7 +68,7 @@ class BenangMasukController extends Controller
     {
         if ($resp = $this->checkAuth()) return $resp;
 
-        $colors = BenangMasukT::where('benang_masuk_tipe', self::TIPE_TEXTILE)
+        $colors = BenangMasukT::where('benang_masuk_tipe', self::TIPE_PEWARNA_ALAM)
             ->whereNull('deleted_at')
             ->distinct()
             ->orderBy('benang_masuk_warna')
