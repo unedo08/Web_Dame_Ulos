@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BenangMasukT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class BenangMasukController extends Controller
 {
@@ -187,7 +186,8 @@ class BenangMasukController extends Controller
     }
 
     /**
-     * Stok Benang — mirror of Benang Masuk accumulated by (tipe, jenis, warna).
+     * Stok Benang — Benang Masuk accumulated by (tipe, jenis, warna), minus
+     * whatever has gone out as Benang Keluar.
      * Filter by tipe: ALL | PEWARNA_ALAM | TEXTILE (default ALL).
      */
     public function stok(Request $request)
@@ -196,25 +196,16 @@ class BenangMasukController extends Controller
 
         $tipe = strtoupper($request->query('tipe', 'ALL'));
 
-        $rows = DB::table('benang_masuk_t as bm')
-            ->leftJoin('jenis_benang_m as jb', 'jb.id', '=', 'bm.benang_masuk_jenis_id')
-            ->whereNull('bm.deleted_at')
-            ->when($tipe && $tipe !== 'ALL', fn($q) => $q->where('bm.benang_masuk_tipe', $tipe))
-            ->groupBy('bm.benang_masuk_tipe', 'bm.benang_masuk_jenis_id', 'jb.jenisbenang_nama', 'bm.benang_masuk_warna')
-            ->select(
-                'bm.benang_masuk_tipe',
-                'bm.benang_masuk_jenis_id',
-                'jb.jenisbenang_nama as jenis_nama',
-                'bm.benang_masuk_warna',
-                DB::raw('SUM(bm.benang_masuk_jumlah) as total_jumlah')
+        $rows = BenangMasukT::stokTersedia()
+            ->when(
+                $tipe && $tipe !== 'ALL',
+                fn($rows) => $rows->where('benang_masuk_tipe', $tipe)
             )
-            ->orderBy('bm.benang_masuk_tipe')
-            ->orderBy('bm.benang_masuk_warna')
-            ->get()
             ->map(function ($row) {
-                $row->tipe_label = $this->tipeLabel($row->benang_masuk_tipe);
+                $row['tipe_label'] = $this->tipeLabel($row['benang_masuk_tipe']);
                 return $row;
-            });
+            })
+            ->values();
 
         return $this->ok($rows, 'Berhasil mendapatkan stok benang');
     }

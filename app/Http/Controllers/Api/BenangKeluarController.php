@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BenangKeluarT;
 use App\Models\BenangKeluarDetailT;
+use App\Models\BenangMasukT;
+use App\Models\JenisBenangM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -115,6 +117,10 @@ class BenangKeluarController extends Controller
             'items.*.jumlah'             => 'required|integer|min:1',
         ]);
 
+        if ($kurang = $this->cekStok($request->items)) {
+            return $this->fail('Stok tidak mencukupi.', 422, $kurang);
+        }
+
         DB::beginTransaction();
         try {
             $keluar = BenangKeluarT::create([
@@ -143,6 +149,50 @@ class BenangKeluarController extends Controller
             DB::rollBack();
             return $this->fail('Data benang keluar gagal disimpan ke sistem. Silakan coba kembali. ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Guard against sending out more thread than the stock holds.
+     *
+     * Rows are summed per (tipe, jenis, warna) first: two rows of the same
+     * benang in one submission draw from the same bucket, so 2 x 80 against a
+     * stock of 120 has to fail even though neither row exceeds it on its own.
+     *
+     * @return array|null  the buckets that came up short, or null when it fits
+     */
+    private function cekStok(array $items): ?array
+    {
+        $stok = BenangMasukT::stokTersedia();
+
+        $diminta = [];
+        foreach ($items as $item) {
+            $key = BenangMasukT::stokKey($item['tipe'], $item['jenis_id'], $item['warna']);
+
+            $diminta[$key] = [
+                'warna'    => $item['warna'],
+                'tipe'     => $this->tipeLabel(strtoupper($item['tipe'])),
+                'jenis_id' => (int) $item['jenis_id'],
+                'jumlah'   => ($diminta[$key]['jumlah'] ?? 0) + (int) $item['jumlah'],
+            ];
+        }
+
+        $kurang = [];
+        foreach ($diminta as $key => $row) {
+            $tersedia = (int) ($stok->get($key)['total_jumlah'] ?? 0);
+
+            if ($row['jumlah'] > $tersedia) {
+                $kurang[] = [
+                    'warna'      => $row['warna'],
+                    'tipe'       => $row['tipe'],
+                    'jenis'      => $stok->get($key)['jenis_nama']
+                        ?? optional(JenisBenangM::find($row['jenis_id']))->jenisbenang_nama,
+                    'diminta'    => $row['jumlah'],
+                    'tersedia'   => $tersedia,
+                ];
+            }
+        }
+
+        return $kurang ?: null;
     }
 
     /**
