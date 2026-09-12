@@ -171,19 +171,24 @@
     gap: 8px;
 }
 
+/* Bordered icon button, matching .pm-btn-icon on the Jenis Pengiriman page. */
 .bk-btn-icon {
-    border: none;
-    background: transparent;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
 }
 
 .bk-btn-icon:hover {
-    background: #f3f4f6;
+    background: #f9fafb;
+    border-color: #d1d5db;
 }
 
 .bk-icon {
@@ -197,6 +202,10 @@
 }
 
 .bk-icon-edit {
+    color: #16a34a;
+}
+
+.bk-icon-done {
     color: #16a34a;
 }
 
@@ -964,7 +973,8 @@
     }
 
     .bk-btn-icon {
-        padding: 4px;
+        width: 30px;
+        height: 30px;
     }
 
     .bk-icon {

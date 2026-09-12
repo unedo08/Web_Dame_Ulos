@@ -101,7 +101,7 @@
             <td>{{ formatDate(cust.tanggal_daftar) }}</td>
             <td>{{ cust.customer_akun || '-' }}</td>
             <td>{{ cust.customer_nama }}</td>
-            <td>{{ cust.customer_alamat || '-' }}</td>
+            <td :title="cust.customer_alamat || ''">{{ truncate(cust.customer_alamat) || '-' }}</td>
             <td class="cl-col-total">{{ formatCurrency(cust.total_transaksi) }}</td>
             <td>{{ cust.customer_notelepon || '-' }}</td>
             <td>
@@ -262,6 +262,15 @@ const paginatedPages = computed(() => {
   if (current >= total - 2) return [1, '...', total - 2, total - 1, total]
   return [1, '...', current - 1, current, current + 1, '...', total]
 })
+
+// The Alamat column is the widest free-text field; long addresses stretched
+// the row, so cut them at 60 chars and keep the rest in the cell tooltip.
+const ALAMAT_MAX_CHARS = 60
+
+const truncate = (text, max = ALAMAT_MAX_CHARS) => {
+  const value = String(text ?? '').trim()
+  return value.length > max ? `${value.slice(0, max).trimEnd()}...` : value
+}
 
 const formatDate = (d) =>
   d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'

@@ -60,16 +60,18 @@ export function useBenang() {
     const pewarnaList = ref([]);     // { pewarna_id, pewarna_nama, pewarna_kode }
     const sumberWarnaList = ref([]); // ["Putih", ...] — warna Textile (form Pewarna Alami)
     const warnaAlamList = ref([]);   // ["Merah", ...] — warna Pewarna Alam (form Benang Keluar)
+    const stokTersedia = ref([]);    // stok masuk - keluar, per (tipe, jenis, warna)
 
     const loadDropdowns = async () => {
         // Settle each request independently so one failing endpoint can't
         // blank the other dropdowns (e.g. Jenis Benang staying empty just
         // because /api/pewarna or /api/benang-masuk/sumber-warna errored).
-        const [jb, pw, sw, wa] = await Promise.allSettled([
+        const [jb, pw, sw, wa, st] = await Promise.allSettled([
             $api.get(`${url.value}/api/jenisbenang`),
             $api.get(`${url.value}/api/pewarna`),
             $api.get(`${url.value}/api/benang-masuk/sumber-warna`),
             $api.get(`${url.value}/api/benang-masuk/warna-pewarna-alam`),
+            $api.get(`${url.value}/api/benang-masuk/stok`, { params: { tipe: "ALL" } }),
         ]);
 
         if (jb.status === "fulfilled") jenisBenangList.value = jb.value.data.data || [];
@@ -83,6 +85,69 @@ export function useBenang() {
 
         if (wa.status === "fulfilled") warnaAlamList.value = wa.value.data.data || [];
         else console.error("Gagal memuat warna pewarna alam:", wa.reason);
+
+        if (st.status === "fulfilled") stokTersedia.value = st.value.data.data || [];
+        else console.error("Gagal memuat stok benang:", st.reason);
+    };
+
+    const loadStokTersedia = async () => {
+        try {
+            const res = await $api.get(`${url.value}/api/benang-masuk/stok`, {
+                params: { tipe: "ALL" },
+            });
+            stokTersedia.value = res.data.data || [];
+        } catch (e) {
+            console.error("Gagal memuat stok benang:", e);
+        }
+    };
+
+    // ============================================================
+    // Stok lookup — shared by the Benang Keluar form dropdowns and its
+    // validation. Keys mirror BenangMasukT::stokKey() on the API side, so a
+    // combination the form lets through is one the API also accepts.
+    // ============================================================
+    const sameText = (a, b) =>
+        String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
+
+    const stokKey = (tipe, jenisId, warna) =>
+        `${String(tipe ?? "").trim().toUpperCase()}|${Number(jenisId) || 0}|${String(warna ?? "").trim().toLowerCase()}`;
+
+    const stokMap = computed(() => {
+        const map = new Map();
+        stokTersedia.value.forEach((r) => {
+            map.set(
+                stokKey(r.benang_masuk_tipe, r.benang_masuk_jenis_id, r.benang_masuk_warna),
+                Number(r.total_jumlah) || 0
+            );
+        });
+        return map;
+    });
+
+    // only buckets that still hold thread drive the enabled options
+    const stokRows = computed(() =>
+        stokTersedia.value.filter((r) => (Number(r.total_jumlah) || 0) > 0)
+    );
+
+    const warnaPunyaStok = (warna) =>
+        stokRows.value.some((r) => sameText(r.benang_masuk_warna, warna));
+
+    // Nothing selected upstream yet: leave the option enabled rather than
+    // greying out the whole dropdown before the user has made a choice.
+    const tipePunyaStok = (warna, tipe) => {
+        if (!warna) return true;
+        return stokRows.value.some(
+            (r) => sameText(r.benang_masuk_warna, warna) && sameText(r.benang_masuk_tipe, tipe)
+        );
+    };
+
+    const jenisPunyaStok = (warna, tipe, jenisId) => {
+        if (!warna || !tipe) return true;
+        return stokRows.value.some(
+            (r) =>
+                sameText(r.benang_masuk_warna, warna) &&
+                sameText(r.benang_masuk_tipe, tipe) &&
+                Number(r.benang_masuk_jenis_id) === Number(jenisId)
+        );
     };
 
     // ============================================================
@@ -500,12 +565,74 @@ export function useBenang() {
         errJumlah: "",
     });
 
+    /**
+     * Warna options for the form: every colour that still has stock, plus the
+     * Pewarna Alam colours the API already offered. Colours with nothing left
+     * stay listed but disabled, so a warna that ran out reads as "out of
+     * stock" instead of silently vanishing from the dropdown.
+     */
+    const warnaOptions = computed(() => {
+        const seen = new Map(); // lowercase key -> display value
+
+        const add = (warna) => {
+            const label = String(warna ?? "").trim();
+            if (!label) return;
+            const key = label.toLowerCase();
+            if (!seen.has(key)) seen.set(key, label);
+        };
+
+        stokTersedia.value.forEach((r) => add(r.benang_masuk_warna));
+        warnaAlamList.value.forEach(add);
+
+        return [...seen.values()].sort((a, b) => a.localeCompare(b, "id"));
+    });
+
+    /**
+     * Stock left for one row, after the other rows of the same submission have
+     * taken their share of the same bucket — two rows of the same benang draw
+     * from one stock, so they must not each be measured against the full total.
+     * Returns null while the row is still incomplete.
+     */
+    const sisaStok = (item) => {
+        if (!item.warna || !item.tipe || !item.jenis_id) return null;
+
+        const key = stokKey(item.tipe, item.jenis_id, item.warna);
+        const tersedia = stokMap.value.get(key) || 0;
+
+        const dipakaiBaris = keluarItems.value.reduce((sum, other) => {
+            if (other === item) return sum;
+            if (stokKey(other.tipe, other.jenis_id, other.warna) !== key) return sum;
+            return sum + (Number(other.jumlah) || 0);
+        }, 0);
+
+        return Math.max(0, tersedia - dipakaiBaris);
+    };
+
+    // Changing a select invalidates the choices below it — a jenis that exists
+    // for the old warna/tipe usually has no stock under the new one.
+    const onKeluarWarnaChange = (item) => {
+        item.tipe = "";
+        item.jenis_id = "";
+        item.errTipe = "";
+        item.errJenis = "";
+        item.errJumlah = "";
+    };
+
+    const onKeluarTipeChange = (item) => {
+        item.jenis_id = "";
+        item.errJenis = "";
+        item.errJumlah = "";
+    };
+
     const openKeluarTambah = () => {
         keluarForm.value = { nama_penenun: "" };
         // default 3 rows
         keluarItems.value = [emptyKeluarItem(), emptyKeluarItem(), emptyKeluarItem()];
         keluarErrors.value = {};
         isKeluarTambahOpen.value = true;
+        // stock may have moved since the page loaded — the dropdowns below are
+        // driven by it, so refresh before the user starts picking
+        loadStokTersedia();
     };
     const closeKeluarTambah = () => { isKeluarTambahOpen.value = false; };
 
@@ -523,6 +650,17 @@ export function useBenang() {
             it.errTipe = it.tipe ? "" : "Data wajib diisi";
             it.errJenis = it.jenis_id ? "" : "Data wajib diisi";
             it.errJumlah = (it.jumlah && Number(it.jumlah) >= 1) ? "" : "Data wajib diisi";
+
+            // Backstop for the disabled options: a combination can also go out
+            // of stock between opening the form and submitting it.
+            if (!it.errWarna && !warnaPunyaStok(it.warna)) it.errWarna = "Stok tidak mencukupi.";
+            if (!it.errTipe && !tipePunyaStok(it.warna, it.tipe)) it.errTipe = "Stok tidak mencukupi.";
+            if (!it.errJenis && !jenisPunyaStok(it.warna, it.tipe, it.jenis_id)) it.errJenis = "Stok tidak mencukupi.";
+
+            if (!it.errJumlah) {
+                const sisa = sisaStok(it);
+                if (sisa !== null && Number(it.jumlah) > sisa) it.errJumlah = "Stok tidak mencukupi.";
+            }
         });
         keluarErrors.value = errs;
         const rowError = keluarItems.value.some((it) => it.errWarna || it.errTipe || it.errJenis || it.errJumlah);
@@ -552,13 +690,19 @@ export function useBenang() {
             await $api.post(`${url.value}/api/benang-keluar`, payload);
             closeKeluarTambah();
             showConfirm("success", "Data berhasil ditambahkan!", "Data benang keluar berhasil ditambahkan ke sistem.");
-            await getKeluar();
+            await Promise.all([getKeluar(), loadStokTersedia()]);
         } catch (e) {
             closeKeluarTambah();
+            // A 422 is the stock guard rejecting the payload — show its message
+            // ("Stok tidak mencukupi.") rather than the generic save failure.
+            const pesan = e?.response?.status === 422
+                ? (e?.response?.data?.message || "Stok tidak mencukupi.")
+                : "Data benang keluar gagal disimpan ke sistem. Silakan coba kembali.";
+            await loadStokTersedia();
             showConfirm(
                 "error",
                 "Data gagal ditambahkan!",
-                "Data benang keluar gagal disimpan ke sistem. Silakan coba kembali.",
+                pesan,
                 "Coba Lagi",
                 () => { openKeluarTambahPrefilled(payloadSnapshot); }
             );
@@ -682,7 +826,7 @@ export function useBenang() {
         try {
             await $api.delete(`${url.value}/api/benang-keluar/${row.benang_keluar_id}`);
             showConfirm("success", "Data berhasil dihapus!", "Data benang keluar berhasil dihapus.");
-            await getKeluar();
+            await Promise.all([getKeluar(), loadStokTersedia()]);
         } catch (e) {
             showConfirm("error", "Data Gagal Dihapus!", "Data benang gagal dihapus dari sistem. Silakan coba kembali.", "Coba lagi", () => doKeluarDelete(row));
         }
@@ -782,11 +926,13 @@ export function useBenang() {
 
         // stok
         stokData, stokLoading, stokFilter, getStok, setStokFilter,
+        stokTersedia, loadStokTersedia, warnaPunyaStok, tipePunyaStok, jenisPunyaStok,
 
         // keluar
         keluarData, keluarSearch, keluarLoading, getKeluar, startDate, endDate, exportExcel,
         isKeluarTambahOpen, keluarForm, keluarItems, keluarErrors, keluarSubmitting,
         openKeluarTambah, closeKeluarTambah, addKeluarRow, removeKeluarRow, submitKeluar,
+        warnaOptions, sisaStok, onKeluarWarnaChange, onKeluarTipeChange,
         isSelesaiOpen, selesaiRecord, selesaiForm, selesaiErrors, fotoPreview, selesaiSubmitting,
         openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
         isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,

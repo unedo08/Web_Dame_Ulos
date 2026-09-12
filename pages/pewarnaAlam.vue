@@ -244,9 +244,9 @@
                             </td>
                             <td>
                                 <div class="bk-action-group">
-                                    <button v-if="row.status !== 'DONE'" class="bk-btn-save"
-                                        style="padding:6px 12px;font-size:12px" @click="openSelesai(row)">
-                                        Selesai
+                                    <button v-if="row.status !== 'DONE'" class="bk-btn-icon" title="Selesai"
+                                        @click="openSelesai(row)">
+                                        <CheckCircleIcon class="bk-icon bk-icon-done" />
                                     </button>
                                     <button v-else class="bk-btn-icon" title="Lihat Detail"
                                         @click="openKeluarView(row)">
@@ -450,16 +450,22 @@
 
                         <div v-for="(item, idx) in keluarItems" :key="item._key" class="bn-keluar-row">
                             <div class="bn-cell">
-                                <select v-model="item.warna" :class="{ 'is-invalid': item.errWarna }">
+                                <select v-model="item.warna" :class="{ 'is-invalid': item.errWarna }"
+                                    @change="onKeluarWarnaChange(item)">
                                     <option value="" disabled>Warna</option>
-                                    <option v-for="(w, i) in warnaAlamList" :key="i" :value="w">{{ w }}</option>
+                                    <option v-for="(w, i) in warnaOptions" :key="i" :value="w"
+                                        :disabled="!warnaPunyaStok(w)">
+                                        {{ w }}{{ warnaPunyaStok(w) ? "" : " — stok habis" }}
+                                    </option>
                                 </select>
                                 <small v-if="item.errWarna">{{ item.errWarna }}</small>
                             </div>
                             <div class="bn-cell">
-                                <select v-model="item.tipe" :class="{ 'is-invalid': item.errTipe }">
+                                <select v-model="item.tipe" :class="{ 'is-invalid': item.errTipe }"
+                                    @change="onKeluarTipeChange(item)">
                                     <option value="" disabled>Tipe</option>
-                                    <option v-for="p in pewarnaList" :key="p.pewarna_id" :value="p.pewarna_kode">
+                                    <option v-for="p in pewarnaList" :key="p.pewarna_id" :value="p.pewarna_kode"
+                                        :disabled="!tipePunyaStok(item.warna, p.pewarna_kode)">
                                         {{ p.pewarna_nama }}
                                     </option>
                                 </select>
@@ -468,8 +474,10 @@
                             <div class="bn-cell">
                                 <select v-model="item.jenis_id" :class="{ 'is-invalid': item.errJenis }">
                                     <option value="" disabled>Jenis</option>
-                                    <option v-for="j in jenisBenangList" :key="j.id" :value="j.id">{{ j.jenisbenang_nama
-                                    }}</option>
+                                    <option v-for="j in jenisBenangList" :key="j.id" :value="j.id"
+                                        :disabled="!jenisPunyaStok(item.warna, item.tipe, j.id)">
+                                        {{ j.jenisbenang_nama }}
+                                    </option>
                                 </select>
                                 <small v-if="item.errJenis">{{ item.errJenis }}</small>
                             </div>
@@ -477,6 +485,9 @@
                                 <input v-model="item.jumlah" type="number" min="1" placeholder="0"
                                     :class="{ 'is-invalid': item.errJumlah }" />
                                 <small v-if="item.errJumlah">{{ item.errJumlah }}</small>
+                                <small v-else-if="sisaStok(item) !== null" class="bn-stok-hint">
+                                    Stok tersedia: {{ sisaStok(item) }}
+                                </small>
                             </div>
                             <button class="bk-btn-remove-item bn-btn-remove" :disabled="keluarItems.length <= 1"
                                 @click="removeKeluarRow(idx)">
@@ -504,6 +515,14 @@
                     <button class="bk-modal-close" @click="closeSelesai">✕</button>
                 </div>
                 <div class="bk-modal-body">
+                    <div class="bn-warning">
+                        <ExclamationTriangleIcon class="bn-warning-icon" />
+                        <div class="bn-warning-text">
+                            <strong>Perhatian!</strong>
+                            Pastikan catatan dan foto hasil sudah sesuai. Data benang keluar yang sudah
+                            diselesaikan tidak dapat diubah atau dibatalkan kembali.
+                        </div>
+                    </div>
                     <div class="bk-form-group">
                         <label>Catatan <span class="bk-required">*</span></label>
                         <textarea v-model="selesaiForm.catatan" class="bn-textarea" placeholder="Masukkan catatan"
@@ -632,7 +651,10 @@
 <script setup>
 import "@/assets/css/barang-keluar.css";
 import "@/assets/css/benang.css";
-import { MagnifyingGlassIcon, PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import {
+    MagnifyingGlassIcon, PencilIcon, EyeIcon, TrashIcon,
+    CheckCircleIcon, ExclamationTriangleIcon,
+} from "@heroicons/vue/24/outline";
 import { useBenang } from "@/composables/useBenang";
 
 const {
@@ -646,9 +668,11 @@ const {
     isMasukEditOpen, masukEditForm, masukEditErrors, masukEditSubmitting, openMasukEdit, closeMasukEdit, submitMasukEdit,
     isMasukDeleteOpen, pendingMasukDelete, askMasukDelete, cancelMasukDelete, confirmMasukDelete,
     stokData, stokLoading, stokFilter, setStokFilter,
+    warnaPunyaStok, tipePunyaStok, jenisPunyaStok,
     keluarData, keluarSearch, keluarLoading, getKeluar, startDate, endDate, exportExcel,
     isKeluarTambahOpen, keluarForm, keluarItems, keluarErrors, keluarSubmitting,
     openKeluarTambah, closeKeluarTambah, addKeluarRow, removeKeluarRow, submitKeluar,
+    warnaOptions, sisaStok, onKeluarWarnaChange, onKeluarTipeChange,
     isSelesaiOpen, selesaiRecord, selesaiForm, selesaiErrors, fotoPreview, selesaiSubmitting,
     openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
     isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,
