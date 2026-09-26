@@ -292,19 +292,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   font-size: 12px;
-  color: #6b7280;
-  width: 100%;
-  box-sizing: border-box;
-  gap: 12px;
+  gap: 16px;
 }
 
 .dv-pagination-left {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.dv-pagination-sep {
+  color: #9ca3af;
 }
 
 .dv-per-page {
@@ -312,15 +314,12 @@
   border-radius: 6px;
   padding: 4px 8px;
   font-size: 12px;
-  color: #374151;
   background: #fff;
-  cursor: pointer;
   outline: none;
-  height: 28px;
 }
 
 .dv-per-page:focus {
-  border-color: #06b6d4;
+  border-color: #3b82f6;
 }
 
 .dv-pagination-controls {
@@ -328,23 +327,19 @@
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .dv-page-btn {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 6px;
-  border: 1px solid #e5e7eb;
+  min-width: 30px;
+  height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   background: #fff;
-  font-size: 13px;
-  color: #374151;
+  font-size: 12px;
   cursor: pointer;
-  transition: background 0.15s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+  transition: all 0.15s ease;
 }
 
 .dv-page-btn:hover:not(:disabled) {
@@ -352,22 +347,19 @@
 }
 
 .dv-page-btn:disabled {
-  opacity: 0.4;
-
-  cursor: default;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dv-page-active {
-  background: #06b6d4 !important;
-
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
   color: #fff !important;
-
-  border-color: #06b6d4 !important;
 }
 
 .dv-page-ellipsis {
-  border: none;
-  background: none !important;
+  border-color: transparent;
+  background: transparent !important;
   cursor: default !important;
 }
 
@@ -898,47 +890,32 @@
 
   .dv-pagination {
     flex-direction: column;
-
     align-items: stretch;
-
-    justify-content: flex-start;
-
-    gap: 10px;
-
-    margin-top: 12px;
+    gap: 12px;
   }
 
   .dv-pagination-left {
     justify-content: flex-start;
-
     flex-wrap: wrap;
-
     gap: 6px;
-
-    font-size: 11px;
   }
 
   .dv-pagination-controls {
     justify-content: center;
-
+    align-items: center;
     flex-wrap: wrap;
-
     gap: 4px;
   }
 
   .dv-page-btn {
-    min-width: 30px;
-
-    height: 30px;
-
-    padding: 0 7px;
-
-    font-size: 10px;
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 
   .dv-per-page {
     height: 28px;
-
     font-size: 11px;
   }
 
@@ -1099,17 +1076,23 @@
 
 
   /* Pagination */
+  .dv-pagination {
+    font-size: 11px;
+  }
+
+  .dv-pagination-left {
+    gap: 6px;
+  }
+
   .dv-page-btn {
-    min-width: 29px;
-
-    height: 29px;
-
-    font-size: 10px;
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 
   .dv-per-page {
     height: 27px;
-
     font-size: 10px;
   }
 

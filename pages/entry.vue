@@ -102,36 +102,57 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-        <div class="flex items-center space-x-2">
-          <label for="perPage">Tampilkan:</label>
-          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-            <option :value="5">5</option>
+      <div class="cl-pagination">
+        <div class="cl-pagination-left">
+          <span>
+            Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ searchFilterData.length }}
+          </span>
+
+          <span class="cl-pagination-sep">|</span>
+
+          <span>Tampilkan</span>
+
+          <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
             <option :value="10">10</option>
-            <option :value="20">20</option>
+            <option :value="25">25</option>
             <option :value="50">50</option>
-            <option value="all">All</option>
+            <option :value="100">100</option>
           </select>
+
+          <span>data</span>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
+        <div class="cl-pagination-pages">
+          <!-- First -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+            &#xAB;
           </button>
 
-          <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
+          <!-- Previous -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+            &#x3C;
           </button>
 
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
+          <!-- Number -->
+          <template v-for="(page, idx) in paginatedPages" :key="idx">
+            <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
+              @click="currentPage = page">
+              {{ page }}
+            </button>
+
+            <span v-else class="cl-page-btn cl-page-btn--dots">
+              ...
+            </span>
+          </template>
+
+          <!-- Next -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+            &#x3E;
+          </button>
+
+          <!-- Last -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+            &#xBB;
           </button>
         </div>
       </div>
@@ -140,7 +161,7 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+          <!-- <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." /> -->
         </div>
         <div class="flex flex-wrap justify-end gap-4">
           <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
@@ -226,36 +247,57 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-        <div class="flex items-center space-x-2">
-          <label for="perPage">Tampilkan:</label>
-          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-            <option :value="5">5</option>
+      <div class="cl-pagination">
+        <div class="cl-pagination-left">
+          <span>
+            Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ searchFilterData.length }}
+          </span>
+
+          <span class="cl-pagination-sep">|</span>
+
+          <span>Tampilkan</span>
+
+          <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
             <option :value="10">10</option>
-            <option :value="20">20</option>
+            <option :value="25">25</option>
             <option :value="50">50</option>
-            <option value="all">All</option>
+            <option :value="100">100</option>
           </select>
+
+          <span>data</span>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
+        <div class="cl-pagination-pages">
+          <!-- First -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+            &#xAB;
           </button>
 
-          <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
+          <!-- Previous -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+            &#x3C;
           </button>
 
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
+          <!-- Number -->
+          <template v-for="(page, idx) in paginatedPages" :key="idx">
+            <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
+              @click="currentPage = page">
+              {{ page }}
+            </button>
+
+            <span v-else class="cl-page-btn cl-page-btn--dots">
+              ...
+            </span>
+          </template>
+
+          <!-- Next -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+            &#x3E;
+          </button>
+
+          <!-- Last -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+            &#xBB;
           </button>
         </div>
       </div>
@@ -366,36 +408,57 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-        <div class="flex items-center space-x-2">
-          <label for="perPage">Tampilkan:</label>
-          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-            <option :value="5">5</option>
+      <div class="cl-pagination">
+        <div class="cl-pagination-left">
+          <span>
+            Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ searchFilterData.length }}
+          </span>
+
+          <span class="cl-pagination-sep">|</span>
+
+          <span>Tampilkan</span>
+
+          <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
             <option :value="10">10</option>
-            <option :value="20">20</option>
+            <option :value="25">25</option>
             <option :value="50">50</option>
-            <option value="all">All</option>
+            <option :value="100">100</option>
           </select>
+
+          <span>data</span>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
+        <div class="cl-pagination-pages">
+          <!-- First -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+            &#xAB;
           </button>
 
-          <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
+          <!-- Previous -->
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+            &#x3C;
           </button>
 
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
+          <!-- Number -->
+          <template v-for="(page, idx) in paginatedPages" :key="idx">
+            <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
+              @click="currentPage = page">
+              {{ page }}
+            </button>
+
+            <span v-else class="cl-page-btn cl-page-btn--dots">
+              ...
+            </span>
+          </template>
+
+          <!-- Next -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+            &#x3E;
+          </button>
+
+          <!-- Last -->
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+            &#xBB;
           </button>
         </div>
       </div>
@@ -767,7 +830,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick, watch } from "vue";
 import BaseModal from "../components/Modal.vue";
 import EditBarangReady from "../components/ModalEditBarang.vue";
 import EditBarangDesc from "../components/ModalEditDesc.vue";
@@ -1313,19 +1376,52 @@ const pagination = computed(() => {
     return searchFilterData.value;
   }
 
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return searchFilterData.value.slice(start, end);
+  const perPage = Number(itemsPerPage.value);
+  const start = (currentPage.value - 1) * perPage;
+
+  return searchFilterData.value.slice(
+    start,
+    start + perPage
+  );
+});
+
+const startItem = computed(() => {
+  if (searchFilterData.value.length === 0) return 0;
+
+  if (itemsPerPage.value === "all") {
+    return 1;
+  }
+
+  return (
+    (currentPage.value - 1) *
+      Number(itemsPerPage.value) +
+    1
+  );
+});
+
+const endItem = computed(() => {
+  if (searchFilterData.value.length === 0) return 0;
+
+  if (itemsPerPage.value === "all") {
+    return searchFilterData.value.length;
+  }
+
+  return Math.min(
+    currentPage.value * Number(itemsPerPage.value),
+    searchFilterData.value.length
+  );
 });
 
 const totalPages = computed(() => {
   if (itemsPerPage.value === "all") return 1;
 
-  const dataLength = isSearchActive.value
-    ? filteredBarang.value.length
-    : searchFilterData.value.length;
-
-  return Math.ceil(dataLength / itemsPerPage.value);
+  return Math.max(
+    1,
+    Math.ceil(
+      searchFilterData.value.length /
+        Number(itemsPerPage.value)
+    )
+  );
 });
 
 function openModal(type) {
@@ -2000,6 +2096,10 @@ watch(editJumlah, (val) => {
 
 watch(activeTab, () => {
   getListBarangTemp();
+});
+
+watch([searchQuery, itemsPerPage], () => {
+  currentPage.value = 1;
 });
 </script>
 

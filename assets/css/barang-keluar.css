@@ -1130,3 +1130,132 @@
         white-space: nowrap;
     }
 }
+
+.cl-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    gap: 16px;
+}
+
+.cl-pagination-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.cl-pagination-sep {
+    color: #9ca3af;
+}
+
+.cl-perpage-select {
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #fff;
+    outline: none;
+}
+
+.cl-perpage-select:focus {
+    border-color: #3b82f6;
+}
+
+.cl-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.cl-page-nav,
+.cl-page-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 4px 9px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cl-page-nav:hover:not(:disabled),
+.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
+    background: #f3f4f6;
+}
+
+.cl-page-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cl-page-btn--active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.cl-page-btn--dots {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+}
+
+
+/* =========================================================
+   PAGINATION - MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .cl-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .cl-pagination-left {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .cl-pagination-pages {
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .cl-page-nav,
+    .cl-page-btn {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .cl-pagination {
+        font-size: 11px;
+    }
+
+    .cl-pagination-left {
+        gap: 6px;
+    }
+
+    .cl-pagination-pages {
+        gap: 4px;
+    }
+
+    .cl-page-nav,
+    .cl-page-btn {
+        min-width: 28px;
+        height: 28px;
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}

@@ -74,41 +74,91 @@
         </div>
 
         <div v-if="filteredData.length > 0" class="jp-pagination">
-            <div class="jp-pagination-left">
-                <span>
-                    Menampilkan
-                    {{ paginatedData.length }}
-                    dari
-                    {{ totalItems }}
-                    data
-                </span>
+    <div class="jp-pagination-left">
+        <span>
+            Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ totalItems }}
+        </span>
 
-                <select v-model="itemsPerPage" class="jp-per-page">
-                    <option :value="5">5</option>
-                    <option :value="10">10</option>
-                    <option :value="25">25</option>
-                    <option :value="50">50</option>
-                </select>
-            </div>
+        <span class="jp-pagination-sep">|</span>
 
-            <div class="jp-pagination-controls">
+        <span>Tampilkan</span>
 
-                <button class="jp-page-btn" :disabled="currentPage === 1" @click="currentPage--">
-                    Prev
-                </button>
+        <select
+            v-model="itemsPerPage"
+            class="jp-per-page"
+            @change="currentPage = 1"
+        >
+            <option :value="10">10</option>
+            <option :value="25">25</option>
+            <option :value="50">50</option>
+            <option :value="100">100</option>
+        </select>
 
-                <button v-for="page in paginatedPages" :key="page" class="jp-page-btn" :class="{
-                    'jp-page-active': currentPage === page,
-                    'jp-page-ellipsis': page === '...'
-                }" :disabled="page === '...'" @click="typeof page === 'number' && (currentPage = page)">
-                    {{ page }}
-                </button>
+        <span>data</span>
+    </div>
 
-                <button class="jp-page-btn" :disabled="currentPage === totalPages" @click="currentPage++">
-                    Next
-                </button>
-            </div>
-        </div>
+    <div class="jp-pagination-controls">
+        <!-- First -->
+        <button
+            class="jp-page-btn"
+            :disabled="currentPage === 1"
+            @click="currentPage = 1"
+        >
+            &#xAB;
+        </button>
+
+        <!-- Previous -->
+        <button
+            class="jp-page-btn"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+        >
+            &#x3C;
+        </button>
+
+        <!-- Pages -->
+        <template
+            v-for="(page, idx) in paginatedPages"
+            :key="idx"
+        >
+            <button
+                v-if="page !== '...'"
+                class="jp-page-btn"
+                :class="{
+                    'jp-page-active': currentPage === page
+                }"
+                @click="currentPage = page"
+            >
+                {{ page }}
+            </button>
+
+            <span
+                v-else
+                class="jp-page-btn jp-page-ellipsis"
+            >
+                ...
+            </span>
+        </template>
+
+        <!-- Next -->
+        <button
+            class="jp-page-btn"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+        >
+            &#x3E;
+        </button>
+
+        <!-- Last -->
+        <button
+            class="jp-page-btn"
+            :disabled="currentPage === totalPages"
+            @click="currentPage = totalPages"
+        >
+            &#xBB;
+        </button>
+    </div>
+</div>
 
         <div v-if="isModalOpen" class="jp-modal-overlay" @click.self="closeModal">
             <div class="jp-modal">
@@ -207,6 +257,8 @@ const {
     paginatedData,
     totalItems,
     totalPages,
+    startItem,
+    endItem,
     paginatedPages,
     openModal,
     closeModal,

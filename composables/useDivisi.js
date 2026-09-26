@@ -57,14 +57,42 @@ export function useDivisi() {
     const totalItems = computed(() => filteredData.value.length);
 
     const totalPages = computed(() =>
-        Math.max(1, Math.ceil(totalItems.value / itemsPerPage.value))
+        Math.max(
+            1,
+            Math.ceil(
+                totalItems.value / Number(itemsPerPage.value)
+            )
+        )
     );
+
+    const startItem = computed(() => {
+        if (totalItems.value === 0) return 0;
+
+        return (
+            (currentPage.value - 1) *
+            Number(itemsPerPage.value) +
+            1
+        );
+    });
+
+    const endItem = computed(() => {
+        return Math.min(
+            currentPage.value * Number(itemsPerPage.value),
+            totalItems.value
+        );
+    });
 
     const paginatedData = computed(() => {
 
-        const start = (currentPage.value - 1) * itemsPerPage.value;
+        const perPage = Number(itemsPerPage.value);
 
-        return filteredData.value.slice(start, start + itemsPerPage.value);
+        const start =
+            (currentPage.value - 1) * perPage;
+
+        return filteredData.value.slice(
+            start,
+            start + perPage
+        );
     });
 
     const paginatedPages = computed(() => {
@@ -246,6 +274,8 @@ export function useDivisi() {
         paginatedData,
         totalItems,
         totalPages,
+        startItem,
+        endItem,
         paginatedPages,
         fetchData,
         openModal,

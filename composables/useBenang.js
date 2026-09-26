@@ -214,6 +214,19 @@ export function useBenang() {
         return pages;
     });
 
+    const masukStartItem = computed(() => {
+        if (masukData.value.length === 0) return 0;
+
+        return (masukPage.value - 1) * Number(masukItemsPerPage.value) + 1;
+    });
+
+    const masukEndItem = computed(() => {
+        return Math.min(
+            masukPage.value * Number(masukItemsPerPage.value),
+            masukData.value.length
+        );
+    });
+
     const getMasuk = async () => {
         masukLoading.value = true;
         try {
@@ -428,6 +441,19 @@ export function useBenang() {
         );
     });
 
+    const stokStartItem = computed(() => {
+        if (stokData.value.length === 0) return 0;
+
+        return (stokPage.value - 1) * Number(stokItemsPerPage.value) + 1;
+    });
+
+    const stokEndItem = computed(() => {
+        return Math.min(
+            stokPage.value * Number(stokItemsPerPage.value),
+            stokData.value.length
+        );
+    });
+
     const stokPaginatedPages = computed(() => {
         const total = stokTotalPage.value;
         const current = stokPage.value;
@@ -507,6 +533,19 @@ export function useBenang() {
         return keluarData.value.slice(
             start,
             start + keluarItemsPerPage.value
+        );
+    });
+
+    const keluarStartItem = computed(() => {
+        if (keluarData.value.length === 0) return 0;
+
+        return (keluarPage.value - 1) * Number(keluarItemsPerPage.value) + 1;
+    });
+
+    const keluarEndItem = computed(() => {
+        return Math.min(
+            keluarPage.value * Number(keluarItemsPerPage.value),
+            keluarData.value.length
         );
     });
 
@@ -937,7 +976,8 @@ export function useBenang() {
         openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
         isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,
         isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete,
-        masukPage, masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages, stokPage, stokPerPage, stokPaginated, stokTotalPage,
-        stokPaginatedPages, keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage, keluarPaginatedPages,
+        masukPage, masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages,masukStartItem,masukEndItem, stokPage, stokPerPage, 
+        stokPaginated, stokTotalPage,stokPaginatedPages,stokStartItem,stokEndItem,keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage, 
+        keluarPaginatedPages,keluarStartItem,keluarEndItem,
     };
 }

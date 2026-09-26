@@ -93,55 +93,59 @@
             </table>
         </div>
 
-        <div class="flex justify-between items-center mt-8 mb-4 text-xs">
+        <div class="cl-pagination">
+            <div class="cl-pagination-left">
+                <span>
+                    Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ filteredData.length }}
+                </span>
 
-            <!-- Per Page -->
-            <div class="flex items-center space-x-2">
-                <label for="perPage">Tampilkan:</label>
+                <span class="cl-pagination-sep">|</span>
 
-                <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-                    <option :value="5">5</option>
+                <span>Tampilkan</span>
+
+                <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
                     <option :value="10">10</option>
-                    <option :value="20">20</option>
+                    <option :value="25">25</option>
                     <option :value="50">50</option>
-                    <option value="all">All</option>
+                    <option :value="100">100</option>
                 </select>
+
+                <span>data</span>
             </div>
 
-
-            <!-- Pagination -->
-            <div class="flex items-center space-x-2">
-
-                <!-- Sebelumnya -->
-                <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === 1"
-                    @click="currentPage--">
-                    Sebelumnya
+            <div class="cl-pagination-pages">
+                <!-- First -->
+                <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+                    &#xAB;
                 </button>
 
+                <!-- Previous -->
+                <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+                    &#x3C;
+                </button>
 
                 <!-- Number -->
-                <button v-for="(page, index) in paginatedPages" :key="index" @click="
-                    typeof page === 'number' &&
-                    (currentPage = page)
-                    " :class="[
-                        'px-3 py-1 rounded',
-                        currentPage === page
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200',
-                        page === '...'
-                            ? 'cursor-default'
-                            : 'cursor-pointer'
-                    ]" :disabled="page === '...'">
-                    {{ page }}
+                <template v-for="(page, idx) in paginatedPages" :key="idx">
+                    <button v-if="page !== '...'" class="cl-page-btn" :class="{
+                        'cl-page-btn--active': currentPage === page
+                    }" @click="currentPage = page">
+                        {{ page }}
+                    </button>
+
+                    <span v-else class="cl-page-btn cl-page-btn--dots">
+                        ...
+                    </span>
+                </template>
+
+                <!-- Next -->
+                <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+                    &#x3E;
                 </button>
 
-
-                <!-- Selanjutnya -->
-                <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400" :disabled="currentPage === totalPages"
-                    @click="currentPage++">
-                    Selanjutnya
+                <!-- Last -->
+                <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+                    &#xBB;
                 </button>
-
             </div>
         </div>
 
@@ -387,6 +391,8 @@ const {
     currentPage,
     itemsPerPage,
     totalPages,
+    startItem,
+    endItem,
     paginatedPages,
     paginatedData,
 } = useBarangKeluar();

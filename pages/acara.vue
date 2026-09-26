@@ -73,36 +73,52 @@
         </table>
       </div>
 
-      <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-        <div class="flex items-center space-x-2">
-          <label for="perPage">Tampilkan:</label>
-          <select id="perPage" v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-            <option :value="5">5</option>
+      <div class="cl-pagination">
+        <div class="cl-pagination-left">
+          <span>
+            Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ sortedListAcara.length }}
+          </span>
+
+          <span class="cl-pagination-sep">|</span>
+
+          <span>Tampilkan</span>
+
+          <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
             <option :value="10">10</option>
-            <option :value="20">20</option>
+            <option :value="25">25</option>
             <option :value="50">50</option>
-            <option value="all">All</option>
+            <option :value="100">100</option>
           </select>
+
+          <span>data</span>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === 1"
-            @click="currentPage--">
-            Sebelumnya
+        <div class="cl-pagination-pages">
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+            &#xAB;
           </button>
 
-          <button v-for="(page, index) in paginatedPages" :key="index"
-            @click="typeof page === 'number' && (currentPage = page)" :class="[
-              'px-3 py-1 rounded text-xs',
-              currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200',
-              page === '...' ? 'cursor-default' : 'cursor-pointer',
-            ]" :disabled="page === '...'">
-            {{ page }}
+          <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+            &#x3C;
           </button>
 
-          <button class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-xs" :disabled="currentPage === totalPages"
-            @click="currentPage++">
-            Selanjutnya
+          <template v-for="(page, idx) in paginatedPages" :key="idx">
+            <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
+              @click="currentPage = page">
+              {{ page }}
+            </button>
+
+            <span v-else class="cl-page-btn cl-page-btn--dots">
+              ...
+            </span>
+          </template>
+
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+            &#x3E;
+          </button>
+
+          <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+            &#xBB;
           </button>
         </div>
       </div>
@@ -296,18 +312,31 @@ const sortedListAcara = computed(() => {
 });
 
 const pagination = computed(() => {
-  if (itemsPerPage.value === "all") {
-    return sortedListAcara.value;
-  }
-
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
+
   return sortedListAcara.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  if (itemsPerPage.value === "all") return 1;
-  return Math.ceil(listAcara.value.length / itemsPerPage.value);
+  return Math.ceil(
+    sortedListAcara.value.length / itemsPerPage.value
+  );
+});
+
+const startItem = computed(() => {
+  if (sortedListAcara.value.length === 0) return 0;
+
+  return (currentPage.value - 1) * itemsPerPage.value + 1;
+});
+
+const endItem = computed(() => {
+  if (sortedListAcara.value.length === 0) return 0;
+
+  return Math.min(
+    currentPage.value * itemsPerPage.value,
+    sortedListAcara.value.length
+  );
 });
 
 function validate() {
@@ -340,18 +369,30 @@ async function getListAcara() {
 }
 
 const paginatedPages = computed(() => {
-  if (itemsPerPage.value === "all") return [1];
-
   const total = totalPages.value;
   const current = currentPage.value;
   const pages = [];
 
   if (total <= 5) {
-    for (let i = 1; i <= total; i++) pages.push(i);
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
   } else {
-    if (current <= 3) pages.push(1, 2, 3, "...", total);
-    else if (current >= total - 2) pages.push(1, "...", total - 2, total - 1, total);
-    else pages.push(1, "...", current - 1, current, current + 1, "...", total);
+    if (current <= 3) {
+      pages.push(1, 2, 3, "...", total);
+    } else if (current >= total - 2) {
+      pages.push(1, "...", total - 2, total - 1, total);
+    } else {
+      pages.push(
+        1,
+        "...",
+        current - 1,
+        current,
+        current + 1,
+        "...",
+        total
+      );
+    }
   }
 
   return pages;
@@ -1018,6 +1059,121 @@ const handlePrint = () => {
   .datatable td:last-child svg {
     width: 17px;
     height: 17px;
+  }
+}
+
+.cl-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 12px;
+  gap: 16px;
+}
+
+.cl-pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.cl-pagination-sep {
+  color: #9ca3af;
+}
+
+.cl-perpage-select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #fff;
+  outline: none;
+}
+
+.cl-perpage-select:focus {
+  border-color: #3b82f6;
+}
+
+.cl-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.cl-page-nav,
+.cl-page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cl-page-nav:hover:not(:disabled),
+.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
+  background: #f3f4f6;
+}
+
+.cl-page-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cl-page-btn--active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.cl-page-btn--dots {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .cl-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cl-pagination-left {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cl-pagination-pages {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cl-pagination {
+    font-size: 11px;
+  }
+
+  .cl-pagination-left {
+    gap: 6px;
+  }
+
+  .cl-page-nav,
+  .cl-page-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 }
 </style>

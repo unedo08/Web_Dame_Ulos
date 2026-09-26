@@ -70,35 +70,55 @@
       </table>
     </div>
 
-    <div class="flex justify-between items-center mt-8 mb-4 text-xs">
-      <div>
-        <label>Tampilkan:</label>
-        <select v-model="itemsPerPage" class="border px-2 py-1 rounded text-xs">
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="all">All</option>
+    <div class="cl-pagination">
+      <div class="cl-pagination-left">
+        <span>
+          Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ filteredData.length }}
+        </span>
+
+        <span class="cl-pagination-sep">|</span>
+
+        <span>Tampilkan</span>
+
+        <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
+          <option :value="10">10</option>
+          <option :value="25">25</option>
+          <option :value="50">50</option>
+          <option :value="100">100</option>
         </select>
+
+        <span>data</span>
       </div>
 
-      <div class="flex space-x-2">
-        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage--" :disabled="currentPage === 1">
-          Sebelumnya
+      <div class="cl-pagination-pages">
+        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+          &#xAB;
         </button>
 
-        <button v-for="p in paginatedPages" :key="p" @click="typeof p === 'number' && (currentPage = p)" :class="['px-3 py-1 rounded',
-          currentPage === p ? 'bg-blue-500 text-white' : 'bg-gray-200']">
-          {{ p }}
+        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+          &#x3C;
         </button>
 
-        <button class="px-3 py-1 bg-gray-300 rounded" @click="currentPage++" :disabled="currentPage === totalPages">
-          Selanjutnya
+        <template v-for="(page, idx) in paginatedPages" :key="idx">
+          <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
+            @click="currentPage = page">
+            {{ page }}
+          </button>
+
+          <span v-else class="cl-page-btn cl-page-btn--dots">
+            ...
+          </span>
+        </template>
+
+        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+          &#x3E;
+        </button>
+
+        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+          &#xBB;
         </button>
       </div>
     </div>
-
-
     <ModalEditPackaging v-model:show="isModalOpen" :barang="selectedBarang" :pengiriman="selectedPengiriman"
       @save="handleSave" @close="isModalOpen = false" />
   </div>
@@ -379,6 +399,21 @@ const totalPages = computed(() =>
     : Math.ceil(filteredData.value.length / itemsPerPage.value)
 );
 
+const startItem = computed(() => {
+  if (filteredData.value.length === 0) return 0;
+
+  return (currentPage.value - 1) * Number(itemsPerPage.value) + 1;
+});
+
+const endItem = computed(() => {
+  if (filteredData.value.length === 0) return 0;
+
+  return Math.min(
+    currentPage.value * Number(itemsPerPage.value),
+    filteredData.value.length
+  );
+});
+
 const paginatedPages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -603,6 +638,121 @@ const formatCurrency = (val) =>
   font-weight: 500;
   white-space: nowrap;
   box-sizing: border-box;
+}
+
+.cl-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 12px;
+  gap: 16px;
+}
+
+.cl-pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.cl-pagination-sep {
+  color: #9ca3af;
+}
+
+.cl-perpage-select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #fff;
+  outline: none;
+}
+
+.cl-perpage-select:focus {
+  border-color: #3b82f6;
+}
+
+.cl-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.cl-page-nav,
+.cl-page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cl-page-nav:hover:not(:disabled),
+.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
+  background: #f3f4f6;
+}
+
+.cl-page-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cl-page-btn--active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.cl-page-btn--dots {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .cl-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cl-pagination-left {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cl-pagination-pages {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cl-pagination {
+    font-size: 11px;
+  }
+
+  .cl-pagination-left {
+    gap: 6px;
+  }
+
+  .cl-page-nav,
+  .cl-page-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
+  }
 }
 
 /* tablet  */

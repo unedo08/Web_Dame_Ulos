@@ -6,12 +6,7 @@
     <div class="pm-toolbar">
       <div class="pm-search-wrap">
         <MagnifyingGlassIcon class="pm-search-icon" />
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Cara metode pembayaran"
-          class="pm-search-input"
-        />
+        <input v-model="search" type="text" placeholder="Cara metode pembayaran" class="pm-search-input" />
       </div>
       <button class="pm-btn-tambah" @click="openModal()">Tambah</button>
     </div>
@@ -57,39 +52,50 @@
 
     <div class="pm-pagination">
       <div class="pm-pagination-left">
-        <span class="pm-pagination-info">
-          Menampilkan {{ Math.min((currentPage - 1) * itemsPerPage + 1, totalItems) }}
-          sampai {{ Math.min(currentPage * itemsPerPage, totalItems) }}
-          dari {{ totalItems }}
+        <span>
+          Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ totalItems }}
         </span>
+
+        <span class="pm-pagination-sep">|</span>
+
+        <span>Tampilkan</span>
+
         <select v-model="itemsPerPage" class="pm-per-page" @change="currentPage = 1">
           <option :value="10">10</option>
           <option :value="25">25</option>
           <option :value="50">50</option>
+          <option :value="100">100</option>
         </select>
+
+        <span>data</span>
       </div>
+
       <div class="pm-pagination-controls">
         <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage = 1">
-          &#171;
+          &#xAB;
         </button>
+
         <button class="pm-page-btn" :disabled="currentPage === 1" @click="currentPage--">
-          &#8249;
+          &#x3C;
         </button>
-        <button
-          v-for="(page, i) in paginatedPages"
-          :key="i"
-          class="pm-page-btn"
-          :class="{ 'pm-page-active': currentPage === page, 'pm-page-ellipsis': page === '...' }"
-          :disabled="page === '...'"
-          @click="typeof page === 'number' && (currentPage = page)"
-        >
-          {{ page }}
-        </button>
+
+        <template v-for="(page, index) in paginatedPages" :key="index">
+          <button v-if="page !== '...'" class="pm-page-btn" :class="{ 'pm-page-active': currentPage === page }"
+            @click="currentPage = page">
+            {{ page }}
+          </button>
+
+          <span v-else class="pm-page-btn pm-page-ellipsis">
+            ...
+          </span>
+        </template>
+
         <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage++">
-          &#8250;
+          &#x3E;
         </button>
+
         <button class="pm-page-btn" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
-          &#187;
+          &#xBB;
         </button>
       </div>
     </div>
@@ -108,12 +114,8 @@
           <label class="pm-label">
             Nama Metode Pembayaran <span class="pm-required">*</span>
           </label>
-          <input
-            v-model="form.carabayar_nama"
-            type="text"
-            placeholder="Masukkan nama metode pembayaran"
-            class="pm-input"
-          />
+          <input v-model="form.carabayar_nama" type="text" placeholder="Masukkan nama metode pembayaran"
+            class="pm-input" />
 
           <label class="pm-label pm-label-status">Status</label>
           <div class="pm-toggle-box">
@@ -124,11 +126,8 @@
               </span>
             </div>
             <label class="pm-switch">
-              <input
-                type="checkbox"
-                :checked="form.carabayar_status == 1"
-                @change="form.carabayar_status = $event.target.checked ? 1 : 0"
-              />
+              <input type="checkbox" :checked="form.carabayar_status == 1"
+                @change="form.carabayar_status = $event.target.checked ? 1 : 0" />
               <span class="pm-slider"></span>
             </label>
           </div>
@@ -136,11 +135,7 @@
 
         <div class="pm-modal-footer">
           <button class="pm-btn-batal" @click="closeModal">Batal</button>
-          <button
-            class="pm-btn-simpan"
-            :disabled="!form.carabayar_nama.trim() || isLoading"
-            @click="handleSave"
-          >
+          <button class="pm-btn-simpan" :disabled="!form.carabayar_nama.trim() || isLoading" @click="handleSave">
             {{ isEditMode ? "Simpan" : "Tambah" }}
           </button>
         </div>
@@ -177,6 +172,8 @@ const {
   statusChipClass,
   statusLabel,
   getDisplayDate,
+  startItem,
+  endItem,
 } = usePaymentMethod();
 
 async function handleSave() {

@@ -95,6 +95,33 @@ export function useBarangKeluar() {
         return data.slice(start, end);
     });
 
+    const startItem = computed(() => {
+        if (filteredData.value.length === 0) return 0;
+
+        if (itemsPerPage.value === "all") {
+            return 1;
+        }
+
+        return (
+            (currentPage.value - 1) *
+            Number(itemsPerPage.value) +
+            1
+        );
+    });
+
+    const endItem = computed(() => {
+        if (filteredData.value.length === 0) return 0;
+
+        if (itemsPerPage.value === "all") {
+            return filteredData.value.length;
+        }
+
+        return Math.min(
+            currentPage.value * Number(itemsPerPage.value),
+            filteredData.value.length
+        );
+    });
+
     const totalPages = computed(() => {
         if (itemsPerPage.value === "all") {
             return 1;
@@ -493,6 +520,8 @@ export function useBarangKeluar() {
         currentPage,
         itemsPerPage,
         totalPages,
+        startItem,
+        endItem,
         paginatedPages,
         paginatedData,
     };

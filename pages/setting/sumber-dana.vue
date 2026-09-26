@@ -78,37 +78,66 @@
         </div>
 
         <div v-if="filteredData.length > 0" class="sd-pagination">
+
             <div class="sd-pagination-left">
+
                 <span>
                     Menampilkan
-                    {{ paginatedData.length }}
+                    {{ startItem }}
+                    sampai
+                    {{ endItem }}
                     dari
                     {{ totalItems }}
-                    data
                 </span>
+
+                <span class="sd-pagination-sep">|</span>
+
+                <span>Tampilkan</span>
+
                 <select v-model="itemsPerPage" class="sd-per-page" @change="currentPage = 1">
-                    <option :value="5">5</option>
                     <option :value="10">10</option>
                     <option :value="25">25</option>
                     <option :value="50">50</option>
+                    <option :value="100">100</option>
                 </select>
+
+                <span>data</span>
+
             </div>
 
             <div class="sd-pagination-controls">
 
+                <!-- First -->
+                <button class="sd-page-btn" :disabled="currentPage === 1" @click="currentPage = 1">
+                    &#xAB;
+                </button>
+
+                <!-- Previous -->
                 <button class="sd-page-btn" :disabled="currentPage === 1" @click="currentPage--">
-                    Prev
+                    &#x3C;
                 </button>
 
-                <button v-for="page in paginatedPages" :key="page" class="sd-page-btn" :class="{
-                    'sd-page-active': currentPage === page,
-                    'sd-page-ellipsis': page === '...'
-                }" :disabled="page === '...'" @click="typeof page === 'number' && (currentPage = page)">
-                    {{ page }}
-                </button>
+                <!-- Pages -->
+                <template v-for="(page, idx) in paginatedPages" :key="idx">
+                    <button v-if="page !== '...'" class="sd-page-btn" :class="{
+                        'sd-page-active': currentPage === page
+                    }" @click="currentPage = page">
+                        {{ page }}
+                    </button>
 
+                    <span v-else class="sd-page-btn sd-page-ellipsis">
+                        ...
+                    </span>
+                </template>
+
+                <!-- Next -->
                 <button class="sd-page-btn" :disabled="currentPage === totalPages" @click="currentPage++">
-                    Next
+                    &#x3E;
+                </button>
+
+                <!-- Last -->
+                <button class="sd-page-btn" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+                    &#xBB;
                 </button>
 
             </div>
@@ -240,6 +269,8 @@ const {
     paginatedData,
     totalItems,
     totalPages,
+    startItem,
+    endItem,
     paginatedPages,
     openModal,
     closeModal,

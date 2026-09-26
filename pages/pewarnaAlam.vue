@@ -79,31 +79,54 @@
                     </tbody>
                 </table>
             </div>
-            <div class="bk-pagination" v-if="masukData.length">
-                <div class="bk-pagination-left">
-                    <label>Tampilkan:</label>
-                    <select v-model="masukPerPage" @change="masukPage = 1">
-                        <option :value="5">5</option>
+            <div class="cl-pagination" v-if="masukData.length">
+                <div class="cl-pagination-left">
+                    <span>
+                        Menampilkan {{ masukStartItem }} sampai {{ masukEndItem }}
+                        dari {{ masukData.length }}
+                    </span>
+
+                    <span class="cl-pagination-sep">|</span>
+
+                    <span>Tampilkan</span>
+
+                    <select v-model="masukPerPage" class="cl-perpage-select" @change="masukPage = 1">
                         <option :value="10">10</option>
-                        <option :value="20">20</option>
+                        <option :value="25">25</option>
                         <option :value="50">50</option>
-                        <option value="all">All</option>
+                        <option :value="100">100</option>
                     </select>
+
+                    <span>data</span>
                 </div>
-                <div class="bk-pagination-right">
-                    <button class="bk-page-btn" :disabled="masukPage === 1" @click="masukPage--">
-                        Sebelumnya
+
+                <div class="cl-pagination-pages">
+                    <button class="cl-page-nav" :disabled="masukPage === 1" @click="masukPage = 1">
+                        &#xAB;
                     </button>
-                    <button v-for="(page, index) in masukPaginatedPages" :key="index"
-                        @click="typeof page === 'number' && (masukPage = page)" :disabled="page === '...'" :class="[
-                            'bk-page-number',
-                            page === masukPage ? 'active' : '',
-                            page === '...' ? 'ellipsis' : ''
-                        ]">
-                        {{ page }}
+
+                    <button class="cl-page-nav" :disabled="masukPage === 1" @click="masukPage--">
+                        &#x3C;
                     </button>
-                    <button class="bk-page-btn" :disabled="masukPage === masukTotalPage" @click="masukPage++">
-                        Selanjutnya
+
+                    <template v-for="(page, idx) in masukPaginatedPages" :key="idx">
+                        <button v-if="page !== '...'" class="cl-page-btn"
+                            :class="{ 'cl-page-btn--active': masukPage === page }" @click="masukPage = page">
+                            {{ page }}
+                        </button>
+
+                        <span v-else class="cl-page-btn cl-page-btn--dots">
+                            ...
+                        </span>
+                    </template>
+
+                    <button class="cl-page-nav" :disabled="masukPage === masukTotalPage" @click="masukPage++">
+                        &#x3E;
+                    </button>
+
+                    <button class="cl-page-nav" :disabled="masukPage === masukTotalPage"
+                        @click="masukPage = masukTotalPage">
+                        &#xBB;
                     </button>
                 </div>
             </div>
@@ -153,35 +176,54 @@
                     </tbody>
                 </table>
             </div>
-            <div class="bk-pagination" v-if="stokData.length">
+            <div class="cl-pagination" v-if="stokData.length">
+                <div class="cl-pagination-left">
+                    <span>
+                        Menampilkan {{ stokStartItem }} sampai {{ stokEndItem }}
+                        dari {{ stokData.length }}
+                    </span>
 
-                <div class="bk-pagination-left">
-                    <label>Tampilkan:</label>
+                    <span class="cl-pagination-sep">|</span>
 
-                    <select v-model="stokPerPage" @change="stokPage = 1">
+                    <span>Tampilkan</span>
 
-                        <option :value="5">5</option>
+                    <select v-model="stokPerPage" class="cl-perpage-select" @change="stokPage = 1">
                         <option :value="10">10</option>
-                        <option :value="20">20</option>
+                        <option :value="25">25</option>
                         <option :value="50">50</option>
-                        <option value="all">All</option>
-
+                        <option :value="100">100</option>
                     </select>
+
+                    <span>data</span>
                 </div>
-                <div class="bk-pagination-right">
-                    <button class="bk-page-btn" :disabled="stokPage === 1" @click="stokPage--">
-                        Sebelumnya
+
+                <div class="cl-pagination-pages">
+                    <button class="cl-page-nav" :disabled="stokPage === 1" @click="stokPage = 1">
+                        &#xAB;
                     </button>
-                    <button v-for="(page, index) in stokPaginatedPages" :key="index"
-                        @click="typeof page === 'number' && (stokPage = page)" :disabled="page === '...'" :class="[
-                            'bk-page-number',
-                            stokPage === page ? 'active' : '',
-                            page === '...' ? 'ellipsis' : ''
-                        ]">
-                        {{ page }}
+
+                    <button class="cl-page-nav" :disabled="stokPage === 1" @click="stokPage--">
+                        &#x3C;
                     </button>
-                    <button class="bk-page-btn" :disabled="stokPage === stokTotalPage" @click="stokPage++">
-                        Selanjutnya
+
+                    <template v-for="(page, idx) in stokPaginatedPages" :key="idx">
+                        <button v-if="page !== '...'" class="cl-page-btn"
+                            :class="{ 'cl-page-btn--active': stokPage === page }" @click="stokPage = page">
+                            {{ page }}
+                        </button>
+
+                        <span v-else class="cl-page-btn cl-page-btn--dots">
+                            ...
+                        </span>
+                    </template>
+
+                    <button class="cl-page-nav" :disabled="stokPage === stokTotalPage" @click="stokPage++">
+                        &#x3E;
+                    </button>
+
+                    <button class="cl-page-nav" :disabled="stokPage === stokTotalPage"
+                        @click="stokPage = stokTotalPage">
+                        &#xBB;
                     </button>
                 </div>
             </div>
@@ -261,31 +303,54 @@
                     </tbody>
                 </table>
             </div>
-            <div class="bk-pagination" v-if="keluarData.length">
-                <div class="bk-pagination-left">
-                    <label>Tampilkan:</label>
-                    <select v-model="keluarPerPage" @change="keluarPage = 1">
-                        <option :value="5">5</option>
+            <div class="cl-pagination" v-if="keluarData.length">
+                <div class="cl-pagination-left">
+                    <span>
+                        Menampilkan {{ keluarStartItem }} sampai {{ keluarEndItem }}
+                        dari {{ keluarData.length }}
+                    </span>
+
+                    <span class="cl-pagination-sep">|</span>
+
+                    <span>Tampilkan</span>
+
+                    <select v-model="keluarPerPage" class="cl-perpage-select" @change="keluarPage = 1">
                         <option :value="10">10</option>
-                        <option :value="20">20</option>
+                        <option :value="25">25</option>
                         <option :value="50">50</option>
-                        <option value="all">All</option>
+                        <option :value="100">100</option>
                     </select>
+
+                    <span>data</span>
                 </div>
-                <div class="bk-pagination-right">
-                    <button class="bk-page-btn" :disabled="keluarPage === 1" @click="keluarPage--">
-                        Sebelumnya
+
+                <div class="cl-pagination-pages">
+                    <button class="cl-page-nav" :disabled="keluarPage === 1" @click="keluarPage = 1">
+                        &#xAB;
                     </button>
-                    <button v-for="(page, index) in keluarPaginatedPages" :key="index"
-                        @click="typeof page === 'number' && (keluarPage = page)" :disabled="page === '...'" :class="[
-                            'bk-page-number',
-                            keluarPage === page ? 'active' : '',
-                            page === '...' ? 'ellipsis' : ''
-                        ]">
-                        {{ page }}
+
+                    <button class="cl-page-nav" :disabled="keluarPage === 1" @click="keluarPage--">
+                        &#x3C;
                     </button>
-                    <button class="bk-page-btn" :disabled="keluarPage === keluarTotalPage" @click="keluarPage++">
-                        Selanjutnya
+
+                    <template v-for="(page, idx) in keluarPaginatedPages" :key="idx">
+                        <button v-if="page !== '...'" class="cl-page-btn"
+                            :class="{ 'cl-page-btn--active': keluarPage === page }" @click="keluarPage = page">
+                            {{ page }}
+                        </button>
+
+                        <span v-else class="cl-page-btn cl-page-btn--dots">
+                            ...
+                        </span>
+                    </template>
+
+                    <button class="cl-page-nav" :disabled="keluarPage === keluarTotalPage" @click="keluarPage++">
+                        &#x3E;
+                    </button>
+
+                    <button class="cl-page-nav" :disabled="keluarPage === keluarTotalPage"
+                        @click="keluarPage = keluarTotalPage">
+                        &#xBB;
                     </button>
                 </div>
             </div>
@@ -676,8 +741,9 @@ const {
     isSelesaiOpen, selesaiRecord, selesaiForm, selesaiErrors, fotoPreview, selesaiSubmitting,
     openSelesai, closeSelesai, handleFotoUpload, submitSelesai,
     isKeluarViewOpen, keluarViewRecord, openKeluarView, closeKeluarView,
-    isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete, masukPage,
-    masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages, stokPage,stokPerPage, stokPaginated, stokTotalPage, 
-    stokPaginatedPages, keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage,keluarPaginatedPages,
+    isKeluarDeleteOpen, pendingKeluarDelete, askKeluarDelete, cancelKeluarDelete, confirmKeluarDelete,
+    masukPage, masukPerPage, masukTotalPage, masukPaginated, masukPaginatedPages, masukStartItem, masukEndItem, stokPage, stokPerPage,
+    stokPaginated, stokTotalPage, stokPaginatedPages, stokStartItem, stokEndItem, keluarPage, keluarPerPage, keluarPaginated, keluarTotalPage,
+    keluarPaginatedPages, keluarStartItem, keluarEndItem,
 } = useBenang();
 </script>

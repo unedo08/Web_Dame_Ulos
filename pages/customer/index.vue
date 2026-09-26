@@ -34,55 +34,55 @@
         <thead>
           <tr>
             <th>#</th>
-            <th class="sortable" @click="setSort('tanggal_daftar')">
+            <th>
               <div class="cl-th-inner">
                 Tanggal
-                <span class="cl-sort-icon" :class="{ active: sortField === 'tanggal_daftar' }">
+                <span class="" :class="{ active: sortField === 'tanggal_daftar' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
               </div>
             </th>
-            <th class="sortable" @click="setSort('customer_akun')">
+            <th>
               <div class="cl-th-inner">
                 Akun
-                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_akun' }">
+                <span class="" :class="{ active: sortField === 'customer_akun' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
               </div>
             </th>
-            <th class="sortable" @click="setSort('customer_nama')">
+            <th>
               <div class="cl-th-inner">
                 Nama
-                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_nama' }">
+                <span class="" :class="{ active: sortField === 'customer_nama' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
               </div>
             </th>
-            <th class="sortable" @click="setSort('customer_alamat')">
+            <th>
               <div class="cl-th-inner">
                 Alamat
-                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_alamat' }">
+                <span class="" :class="{ active: sortField === 'customer_alamat' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
               </div>
             </th>
-            <th class="sortable" @click="setSort('total_transaksi')">
+            <th>
               <div class="cl-th-inner">
                 Total Transaksi
-                <span class="cl-sort-icon" :class="{ active: sortField === 'total_transaksi' }">
+                <span class="" :class="{ active: sortField === 'total_transaksi' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
               </div>
             </th>
-            <th class="sortable" @click="setSort('customer_notelepon')">
+            <th>
               <div class="cl-th-inner">
                 Nomor Telepon
-                <span class="cl-sort-icon" :class="{ active: sortField === 'customer_notelepon' }">
+                <span class="" :class="{ active: sortField === 'customer_notelepon' }">
                   <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 6l5-6 5 6z"/></svg>
                   <svg viewBox="0 0 10 6" fill="currentColor" style="transform:rotate(180deg)"><path d="M0 6l5-6 5 6z"/></svg>
                 </span>
@@ -193,16 +193,6 @@ async function fetchData() {
   } catch (e) {
     console.error('Error fetching customer:', e)
   }
-}
-
-function setSort(field) {
-  if (sortField.value === field) {
-    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
-  } else {
-    sortField.value = field
-    sortDir.value = 'asc'
-  }
-  currentPage.value = 1
 }
 
 const filteredCustomer = computed(() => {

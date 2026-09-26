@@ -371,92 +371,66 @@
 
 .jp-pagination {
   display: flex;
-
   justify-content: space-between;
   align-items: center;
-
-  margin-top: 16px;
-
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   font-size: 12px;
-
   color: #6b7280;
-
   width: 100%;
-
   box-sizing: border-box;
-
-  gap: 12px;
+  gap: 16px;
 }
 
 .jp-pagination-left {
   display: flex;
-
   align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
 
-  gap: 12px;
-
-  flex-wrap: wrap;
+.jp-pagination-sep {
+  color: #9ca3af;
 }
 
 .jp-per-page {
   border: 1px solid #d1d5db;
-
   border-radius: 6px;
-
   padding: 4px 8px;
-
   font-size: 12px;
-
   color: #374151;
-
   background: #fff;
-
-  cursor: pointer;
-
   outline: none;
-
-  height: 28px;
+  height: auto;
+  cursor: pointer;
 }
 
 .jp-per-page:focus {
-  border-color: #06b6d4;
+  border-color: #3b82f6;
 }
 
 .jp-pagination-controls {
   display: flex;
-
   align-items: center;
-
   gap: 4px;
-
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .jp-page-btn {
-  min-width: 32px;
-  height: 32px;
-
-  padding: 0 6px;
-
-  border: 1px solid #e5e7eb;
-
+  min-width: 30px;
+  height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
-
   background: #fff;
-
-  font-size: 13px;
-
+  font-size: 12px;
   color: #374151;
-
   cursor: pointer;
-
-  transition: background 0.15s;
-
+  transition: all 0.15s ease;
   display: inline-flex;
-
   align-items: center;
   justify-content: center;
-
   box-sizing: border-box;
 }
 
@@ -465,24 +439,19 @@
 }
 
 .jp-page-btn:disabled {
-  opacity: 0.4;
-
-  cursor: default;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .jp-page-active {
-  background: #06b6d4 !important;
-
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
   color: #fff !important;
-
-  border-color: #06b6d4 !important;
 }
 
 .jp-page-ellipsis {
-  border: none;
-
-  background: none !important;
-
+  border-color: transparent;
+  background: transparent !important;
   cursor: default !important;
 }
 
@@ -1025,46 +994,32 @@
 
   .jp-pagination {
     flex-direction: column;
-
     align-items: stretch;
-
-    justify-content: flex-start;
-
-    gap: 10px;
-
-    margin-top: 12px;
+    gap: 12px;
   }
 
   .jp-pagination-left {
     justify-content: flex-start;
-
     flex-wrap: wrap;
-
     gap: 6px;
-
-    font-size: 11px;
   }
 
   .jp-pagination-controls {
     justify-content: center;
-
+    align-items: center;
     flex-wrap: wrap;
-
     gap: 4px;
   }
 
   .jp-page-btn {
-    min-width: 30px;
-    height: 30px;
-
-    padding: 0 7px;
-
-    font-size: 10px;
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 
   .jp-per-page {
     height: 28px;
-
     font-size: 11px;
   }
 
@@ -1220,16 +1175,23 @@
 
 
   /* Pagination */
-  .jp-page-btn {
-    min-width: 29px;
-    height: 29px;
+  .jp-pagination {
+    font-size: 11px;
+  }
 
-    font-size: 10px;
+  .jp-pagination-left {
+    gap: 6px;
+  }
+
+  .jp-page-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 
   .jp-per-page {
     height: 27px;
-
     font-size: 10px;
   }
 
