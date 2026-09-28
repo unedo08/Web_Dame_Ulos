@@ -161,13 +161,13 @@
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
       <div class="flex items-center justify-between pt-2">
         <div class="flex-1">
-          <!-- <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." /> -->
+          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap justify-end gap-4">
-          <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
+          <!-- <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
             @click="openSearchModal">
             🔍 Search
-          </button>
+          </button> -->
           <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
             @click="openModal('priceTag')">
             Print Price Tag
