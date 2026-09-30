@@ -12,7 +12,7 @@
 
     <div class="datatable-wrapper">
       <table class="datatable w-full rounded-md overflow-hidden mt-4">
-        <thead class="bg-blue-100">
+        <thead>
           <tr>
             <th class="px-4 py-2 text-left">No.</th>
             <th class="px-4 py-2 text-left">Kode Barang</th>
@@ -467,8 +467,18 @@ watch(isModalOpen, async (val) => {
 
 .datatable {
   width: 100%;
+  min-width: 1100px;
+  max-width: none;
+
   border-collapse: collapse;
-  margin-top: 20px;
+
+  font-size: 13px;
+
+  table-layout: auto;
+}
+
+.datatable thead{
+  background: #F3F4F6;
 }
 
 .datatable th,
@@ -479,7 +489,20 @@ watch(isModalOpen, async (val) => {
 }
 
 .datatable th {
-  background-color: #f4f4f4;
+  padding: 12px 14px;
+
+  text-align: left;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #6B7280;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #E5E7EB;
+
+  user-select: none;
 }
 
 .btn-add {
@@ -515,13 +538,22 @@ watch(isModalOpen, async (val) => {
    ========================= */
 
 .datatable-wrapper {
-  display: block;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+
   overflow-x: auto;
   overflow-y: hidden;
+
+  /* border: 1px solid #E5E7EB; */
+  border-radius: 12px;
+
+  background: #fff;
+
+  margin-bottom: 16px;
+
   -webkit-overflow-scrolling: touch;
+
   scrollbar-width: thin;
 }
 

@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div>
+  <div class="datatable-wrapper">
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>

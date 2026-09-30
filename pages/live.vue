@@ -926,23 +926,36 @@ watch(isModalOpenAddOrder, async (val) => {
 }
 
 .live-table-wrapper {
-  display: block;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+
   overflow-x: auto;
   overflow-y: hidden;
+
+  /* border: 1px solid #E5E7EB; */
+  border-radius: 12px;
+
+  background: #fff;
+
+  margin-bottom: 16px;
+
   -webkit-overflow-scrolling: touch;
+
   scrollbar-width: thin;
 }
 
 .datatable {
   width: 100%;
-  min-width: 1000px;
+  min-width: 1100px;
   max-width: none;
   border-collapse: collapse;
+  font-size: 13px;
   table-layout: auto;
-  margin-top: 20px;
+}
+
+.datatable thead{
+  background: #F3F4F6;
 }
 
 .datatable th,
@@ -954,7 +967,20 @@ watch(isModalOpenAddOrder, async (val) => {
 }
 
 .datatable th {
-  background-color: #f4f4f4;
+  padding: 12px 14px;
+
+  text-align: left;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #6B7280;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #E5E7EB;
+
+  user-select: none;
 }
 
 .search-box::placeholder {

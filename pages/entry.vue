@@ -44,7 +44,7 @@
 
       <div class="datatable-wrapper">
         <table class="datatable rounded-md overflow-hidden text-sm">
-          <thead class="bg-blue-100">
+          <thead>
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
               <th class="px-4 py-2 text-left">Kode Barang</th>
@@ -181,7 +181,7 @@
 
       <div class="datatable-wrapper">
         <table class="datatable rounded-md overflow-hidden text-sm">
-          <thead class="bg-blue-100">
+          <thead>
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
               <th class="px-4 py-2 text-left">Kode Barang</th>
@@ -319,7 +319,7 @@
 
       <div class="datatable-wrapper">
         <table class="datatable rounded-md overflow-hidden text-sm">
-          <thead class="bg-blue-100">
+          <thead>
             <tr>
               <th class="px-4 py-2 text-left">Tanggal</th>
               <th class="px-4 py-2 text-left">Kode Barang</th>
@@ -2123,7 +2123,6 @@ watch([searchQuery, itemsPerPage], () => {
 }
 
 .datatable-wrapper {
-  display: block;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -2131,7 +2130,15 @@ watch([searchQuery, itemsPerPage], () => {
   overflow-x: auto;
   overflow-y: hidden;
 
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+
+  background: #fff;
+
+  margin-bottom: 16px;
+
   -webkit-overflow-scrolling: touch;
+
   scrollbar-width: thin;
 }
 
@@ -2139,9 +2146,16 @@ watch([searchQuery, itemsPerPage], () => {
   width: 100%;
   min-width: 1100px;
   max-width: none;
+
   border-collapse: collapse;
+
+  font-size: 13px;
+
   table-layout: auto;
-  margin-top: 20px;
+}
+
+.datatable thead{
+  background: #F3F4F6;
 }
 
 .datatable th,
@@ -2154,7 +2168,20 @@ watch([searchQuery, itemsPerPage], () => {
 }
 
 .datatable th {
-  background-color: #f4f4f4;
+  padding: 12px 14px;
+
+  text-align: left;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #6B7280;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #E5E7EB;
+
+  user-select: none;
 }
 
 button {

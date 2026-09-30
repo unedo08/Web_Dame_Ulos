@@ -9,10 +9,32 @@
   height: 34px;
 }
 
+.datatable-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  /* border: 1px solid #E5E7EB; */
+  border-radius: 12px;
+
+  background: #fff;
+
+  margin-bottom: 16px;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+}
+
 .datatable {
   width: 100%;
+  min-width: 760px;
+  max-width: none;
   border-collapse: collapse;
-  margin-top: 20px;
+  table-layout: auto;
 }
 
 .datatable th,
@@ -22,8 +44,25 @@
   font-size: 12px;
 }
 
+.datatable thead{
+  background: #F3F4F6;
+}
+
 .datatable th {
-  background-color: #f4f4f4;
+  padding: 12px 14px;
+
+  text-align: left;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #6B7280;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid #E5E7EB;
+
+  user-select: none;
 }
 
 .input-field {
