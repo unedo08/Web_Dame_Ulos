@@ -68,8 +68,8 @@
                                 </li>
                             </ul>
                         </td>
-                        <td>{{ formatDate(row.barang_keluar_tanggal_masuk) }}</td>
-                        <td>{{ row.completer?.name || "-" }}</td>
+                        <td>{{ formatDate(row.created_at) }}</td>
+                        <td>{{ row.creator?.name || "-" }}</td>
                         <td>
                             <div class="bk-action-group">
                                 <!-- Edit: only for PENDING -->
