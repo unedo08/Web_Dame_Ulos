@@ -134,36 +134,72 @@ const filteredMenu = computed(() => {
 </script>
 
 <template>
-  <aside class="w-56 h-full flex flex-col text-white">
-    <header class="flex-shrink-0 flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer">
+  <aside class="w-56 h-full min-h-0 flex flex-col text-white overflow-hidden">
+    <header
+      class="flex-shrink-0 flex items-center gap-2 p-4 hover:scale-[101%] transition cursor-pointer"
+    >
       <NuxtLink to="/beranda" class="flex items-center gap-2">
         <Logo />
       </NuxtLink>
     </header>
 
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
       <div class="grid gap-2 text-left">
         <div v-for="(item, index) in filteredMenu" :key="index">
-          <NuxtLink v-if="!item.children" :to="item.path"
-            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
-            <component :is="item.icon" class="w-5 h-5 text-white" />
-            <span class="truncate">{{ item.title }}</span>
+          <NuxtLink
+            v-if="!item.children"
+            :to="item.path"
+            class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
+          >
+            <component
+              :is="item.icon"
+              class="w-5 h-5 text-white"
+            />
+
+            <span class="truncate">
+              {{ item.title }}
+            </span>
           </NuxtLink>
 
           <div v-else>
-            <div @click="toggleDropdown(index)"
-              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer">
+            <div
+              @click="toggleDropdown(index)"
+              class="flex items-center justify-between hover:bg-gray-500 p-2 rounded transition cursor-pointer"
+            >
               <div class="flex items-center gap-2">
-                <component :is="item.icon" class="w-5 h-5 text-white" />
-                <span class="truncate">{{ item.title }}</span>
+                <component
+                  :is="item.icon"
+                  class="w-5 h-5 text-white"
+                />
+
+                <span class="truncate">
+                  {{ item.title }}
+                </span>
               </div>
-              <component :is="activeDropdown === index ? ChevronUpIcon : ChevronDownIcon" class="w-4 h-4 text-white" />
+
+              <component
+                :is="
+                  activeDropdown === index
+                    ? ChevronUpIcon
+                    : ChevronDownIcon
+                "
+                class="w-4 h-4 text-white"
+              />
             </div>
 
-            <div v-if="activeDropdown === index" class="ml-4">
-              <NuxtLink v-for="(child, idx) in item.children" :key="idx" :to="child.path"
-                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition">
-                <span class="truncate">{{ child.title }}</span>
+            <div
+              v-if="activeDropdown === index"
+              class="ml-4"
+            >
+              <NuxtLink
+                v-for="(child, idx) in item.children"
+                :key="idx"
+                :to="child.path"
+                class="flex items-center gap-2 hover:bg-gray-500 p-2 rounded transition"
+              >
+                <span class="truncate">
+                  {{ child.title }}
+                </span>
               </NuxtLink>
             </div>
           </div>
@@ -172,3 +208,36 @@ const filteredMenu = computed(() => {
     </div>
   </aside>
 </template>
+
+<style scoped>
+.custom-scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Chrome / Edge / Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 2px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #999 !important;
+  border-radius: 999px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}
+</style>
