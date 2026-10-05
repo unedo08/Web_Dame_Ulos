@@ -1,6 +1,6 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg">
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
+    <div class="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Detail Transaksi</h2>
         <button @click="$emit('close')" class="text-gray-500 hover:text-red-500 text-xl">

@@ -23,7 +23,6 @@ const logout = async () => {
   try {
     await $api.post("/api/logout");
   } catch {
-
   } finally {
     clearToken();
     router.replace("/");
@@ -38,10 +37,17 @@ const preRefresh = async () => {
 
   try {
     const res = await refreshApi.post("/api/refresh");
-    setToken(res.data.token, res.data.expires_in);
+
+    setToken(
+      res.data.token,
+      res.data.expires_in
+    );
+
     console.info("[AUTH] Token pre-refresh berhasil");
   } catch (err) {
-    console.warn("[AUTH] Pre-refresh gagal, menunggu interceptor");
+    console.warn(
+      "[AUTH] Pre-refresh gagal, menunggu interceptor"
+    );
   } finally {
     authState.isRefreshing = false;
   }
@@ -69,42 +75,75 @@ const checkSession = () => {
 
 onMounted(() => {
   checkSession();
-  timer = setInterval(checkSession, CHECK_INTERVAL);
+
+  timer = setInterval(
+    checkSession,
+    CHECK_INTERVAL
+  );
 });
 
 onUnmounted(() => {
   clearInterval(timer);
 });
-</script>
-<template>
-  <div class="bg-white min-h-screen">
-    <div class="w-64 bg-[#520000] text-white fixed top-0 left-0 h-screen p-6">
-      <Sidebar />
-    </div>
-    <div class="ml-64">
-
-      <Topbar />
-      <div class="pt-[60px] px-6">
-        <slot />
-      </div>
-    </div>
-  </div>
-</template>
-<script>
-import Topbar from "../components/Topbar/index.vue";
-
-export default {
-  name: "DefaultLayout",
-  components: { Topbar },
-};
 
 definePageMeta({
   middleware: "auth",
 });
 </script>
 
+
+<template>
+  <div class="app-layout">
+    <Sidebar />
+    <div class="main-area">
+      <Topbar />
+      <main class="page-content">
+        <slot />
+      </main>
+    </div>
+  </div>
+</template>
+
+
 <style scoped>
 * {
   font-family: "Nunito", sans-serif;
+}
+
+.app-layout {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.main-area {
+  min-height: 100vh;
+  margin-left: 16rem;
+}
+
+.page-content {
+  min-height: 100vh;
+  padding-top: 60px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 767px) {
+
+  .main-area {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .page-content {
+    width: 100%;
+    padding-top: 60px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
 }
 </style>

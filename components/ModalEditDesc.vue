@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center print:bg-white print:relative"
+    class="fixed inset-0 z-[2000] bg-black bg-opacity-50 flex items-center justify-center print:bg-white print:relative"
   >
     <div
       class="bg-white p-6 rounded-lg w-[600px] print:rounded-none print:w-full print:shadow-none print-area"

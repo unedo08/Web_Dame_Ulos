@@ -229,7 +229,7 @@
   </div>
 
   <!-- Modal Add Order -->
-  <div v-if="isModalOpenAddOrder" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="isModalOpenAddOrder" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Tambah Transaksi Live</h3>
       <form @submit.prevent="submitLiveOrder">
@@ -307,7 +307,7 @@
 
   <!-- Modal Edit Order -->
   <div v-if="isModalOpenEditOrder"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Edit Transaksi Live</h3>
       <form @submit.prevent="submitLiveEditOrder">

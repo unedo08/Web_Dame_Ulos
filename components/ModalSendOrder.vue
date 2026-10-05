@@ -1,5 +1,5 @@
 <template>
-    <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div v-if="visible" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60">
         <div class="bg-white rounded-lg shadow-xl max-w-[40%] w-full overflow-y-auto p-6 relative animate-fadeIn">
             <h2 class="text-xl font-semibold mb-6 border-b pb-3">Kirim Order</h2>
 

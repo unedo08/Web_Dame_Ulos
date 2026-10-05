@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]">
             <div class="bg-white p-6 rounded-lg w-[420px]">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">Edit User</h3>
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <div v-if="isAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div v-if="isAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]">
             <div class="bg-white p-6 rounded-lg w-[420px]">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">Tambah User Baru</h3>

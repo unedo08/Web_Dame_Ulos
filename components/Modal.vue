@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto">
       <h2 class="text-xl font-bold mb-4">{{ modalTitle }}</h2>
 

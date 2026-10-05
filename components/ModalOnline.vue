@@ -3,7 +3,7 @@
     class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
   >
     <div
-      class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-50"
+      class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-[2000]"
     >
       <h2 class="text-2xl font-semibold mb-6">Tambah Online Transaksi</h2>
 

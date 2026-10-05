@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  <div v-if="show" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40">
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] w-[800px] max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center px-6 py-4">
         <h2 class="text-lg font-bold">Form Marketing</h2>

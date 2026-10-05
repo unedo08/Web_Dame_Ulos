@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-50">
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-[2000]">
       <div class="bg-white p-6 rounded-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
 
@@ -131,7 +131,7 @@
       </div>
     </div>
 
-    <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+    <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
         <div class="mb-4">

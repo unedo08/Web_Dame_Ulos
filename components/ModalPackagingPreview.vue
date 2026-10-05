@@ -1,5 +1,5 @@
 <template>
-    <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+    <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-black/40 z-[2000]">
         <div class="bg-white p-6 rounded-lg shadow-lg w-[700px] border border-gray-300">
 
             <div ref="printContent">

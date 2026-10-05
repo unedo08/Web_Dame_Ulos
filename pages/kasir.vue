@@ -92,7 +92,7 @@
   <div v-if="openModalHold" class="fixed inset-0 bg-black/40 z-40" @click="openModalHold = false"></div>
   <Transition name="slide-right">
     <div v-if="openModalHold"
-      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-50 overflow-y-auto flex flex-col">
+      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-[2000] overflow-y-auto flex flex-col">
       <div class="sticky top-0 z-20 bg-white border-b p-4">
         <div class="flex justify-between items-center">
           <h2 class="text-md font-semibold">Pending List</h2>

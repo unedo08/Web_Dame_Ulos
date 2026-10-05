@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full max-h-[90vh] overflow-y-auto p-6 relative">
       <button class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl" @click="closeModal">✕</button>
       <h2 class="text-xl font-semibold mb-4">Edit Pre-Order Transaksi</h2>
@@ -159,7 +159,7 @@
   </div>
 
   <div v-if="showImageModal"
-    class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
     <div class="bg-white p-4 rounded-lg max-w-2xl w-full relative">
       <button class="absolute right-3 top-2 text-xl text-gray-500 hover:text-black" @click="showImageModal = false">
         ✕

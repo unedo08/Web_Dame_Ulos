@@ -464,7 +464,7 @@
       </div>
     </div>
 
-    <div v-if="showModalAdd" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalAdd" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
@@ -574,7 +574,7 @@
       @scanned="tambahBarang" @sizeSubmitted="handleSizeSubmitted" />
 
     <!-- Modal Add Size  -->
-    <div v-if="showModalAddSize" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalAddSize" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
 
@@ -745,7 +745,7 @@
       </div>
     </div>
 
-    <div v-if="showModalSearch" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalSearch" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
         <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
         <input v-model="searchCode" @keyup.enter="handleSearch" type="text" class="w-full border rounded px-3 py-2"

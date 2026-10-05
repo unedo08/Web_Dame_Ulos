@@ -125,7 +125,7 @@
     </div>
 
     <!-- Modal Dialog -->
-    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
         <form @submit.prevent="submitAcara">
@@ -183,7 +183,7 @@
       </div>
     </div>
 
-    <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+    <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-semibold mb-4">
           Edit Acara - {{ editForm.acara_nama }}
