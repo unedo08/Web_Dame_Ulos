@@ -9,7 +9,7 @@ const roleMap = {
 };
 
 const routeRoleMap = {
-  "/beranda": ["super-admin", "admin", "marketing", "quality-control", "packaging", "sosial-media"],
+  "/beranda": ["super-admin", "admin", "marketing", "quality-control", "packaging", "pewarna-alam", "sosial-media"],
 
   "/customer": ["super-admin", "admin", "marketing", "packaging"],
 

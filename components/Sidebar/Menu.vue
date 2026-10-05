@@ -105,7 +105,7 @@ const roleAccess = {
   marketing: ["Akun Pembeli", "Beranda", "Barang Masuk", "Live", "Kasir", "Packaging", "Acara", "Database Penjualan", "Database Inventory", "Cek Produk"],
   "quality-control": ["Code", "Barang Masuk", "Kasir", "Inventory", "Database Penjualan", "Database Inventory", "Barang Keluar"],
   packaging: ["Akun Pembeli", "Live", "Kasir", "Packaging", "Inventory", "Database Penjualan", "Database Inventory"],
-  "pewarna-alam": ["Pewarna Alam", "Beranda"],
+  "pewarna-alam": ["Benang", "Beranda"],
   "sosial-media": ["Kasir", "Acara"],
 };
 
