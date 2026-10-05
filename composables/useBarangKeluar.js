@@ -280,6 +280,25 @@ export function useBarangKeluar() {
         isEditOpen.value = true;
     };
 
+    const isEditInvalid = computed(() => {
+        if (!editRecord.value?.details) return true;
+
+        return editRecord.value.details.some(d => {
+            const id = d.barang_keluar_detail_id;
+
+            if (editChecked.value[id]) {
+                const qty = Number(editQty.value[id]);
+                return (
+                    !qty ||
+                    qty < 1 ||
+                    qty > Number(d.barang_keluar_detail_jumlah)
+                );
+            }
+
+            return false;
+        });
+    });
+
     const closeEdit = () => {
         isEditOpen.value = false;
         editRecord.value = null;
@@ -524,5 +543,6 @@ export function useBarangKeluar() {
         endItem,
         paginatedPages,
         paginatedData,
+        isEditInvalid
     };
 }

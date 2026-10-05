@@ -739,6 +739,11 @@
     font-size: 13px;
 }
 
+.bk-btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .bk-date-input {
     padding: 8px 12px;
     border: 1px solid #d1d5db;

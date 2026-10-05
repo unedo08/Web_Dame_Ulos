@@ -244,7 +244,7 @@
 
                 <div class="bk-modal-footer">
                     <button class="bk-btn-cancel" @click="closeEdit">Batal</button>
-                    <button class="bk-btn-save" :disabled="isSavingEdit" @click="submitEdit">
+                    <button class="bk-btn-save" :disabled="isSavingEdit || isEditInvalid" @click="submitEdit">
                         {{ isSavingEdit ? "Menyimpan..." : "Selesai" }}
                     </button>
                 </div>
@@ -395,5 +395,6 @@ const {
     endItem,
     paginatedPages,
     paginatedData,
+    isEditInvalid
 } = useBarangKeluar();
 </script>
