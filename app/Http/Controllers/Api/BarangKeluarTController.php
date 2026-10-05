@@ -21,7 +21,9 @@ class BarangKeluarTController extends Controller
             'details',
             'creator:id,name',
             'completer:id,name',
-        ])->whereNull('deleted_at');
+        ])->whereNull('deleted_at')
+            // Skip records whose details were all soft-deleted (moved to a SELESAI record)
+            ->whereHas('details');
 
         if ($search) {
             $query->where('barang_keluar_nama_outsource', 'like', "%{$search}%");
