@@ -1,6 +1,8 @@
 <template>
-  <div v-if="chartData.datasets.length">
-    <Bar :data="chartData" :options="chartOptions" style="height: 320px;" />
+  <div v-if="chartData.datasets.length" class="bar-chart-scroll">
+    <div class="bar-chart-inner" :style="{ width: chartWidth + 'px' }">
+      <Bar :data="chartData" :options="chartOptions" :width="chartWidth" :height="260" />
+    </div>
   </div>
 
   <div v-else class="loading-placeholder">
@@ -53,29 +55,30 @@ const chartData = computed(() => {
   }
 })
 
+const chartWidth = computed(() =>
+  Math.max(700, (chartData.value.labels?.length || 0) * 85)
+)
+
 const chartOptions = {
-  responsive: true,
+  responsive: false,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
-      display: true,
       position: "bottom"
-    },
-    tooltip: {
-      callbacks: {
-        label: ctx => {
-          return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString("id-ID")}`
-        }
-      }
     }
   },
   scales: {
-    y: {
-      title: {
-        display: true,
-        text: "Nilai (Rp)"
-      },
+    x: {
       ticks: {
-        callback: val => val.toLocaleString("id-ID")
+        autoSkip: false,
+        maxRotation: 45,
+        minRotation: 45
+      }
+    },
+    y: {
+      beginAtZero: true,
+      ticks: {
+        callback: value => Number(value).toLocaleString("id-ID")
       }
     }
   }
@@ -89,5 +92,20 @@ const chartOptions = {
   align-items: center;
   justify-content: center;
   color: #94a3b8;
+}
+
+.bar-chart-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.bar-chart-inner {
+  position: relative;
+  height: 260px;
 }
 </style>

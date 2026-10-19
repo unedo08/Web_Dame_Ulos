@@ -115,7 +115,7 @@ function formatCurrency(value) {
   position: fixed;
   inset: 0;
 
-  z-index: 50;
+  z-index: 2000;
 
   display: flex;
   align-items: center;

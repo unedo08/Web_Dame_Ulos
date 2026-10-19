@@ -1,6 +1,8 @@
 <template>
-  <div v-if="chartData.datasets.length">
-    <Line :data="chartData" :options="chartOptions" style="height: 320px; width: 100%;" />
+  <div v-if="chartData.datasets.length" class="line-chart-wrapper">
+    <div class="line-chart-inner" :style="{ width: chartWidth + 'px' }">
+      <Line :data="chartData" :options="chartOptions" :width="chartWidth" :height="320" />
+    </div>
   </div>
 
   <div v-else class="loading-placeholder">
@@ -36,6 +38,11 @@ const props = defineProps({
   dataBarang: Object
 })
 
+// Lebar grafik minimal 900px, atau lebih lebar jika datanya banyak
+const chartWidth = computed(() =>
+  Math.max(900, (props.dataBarang?.categories?.length || 0) * 90)
+)
+
 const chartData = computed(() => {
   const labels = props.dataBarang?.categories || []
 
@@ -53,14 +60,11 @@ const chartData = computed(() => {
     }
   })
 
-  return {
-    labels,
-    datasets
-  }
+  return { labels, datasets }
 })
 
 const chartOptions = {
-  responsive: true,
+  responsive: false,
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -69,15 +73,16 @@ const chartOptions = {
     tooltip: {
       callbacks: {
         label: ctx =>
-          `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString("id-ID")}`
+          `${ctx.dataset.label}: Rp ${Number(ctx.raw).toLocaleString("id-ID")}`
       }
     }
   },
-
   scales: {
     x: {
       ticks: {
-        display: true
+        autoSkip: false,
+        maxRotation: 45,
+        minRotation: 45
       }
     },
     y: {
@@ -86,7 +91,7 @@ const chartOptions = {
         text: "Nilai (Rp)"
       },
       ticks: {
-        callback: val => val.toLocaleString("id-ID")
+        callback: val => Number(val).toLocaleString("id-ID")
       }
     }
   }
@@ -94,8 +99,22 @@ const chartOptions = {
 </script>
 
 <style scoped>
+.line-chart-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.line-chart-inner {
+  position: relative;
+  height: 320px;
+}
+
 .loading-placeholder {
-  height: 350px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;

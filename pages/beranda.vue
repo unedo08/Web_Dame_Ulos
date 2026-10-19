@@ -40,7 +40,7 @@
       Filter aktif:
       <strong v-if="appliedFilter.type === 'tanggal'">Tanggal {{ appliedFilter.date }}</strong>
       <strong v-else-if="appliedFilter.type === 'bulan'">Bulan {{ appliedFilter.month }}/{{ appliedFilter.year
-        }}</strong>
+      }}</strong>
       <strong v-else>Tahun {{ appliedFilter.year }}</strong>
     </div>
 
@@ -95,8 +95,11 @@
       <div class="chart-card">
         <div class="chart-title">Grafik Omset Per Bulan</div>
         <template v-if="isAvailable('barangMonth')">
-          <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
-          <div v-else class="loading-placeholder">Menunggu data...</div>
+          <div class="chart-scroll">
+            <div class="chart-scroll-content">
+              <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
+            </div>
+          </div>
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
@@ -472,7 +475,6 @@ onMounted(() => fetchData())
 </script>
 
 <style scoped>
-
 .beranda {
   width: 100%;
   max-width: 100%;
@@ -875,7 +877,7 @@ onMounted(() => fetchData())
     font-size: 18px;
     margin-bottom: 16px;
   }
-  
+
   .filter-bar {
     display: flex;
     flex-direction: column;
@@ -1158,6 +1160,45 @@ onMounted(() => fetchData())
 
   .chart-title {
     font-size: 10px;
+  }
+}
+
+/* Area chart yang bisa digeser ke samping */
+.chart-horizontal-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+/* Lebar grafik dipertahankan, tidak mengikuti lebar HP */
+.chart-horizontal-content {
+  width: 100%;
+  min-width: 900px;
+}
+
+/* Pastikan canvas tidak dipaksa mengecil oleh parent */
+.chart-horizontal-content :deep(canvas) {
+  max-width: none !important;
+}
+
+/* Jangan potong area scroll */
+.chart-card-line {
+  min-width: 0;
+  overflow: visible;
+}
+
+@media (max-width: 767px) {
+  .chart-card-line {
+    overflow: visible;
+  }
+
+  .chart-horizontal-content {
+    min-width: 900px;
   }
 }
 </style>
