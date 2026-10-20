@@ -81,21 +81,32 @@
                 {{ trx.catatan || "-" }}
               </td>
 
+
               <td>
-                <div class="flex space-x-2">
-                  <button class="penjualan-action-btn bg-yellow-500 text-white"
-                    @click="openViewDetail(trx.transaksi_id)">
-                    View
+                <div class="relative inline-block text-left">
+                  <button class="er-btn-action" @click.stop="toggleActionDropdown(trx.transaksi_id)">
+                    Aksi
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
 
-                  <button class="penjualan-action-btn bg-green-500 text-white" @click="handlePrint(trx.transaksi_id)">
-                    Print
-                  </button>
+                  <div v-if="activeDropdown === trx.transaksi_id" class="er-action-dropdown" @click.stop>
+                    <button class="er-dropdown-item er-dropdown-item--print"
+                      @click="closeActionDropdown(); openViewDetail(trx.transaksi_id)">
+                      View
+                    </button>
 
-                  <button class="penjualan-action-btn bg-red-500 text-white"
-                    @click="deleteTransaksi(item.transaksidetail_id)">
-                    Delete
-                  </button>
+                    <button class="er-dropdown-item er-dropdown-item--send"
+                      @click="closeActionDropdown(); handlePrint(trx.transaksi_id)">
+                      Print
+                    </button>
+
+                    <button class="er-dropdown-item er-dropdown-item--delete"
+                      @click="closeActionDropdown(); deleteTransaksi(item.transaksidetail_id)">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -191,6 +202,17 @@ const fetchTransaksi = async () => {
     Swal.fire("Gagal", "Tidak dapat memuat data transaksi", "error");
   }
 };
+
+const activeDropdown = ref(null)
+
+const toggleActionDropdown = (id) => {
+  activeDropdown.value =
+    activeDropdown.value === id ? null : id
+}
+
+const closeActionDropdown = () => {
+  activeDropdown.value = null
+}
 
 const filteredTransaksi = computed(() => {
   if (!searchQuery.value) return groupedTransaksi.value;
@@ -1135,5 +1157,70 @@ watch(itemsPerPage, () => {
     padding: 5px 8px;
     font-size: 11px;
   }
+}
+
+
+.er-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.er-btn-action:hover {
+  background: #f3f4f6;
+}
+
+.er-action-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 50;
+  min-width: 120px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.er-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.er-dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.er-dropdown-item--print {
+  color: #ca8a04;
+}
+
+.er-dropdown-item--send {
+  color: #16a34a;
+}
+
+.er-dropdown-item--delete {
+  color: #dc2626;
+}
+
+.er-dropdown-item--delete:hover {
+  background: #fef2f2;
 }
 </style>

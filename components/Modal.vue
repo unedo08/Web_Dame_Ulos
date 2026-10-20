@@ -76,7 +76,7 @@
                       <td style="padding: 3px 8px 3px 0;">Ukuran Tenun</td>
                       <td>
                         :
-                        {{ item.data.barangentry_ukuran_ulos ?? "-" }} x
+                        {{ item.data.barangentry_ukuran_ulos ?? "-" }} ,
                         {{ item.data.barangentry_ukuran_mandar ?? "-" }} cm
                       </td>
                     </tr>

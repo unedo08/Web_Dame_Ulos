@@ -3,9 +3,9 @@
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
     <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
+      <input v-model="searchQuery" type="text" class="search-box mb-2 rounded-md"
         placeholder="Cari Pengiriman Barang..." />
-      <button @click="exportToExcel" class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded">
+      <button @click="exportToExcel" class="packaging-export-btn mb-2 bg-green-500 hover:bg-green-600 text-white rounded">
         Export Excel
       </button>
     </div>
@@ -44,25 +44,39 @@
             <td>
               <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
             </td>
+
             <td>
-              <div class="flex gap-2">
-                <template v-if="row.status_pengiriman !== 'DONE'">
-                  <button class="px-2 py-1 bg-blue-500 text-white rounded text-xs" @click="openModalEdit(row)">
-                    Edit
+              <div class="relative inline-block text-left">
+                <button class="er-btn-action" @click.stop="toggleActionDropdown(row.pengirimanBarang_id)">
+                  Aksi
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <div v-if="activeDropdown === row.pengirimanBarang_id" class="er-action-dropdown" @click.stop>
+                  <template v-if="row.status_pengiriman !== 'DONE'">
+                    <button class="er-dropdown-item er-dropdown-item--edit"
+                      @click="closeActionDropdown(); openModalEdit(row)">
+                      Edit
+                    </button>
+
+                    <button class="er-dropdown-item er-dropdown-item--send"
+                      @click="closeActionDropdown(); selesaikanPackaging(row)">
+                      Selesai
+                    </button>
+                  </template>
+
+                  <button class="er-dropdown-item er-dropdown-item--delete"
+                    @click="closeActionDropdown(); deleteData(row.pengirimanBarang_id)">
+                    Delete
                   </button>
 
-                  <button class="px-2 py-1 bg-green-600 text-white rounded text-xs" @click="selesaikanPackaging(row)">
-                    Selesai
+                  <button v-if="row.status_pengiriman === 'DONE'" class="er-dropdown-item er-dropdown-item--print"
+                    @click="closeActionDropdown(); printLabel(row)">
+                    Print
                   </button>
-                </template>
-                <button class="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                  @click="deleteData(row.pengirimanBarang_id)">
-                  Delete
-                </button>
-                <button v-if="row.status_pengiriman === 'DONE'"
-                  class="px-2 py-1 bg-indigo-600 text-white rounded text-xs" @click="printLabel(row)">
-                  Print
-                </button>
+                </div>
               </div>
             </td>
           </tr>
@@ -152,6 +166,17 @@ const fetchData = async () => {
 };
 
 onMounted(fetchData);
+
+const activeDropdown = ref(null)
+
+const toggleActionDropdown = (id) => {
+  activeDropdown.value =
+    activeDropdown.value === id ? null : id
+}
+
+const closeActionDropdown = () => {
+  activeDropdown.value = null
+}
 
 function formatTanggal(tanggal) {
   const date = new Date(tanggal);
@@ -970,5 +995,79 @@ const formatCurrency = (val) =>
     padding: 4px 7px;
     font-size: 10px;
   }
+}
+
+.er-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.er-btn-action:hover {
+  background: #f3f4f6;
+}
+
+.er-action-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 50;
+  min-width: 145px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.er-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.er-dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.er-dropdown-item--print {
+  color: #b77900;
+}
+
+.er-dropdown-item--edit {
+  color: #16a34a;
+}
+
+.er-dropdown-item--send {
+  color: #2563eb;
+}
+
+.er-dropdown-item--add {
+  color: #16a34a;
+}
+
+.er-dropdown-item--delete {
+  color: #dc2626;
+}
+
+.er-dropdown-item--delete:hover {
+  background: #fef2f2;
 }
 </style>

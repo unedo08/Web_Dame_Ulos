@@ -29,7 +29,7 @@
         <div class="flex-1">
           <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap justify-end gap-4">
+        <div class="flex flex-wrap mb-4 justify-end gap-4">
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
             @click="openTambahBarang()">
             + Desc
@@ -163,7 +163,7 @@
         <div class="flex-1">
           <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap justify-end gap-4">
+        <div class="flex flex-wrap mb-4 justify-end gap-4">
           <!-- <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
             @click="openSearchModal">
             🔍 Search
@@ -229,10 +229,9 @@
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
-              <td class="px-4 py-2">
+              <!-- <td class="px-4 py-2">
                 <div class="flex space-x-3">
                   <button class="er-btn-view" @click="openRiwayat(barang.barangentry_id)">View</button>
-                  <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
                   <button :class="['er-btn-edit', { 'er-btn-edit--disabled': barang.barangentry_jumlah_barang <= 0 }]"
                     :disabled="barang.barangentry_jumlah_barang <= 0"
                     @click="barang.barangentry_jumlah_barang > 0 && openModalEditBarang(barang.barangentry_id)">
@@ -241,6 +240,35 @@
                   <button class="er-btn-delete" @click="deleteBarang(barang.barangentry_id)">
                     Delete
                   </button>
+                </div>
+              </td> -->
+              <td class="px-4 py-2">
+                <div class="relative inline-block text-left">
+                  <button class="er-btn-action" @click.stop="toggleActionDropdown(barang.barangentry_id)">
+                    Aksi
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <div v-if="activeDropdown === barang.barangentry_id" class="er-action-dropdown" @click.stop>
+                    <button class="er-dropdown-item" @click="closeActionDropdown(); openRiwayat(barang.barangentry_id)">
+                      <span>View</span>
+                    </button>
+
+                    <button :class="[
+                      'er-dropdown-item',
+                      { 'er-dropdown-item--disabled': barang.barangentry_jumlah_barang <= 0 }
+                    ]" :disabled="barang.barangentry_jumlah_barang <= 0"
+                      @click="closeActionDropdown(); openModalEditBarang(barang.barangentry_id)">
+                      <span>Edit</span>
+                    </button>
+
+                    <button class="er-dropdown-item er-dropdown-item--delete"
+                      @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
+                      <span>Delete</span>
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -309,7 +337,7 @@
         <div class="flex-1">
           <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap justify-end gap-4">
+        <div class="flex flex-wrap mb-4 justify-end gap-4">
           <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
             @click="openModal('priceTag')">
             Print Price Tag
@@ -368,40 +396,58 @@
                 {{ barang.barangentry_ukuran_mandar }}
               </td>
               <td class="px-4 py-2">{{ barang.barangentry_ukuran_ulos }}</td>
+
               <td class="px-4 py-2">
-                <div class="flex space-x-3">
-                  <!-- v-if="barang.barangentry_jumlah_barang > 1" -->
-                  <button
-                    class="text-center rounded-md bg-[#FBBF24] text-white hover:bg-[#FFD15A] px-2 py-1 h-[25px] w-[50px]"
-                    @click="printPreOrder(barang.barangentry_id)">
-                    Print
+                <div class="relative inline-block text-left">
+                  <button class="er-btn-action" @click.stop="toggleActionDropdown(barang.barangentry_id)">
+                    Aksi
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
-                  <button
-                    class=" bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 text-xs h-[25px] w-[50px]"
-                    @click="openModalEditPO(barang.barangentry_id, barang.pre_order_barang?.preOrdeBarang_id)">
-                    Edit
-                  </button>
-                  <button v-if="barang.barangfilled"
-                    class="text-center rounded-md bg-[#3D8BFD] text-white hover:bg-[#6B9FEC] px-2 py-1 h-[25px] w-[50px]"
-                    @click="handleSendClick(barang)">
-                    {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
-                  </button>
-                  <template v-else>
-                    <button
-                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[60px]"
-                      @click="openModalDesc(barang.barangentry_id)">
-                      Desc +
+
+                  <div v-if="activeDropdown === barang.barangentry_id" class="er-action-dropdown" @click.stop>
+                    <!-- Print -->
+                    <button class="er-dropdown-item er-dropdown-item--print"
+                      @click="closeActionDropdown(); printPreOrder(barang.barangentry_id)">
+                      Print
                     </button>
-                    <button
-                      class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 px-2 py-1 h-[25px] w-[60px]"
-                      @click="openModalSize(barang.barangentry_id)">
-                      Size +
+
+                    <!-- Edit -->
+                    <button class="er-dropdown-item er-dropdown-item--edit" @click="closeActionDropdown(); openModalEditPO(
+                      barang.barangentry_id,
+                      barang.pre_order_barang?.preOrdeBarang_id
+                    )">
+                      Edit
                     </button>
-                  </template>
-                  <button class="bg-red-500 text-white text-xs rounded-md hover:bg-red-600 px-2 py-1 h-[25px] w-[60px]"
-                    @click="deleteBarang(barang.barangentry_id)">
-                    Delete
-                  </button>
+
+                    <!-- Jika barang sudah terisi -->
+                    <template v-if="barang.barangfilled">
+                      <button class="er-dropdown-item er-dropdown-item--send"
+                        @click="closeActionDropdown(); handleSendClick(barang)">
+                        {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
+                      </button>
+                    </template>
+
+                    <!-- Jika barang belum terisi -->
+                    <template v-else>
+                      <button class="er-dropdown-item er-dropdown-item--add"
+                        @click="closeActionDropdown(); openModalDesc(barang.barangentry_id)">
+                        Desc +
+                      </button>
+
+                      <button class="er-dropdown-item er-dropdown-item--add"
+                        @click="closeActionDropdown(); openModalSize(barang.barangentry_id)">
+                        Size +
+                      </button>
+                    </template>
+
+                    <!-- Delete -->
+                    <button class="er-dropdown-item er-dropdown-item--delete"
+                      @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -574,7 +620,8 @@
       @scanned="tambahBarang" @sizeSubmitted="handleSizeSubmitted" />
 
     <!-- Modal Add Size  -->
-    <div v-if="showModalAddSize" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalAddSize"
+      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
 
@@ -745,7 +792,8 @@
       </div>
     </div>
 
-    <div v-if="showModalSearch" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalSearch"
+      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
         <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
         <input v-model="searchCode" @keyup.enter="handleSearch" type="text" class="w-full border rounded px-3 py-2"
@@ -830,7 +878,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from "vue";
+import { ref, computed, onMounted, nextTick, watch, onBeforeUnmount } from "vue";
 import BaseModal from "../components/Modal.vue";
 import EditBarangReady from "../components/ModalEditBarang.vue";
 import EditBarangDesc from "../components/ModalEditDesc.vue";
@@ -883,6 +931,29 @@ const pengirimanStatus = ref("");
 const inputKodeDesc = ref(null);
 const inputKodeSize = ref(null);
 const selectedPreOrderId = ref(null);
+
+const activeDropdown = ref(null)
+
+const toggleActionDropdown = (id) => {
+  activeDropdown.value =
+    activeDropdown.value === id ? null : id
+}
+
+const closeActionDropdown = () => {
+  activeDropdown.value = null
+}
+
+const handleClickOutside = () => {
+  closeActionDropdown()
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -1394,7 +1465,7 @@ const startItem = computed(() => {
 
   return (
     (currentPage.value - 1) *
-      Number(itemsPerPage.value) +
+    Number(itemsPerPage.value) +
     1
   );
 });
@@ -1419,7 +1490,7 @@ const totalPages = computed(() => {
     1,
     Math.ceil(
       searchFilterData.value.length /
-        Number(itemsPerPage.value)
+      Number(itemsPerPage.value)
     )
   );
 });
@@ -2154,7 +2225,7 @@ watch([searchQuery, itemsPerPage], () => {
   table-layout: auto;
 }
 
-.datatable thead{
+.datatable thead {
   background: #F3F4F6;
 }
 
@@ -2472,5 +2543,69 @@ button {
 
     white-space: nowrap;
   }
+}
+
+
+.er-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.er-btn-action:hover {
+  background: #f3f4f6;
+}
+
+.er-action-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 140px;
+  padding: 5px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.er-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 13px;
+  color: #374151;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.er-dropdown-item:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.er-dropdown-item--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.er-dropdown-item--delete {
+  color: #dc2626;
+}
+
+.er-dropdown-item--delete:hover {
+  background: #fef2f2;
 }
 </style>

@@ -3,9 +3,9 @@
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="flex items-center justify-between pt-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+      <input class="search-box mb-2 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
 
-      <button class="btn-add bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[25px]" @click="openModal">
+      <button class="btn-add mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[30px]" @click="openModal">
         + Tambah
       </button>
     </div>
