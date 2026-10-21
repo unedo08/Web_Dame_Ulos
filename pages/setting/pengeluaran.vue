@@ -7,7 +7,7 @@
            Jenis Pengeluaran
         </h1>
 
-        <div class="jp-toolbar">
+        <div class="page-table-toolbar jp-toolbar">
             <div class="jp-search-wrap">
                 <MagnifyingGlassIcon class="jp-search-icon" />
                 <input v-model="search" type="text" placeholder="Cari pengeluaran" class="jp-search-input" />
@@ -55,7 +55,7 @@
                         </td>
                         <td class="jp-td jp-td-aksi">
                             <button @click="openModal(item)" class="jp-btn-icon">
-                                <PencilSquareIcon class="jp-icon" />
+                                <PencilIcon class="jp-icon" />
                             </button>
 
                             <button @click="confirmDelete(item)" class="jp-btn-icon jp-btn-delete">
@@ -240,7 +240,7 @@ import Swal from "sweetalert2";
 
 import {
     MagnifyingGlassIcon,
-    PencilSquareIcon,
+    PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/outline";
 

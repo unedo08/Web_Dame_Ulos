@@ -7,7 +7,7 @@
         </div>
 
         <!-- Toolbar -->
-        <div class="bk-toolbar">
+        <div class="page-table-toolbar bk-toolbar">
             <div class="bk-search-box">
                 <MagnifyingGlassIcon class="bk-search-icon" />
                 <input v-model="search" type="text" placeholder="Cari nama outsource..." class="bk-search-input"
@@ -73,7 +73,7 @@
                         <td>
                             <div class="bk-action-group">
                                 <!-- Edit: only for PENDING -->
-                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-icon-edit"
+                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-btn-icon bk-icon-edit"
                                     title="Konfirmasi Pengambilan" @click="openEdit(row)">
                                     <PencilIcon class="bk-icon bk-icon-edit" />
                                 </button>
@@ -283,7 +283,7 @@
         </div>
 
         <!-- ===== Delete Confirmation Modal ===== -->
-        <div v-if="isDeleteConfirmOpen" class="bk-modal-overlay">
+        <div v-if="isDeleteConfirmOpen" class="bk-modal-overlay" @click.self="cancelDelete">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <div class="bk-confirm-icon-wrap">
@@ -308,7 +308,7 @@
         </div>
 
         <!-- ===== Confirm Popup (success / error) ===== -->
-        <div v-if="isConfirmOpen" class="bk-modal-overlay">
+        <div v-if="isConfirmOpen" class="bk-modal-overlay" @click.self="closeConfirm">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <!-- Success icon -->

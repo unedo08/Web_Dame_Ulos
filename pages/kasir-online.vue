@@ -98,7 +98,7 @@
                   class="required">*</span></label>
               <div class="flex">
                 <div
-                  class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                  class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                   Rp
                 </div>
                 <input :value="formattedHargaTerjual" @input="onInputHargaTerjual" :disabled="!form.code_barang"
@@ -127,7 +127,7 @@
                   class="required">*</span></label>
               <div class="flex">
                 <div
-                  class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                  class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                   Rp
                 </div>
                 <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" :disabled="!form.code_barang"

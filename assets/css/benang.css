@@ -9,6 +9,10 @@
     flex-wrap: wrap;
 }
 
+.bn-tabs > .bn-tab:first-child {
+    padding-left: 0;
+}
+
 .bn-tab {
     border: none;
     background: transparent;

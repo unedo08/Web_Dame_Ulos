@@ -8,7 +8,7 @@
             </h1>
         </div>
 
-        <div class="keuangan-toolbar">
+        <div class="page-table-toolbar keuangan-toolbar">
             <div class="keuangan-search-box">
                 <input v-model="search" type="text" placeholder="Cari pengeluaran..." class="keuangan-search-input" />
                 <MagnifyingGlassIcon class="keuangan-search-icon" />
@@ -73,7 +73,7 @@
             </table>
         </div>
 
-        <div v-if="isModalOpen" class="modal-overlay">
+        <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>

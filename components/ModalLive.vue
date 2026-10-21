@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]">
+  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]" @click.self="emit('close')">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
       <h2 class="text-xl font-semibold mb-4">Tambah Online Transaksi</h2>
 
@@ -108,7 +108,7 @@
               Biaya Pengiriman <span class="required">*</span>
             </label>
             <div class="flex">
-              <span class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600">
+              <span class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600">
                 Rp
               </span>
               <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" type="text"

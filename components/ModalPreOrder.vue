@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]">
+  <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]" @click.self="emit('close')">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
       <h2 class="text-xl font-semibold mb-4">Tambah Pre-Order Transaksi</h2>
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -38,7 +38,7 @@
               Uang Muka (DP) <span class="required">*</span>
             </label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp</div>
               <input :value="formattedUangMuka" @input="onInputUangMuka" type="text"
                 class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
@@ -101,7 +101,7 @@
               Harga Terjual <span class="required">*</span>
             </label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
               <input :value="formattedTotalPembayaran" @input="onInputTotalPembayaran" type="text"
@@ -116,7 +116,7 @@
               Sisa Pembayaran <span class="required">*</span>
             </label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
               <input :value="formattedSisaPembayaran" type="text"

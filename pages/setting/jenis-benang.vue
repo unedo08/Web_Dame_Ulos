@@ -3,7 +3,7 @@
     <title>Setting - Jenis Benang</title>
     <h1 class="pm-title">Jenis Benang</h1>
 
-    <div class="pm-toolbar">
+    <div class="page-table-toolbar pm-toolbar">
       <div class="pm-search-wrap">
         <MagnifyingGlassIcon class="pm-search-icon" />
         <input
@@ -39,7 +39,7 @@
             </td>
             <td class="pm-td pm-td-aksi">
               <button @click="openModal(item)" class="pm-btn-icon" title="Edit">
-                <PencilSquareIcon class="pm-icon" />
+                <PencilIcon class="pm-icon" />
               </button>
               <button @click="confirmDelete(item)" class="pm-btn-icon pm-btn-delete" title="Hapus">
                 <TrashIcon class="pm-icon delete" />
@@ -143,7 +143,7 @@
 <script setup>
 import "@/assets/css/payment-method.css";
 import { onMounted } from "vue";
-import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useJenisBenang } from "@/composables/useJenisBenang";
 
 const {

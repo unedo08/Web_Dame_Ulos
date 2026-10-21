@@ -2,8 +2,8 @@
     <div>
         <title>Staff</title>
         <div class="judul text-xl font-semibold mb-4">Manajemen Staff</div>
-        <div class="flex justify-between pt-2">
-            <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search staff..." />
+        <div class="page-table-toolbar flex justify-between">
+            <input class="search-box staff-search-input rounded-md" v-model="searchQuery" type="text" placeholder="Search staff..." />
             <button class="btn-add bg-blue-500 text-white md-4 rounded-md hover:bg-blue-600 w-[104px] h-[30px]"
                 @click="openAddModal">
                 + Tambah Staff
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]">
+        <div v-if="isEditModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]" @click.self="closeEditModal">
             <div class="bg-white p-6 rounded-lg w-[420px]">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">Edit User</h3>
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <div v-if="isAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]">
+        <div v-if="isAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-[2000]" @click.self="closeAddModal">
             <div class="bg-white p-6 rounded-lg w-[420px]">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">Tambah User Baru</h3>
@@ -468,16 +468,20 @@ const deleteUser = async (id, name) => {
     font-family: "Nunito", sans-serif;
 }
 
-.search-box {
+.staff-search-input {
+    display: block;
     border: 1px solid #ccc;
     padding: 10px;
     width: 385px;
     height: 34px;
+    min-height: 34px;
+    max-height: 34px;
     box-sizing: border-box;
+    flex: 0 0 auto;
     outline: none;
 }
 
-.search-box:focus {
+.staff-search-input:focus {
     border-color: #3d8bfd;
 }
 
@@ -607,7 +611,7 @@ const deleteUser = async (id, name) => {
 
 @media (min-width: 768px) and (max-width: 1024px) {
 
-    .search-box {
+    .staff-search-input {
         width: 300px;
     }
 
@@ -633,22 +637,26 @@ const deleteUser = async (id, name) => {
         font-size: 18px !important;
     }
 
-    .flex.items-center.justify-between.pt-2 {
+    .page-table-toolbar {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
     }
 
-    .search-box {
+    .staff-search-input {
+        display: block;
         width: 100% !important;
         max-width: none;
-        height: 38px;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        flex: 0 0 38px;
         margin-bottom: 0 !important;
         font-size: 12px;
     }
 
-    .flex.items-center.justify-between.pt-2 .btn-add {
+    .page-table-toolbar .btn-add {
         align-self: flex-end;
         width: 115px !important;
         height: 32px !important;
@@ -669,7 +677,7 @@ const deleteUser = async (id, name) => {
         width: 650px !important;
         min-width: 650px !important;
         max-width: none !important;
-        margin-top: 12px;
+        margin-top: 0;
     }
 
     .datatable th,
@@ -727,13 +735,7 @@ const deleteUser = async (id, name) => {
         font-size: 17px !important;
     }
 
-    .search-box {
-        height: 36px;
-        padding: 8px 10px;
-        font-size: 11px;
-    }
-
-    .flex.items-center.justify-between.pt-2 .btn-add {
+    .page-table-toolbar .btn-add {
         width: 110px !important;
         height: 32px !important;
         font-size: 10px;

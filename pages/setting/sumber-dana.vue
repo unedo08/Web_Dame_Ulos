@@ -7,7 +7,7 @@
             Sumber Dana
         </h1>
 
-        <div class="sd-toolbar">
+        <div class="page-table-toolbar sd-toolbar">
             <div class="sd-search-wrap">
                 <MagnifyingGlassIcon class="sd-search-icon" />
                 <input v-model="search" type="text" placeholder="Cari sumber dana" class="sd-search-input" />
@@ -58,7 +58,7 @@
 
                         <td class="sd-td sd-td-aksi">
                             <button @click="openModal(item)" class="sd-btn-icon">
-                                <PencilSquareIcon class="sd-icon" />
+                                <PencilIcon class="sd-icon" />
                             </button>
 
                             <button @click="confirmDelete(item)" class="sd-btn-icon sd-btn-delete">
@@ -252,7 +252,7 @@ import Swal from "sweetalert2";
 
 import {
     MagnifyingGlassIcon,
-    PencilSquareIcon,
+    PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/outline";
 

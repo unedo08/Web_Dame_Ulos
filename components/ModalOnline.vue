@@ -1,6 +1,7 @@
 <template>
   <div
     class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    @click.self="emit('close')"
   >
     <div
       class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-[2000]"
@@ -102,7 +103,7 @@
               >Harga Terjual *</label
             >
             <div class="relative">
-              <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+              <span class="modal-currency-prefix absolute left-3 top-2.5 text-gray-500">Rp</span>
               <input
                 v-model="form.hargaTerjual"
                 type="number"
@@ -127,7 +128,7 @@
               >Biaya Pengiriman *</label
             >
             <div class="relative">
-              <span class="absolute left-3 top-2.5 text-gray-500">Rp</span>
+              <span class="modal-currency-prefix absolute left-3 top-2.5 text-gray-500">Rp</span>
               <input
                 v-model="form.biayaPengiriman"
                 type="number"

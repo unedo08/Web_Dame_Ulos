@@ -2,13 +2,13 @@
   <title>Kasir</title>
   <div class="judul text-xl font-semibold mb-4">Menu Kasir</div>
 
-  <div class="flex items-start justify-between pt-2">
-    <div class="flex flex-col flex-1 space-y-2">
-      <input class="search-box mb-4 rounded-md" v-model="searchQueryCustomer" type="text" placeholder="Nama Customer" />
-      <input class="search-box mb-4 rounded-md" v-model="searchQueryPhone" type="text" placeholder="Nomor Telepon" />
+  <div class="kasir-toolbar flex items-start justify-between pt-2">
+    <div class="kasir-search-fields flex flex-col flex-1 space-y-2">
+      <input class="search-box standard-search-bar mb-4 rounded-md" v-model="searchQueryCustomer" type="text" placeholder="Nama Customer" />
+      <input class="search-box standard-search-bar mb-4 rounded-md" v-model="searchQueryPhone" type="text" placeholder="Nomor Telepon" />
     </div>
 
-    <div class="flex space-x-2 ml-4">
+    <div class="kasir-actions flex ml-4">
       <button class="bg-[#3D8BFD] text-white rounded-md hover:bg-[#2272E7] w-[104px] h-[34px]"
         @click="openModalLive = true">
         Online

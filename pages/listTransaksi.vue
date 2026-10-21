@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="judul text-xl font-semibold mb-4">Daftar Transaksi</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari transaksi
-      ..." />
+    <div class="page-table-toolbar">
+      <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari transaksi ..." />
+    </div>
 
     <table class="datatable">
       <thead>

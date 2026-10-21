@@ -4,3 +4,583 @@
 @tailwind utilities; */
 
 @import "tailwindcss";
+
+input.search-box,
+input[placeholder*="Cari"]:not(.cl-search-input):not(.cd-search-input):not(.bk-search-input):not(.pm-search-input):not(.dv-search-input):not(.jp-search-input):not(.sd-search-input):not(.keuangan-search-input),
+input[placeholder*="Search"]:not(.cl-search-input):not(.cd-search-input):not(.bk-search-input):not(.pm-search-input):not(.dv-search-input):not(.jp-search-input):not(.sd-search-input):not(.keuangan-search-input) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath stroke-linecap='round' d='m20 20-4-4'/%3E%3C/svg%3E");
+  background-position: 10px center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  padding-left: 34px !important;
+}
+
+input.search-box,
+input.cl-search-input,
+input.cd-search-input,
+input.bk-search-input,
+input.pm-search-input,
+input.dv-search-input,
+input.jp-search-input,
+input.sd-search-input,
+input.keuangan-search-input,
+input.input-search,
+input[placeholder*="Cari"],
+input[placeholder*="Search"] {
+  box-sizing: border-box !important;
+  height: 34px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+}
+
+input.search-box {
+  width: 385px !important;
+  max-width: 100% !important;
+}
+
+input.search-box.standard-search-bar {
+  flex: 0 0 auto !important;
+  max-height: 34px !important;
+  min-height: 34px !important;
+}
+
+.cl-search-wrap,
+.bk-search-box,
+.pm-search-wrap,
+.dv-search-wrap,
+.jp-search-wrap,
+.sd-search-wrap,
+.keuangan-search-box {
+  width: 385px !important;
+  flex: 0 0 385px !important;
+  max-width: 100% !important;
+}
+
+input.cl-search-input,
+input.cd-search-input,
+input.bk-search-input,
+input.pm-search-input,
+input.dv-search-input,
+input.jp-search-input,
+input.sd-search-input,
+input.keuangan-search-input,
+input.input-search {
+  width: 100% !important;
+}
+
+input.search-box::placeholder,
+input[placeholder*="Cari"]::placeholder,
+input[placeholder*="Search"]::placeholder,
+.cl-search-input::placeholder,
+.cd-search-input::placeholder,
+.bk-search-input::placeholder,
+.pm-search-input::placeholder,
+.dv-search-input::placeholder,
+.jp-search-input::placeholder,
+.sd-search-input::placeholder,
+.keuangan-search-input::placeholder,
+.input-search::placeholder {
+  font-size: 14px !important;
+}
+
+.keuangan-search-icon {
+  right: auto !important;
+  left: 12px;
+}
+
+.keuangan-search-input {
+  padding-left: 40px !important;
+  padding-right: 14px !important;
+}
+
+button.bk-btn-export,
+button.bk-btn-add,
+button.btn-add,
+button.btn-print,
+button.apply-btn,
+button.reset-btn,
+button.penjualan-export-btn,
+button.keuangan-btn-export,
+button.keuangan-btn-add,
+button.packaging-export-btn,
+button.jp-btn-tambah,
+button.dv-btn-tambah,
+button.pm-btn-tambah,
+button.sd-btn-tambah {
+  width: auto !important;
+  height: auto !important;
+  padding: 9px 16px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  line-height: normal !important;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  input.search-box,
+  .cl-search-wrap,
+  .bk-search-box,
+  .pm-search-wrap,
+  .dv-search-wrap,
+  .jp-search-wrap,
+  .sd-search-wrap,
+  .keuangan-search-box {
+    width: 300px !important;
+    flex-basis: 300px !important;
+  }
+
+  .cl-pagination,
+  .cd-pagination,
+  .bk-pagination,
+  .dv-pagination,
+  .pm-pagination,
+  .jp-pagination,
+  .sd-pagination {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .cl-pagination-left,
+  .cd-pagination-left,
+  .bk-pagination-left,
+  .dv-pagination-left,
+  .pm-pagination-left,
+  .jp-pagination-left,
+  .sd-pagination-left {
+    display: flex !important;
+    width: 100%;
+    min-width: 0;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    font-size: clamp(9px, 2.6vw, 12px) !important;
+    white-space: nowrap !important;
+  }
+
+  .cl-pagination-left > *,
+  .cd-pagination-left > *,
+  .bk-pagination-left > *,
+  .dv-pagination-left > *,
+  .pm-pagination-left > *,
+  .jp-pagination-left > *,
+  .sd-pagination-left > * {
+    white-space: nowrap !important;
+    font-size: inherit !important;
+  }
+
+  .cl-pagination-pages,
+  .cd-pagination-pages,
+  .bk-pagination-right,
+  .dv-pagination-controls,
+  .pm-pagination-controls,
+  .jp-pagination-controls,
+  .sd-pagination-controls {
+    justify-content: center !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  button.bk-btn-export,
+  button.bk-btn-add,
+  button.btn-add,
+  button.btn-print,
+  button.apply-btn,
+  button.reset-btn,
+  button.penjualan-export-btn,
+  button.keuangan-btn-export,
+  button.keuangan-btn-add,
+  button.packaging-export-btn,
+  button.jp-btn-tambah,
+  button.dv-btn-tambah,
+  button.pm-btn-tambah,
+  button.sd-btn-tambah {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  input.search-box.standard-search-bar {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: 38px !important;
+    min-height: 38px !important;
+    flex: 0 0 38px !important;
+  }
+
+  input.search-box {
+    width: 100% !important;
+    max-width: none !important;
+    height: 38px !important;
+  }
+
+  .cl-search-wrap,
+  .bk-search-box,
+  .pm-search-wrap,
+  .dv-search-wrap,
+  .jp-search-wrap,
+  .sd-search-wrap,
+  .keuangan-search-box {
+    width: 100% !important;
+    flex-basis: 100% !important;
+    max-width: none !important;
+  }
+
+  input.cl-search-input,
+  input.cd-search-input,
+  input.bk-search-input,
+  input.pm-search-input,
+  input.dv-search-input,
+  input.jp-search-input,
+  input.sd-search-input,
+  input.keuangan-search-input,
+  input.input-search {
+    height: 38px !important;
+  }
+
+  button.bk-btn-export,
+  button.bk-btn-add,
+  button.btn-add,
+  button.btn-print,
+  button.apply-btn,
+  button.reset-btn,
+  button.penjualan-export-btn,
+  button.keuangan-btn-export,
+  button.keuangan-btn-add,
+  button.packaging-export-btn,
+  button.jp-btn-tambah,
+  button.dv-btn-tambah,
+  button.pm-btn-tambah,
+  button.sd-btn-tambah {
+    min-width: 75px !important;
+    height: 32px !important;
+    padding: 0 10px !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  button.bk-btn-export,
+  button.bk-btn-add,
+  button.btn-add,
+  button.btn-print,
+  button.penjualan-export-btn,
+  button.keuangan-btn-export,
+  button.keuangan-btn-add,
+  button.packaging-export-btn,
+  button.jp-btn-tambah,
+  button.dv-btn-tambah,
+  button.pm-btn-tambah,
+  button.sd-btn-tambah {
+    min-width: 68px !important;
+    height: 30px !important;
+    padding: 0 9px !important;
+    font-size: 10px !important;
+  }
+}
+
+.page-content :is(
+  .judul,
+  .cl-title,
+  .bk-page-title,
+  .page-title,
+  .pm-title,
+  .jp-title,
+  .dv-title,
+  .sd-title
+),
+.page-content > div > h2 {
+  margin-bottom: 16px !important;
+}
+
+.page-content .page-submenu {
+  margin-bottom: 20px !important;
+}
+
+.page-content select:is(
+  .cl-perpage-select,
+  .cd-perpage-select,
+  .pm-per-page,
+  .jp-per-page,
+  .dv-per-page,
+  .sd-per-page
+) {
+  padding-right: 16px !important;
+}
+
+.page-content .page-table-toolbar {
+  margin: 16px 0 !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.page-content .page-table-toolbar input.search-box {
+  margin: 0 !important;
+}
+
+.page-content .page-table-toolbar + :is(
+  .datatable-wrapper,
+  .live-table-wrapper,
+  .penjualan-table-wrapper,
+  .packaging-table-wrapper,
+  .bk-table-wrapper,
+  .table-wrapper,
+  .pm-table-wrap,
+  .dv-table-wrap,
+  .jp-table-wrap,
+  .sd-table-wrap,
+  .cl-table-wrap,
+  .staff-table-wrapper,
+  table
+) {
+  margin-top: 0 !important;
+}
+
+.page-content .page-table-toolbar + :is(
+  .datatable-wrapper,
+  .live-table-wrapper,
+  .penjualan-table-wrapper,
+  .packaging-table-wrapper,
+  .bk-table-wrapper,
+  .table-wrapper,
+  .pm-table-wrap,
+  .dv-table-wrap,
+  .jp-table-wrap,
+  .sd-table-wrap,
+  .cl-table-wrap,
+  .staff-table-wrapper
+) > table {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 1024px) {
+  .page-content :is(
+    .judul,
+    .cl-title,
+    .bk-page-title,
+    .page-title,
+    .pm-title,
+    .jp-title,
+    .dv-title,
+    .sd-title
+  ),
+  .page-content > div > h2 {
+    margin-bottom: 12px !important;
+  }
+
+  .page-content .page-submenu {
+    margin-bottom: 16px !important;
+  }
+
+  .page-content .page-table-toolbar {
+    margin: 12px 0 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-content .page-submenu {
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-content button:not(table button) {
+    font-size: 13px !important;
+  }
+
+  .page-content input[placeholder]::placeholder {
+    font-size: 12px !important;
+  }
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(h1, h2, h3, h4, h5, h6),
+.swal2-container .swal2-title {
+  font-size: 15px !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(
+  label,
+  .judul-label,
+  .bk-items-label,
+  .modal-tambah-label,
+  .form-label
+) {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(input, textarea, select) {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(input, textarea)[placeholder]::placeholder,
+.swal2-container :is(input, textarea)[placeholder]::placeholder {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.modal-currency-prefix,
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) .keuangan-rupiah-prefix {
+  font-size: 13px !important;
+}
+
+@media (max-width: 1024px) {
+  table :is(th, td),
+  table :is(th, td) * {
+    font-size: 12px !important;
+  }
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]),
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]) * {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]) {
+  min-height: 30px;
+  border-radius: 999px !important;
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) .er-btn-action {
+  background: transparent !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 999px !important;
+  font-weight: 400 !important;
+}
+
+.er-action-dropdown .er-dropdown-item,
+.er-action-dropdown .er-dropdown-item:hover:not(:disabled) {
+  color: #374151 !important;
+  background: transparent !important;
+  transition: none !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) button,
+.swal2-container button {
+  font-size: 13px !important;
+}
+
+@media screen and (max-width: 767px) {
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) {
+    box-sizing: border-box !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 560px !important;
+    max-height: calc(100vh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    margin: 0 !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(.grid, form[class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    input,
+    textarea,
+    select,
+    .form-control,
+    .input-field
+  ) {
+    box-sizing: border-box !important;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    .modal-footer,
+    .bk-modal-footer,
+    .jp-modal-footer,
+    .pm-modal-footer,
+    .dv-modal-footer,
+    .sd-modal-footer,
+    .flex.justify-end
+  ) {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    .modal-footer,
+    .bk-modal-footer,
+    .jp-modal-footer,
+    .pm-modal-footer,
+    .dv-modal-footer,
+    .sd-modal-footer,
+    .flex.justify-end
+  ) > button {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+    white-space: normal;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    [class*="table-wrapper"],
+    [class*="table-wrap"]
+  ) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) :has(> table) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) :has(> table) > table {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+button[class*="bg-blue-"],
+.bk-btn-add,
+.keuangan-btn-add,
+.jp-btn-tambah,
+.pm-btn-tambah,
+.dv-btn-tambah,
+.sd-btn-tambah {
+  background-color: #3d8bfd !important;
+}
+
+button[class*="bg-blue-"]:hover,
+.bk-btn-add:hover,
+.keuangan-btn-add:hover,
+.jp-btn-tambah:hover,
+.pm-btn-tambah:hover,
+.dv-btn-tambah:hover,
+.sd-btn-tambah:hover {
+  background-color: #3d8bfd !important;
+}
+
+.cl-page-btn--active,
+.cd-page-btn--active,
+.bk-page-number.active,
+.jp-page-active,
+.pm-page-active,
+.dv-page-active,
+.sd-page-active {
+  background-color: #3d8bfd !important;
+  border-color: #3d8bfd !important;
+}

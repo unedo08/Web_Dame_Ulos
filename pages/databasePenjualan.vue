@@ -4,17 +4,19 @@
     <div class="judul text-xl font-semibold mb-4">
       Database Penjualan
     </div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md"
-      placeholder="Cari transaksi penjualan..." />
 
-    <div class="flex items-center gap-3 mb-4">
-      <input type="date" v-model="startDate" class="border rounded px-2 py-1 text-sm" />
+    <div class="page-table-toolbar penjualan-toolbar">
+      <input v-model="searchQuery" type="text" class="search-box standard-search-bar"
+        placeholder="Cari transaksi penjualan..." />
 
-      <input type="date" v-model="endDate" class="border rounded px-2 py-1 text-sm" />
+      <div class="penjualan-date-actions">
+        <input type="date" v-model="startDate" class="penjualan-date-input" />
+        <input type="date" v-model="endDate" class="penjualan-date-input" />
 
-      <button class="penjualan-export-btn" @click="exportExcel">
-        Export Excel
-      </button>
+        <button class="penjualan-export-btn" @click="exportExcel">
+          Export Excel
+        </button>
+      </div>
     </div>
 
     <div class="penjualan-table-wrapper">
@@ -800,6 +802,34 @@ watch(itemsPerPage, () => {
   height: 34px;
 }
 
+.penjualan-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.penjualan-date-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.penjualan-date-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.penjualan-date-input:focus {
+  border-color: #2563eb;
+}
+
 .penjualan-table-wrapper {
   display: block;
   width: 100%;
@@ -817,7 +847,6 @@ watch(itemsPerPage, () => {
   max-width: none;
   border-collapse: collapse;
   table-layout: auto;
-  margin-top: 20px;
 }
 
 .datatable th,
@@ -909,20 +938,31 @@ watch(itemsPerPage, () => {
     font-size: 12px;
   }
 
-  .flex.items-center.gap-3.mb-4 {
+  .penjualan-toolbar {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
-    width: 100%;
+    margin: 12px 0;
   }
 
-  .flex.items-center.gap-3.mb-4 input[type="date"] {
+  .penjualan-date-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .penjualan-date-input {
     flex: 1 1 140px;
     min-width: 130px;
     height: 32px;
     box-sizing: border-box;
+    padding: 6px 8px;
     font-size: 11px;
+  }
+
+  .penjualan-export-btn {
+    flex: 0 0 auto;
   }
 
   .penjualan-table-wrapper {
@@ -1204,23 +1244,4 @@ watch(itemsPerPage, () => {
   cursor: pointer;
 }
 
-.er-dropdown-item:hover {
-  background: #f3f4f6;
-}
-
-.er-dropdown-item--print {
-  color: #ca8a04;
-}
-
-.er-dropdown-item--send {
-  color: #16a34a;
-}
-
-.er-dropdown-item--delete {
-  color: #dc2626;
-}
-
-.er-dropdown-item--delete:hover {
-  background: #fef2f2;
-}
 </style>

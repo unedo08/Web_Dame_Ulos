@@ -3,7 +3,7 @@
   max-width: 100%;
   min-width: 0;
 
-  padding: 24px 0;
+  padding: 0;
 
   box-sizing: border-box;
 }
@@ -324,6 +324,10 @@
 .jp-icon {
   width: 18px;
   height: 18px;
+}
+
+.jp-btn-icon:not(.jp-btn-delete) .jp-icon {
+  color: #16a34a;
 }
 
 .jp-icon.delete {
@@ -833,7 +837,20 @@
 @media (max-width: 1024px) {
 
   .jp-page {
-    padding: 20px 0;
+    padding: 0;
+  }
+
+  .jp-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .jp-pagination-left {
+    justify-content: center;
+  }
+
+  .jp-pagination-controls {
+    justify-content: center;
   }
 
   .jp-toolbar {
@@ -867,7 +884,7 @@
   .jp-page {
     width: 100%;
 
-    padding: 16px 0;
+    padding: 0;
 
     overflow: hidden;
   }
@@ -999,7 +1016,7 @@
   }
 
   .jp-pagination-left {
-    justify-content: flex-start;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 6px;
   }
@@ -1116,7 +1133,7 @@
 @media (max-width: 480px) {
 
   .jp-page {
-    padding: 14px 0;
+    padding: 0;
   }
 
   .jp-title {
