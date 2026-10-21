@@ -2,10 +2,10 @@
   <div>
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
-    <div class="flex justify-between items-center mb-4">
-      <input v-model="searchQuery" type="text" class="search-box mb-2 rounded-md"
+    <div class="page-table-toolbar flex justify-between items-center">
+      <input v-model="searchQuery" type="text" class="search-box standard-search-bar rounded-md"
         placeholder="Cari Pengiriman Barang..." />
-      <button @click="exportToExcel" class="packaging-export-btn mb-2 bg-green-500 hover:bg-green-600 text-white rounded">
+      <button @click="exportToExcel" class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded">
         Export Excel
       </button>
     </div>
@@ -606,13 +606,6 @@ const formatCurrency = (val) =>
 
 
 <style scoped>
-.search-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 385px;
-  height: 34px;
-}
-
 .packaging-table-wrapper {
   display: block;
 
@@ -796,10 +789,6 @@ const formatCurrency = (val) =>
     max-width: none !important;
   }
 
-  .search-box {
-    width: 300px;
-  }
-
   .packaging-export-btn {
     padding: 7px 12px;
     font-size: 11px;
@@ -816,26 +805,12 @@ const formatCurrency = (val) =>
     font-size: 18px !important;
   }
 
-  .flex.justify-between.items-center.mb-4 {
+  .page-table-toolbar {
     flex-direction: column;
     align-items: stretch;
 
     gap: 8px;
   }
-
-  .search-box {
-    width: 100% !important;
-    max-width: none;
-
-    height: 38px;
-    box-sizing: border-box;
-
-    margin-bottom: 0 !important;
-
-    padding: 9px 10px;
-    font-size: 12px;
-  }
-
 
   /* Export tetap kecil */
   .packaging-export-btn {
@@ -955,15 +930,6 @@ const formatCurrency = (val) =>
 
   .judul {
     font-size: 17px !important;
-  }
-
-
-  .search-box {
-    height: 36px;
-
-    padding: 8px 10px;
-
-    font-size: 11px;
   }
 
 

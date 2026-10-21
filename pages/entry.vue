@@ -2,7 +2,7 @@
   <div>
     <title>Barang Masuk</title>
     <h2 class="text-lg font-semibold mb-4">Barang Masuk</h2>
-    <div class="flex space-x-6">
+    <div class="page-submenu flex space-x-6">
       <button @click="activeTab = 'wait'" class="pb-1 text-sm relative"
         :class="activeTab === 'wait' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Awaiting Stock
@@ -25,9 +25,9 @@
       </button>
     </div>
     <div class="w-full" v-show="activeTab === 'wait'">
-      <div class="flex items-center justify-between pt-2">
+      <div class="page-table-toolbar flex items-center justify-between">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+          <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap mb-4 justify-end gap-4">
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
@@ -159,9 +159,9 @@
     </div>
     <div class="w-full" v-show="activeTab === 'ready'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
-      <div class="flex items-center justify-between pt-2">
+      <div class="page-table-toolbar flex items-center justify-between">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+          <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap mb-4 justify-end gap-4">
           <!-- <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
@@ -333,9 +333,9 @@
 
     <div class="w-full" v-show="activeTab === 'po'">
       <!-- <div class="judul text-xs font-semibold mb-2">Ready to Stock</div> -->
-      <div class="flex items-center justify-between pt-2">
+      <div class="page-table-toolbar flex items-center justify-between">
         <div class="flex-1">
-          <input class="search-box mb-4 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+          <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
         <div class="flex flex-wrap mb-4 justify-end gap-4">
           <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
@@ -2368,7 +2368,7 @@ button {
     white-space: nowrap;
   }
 
-  .flex.items-center.justify-between.pt-2 {
+  .page-table-toolbar {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
@@ -2381,7 +2381,7 @@ button {
     height: 38px;
     box-sizing: border-box;
 
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
   }
 
   .flex.flex-wrap.justify-end.gap-4 {

@@ -7,7 +7,7 @@
             Divisi
         </h1>
 
-        <div class="dv-toolbar">
+        <div class="page-table-toolbar dv-toolbar">
 
             <div class="dv-search-wrap">
 
@@ -89,7 +89,7 @@
                         <td class="dv-td dv-td-aksi">
 
                             <button @click="openModal(item)" class="dv-btn-icon">
-                                <PencilSquareIcon class="dv-icon" />
+                                <PencilIcon class="dv-icon" />
                             </button>
 
                             <button @click="confirmDelete(item)" class="dv-btn-icon dv-btn-delete">
@@ -283,7 +283,7 @@ import Swal from "sweetalert2";
 
 import {
     MagnifyingGlassIcon,
-    PencilSquareIcon,
+    PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/outline";
 

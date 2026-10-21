@@ -2,8 +2,13 @@
   <div>
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
-    <div class="flex items-center justify-between pt-2">
-      <input class="search-box mb-2 rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
+    <div class="page-table-toolbar flex items-center justify-between">
+      <input
+        class="search-box standard-search-bar mb-2 rounded-md"
+        v-model="searchQuery"
+        type="text"
+        placeholder="Search barang..."
+      />
 
       <button class="btn-add mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[30px]" @click="openModal">
         + Tambah
@@ -11,7 +16,7 @@
     </div>
 
     <div class="datatable-wrapper">
-      <table class="datatable w-full rounded-md overflow-hidden mt-4">
+      <table class="datatable w-full rounded-md overflow-hidden">
         <thead>
           <tr>
             <th class="px-4 py-2 text-left">No.</th>
@@ -620,7 +625,7 @@ watch(isModalOpen, async (val) => {
   }
 
 
-  .flex.items-center.justify-between.pt-2 {
+  .page-table-toolbar {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;

@@ -7,7 +7,7 @@
         </div>
 
         <!-- Toolbar -->
-        <div class="bk-toolbar">
+        <div class="page-table-toolbar bk-toolbar">
             <div class="bk-search-box">
                 <MagnifyingGlassIcon class="bk-search-icon" />
                 <input v-model="search" type="text" placeholder="Cari nama outsource..." class="bk-search-input"
@@ -73,7 +73,7 @@
                         <td>
                             <div class="bk-action-group">
                                 <!-- Edit: only for PENDING -->
-                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-icon-edit"
+                                <button v-if="row.barang_keluar_status === 'PENDING'" class="bk-btn-icon bk-icon-edit"
                                     title="Konfirmasi Pengambilan" @click="openEdit(row)">
                                     <PencilIcon class="bk-icon bk-icon-edit" />
                                 </button>

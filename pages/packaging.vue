@@ -2,7 +2,9 @@
   <div>
     <title>Packaging</title>
     <div class="judul text-xl font-semibold mb-4">Packaging</div>
-    <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari Pengiriman Barang..." />
+    <div class="page-table-toolbar">
+      <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari Pengiriman Barang..." />
+    </div>
     <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>

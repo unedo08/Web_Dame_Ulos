@@ -3,7 +3,7 @@
   max-width: 100%;
   min-width: 0;
 
-  padding: 24px 0;
+  padding: 0;
 
   box-sizing: border-box;
 }
@@ -287,6 +287,10 @@
 .sd-icon {
   width: 18px;
   height: 18px;
+}
+
+.sd-btn-icon:not(.sd-btn-delete) .sd-icon {
+  color: #16a34a;
 }
 
 .sd-icon.delete {
@@ -756,7 +760,20 @@
 @media (max-width: 1024px) {
 
   .sd-page {
-    padding: 20px 0;
+    padding: 0;
+  }
+
+  .sd-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sd-pagination-left {
+    justify-content: center;
+  }
+
+  .sd-pagination-controls {
+    justify-content: center;
   }
 
   .sd-toolbar {
@@ -792,7 +809,7 @@
   .sd-page {
     width: 100%;
 
-    padding: 16px 0;
+    padding: 0;
 
     overflow: hidden;
   }
@@ -1030,7 +1047,7 @@
 @media (max-width: 480px) {
 
   .sd-page {
-    padding: 14px 0;
+    padding: 0;
   }
 
   .sd-title {

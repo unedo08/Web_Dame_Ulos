@@ -2,7 +2,7 @@
   <div>
     <title>Transaksi Live</title>
     <div class="judul text-xl font-semibold mb-4">Transaksi Live</div>
-    <div class="flex space-x-6">
+    <div class="page-submenu flex space-x-6">
       <button @click="activeTab = 'order'" class="pb-1 text-sm relative"
         :class="activeTab === 'order' ? 'text-red-900 font-semibold' : 'text-gray-500'">
         Order
@@ -18,10 +18,9 @@
       </button>
     </div>
     <div class="mx-auto" v-show="activeTab === 'order'">
-      <br />
-      <div class="flex items-center justify-between pt-2">
+      <div class="page-table-toolbar flex items-center justify-between">
         <div class="flex-1">
-          <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
+          <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari data live..." />
         </div>
         <div>
           <button class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[25px]"
@@ -148,8 +147,9 @@
     </div>
 
     <div class="mx-auto" v-show="activeTab === 'transaction'">
-      <br />
-      <input v-model="searchQuery" type="text" class="search-box mb-4 rounded-md" placeholder="Cari data live..." />
+      <div class="page-table-toolbar">
+        <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari data live..." />
+      </div>
       <div class="live-table-wrapper">
         <table class="datatable rounded-md overflow-hidden">
           <thead>
@@ -1146,7 +1146,7 @@ h3 {
     white-space: nowrap;
   }
 
-  .flex.items-center.justify-between.pt-2 {
+  .page-table-toolbar {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
@@ -1157,7 +1157,7 @@ h3 {
     max-width: none;
     height: 38px;
     box-sizing: border-box;
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
   }
 
   .btn-add {
@@ -1168,7 +1168,7 @@ h3 {
     font-size: 10px;
   }
 
-  .flex.items-center.justify-between.pt-2>div:last-child {
+  .page-table-toolbar>div:last-child {
     display: flex;
     justify-content: flex-end;
   }

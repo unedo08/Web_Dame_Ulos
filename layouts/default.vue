@@ -122,7 +122,7 @@ definePageMeta({
 
 .page-content {
   min-height: 100vh;
-  padding-top: 60px;
+  padding-top: 84px;
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -140,7 +140,7 @@ definePageMeta({
 
   .page-content {
     width: 100%;
-    padding-top: 60px;
+    padding-top: 84px;
     padding-left: 16px;
     padding-right: 16px;
   }

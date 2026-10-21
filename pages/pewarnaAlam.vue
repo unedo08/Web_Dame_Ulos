@@ -6,7 +6,6 @@
             <h1 class="bk-page-title">Benang</h1>
         </div>
 
-        <!-- Tabs -->
         <div class="bn-tabs">
             <button class="bn-tab" :class="{ 'is-active': activeTab === 'masuk' }" @click="setTab('masuk')">Barang
                 Masuk</button>
@@ -18,7 +17,7 @@
 
         <!-- ============================ TAB: BARANG MASUK ============================ -->
         <section v-show="activeTab === 'masuk'">
-            <div class="bk-toolbar">
+            <div class="page-table-toolbar bk-toolbar">
                 <div class="bk-search-box">
                     <MagnifyingGlassIcon class="bk-search-icon" />
                     <input v-model="masukSearch" type="text" placeholder="Cari warna..." class="bk-search-input" @input="
@@ -134,7 +133,7 @@
 
         <!-- ============================ TAB: STOK BENANG ============================ -->
         <section v-show="activeTab === 'stok'">
-            <div class="bk-toolbar">
+            <div class="page-table-toolbar bk-toolbar">
                 <div class="bn-filter-group">
                     <button class="bn-filter-btn" :class="{ 'is-active': stokFilter === 'ALL' }"
                         @click="setStokFilter('ALL')">All</button>
@@ -231,7 +230,7 @@
 
         <!-- ============================ TAB: BENANG KELUAR ============================ -->
         <section v-show="activeTab === 'keluar'">
-            <div class="bk-toolbar">
+            <div class="page-table-toolbar bk-toolbar">
                 <div class="bk-search-box">
                     <MagnifyingGlassIcon class="bk-search-icon" />
                     <input v-model="keluarSearch" type="text" placeholder="Cari nama penenun..." class="bk-search-input"

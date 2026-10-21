@@ -3,7 +3,7 @@
     <title>Acara</title>
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
-    <div class="flex items-center justify-end">
+    <div class="page-table-toolbar flex items-center justify-end">
       <button class="btn-add" @click="openModal">
         + Tambah Acara
       </button>
