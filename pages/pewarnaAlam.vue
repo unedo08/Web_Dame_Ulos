@@ -640,7 +640,7 @@
         </div>
 
         <!-- ===== Delete confirm: Benang Masuk ===== -->
-        <div v-if="isMasukDeleteOpen" class="bk-modal-overlay">
+        <div v-if="isMasukDeleteOpen" class="bk-modal-overlay" @click.self="cancelMasukDelete">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <div class="bk-confirm-icon-wrap">
@@ -662,7 +662,7 @@
         </div>
 
         <!-- ===== Delete confirm: Benang Keluar ===== -->
-        <div v-if="isKeluarDeleteOpen" class="bk-modal-overlay">
+        <div v-if="isKeluarDeleteOpen" class="bk-modal-overlay" @click.self="cancelKeluarDelete">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <div class="bk-confirm-icon-wrap">
@@ -684,7 +684,7 @@
         </div>
 
         <!-- ===== Shared confirm popup (success / error) ===== -->
-        <div v-if="isConfirmOpen" class="bk-modal-overlay">
+        <div v-if="isConfirmOpen" class="bk-modal-overlay" @click.self="closeConfirm">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <div v-if="confirmType === 'success'" class="bk-confirm-icon-wrap">
@@ -724,7 +724,7 @@ import { useBenang } from "@/composables/useBenang";
 const {
     isSuperAdmin, activeTab, setTab,
     jenisBenangList, pewarnaList, sumberWarnaList, warnaAlamList,
-    isConfirmOpen, confirmType, confirmTitle, confirmSubtitle, confirmButtonText, onConfirmButton,
+    isConfirmOpen, confirmType, confirmTitle, confirmSubtitle, confirmButtonText, closeConfirm, onConfirmButton,
     formatDate,
     masukData, masukSearch, masukLoading, getMasuk,
     isPaOpen, paForm, paErrors, paSubmitting, openPa, closePa, submitPa,

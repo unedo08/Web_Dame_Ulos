@@ -1244,23 +1244,4 @@ watch(itemsPerPage, () => {
   cursor: pointer;
 }
 
-.er-dropdown-item:hover {
-  background: #f3f4f6;
-}
-
-.er-dropdown-item--print {
-  color: #ca8a04;
-}
-
-.er-dropdown-item--send {
-  color: #16a34a;
-}
-
-.er-dropdown-item--delete {
-  color: #dc2626;
-}
-
-.er-dropdown-item--delete:hover {
-  background: #fef2f2;
-}
 </style>

@@ -1009,31 +1009,4 @@ const formatCurrency = (val) =>
   transition: background 0.15s ease;
 }
 
-.er-dropdown-item:hover {
-  background: #f3f4f6;
-}
-
-.er-dropdown-item--print {
-  color: #b77900;
-}
-
-.er-dropdown-item--edit {
-  color: #16a34a;
-}
-
-.er-dropdown-item--send {
-  color: #2563eb;
-}
-
-.er-dropdown-item--add {
-  color: #16a34a;
-}
-
-.er-dropdown-item--delete {
-  color: #dc2626;
-}
-
-.er-dropdown-item--delete:hover {
-  background: #fef2f2;
-}
 </style>

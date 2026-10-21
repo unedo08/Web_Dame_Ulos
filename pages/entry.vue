@@ -29,7 +29,7 @@
         <div class="flex-1">
           <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap mb-4 justify-end gap-4">
+        <div class="flex flex-wrap justify-end gap-4">
           <button class="btn-add bg-green-500 text-white text-center rounded-md hover:bg-green-600 w-[60px] h-[30px]"
             @click="openTambahBarang()">
             + Desc
@@ -163,12 +163,12 @@
         <div class="flex-1">
           <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap mb-4 justify-end gap-4">
+        <div class="flex flex-wrap justify-end gap-4">
           <!-- <button class="btn-add bg-yellow-500 text-white text-center rounded-md hover:bg-yellow-600 w-[75px] h-[30px]"
             @click="openSearchModal">
             🔍 Search
           </button> -->
-          <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+          <button class="entry-price-tag-button btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
             @click="openModal('priceTag')">
             Print Price Tag
           </button>
@@ -337,8 +337,8 @@
         <div class="flex-1">
           <input class="search-box rounded-md" v-model="searchQuery" type="text" placeholder="Search barang..." />
         </div>
-        <div class="flex flex-wrap mb-4 justify-end gap-4">
-          <button class="btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
+        <div class="flex flex-wrap justify-end gap-4">
+          <button class="entry-price-tag-button btn-print bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[85px] h-[30px]"
             @click="openModal('priceTag')">
             Print Price Tag
           </button>
@@ -510,7 +510,7 @@
       </div>
     </div>
 
-    <div v-if="showModalAdd" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalAdd" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="cancelTambahBarang">
       <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
@@ -562,7 +562,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Modal <span style="color:red">*</span></label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
@@ -574,7 +574,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Harga Price Tag <span style="color:red">*</span></label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
@@ -586,7 +586,7 @@
           <div>
             <label class="block text-gray-700 mb-1">Harga Net <span style="color:red">*</span></label>
             <div class="flex">
-              <div class="bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
@@ -621,7 +621,7 @@
 
     <!-- Modal Add Size  -->
     <div v-if="showModalAddSize"
-      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
+      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="cancelSizeBarang">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
 
@@ -793,7 +793,7 @@
     </div>
 
     <div v-if="showModalSearch"
-      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50">
+      class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="closeSearchModal">
       <div class="bg-white rounded-lg shadow-lg p-6 w-[500px]">
         <h2 class="text-xl font-semibold mb-4 text-center">Cari Barang</h2>
         <input v-model="searchCode" @keyup.enter="handleSearch" type="text" class="w-full border rounded px-3 py-2"
@@ -809,7 +809,7 @@
       </div>
     </div>
 
-    <div v-if="showModalEditStock" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div v-if="showModalEditStock" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="showModalEditStock = false">
       <div class="bg-white p-6 rounded-md w-80 shadow-md">
         <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
 
@@ -2260,7 +2260,7 @@ button {
 }
 
 .btn-print {
-  background-color: #12c90e;
+  background-color: #3d8bfd;
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -2268,7 +2268,15 @@ button {
 }
 
 .btn-print:hover {
-  background-color: #7df67b;
+  background-color: #3d8bfd;
+}
+
+.entry-price-tag-button {
+  background-color: #16a34a !important;
+}
+
+.entry-price-tag-button:hover {
+  background-color: #16a34a !important;
 }
 
 .btn-print-click {
@@ -2289,7 +2297,7 @@ button {
 }
 
 .btn-add {
-  background-color: #2e26d0;
+  background-color: #3d8bfd;
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -2297,7 +2305,7 @@ button {
 }
 
 .btn-add:hover {
-  background-color: #665eed;
+  background-color: #3d8bfd;
 }
 
 .btn-tab {
@@ -2550,19 +2558,25 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 14px;
-  background: #ffffff;
+  min-width: 50px;
+  height: 30px;
+  padding: 0 12px;
+  background: transparent;
   color: #374151;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: 'Nunito', sans-serif;
   cursor: pointer;
-  transition: background 0.2s ease;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: opacity 0.15s;
 }
 
 .er-btn-action:hover {
-  background: #f3f4f6;
+  opacity: 0.85;
 }
 
 .er-action-dropdown {
@@ -2579,21 +2593,24 @@ button {
 }
 
 .er-dropdown-item {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding: 9px 12px;
+  min-height: 30px;
+  padding: 0 12px;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
   color: #374151;
   background: transparent;
   border: none;
-  border-radius: 5px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.er-dropdown-item:hover:not(:disabled) {
-  background: #f3f4f6;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: opacity 0.15s;
 }
 
 .er-dropdown-item--disabled {
@@ -2601,11 +2618,4 @@ button {
   cursor: not-allowed;
 }
 
-.er-dropdown-item--delete {
-  color: #dc2626;
-}
-
-.er-dropdown-item--delete:hover {
-  background: #fef2f2;
-}
 </style>

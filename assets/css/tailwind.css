@@ -394,3 +394,193 @@ button.sd-btn-tambah {
     font-size: 12px !important;
   }
 }
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(h1, h2, h3, h4, h5, h6),
+.swal2-container .swal2-title {
+  font-size: 15px !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(
+  label,
+  .judul-label,
+  .bk-items-label,
+  .modal-tambah-label,
+  .form-label
+) {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(input, textarea, select) {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(input, textarea)[placeholder]::placeholder,
+.swal2-container :is(input, textarea)[placeholder]::placeholder {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.modal-currency-prefix,
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) .keuangan-rupiah-prefix {
+  font-size: 13px !important;
+}
+
+@media (max-width: 1024px) {
+  table :is(th, td),
+  table :is(th, td) * {
+    font-size: 12px !important;
+  }
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]),
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]) * {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) :is(button, a[class*="btn"], a[class*="button"], [role="button"]) {
+  min-height: 30px;
+  border-radius: 999px !important;
+}
+
+:is(table, [class*="table"], [class*="Table"]) :is(th, td) .er-btn-action {
+  background: transparent !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 999px !important;
+  font-weight: 400 !important;
+}
+
+.er-action-dropdown .er-dropdown-item,
+.er-action-dropdown .er-dropdown-item:hover:not(:disabled) {
+  color: #374151 !important;
+  background: transparent !important;
+  transition: none !important;
+}
+
+:is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) button,
+.swal2-container button {
+  font-size: 13px !important;
+}
+
+@media screen and (max-width: 767px) {
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) {
+    box-sizing: border-box !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 560px !important;
+    max-height: calc(100vh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    margin: 0 !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(.grid, form[class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    input,
+    textarea,
+    select,
+    .form-control,
+    .input-field
+  ) {
+    box-sizing: border-box !important;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    .modal-footer,
+    .bk-modal-footer,
+    .jp-modal-footer,
+    .pm-modal-footer,
+    .dv-modal-footer,
+    .sd-modal-footer,
+    .flex.justify-end
+  ) {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    .modal-footer,
+    .bk-modal-footer,
+    .jp-modal-footer,
+    .pm-modal-footer,
+    .dv-modal-footer,
+    .sd-modal-footer,
+    .flex.justify-end
+  ) > button {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+    white-space: normal;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) > :not(script):not(style) :is(
+    [class*="table-wrapper"],
+    [class*="table-wrap"]
+  ) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) :has(> table) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) :has(> table) > table {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+button[class*="bg-blue-"],
+.bk-btn-add,
+.keuangan-btn-add,
+.jp-btn-tambah,
+.pm-btn-tambah,
+.dv-btn-tambah,
+.sd-btn-tambah {
+  background-color: #3d8bfd !important;
+}
+
+button[class*="bg-blue-"]:hover,
+.bk-btn-add:hover,
+.keuangan-btn-add:hover,
+.jp-btn-tambah:hover,
+.pm-btn-tambah:hover,
+.dv-btn-tambah:hover,
+.sd-btn-tambah:hover {
+  background-color: #3d8bfd !important;
+}
+
+.cl-page-btn--active,
+.cd-page-btn--active,
+.bk-page-number.active,
+.jp-page-active,
+.pm-page-active,
+.dv-page-active,
+.sd-page-active {
+  background-color: #3d8bfd !important;
+  border-color: #3d8bfd !important;
+}

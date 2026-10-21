@@ -1,11 +1,11 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
-    <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
+  <div v-if="show" class="po-desc-overlay fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
+    <div class="po-desc-modal bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="po-desc-fields grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
@@ -73,7 +73,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 space-x-4">
+        <div class="po-desc-actions flex justify-end mt-6 space-x-4">
           <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
             Batal
           </button>
@@ -224,5 +224,56 @@ watch(() => props.show, (newVal) => {
 
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 767px) {
+  .po-desc-overlay {
+    align-items: flex-start !important;
+    padding: 12px !important;
+  }
+
+  .po-desc-modal {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 560px !important;
+    max-height: calc(100vh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    margin: 0 auto !important;
+    padding: 16px !important;
+  }
+
+  .po-desc-modal h2 {
+    margin: 0 36px 16px 0 !important;
+    line-height: 1.35;
+  }
+
+  .po-desc-fields {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .po-desc-fields > div:not(.hidden) {
+    min-width: 0;
+  }
+
+  .po-desc-fields .form-control {
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+
+  .po-desc-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px !important;
+    margin-top: 16px !important;
+  }
+
+  .po-desc-actions button {
+    width: 100%;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    white-space: normal;
+  }
 }
 </style>

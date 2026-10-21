@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="packaging-modal-overlay">
+  <div v-if="show" class="packaging-modal-overlay" @click.self="closeModal">
     <div class="packaging-modal">
       <div class="packaging-modal-header">
         <h2>Form Packaging</h2>

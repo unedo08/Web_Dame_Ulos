@@ -591,9 +591,9 @@ const filteredMenu = computed(() => {
 .mobile-menu-button {
   display: none;
   position: fixed;
-  top: 16px;
+  top: 6px;
   left: 16px;
-  z-index: 1200;
+  z-index: 1040;
   width: 48px;
   height: 48px;
   align-items: center;

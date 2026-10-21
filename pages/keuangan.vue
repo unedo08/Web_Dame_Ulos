@@ -73,7 +73,7 @@
             </table>
         </div>
 
-        <div v-if="isModalOpen" class="modal-overlay">
+        <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>

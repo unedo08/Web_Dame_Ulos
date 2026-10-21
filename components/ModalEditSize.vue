@@ -1,11 +1,11 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
-    <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
+  <div v-if="show" class="po-size-overlay fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
+    <div class="po-size-modal bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
       <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
-        <div class="grid grid-cols-1 gap-4">
+        <div class="po-size-fields grid grid-cols-1 gap-4">
           <div>
             <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
@@ -18,16 +18,22 @@
 
           <div>
             <label>Ukuran Ulos <span style="color:red">*</span></label>
-            <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
+            <div class="po-size-input-group">
+              <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
+              <div class="po-size-unit">cm</div>
+            </div>
           </div>
 
           <div>
             <label>Ukuran Mandar</label>
-            <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
+            <div class="po-size-input-group">
+              <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
+              <div class="po-size-unit">cm</div>
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 space-x-4">
+        <div class="po-size-actions flex justify-end mt-6 space-x-4">
           <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
             Batal
           </button>
@@ -162,7 +168,91 @@ watch(() => props.show, (newVal) => {
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
 }
 
+.po-size-input-group {
+  display: flex;
+  min-width: 0;
+}
+
+.po-size-input-group .form-control {
+  min-width: 0;
+  flex: 1;
+  margin-bottom: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.po-size-unit {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 0.375rem 0.375rem 0;
+  background-color: #f3f4f6;
+  padding: 0 12px;
+  color: #4b5563;
+  font-size: 13px;
+}
+
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 767px) {
+  .po-size-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px !important;
+    overflow-y: auto !important;
+  }
+
+  .po-size-modal {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    box-sizing: border-box;
+    width: calc(100% - 24px) !important;
+    max-width: 560px !important;
+    max-height: calc(100vh - 24px) !important;
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top) + 12px)) !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+
+  .po-size-modal h2 {
+    margin: 0 36px 16px 0 !important;
+    line-height: 1.35;
+  }
+
+  .po-size-fields {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .po-size-fields > div:not(.hidden) {
+    min-width: 0;
+  }
+
+  .po-size-fields .form-control {
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+
+  .po-size-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px !important;
+    margin-top: 16px !important;
+  }
+
+  .po-size-actions button {
+    width: 100%;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    white-space: normal;
+  }
 }
 </style>

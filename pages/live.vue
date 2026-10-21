@@ -229,7 +229,7 @@
   </div>
 
   <!-- Modal Add Order -->
-  <div v-if="isModalOpenAddOrder" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
+  <div v-if="isModalOpenAddOrder" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModalAddOrder">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Tambah Transaksi Live</h3>
       <form @submit.prevent="submitLiveOrder">
@@ -278,7 +278,7 @@
           </label>
           <div class="flex">
             <span
-              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+              class="modal-currency-prefix inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
               Rp
             </span>
             <input type="text" id="hargaTotal" :value="formattedHarga" @input="updateHarga($event.target.value)"
@@ -307,7 +307,7 @@
 
   <!-- Modal Edit Order -->
   <div v-if="isModalOpenEditOrder"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]">
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModalEditOrder">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-4">Edit Transaksi Live</h3>
       <form @submit.prevent="submitLiveEditOrder">
@@ -356,7 +356,7 @@
           </label>
           <div class="flex">
             <span
-              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+              class="modal-currency-prefix inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
               Rp
             </span>
             <input type="text" id="hargaTotal" :value="formattedHarga" @input="updateHarga($event.target.value)"

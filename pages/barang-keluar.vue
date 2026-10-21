@@ -283,7 +283,7 @@
         </div>
 
         <!-- ===== Delete Confirmation Modal ===== -->
-        <div v-if="isDeleteConfirmOpen" class="bk-modal-overlay">
+        <div v-if="isDeleteConfirmOpen" class="bk-modal-overlay" @click.self="cancelDelete">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <div class="bk-confirm-icon-wrap">
@@ -308,7 +308,7 @@
         </div>
 
         <!-- ===== Confirm Popup (success / error) ===== -->
-        <div v-if="isConfirmOpen" class="bk-modal-overlay">
+        <div v-if="isConfirmOpen" class="bk-modal-overlay" @click.self="closeConfirm">
             <div class="bk-confirm-card">
                 <div class="bk-confirm-body">
                     <!-- Success icon -->
