@@ -1,7 +1,7 @@
 <template>
   <div v-if="chartData.datasets.length" class="line-chart-wrapper">
-    <div class="line-chart-inner" :style="{ width: chartWidth + 'px' }">
-      <Line :data="chartData" :options="chartOptions" :width="chartWidth" :height="320" />
+    <div class="line-chart-inner">
+      <Line :data="chartData" :options="chartOptions" />
     </div>
   </div>
 
@@ -38,11 +38,6 @@ const props = defineProps({
   dataBarang: Object
 })
 
-// Lebar grafik minimal 900px, atau lebih lebar jika datanya banyak
-const chartWidth = computed(() =>
-  Math.max(900, (props.dataBarang?.categories?.length || 0) * 90)
-)
-
 const chartData = computed(() => {
   const labels = props.dataBarang?.categories || []
 
@@ -64,7 +59,7 @@ const chartData = computed(() => {
 })
 
 const chartOptions = {
-  responsive: false,
+  responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -102,15 +97,13 @@ const chartOptions = {
 .line-chart-wrapper {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  min-width: 0;
 }
 
 .line-chart-inner {
   position: relative;
   height: 320px;
+  width: 100%;
 }
 
 .loading-placeholder {

@@ -1,7 +1,7 @@
 <template>
-  <div v-if="chartData.datasets.length" class="bar-chart-scroll">
-    <div class="bar-chart-inner" :style="{ width: chartWidth + 'px' }">
-      <Bar :data="chartData" :options="chartOptions" :width="chartWidth" :height="260" />
+  <div v-if="chartData.datasets.length" class="bar-chart-wrapper">
+    <div class="bar-chart-inner">
+      <Bar :data="chartData" :options="chartOptions" />
     </div>
   </div>
 
@@ -55,12 +55,8 @@ const chartData = computed(() => {
   }
 })
 
-const chartWidth = computed(() =>
-  Math.max(700, (chartData.value.labels?.length || 0) * 85)
-)
-
 const chartOptions = {
-  responsive: false,
+  responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -94,18 +90,15 @@ const chartOptions = {
   color: #94a3b8;
 }
 
-.bar-chart-scroll {
+.bar-chart-wrapper {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
 }
 
 .bar-chart-inner {
   position: relative;
   height: 260px;
+  width: 100%;
 }
 </style>

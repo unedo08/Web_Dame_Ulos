@@ -55,11 +55,11 @@
                         <td>{{ item.sumber_dana_nama }}</td>
                         <td>
                             <div class="action-wrapper">
-                                <button class="action-btn" @click="openModal(item)">
-                                    <PencilSquareIcon class="keuangan-icon" />
+                                <button class="action-btn" title="Edit" @click="openModal(item)">
+                                    <PencilIcon class="keuangan-icon" />
                                 </button>
-                                <button class="action-btn delete" @click="deleteData(item)">
-                                    <TrashIcon class="keuangan-icon" />
+                                <button class="action-btn delete" title="Hapus" @click="deleteData(item)">
+                                    <TrashIcon class="keuangan-icon delete" />
                                 </button>
                             </div>
                         </td>
@@ -194,7 +194,7 @@
 
 <script setup>
 import "@/assets/css/keuangan.css";
-import { MagnifyingGlassIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { useKeuangan } from "@/composables/useKeuangan";
 
 const {

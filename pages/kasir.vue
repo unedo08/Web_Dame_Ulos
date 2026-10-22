@@ -3,9 +3,9 @@
   <div class="judul text-xl font-semibold mb-4">Menu Kasir</div>
 
   <div class="kasir-toolbar flex items-start justify-between pt-2">
-    <div class="kasir-search-fields flex flex-col flex-1 space-y-2">
-      <input class="search-box standard-search-bar mb-4 rounded-md" v-model="searchQueryCustomer" type="text" placeholder="Nama Customer" />
-      <input class="search-box standard-search-bar mb-4 rounded-md" v-model="searchQueryPhone" type="text" placeholder="Nomor Telepon" />
+    <div class="kasir-search-fields flex flex-col flex-1">
+      <input class="search-box standard-search-bar rounded-md" v-model="searchQueryCustomer" type="text" placeholder="Nama Customer" />
+      <input class="search-box standard-search-bar rounded-md" v-model="searchQueryPhone" type="text" placeholder="Nomor Telepon" />
     </div>
 
     <div class="kasir-actions flex ml-4">
@@ -402,6 +402,7 @@ async function deleteHoldTransaction(id) {
     cancelButtonColor: "#aaa",
     confirmButtonText: "Ya, hapus",
     cancelButtonText: "Batal",
+    reverseButtons: true,
   });
 
   if (!konfirmasi.isConfirmed) return;
@@ -735,6 +736,7 @@ function removeItem(index) {
     cancelButtonColor: "#aaa",
     confirmButtonText: itemCount === 1 ? "Ya, hapus transaksi" : "Ya, hapus",
     cancelButtonText: "Batal",
+    reverseButtons: true,
   }).then(async (result) => {
     if (!result.isConfirmed) return;
 

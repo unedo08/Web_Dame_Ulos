@@ -1,8 +1,8 @@
 <template>
     <div class="container-login">
-        <div class="flex pt-2 h-screen">
+        <div class="login-layout">
             <!-- Left Side (Image and Description) -->
-            <div class="w-8/12 bg-[#8E775E] text-white p-6 flex items-center justify-center">
+            <div class="login-brand bg-[#8E775E] text-white p-6 flex items-center justify-center">
                 <p class="text-center">
                     "Dame Ulos is a local brand from Silindung (Tarutung) which focuses on preserving “Intangible
                     Cultural Heritage” namely “Ulos and Mandar Tarutung”. Each ulos and mandar is made with the
@@ -13,9 +13,9 @@
             </div>
 
             <!-- Right Side (Login Form) -->
-            <div class="w-4/12 bg-[#FFFFF0] p-6 flex-col justify-center items-center">
+            <div class="login-panel bg-[#FFFFF0] p-6">
                 <div class="image-container mb-50">
-                    <img src="assets/image/DameUlosLogo2.png" alt="Dame Ulos Logo" class="w-[290px] h-[184px]">
+                    <img src="assets/image/DameUlosLogo2.png" alt="Dame Ulos Logo" class="login-logo">
                 </div>
                 <h4 class="text-2xl font-semibold text-gray-900">Welcome Back!</h4>
                 <h6 class="text-black-600 opacity-50 mb-6">Sign in to Continue to Dame Ulos Application</h6>
@@ -105,12 +105,32 @@ definePageMeta({
 .container-login {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-.flex {
+.login-layout {
     display: flex;
-    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.login-brand {
+    width: 66.666667%;
+}
+
+.login-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 33.333333%;
+}
+
+.login-logo {
+    width: 290px;
+    height: 184px;
+    object-fit: contain;
 }
 
 .text-center {
@@ -124,5 +144,51 @@ definePageMeta({
     place-items: center;
     height: 15vh;
     margin-top: 30px;
+}
+
+@media (max-width: 767px) {
+    .container-login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 16px;
+        box-sizing: border-box;
+        background: #fffff0;
+    }
+
+    .login-layout {
+        width: 100%;
+        min-height: 0;
+        align-items: center;
+        justify-content: center;
+        padding-top: 0;
+    }
+
+    .login-brand {
+        display: none;
+    }
+
+    .login-panel {
+        width: 100%;
+        max-width: 420px;
+        padding: 28px 22px;
+        border-radius: 16px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+    }
+
+    .image-container {
+        height: auto;
+        margin: 0 auto 20px;
+    }
+
+    .login-logo {
+        width: min(220px, 70vw);
+        height: auto;
+    }
+
+    .login-panel input:not([type="checkbox"]) {
+        font-size: 16px;
+    }
 }
 </style>

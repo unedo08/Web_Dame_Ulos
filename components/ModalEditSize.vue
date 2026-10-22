@@ -5,11 +5,12 @@
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
-        <div class="po-size-fields grid grid-cols-1 gap-4">
+        <div class="grid gap-4">
           <div>
-            <label>Kode Barang <span style="color:red">*</span></label>
-            <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
-              disabled />
+            <label class="block text-gray-700 mb-1">Kode Barang <span style="color:red">*</span></label>
+            <input v-model="form.code" type="text" required
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-gray-100"
+              readonly disabled />
           </div>
           <div class="hidden">
             <label>Kode Barang <span style="color:red">*</span></label>
@@ -17,17 +18,19 @@
           </div>
 
           <div>
-            <label>Ukuran Ulos <span style="color:red">*</span></label>
+            <label class="block text-gray-700 mb-1">Ukuran Ulos <span style="color:red">*</span></label>
             <div class="po-size-input-group">
-              <input v-model="form.barangentry_ukuran_ulos" type="text" required class="form-control" />
+              <input v-model="form.barangentry_ukuran_ulos" type="text" required
+                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
               <div class="po-size-unit">cm</div>
             </div>
           </div>
 
           <div>
-            <label>Ukuran Mandar</label>
+            <label class="block text-gray-700 mb-1">Ukuran Mandar</label>
             <div class="po-size-input-group">
-              <input v-model="form.barangentry_ukuran_mandar" type="text" class="form-control" />
+              <input v-model="form.barangentry_ukuran_mandar" type="text"
+                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
               <div class="po-size-unit">cm</div>
             </div>
           </div>
@@ -154,29 +157,14 @@ watch(() => props.show, (newVal) => {
 </script>
 
 <style scoped>
-.form-control {
-  width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 1rem;
-  outline: none;
-}
-
-.form-control:focus {
-  border-color: #06b6d4;
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
-}
-
 .po-size-input-group {
   display: flex;
   min-width: 0;
 }
 
-.po-size-input-group .form-control {
+.po-size-input-group > input {
   min-width: 0;
-  flex: 1;
-  margin-bottom: 0;
+  flex: 1 1 0%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -191,7 +179,7 @@ watch(() => props.show, (newVal) => {
   background-color: #f3f4f6;
   padding: 0 12px;
   color: #4b5563;
-  font-size: 13px;
+  font-size: 0.875rem;
 }
 
 .bg-gray-800 {
@@ -224,20 +212,6 @@ watch(() => props.show, (newVal) => {
   .po-size-modal h2 {
     margin: 0 36px 16px 0 !important;
     line-height: 1.35;
-  }
-
-  .po-size-fields {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 12px !important;
-  }
-
-  .po-size-fields > div:not(.hidden) {
-    min-width: 0;
-  }
-
-  .po-size-fields .form-control {
-    box-sizing: border-box;
-    margin-bottom: 0;
   }
 
   .po-size-actions {

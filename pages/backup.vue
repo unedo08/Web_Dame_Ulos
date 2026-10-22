@@ -15,7 +15,7 @@
       </div>
 
       <!-- Add Button that triggers Modal -->
-      <div>
+      <div class="datatable-wrapper">
         <button
           class="btn-add bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 w-[104px] h-[34px]"
           @click="openModal"

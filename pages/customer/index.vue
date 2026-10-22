@@ -282,6 +282,7 @@ async function deleteCustomer(id, nama) {
     confirmButtonText: 'Ya, Hapus!',
     cancelButtonText: 'Batal',
     confirmButtonColor: '#EF4444',
+    reverseButtons: true,
   })
   if (!confirm.isConfirmed) return
 

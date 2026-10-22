@@ -64,8 +64,9 @@ const chartOptions = {
 
 <style scoped>
 .chart-wrapper {
-  width: 280px;
-  height: 280px;
+  width: 100%;
+  height: 320px;
+  min-width: 0;
   margin: 0 auto;
 }
 </style>

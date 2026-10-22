@@ -244,31 +244,34 @@
               </td> -->
               <td class="px-4 py-2">
                 <div class="relative inline-block text-left">
-                  <button class="er-btn-action" @click.stop="toggleActionDropdown(barang.barangentry_id)">
+                  <button class="er-btn-action" @click.stop="toggleActionDropdown(`wait-${barang.barangentry_id}`, $event)">
                     Aksi
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  <div v-if="activeDropdown === barang.barangentry_id" class="er-action-dropdown" @click.stop>
-                    <button class="er-dropdown-item" @click="closeActionDropdown(); openRiwayat(barang.barangentry_id)">
-                      <span>View</span>
-                    </button>
+                  <Teleport to="body">
+                    <div v-if="activeDropdown === `wait-${barang.barangentry_id}`" :ref="setActionDropdownMenu"
+                      class="er-action-dropdown" @click.stop>
+                      <button class="er-dropdown-item" @click="closeActionDropdown(); openRiwayat(barang.barangentry_id)">
+                        <span>View</span>
+                      </button>
 
-                    <button :class="[
-                      'er-dropdown-item',
-                      { 'er-dropdown-item--disabled': barang.barangentry_jumlah_barang <= 0 }
-                    ]" :disabled="barang.barangentry_jumlah_barang <= 0"
-                      @click="closeActionDropdown(); openModalEditBarang(barang.barangentry_id)">
-                      <span>Edit</span>
-                    </button>
+                      <button :class="[
+                        'er-dropdown-item',
+                        { 'er-dropdown-item--disabled': barang.barangentry_jumlah_barang <= 0 }
+                      ]" :disabled="barang.barangentry_jumlah_barang <= 0"
+                        @click="closeActionDropdown(); openModalEditBarang(barang.barangentry_id)">
+                        <span>Edit</span>
+                      </button>
 
-                    <button class="er-dropdown-item er-dropdown-item--delete"
-                      @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
-                      <span>Delete</span>
-                    </button>
-                  </div>
+                      <button class="er-dropdown-item er-dropdown-item--delete"
+                        @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </Teleport>
                 </div>
               </td>
             </tr>
@@ -399,55 +402,53 @@
 
               <td class="px-4 py-2">
                 <div class="relative inline-block text-left">
-                  <button class="er-btn-action" @click.stop="toggleActionDropdown(barang.barangentry_id)">
+                  <button class="er-btn-action" @click.stop="toggleActionDropdown(`ready-${barang.barangentry_id}`, $event)">
                     Aksi
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  <div v-if="activeDropdown === barang.barangentry_id" class="er-action-dropdown" @click.stop>
-                    <!-- Print -->
-                    <button class="er-dropdown-item er-dropdown-item--print"
-                      @click="closeActionDropdown(); printPreOrder(barang.barangentry_id)">
-                      Print
-                    </button>
-
-                    <!-- Edit -->
-                    <button class="er-dropdown-item er-dropdown-item--edit" @click="closeActionDropdown(); openModalEditPO(
-                      barang.barangentry_id,
-                      barang.pre_order_barang?.preOrdeBarang_id
-                    )">
-                      Edit
-                    </button>
-
-                    <!-- Jika barang sudah terisi -->
-                    <template v-if="barang.barangfilled">
-                      <button class="er-dropdown-item er-dropdown-item--send"
-                        @click="closeActionDropdown(); handleSendClick(barang)">
-                        {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
-                      </button>
-                    </template>
-
-                    <!-- Jika barang belum terisi -->
-                    <template v-else>
-                      <button class="er-dropdown-item er-dropdown-item--add"
-                        @click="closeActionDropdown(); openModalDesc(barang.barangentry_id)">
-                        Desc +
+                  <Teleport to="body">
+                    <div v-if="activeDropdown === `ready-${barang.barangentry_id}`" :ref="setActionDropdownMenu"
+                      class="er-action-dropdown" @click.stop>
+                      <button class="er-dropdown-item er-dropdown-item--print"
+                        @click="closeActionDropdown(); printPreOrder(barang.barangentry_id)">
+                        Print
                       </button>
 
-                      <button class="er-dropdown-item er-dropdown-item--add"
-                        @click="closeActionDropdown(); openModalSize(barang.barangentry_id)">
-                        Size +
+                      <button class="er-dropdown-item er-dropdown-item--edit" @click="closeActionDropdown(); openModalEditPO(
+                        barang.barangentry_id,
+                        barang.pre_order_barang?.preOrdeBarang_id
+                      )">
+                        Edit
                       </button>
-                    </template>
 
-                    <!-- Delete -->
-                    <button class="er-dropdown-item er-dropdown-item--delete"
-                      @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
-                      Delete
-                    </button>
-                  </div>
+                      <template v-if="barang.barangfilled">
+                        <button class="er-dropdown-item er-dropdown-item--send"
+                          @click="closeActionDropdown(); handleSendClick(barang)">
+                          {{ barang.status_barang === "PACKAGING" ? "Packaging" : "Send" }}
+                        </button>
+                      </template>
+
+                      <template v-else>
+                        <button class="er-dropdown-item er-dropdown-item--add"
+                          @click="closeActionDropdown(); openModalDesc(barang.barangentry_id)">
+                          Desc +
+                        </button>
+
+                        <button class="er-dropdown-item er-dropdown-item--add"
+                          @click="closeActionDropdown(); openModalSize(barang.barangentry_id)">
+                          Size +
+                        </button>
+                      </template>
+
+                      <button class="er-dropdown-item er-dropdown-item--delete"
+                        @click="closeActionDropdown(); deleteBarang(barang.barangentry_id)">
+                        Delete
+                      </button>
+                    </div>
+                  </Teleport>
                 </div>
               </td>
             </tr>
@@ -887,6 +888,7 @@ import EditBarangPO from "../components/ModalEditPO.vue";
 import SendOrderModal from "../components/ModalSendOrder.vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
 import { useRouter } from "vue-router";
 
 const { $api } = useNuxtApp();
@@ -932,28 +934,12 @@ const inputKodeDesc = ref(null);
 const inputKodeSize = ref(null);
 const selectedPreOrderId = ref(null);
 
-const activeDropdown = ref(null)
-
-const toggleActionDropdown = (id) => {
-  activeDropdown.value =
-    activeDropdown.value === id ? null : id
-}
-
-const closeActionDropdown = () => {
-  activeDropdown.value = null
-}
-
-const handleClickOutside = () => {
-  closeActionDropdown()
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+const {
+  activeDropdown,
+  closeActionDropdown,
+  setActionDropdownMenu,
+  toggleActionDropdown,
+} = useActionDropdown();
 
 onMounted(async () => {
   const config = useRuntimeConfig();
@@ -982,6 +968,7 @@ async function openSendModal(id) {
   const result = await Swal.fire({
     title: "Konfirmasi Pengiriman",
     text: "Pilih metode pengiriman",
+    icon: "warning",
     showDenyButton: true,
     showCancelButton: true,
     confirmButtonText: "DIKIRIM",
@@ -1269,35 +1256,30 @@ async function exportReadyStock() {
     const res = await $api.get(`${url.value}/api/entrybarang/export-ready`);
     const rows = res.data.data;
 
-    const headers = ["Kode Barang", "Jenis Barang", "Nama Ulos", "Warna", "Nama Penenun", "Nama Panirat", "Dryer", "Modal", "Price Tag", "Harga Net", "Ukuran Mandar", "Ukuran Ulos", "Jumlah", "Acara", "Tanggal"];
-    let html = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>`;
-    rows.forEach(r => {
-      html += `<tr>
-        <td>${r.code_nama ?? ""}</td>
-        <td>${r.jenisbarang_nama ?? ""}</td>
-        <td>${r.barangentry_nama ?? ""}</td>
-        <td>${r.barangentry_warna ?? ""}</td>
-        <td>${r.barangentry_nama_penenun ?? ""}</td>
-        <td>${r.barangentry_nama_panirat ?? ""}</td>
-        <td>${r.barangentry_dryer ?? ""}</td>
-        <td>${r.barangentry_modal ?? 0}</td>
-        <td>${r.barangentry_price_tag ?? 0}</td>
-        <td>${r.barangentry_harga_net ?? 0}</td>
-        <td>${r.barangentry_ukuran_mandar ?? ""}</td>
-        <td>${r.barangentry_ukuran_ulos ?? ""}</td>
-        <td>${r.barangentry_jumlah_barang ?? 0}</td>
-        <td>${r.acara_nama ?? "-"}</td>
-        <td>${r.created_at ? r.created_at.substring(0, 10) : ""}</td>
-      </tr>`;
-    });
-    html += "</tbody></table>";
-
-    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `ReadyStock_${new Date().toISOString().split("T")[0]}.xls`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    const exportRows = rows.map((row) => ({
+      "Kode Barang": row.code_nama ?? "",
+      "Jenis Barang": row.jenisbarang_nama ?? "",
+      "Nama Ulos": row.barangentry_nama ?? "",
+      Warna: row.barangentry_warna ?? "",
+      "Nama Penenun": row.barangentry_nama_penenun ?? "",
+      "Nama Panirat": row.barangentry_nama_panirat ?? "",
+      Dryer: row.barangentry_dryer ?? "",
+      Modal: Number(row.barangentry_modal ?? 0),
+      "Price Tag": Number(row.barangentry_price_tag ?? 0),
+      "Harga Net": Number(row.barangentry_harga_net ?? 0),
+      "Ukuran Mandar": row.barangentry_ukuran_mandar ?? "",
+      "Ukuran Ulos": row.barangentry_ukuran_ulos ?? "",
+      Jumlah: Number(row.barangentry_jumlah_barang ?? 0),
+      Acara: row.acara_nama ?? "-",
+      Tanggal: row.created_at ? row.created_at.substring(0, 10) : "",
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ready Stock");
+    XLSX.writeFile(
+      workbook,
+      `ReadyStock_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
 
     Swal.close();
     Swal.fire("Berhasil", "Export Excel selesai.", "success");
@@ -2600,7 +2582,7 @@ button {
   padding: 0 12px;
   text-align: left;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   font-family: 'Nunito', sans-serif;
   color: #374151;
   background: transparent;

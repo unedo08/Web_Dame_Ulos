@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center font-nunito">
-    <div class="bg-white rounded-xl shadow-xl flex overflow-hidden" style="width: 1100px; height: 727px;">
+  <div class="login-page min-h-screen bg-gray-100 flex items-center justify-center font-nunito">
+    <div class="login-card bg-white rounded-xl shadow-xl flex overflow-hidden">
       <title>Login</title>
-      <div class="w-[420px] bg-[#FFFFF0] px-10 py-12">
+      <div class="login-form-panel bg-[#FFFFF0] px-10 py-12">
         <img src="/assets/image/DameUlosLogo2.png" class="w-[180px] mb-8" />
 
         <h2 class="text-2xl font-bold mb-1">Welcome Back!</h2>
@@ -33,7 +33,7 @@
         </form>
       </div>
 
-      <div class="relative" style="width: 680px; height: 727px;">
+      <div class="login-image-panel relative">
         <img src="/image/Background-Login.png" class="w-full h-full object-cover border border-black" />
 
         <div class="absolute inset-0 flex items-center justify-center px-14">
@@ -105,5 +105,52 @@ definePageMeta({
 <style scoped>
 .font-nunito {
   font-family: "Nunito", sans-serif;
+}
+
+.login-card {
+  width: min(1100px, calc(100% - 48px));
+  min-height: 727px;
+}
+
+.login-form-panel {
+  flex: 0 0 420px;
+  box-sizing: border-box;
+}
+
+.login-image-panel {
+  width: 680px;
+  height: 727px;
+  flex: 1 1 auto;
+}
+
+@media (max-width: 767px) {
+  .login-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 20px 16px;
+    box-sizing: border-box;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    min-height: 0;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  .login-form-panel {
+    flex: 1 1 auto;
+    width: 100%;
+    padding: 28px 22px;
+  }
+
+  .login-image-panel {
+    display: none;
+  }
+
+  .login-form-panel input:not([type="checkbox"]) {
+    font-size: 16px;
+  }
 }
 </style>

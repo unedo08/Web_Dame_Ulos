@@ -45,10 +45,16 @@ const renderChart = () => {
             ]
         },
         options: {
-            maintainAspectRatio: true,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: "bottom"
+                    position: "bottom",
+                    labels: {
+                        boxWidth: 12,
+                        padding: 12,
+                        font: { size: 11 }
+                    }
                 },
                 tooltip: {
                     callbacks: {
@@ -74,8 +80,9 @@ watch(() => props.dataTransaksi, () => {
 </script>
 <style scoped>
 .chart-wrapper {
-    width: 280px;
-    height: 280px;
+    width: 100%;
+    height: 320px;
+    min-width: 0;
     margin: 0 auto;
 }
 </style>

@@ -71,40 +71,42 @@
     <div class="cd-card cd-table-card">
       <div class="cd-table-header">Riwayat Transaksi ({{ filteredTransaksi.length }})</div>
 
-      <table class="cd-table">
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Kode Barang</th>
-            <th>Nama Barang</th>
-            <th>Jenis Transaksi</th>
-            <th>Platform</th>
-            <th>Harga</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="paginatedTransaksi.length === 0">
-            <td colspan="7" class="cd-table-empty">Tidak ada data transaksi.</td>
-          </tr>
-          <tr v-for="(trx, i) in paginatedTransaksi" :key="i">
-            <td>{{ formatDate(trx.created_at) }}</td>
-            <td>{{ trx.code_nama || '-' }}</td>
-            <td>{{ trx.barangentry_nama || '-' }}</td>
-            <td>{{ trx.transaksi_tipe || '-' }}</td>
-            <td>{{ trx.transaksi_platform || '-' }}</td>
-            <td>{{ formatCurrency(trx.transaksidetail_harga_barang) }}</td>
-            <td>
-              <span
-                class="cd-badge"
-                :class="trx.transaksidetail_status_penjualan === 1 ? 'cd-badge-closed' : 'cd-badge-open'"
-              >
-                {{ trx.transaksidetail_status_penjualan === 1 ? 'Closed' : 'Open' }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="cd-table-scroll">
+        <table class="cd-table">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Kode Barang</th>
+              <th>Nama Barang</th>
+              <th>Jenis Transaksi</th>
+              <th>Platform</th>
+              <th>Harga</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="paginatedTransaksi.length === 0">
+              <td colspan="7" class="cd-table-empty">Tidak ada data transaksi.</td>
+            </tr>
+            <tr v-for="(trx, i) in paginatedTransaksi" :key="i">
+              <td>{{ formatDate(trx.created_at) }}</td>
+              <td>{{ trx.code_nama || '-' }}</td>
+              <td>{{ trx.barangentry_nama || '-' }}</td>
+              <td>{{ trx.transaksi_tipe || '-' }}</td>
+              <td>{{ trx.transaksi_platform || '-' }}</td>
+              <td>{{ formatCurrency(trx.transaksidetail_harga_barang) }}</td>
+              <td>
+                <span
+                  class="cd-badge"
+                  :class="trx.transaksidetail_status_penjualan === 1 ? 'cd-badge-closed' : 'cd-badge-open'"
+                >
+                  {{ trx.transaksidetail_status_penjualan === 1 ? 'Closed' : 'Open' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Pagination -->

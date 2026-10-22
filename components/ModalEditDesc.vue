@@ -5,7 +5,7 @@
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
-        <div class="po-desc-fields grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="ready-edit-fields grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label>Kode Barang <span style="color:red">*</span></label>
             <input v-model="form.code" type="text" required class="form-control bg-gray-100 border-gray-300" readonly
@@ -43,19 +43,35 @@
 
           <div>
             <label>Modal <span style="color:red">*</span></label>
-            <input v-model="formattedModal" @input="updateModal" type="text" required class="form-control text-right" />
+            <div class="flex">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input v-model="formattedModal" @input="updateModal" type="text" required
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <div>
             <label>Harga Price Tag <span style="color:red">*</span></label>
-            <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
-              class="form-control text-right" />
+            <div class="flex">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input v-model="formattedPriceTag" @input="updatePriceTag" type="text" required
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <div>
             <label>Harga Net <span style="color:red">*</span></label>
-            <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
-              class="form-control text-right" />
+            <div class="flex">
+              <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
+                Rp
+              </div>
+              <input v-model="formattedHargaNet" @input="updateHargaNet" type="text" required
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 text-right focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+            </div>
           </div>
 
           <!-- <div>
@@ -124,6 +140,7 @@ const form = ref({
 });
 
 const formatNumber = (value) => {
+  if (value === null || value === undefined || value === '') return '';
   return Number(value || 0).toLocaleString('id-ID');
 };
 
@@ -136,18 +153,36 @@ const formattedPriceTag = ref('');
 const formattedHargaNet = ref('');
 
 const updateModal = (e) => {
+  if (!e.target.value.trim()) {
+    form.value.barangentry_modal = '';
+    formattedModal.value = '';
+    return;
+  }
+
   const raw = parseNumber(e.target.value);
   form.value.barangentry_modal = raw;
   formattedModal.value = formatNumber(raw);
 };
 
 const updatePriceTag = (e) => {
+  if (!e.target.value.trim()) {
+    form.value.barangentry_price_tag = '';
+    formattedPriceTag.value = '';
+    return;
+  }
+
   const raw = parseNumber(e.target.value);
   form.value.barangentry_price_tag = raw;
   formattedPriceTag.value = formatNumber(raw);
 };
 
 const updateHargaNet = (e) => {
+  if (!e.target.value.trim()) {
+    form.value.barangentry_harga_net = '';
+    formattedHargaNet.value = '';
+    return;
+  }
+
   const raw = parseNumber(e.target.value);
   form.value.barangentry_harga_net = raw;
   formattedHargaNet.value = formatNumber(raw);
@@ -171,6 +206,31 @@ const loadData = async () => {
 const submitForm = async () => {
   isSubmittingEdit.value = true;
   try {
+    const requiredTextFields = [
+      form.value.barangentry_nama,
+      form.value.barangentry_warna,
+      form.value.barangentry_nama_penenun,
+      form.value.barangentry_nama_panirat,
+      form.value.barangentry_dryer,
+    ];
+    const requiredPriceFields = [
+      formattedModal.value,
+      formattedPriceTag.value,
+      formattedHargaNet.value,
+    ];
+
+    if (
+      requiredTextFields.some((value) => !String(value ?? '').trim()) ||
+      requiredPriceFields.some((value) => !value.trim())
+    ) {
+      await Swal.fire(
+        'Field wajib belum lengkap',
+        'Lengkapi semua field wajib sebelum menyimpan.',
+        'warning'
+      );
+      return;
+    }
+
     const payload = {
       barangentry_code_id: String(form.value.barangentry_code_id),
       barangentry_nama: form.value.barangentry_nama,
@@ -213,8 +273,18 @@ watch(() => props.show, (newVal) => {
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   outline: none;
+}
+
+.ready-edit-fields > div > .flex {
+  width: 100%;
+  min-width: 0;
+}
+
+.ready-edit-fields > div > .flex > input {
+  flex: 1 1 0%;
+  min-width: 0;
 }
 
 .form-control:focus {
@@ -247,16 +317,16 @@ watch(() => props.show, (newVal) => {
     line-height: 1.35;
   }
 
-  .po-desc-fields {
+  .ready-edit-fields {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 12px !important;
   }
 
-  .po-desc-fields > div:not(.hidden) {
+  .ready-edit-fields > div:not(.hidden) {
     min-width: 0;
   }
 
-  .po-desc-fields .form-control {
+  .ready-edit-fields .form-control {
     box-sizing: border-box;
     margin-bottom: 0;
   }

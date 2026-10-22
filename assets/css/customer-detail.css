@@ -201,6 +201,13 @@
   overflow: hidden;
 }
 
+.cd-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 .cd-table-header {
   padding: 16px 20px;
   font-size: 14px;
@@ -211,6 +218,7 @@
 
 .cd-table {
   width: 100%;
+  min-width: 900px;
   border-collapse: collapse;
   font-size: 13px;
 }
