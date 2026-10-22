@@ -412,6 +412,7 @@ const filteredMenu = computed(() => {
 
   width: 256px;
   height: 100vh;
+  height: 100dvh;
 
   z-index: 1100;
 
@@ -468,6 +469,8 @@ const filteredMenu = computed(() => {
 
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 
