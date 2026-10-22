@@ -95,8 +95,8 @@
       <div class="chart-card">
         <div class="chart-title">Grafik Omset Per Bulan</div>
         <template v-if="isAvailable('barangMonth')">
-          <div class="chart-scroll">
-            <div class="chart-scroll-content">
+          <div class="chart-horizontal-scroll">
+            <div class="chart-horizontal-content chart-content-monthly">
               <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
             </div>
           </div>
@@ -140,8 +140,12 @@
       <div class="chart-card-line">
         <div class="chart-title">Grafik Omset Per Hari</div>
         <template v-if="isAvailable('barangLine')">
-          <LineBarang v-if="barangLine" :dataBarang="barangLine" />
-          <div v-else class="loading-placeholder">Menunggu data...</div>
+          <div class="chart-horizontal-scroll">
+            <div class="chart-horizontal-content chart-content-daily">
+              <LineBarang v-if="barangLine" :dataBarang="barangLine" />
+              <div v-else class="loading-placeholder">Menunggu data...</div>
+            </div>
+          </div>
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
@@ -152,8 +156,12 @@
       <div class="chart-card-line">
         <div class="chart-title">Pertumbuhan customer baru per tahun</div>
         <template v-if="isAvailable('customerLine')">
-          <LineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
-          <div v-else class="loading-placeholder">Menunggu data...</div>
+          <div class="chart-horizontal-scroll">
+            <div class="chart-horizontal-content chart-content-growth">
+              <LineBarangCustomer v-if="customerLine" :dataBarang="customerLine" />
+              <div v-else class="loading-placeholder">Menunggu data...</div>
+            </div>
+          </div>
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
@@ -164,8 +172,12 @@
       <div class="chart-card-line" style="height: auto; padding-bottom: 28px;">
         <div class="chart-title">Nilai Pembelian & Jumlah Transaksi per Customer (1 Bulan Terakhir)</div>
         <template v-if="isAvailable('customerChart')">
-          <LineCustomerChart v-if="customerChart" :dataCustomer="customerChart" />
-          <div v-else class="loading-placeholder">Menunggu data...</div>
+          <div class="chart-horizontal-scroll">
+            <div class="chart-horizontal-content chart-content-customer">
+              <LineCustomerChart v-if="customerChart" :dataCustomer="customerChart" />
+              <div v-else class="loading-placeholder">Menunggu data...</div>
+            </div>
+          </div>
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
@@ -1168,37 +1180,68 @@ onMounted(() => fetchData())
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: #94a3b8 #f1f5f9;
 }
 
-/* Lebar grafik dipertahankan, tidak mengikuti lebar HP */
 .chart-horizontal-content {
   width: 100%;
-  min-width: 900px;
+  min-width: 0;
+}
+
+.chart-content-daily,
+.chart-content-growth,
+.chart-content-customer,
+.chart-content-monthly {
+  height: 350px;
 }
 
 /* Pastikan canvas tidak dipaksa mengecil oleh parent */
 .chart-horizontal-content :deep(canvas) {
-  max-width: none !important;
+  max-width: 100% !important;
 }
 
-/* Jangan potong area scroll */
 .chart-card-line {
   min-width: 0;
   overflow: visible;
 }
 
-@media (max-width: 767px) {
-  .chart-card-line {
-    overflow: visible;
+@media (max-width: 1024px) {
+  .chart-horizontal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
   }
 
   .chart-horizontal-content {
     min-width: 900px;
+  }
+
+  .chart-card-line {
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .chart-grid-line {
+    min-height: 0;
+  }
+
+  .chart-content-daily {
+    height: 320px;
+  }
+
+  .chart-content-growth {
+    height: 350px;
+  }
+
+  .chart-content-customer {
+    height: 320px;
+  }
+
+  .chart-content-monthly {
+    height: 290px;
   }
 }
 </style>

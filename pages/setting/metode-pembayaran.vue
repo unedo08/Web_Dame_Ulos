@@ -208,6 +208,7 @@ async function confirmDelete(item) {
     cancelButtonColor: "#aaa",
     confirmButtonText: "Ya, hapus",
     cancelButtonText: "Batal",
+    reverseButtons: true,
   });
   if (result.isConfirmed) {
     await deleteItem(item);

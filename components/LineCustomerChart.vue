@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasData" style="height: 320px; width: 100%;">
+  <div v-if="hasData" class="customer-chart-wrapper">
     <Line :data="chartData" :options="chartOptions" style="height: 100%; width: 100%;" />
   </div>
   <div v-else class="empty-state">Data kosong...</div>
@@ -122,5 +122,11 @@ const chartOptions = {
   justify-content: center;
   color: #94a3b8;
   font-style: italic;
+}
+
+.customer-chart-wrapper {
+  width: 100%;
+  height: 320px;
+  min-width: 0;
 }
 </style>

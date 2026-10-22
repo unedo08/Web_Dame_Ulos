@@ -880,7 +880,10 @@ const deleteOrder = async (id) => {
   const result = await Swal.fire({
     title: "Hapus Order?",
     icon: "warning",
-    showCancelButton: true
+    showCancelButton: true,
+    confirmButtonText: "Ya, hapus",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
   });
 
   if (!result.isConfirmed) return;

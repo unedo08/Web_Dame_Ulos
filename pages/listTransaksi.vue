@@ -5,7 +5,8 @@
       <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari transaksi ..." />
     </div>
 
-    <table class="datatable">
+    <div class="datatable-wrapper">
+      <table class="datatable">
       <thead>
         <tr>
           <th>No.</th>
@@ -49,7 +50,8 @@
           </td>
         </tr>
       </tbody>
-    </table>
+      </table>
+    </div>
     <div class="flex justify-between items-center mt-8 mb-4">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>

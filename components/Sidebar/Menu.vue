@@ -463,14 +463,15 @@ const filteredMenu = computed(() => {
 ========================================= */
 
 .sidebar-menu {
-  flex: 1;
-
+  flex: 1 1 0%;
+  height: 0;
   min-height: 0;
 
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 

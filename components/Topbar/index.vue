@@ -152,27 +152,49 @@ const onMenuItemClick = async (item) => {
 .dropdown-menu {
   position: absolute;
   right: 0;
-  top: calc(100% + 5px);
+  top: calc(100% + 10px);
   z-index: 1000;
   margin: 0;
-  padding: 10px 15px;
-  min-width: 140px;
+  padding: 4px 8px;
+  width: 112px;
+  box-sizing: border-box;
   background-color: #fff;
-  border:
-    1px solid #cfcfcf;
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  border: 1px solid #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  text-align: left;
   list-style: none;
 }
 
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-top: 1px solid #f1f1f1;
+  border-left: 1px solid #f1f1f1;
+  transform: rotate(45deg);
+}
+
+.dropdown-menu li {
+  position: relative;
+}
+
 .dropdown-item {
-  font-size: 16px;
+  display: block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
   color: inherit;
   text-decoration: none;
 }
+
 .dropdown-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
 }
 
 
@@ -190,6 +212,10 @@ const onMenuItemClick = async (item) => {
   .topbar-content {
     padding-left: 76px;
     padding-right: 16px;
+  }
+
+  .dropdown-menu {
+    width: min(112px, calc(100vw - 32px));
   }
 
 }

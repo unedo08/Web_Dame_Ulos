@@ -88,18 +88,47 @@
 }
 
 .action-wrapper {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .action-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.action-btn:hover {
+  color: #3b82f6;
+  background: #f9fafb;
 }
 
 .action-btn.delete {
-    color: red;
+  color: #9ca3af;
+}
+
+.action-btn:not(.delete) .keuangan-icon {
+  color: #16a34a;
+}
+
+.action-btn.delete:hover {
+  color: #ef4444;
+  background: #fff5f5;
+}
+
+.keuangan-icon.delete {
+  color: red;
 }
 
 .empty-table {

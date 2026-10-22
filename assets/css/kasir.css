@@ -11,32 +11,64 @@
 
 .kasir-search-fields {
   min-width: 0;
+  gap: 12px;
+}
+
+.kasir-toolbar {
+  margin-bottom: 24px;
 }
 
 .kasir-actions {
-  gap: 8px;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  max-width: none;
 }
 
-@media (max-width: 767px) {
+.kasir-actions > button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1024px) {
   .kasir-toolbar {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 14px;
+    margin-bottom: 16px;
   }
 
   .kasir-search-fields {
     width: 100%;
     flex: none;
-    gap: 8px;
+    gap: 12px;
+  }
+
+  .kasir-search-fields .search-box {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .kasir-actions {
     width: 100%;
     margin-left: 0;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .kasir-actions > button {
+    width: 100%;
+    min-width: 0;
+    grid-column: span 2;
+  }
+
+  .kasir-actions > button:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .kasir-actions > button:nth-child(5) {
+    grid-column: 4 / span 2;
   }
 }
 

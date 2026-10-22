@@ -86,29 +86,33 @@
 
               <td>
                 <div class="relative inline-block text-left">
-                  <button class="er-btn-action" @click.stop="toggleActionDropdown(trx.transaksi_id)">
+                  <button class="er-btn-action"
+                    @click.stop="toggleActionDropdown(`${trx.transaksi_id}-${item.transaksidetail_id}`, $event)">
                     Aksi
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  <div v-if="activeDropdown === trx.transaksi_id" class="er-action-dropdown" @click.stop>
-                    <button class="er-dropdown-item er-dropdown-item--print"
-                      @click="closeActionDropdown(); openViewDetail(trx.transaksi_id)">
-                      View
-                    </button>
+                  <Teleport to="body">
+                    <div v-if="activeDropdown === `${trx.transaksi_id}-${item.transaksidetail_id}`"
+                      :ref="setActionDropdownMenu" class="er-action-dropdown" @click.stop>
+                      <button class="er-dropdown-item er-dropdown-item--print"
+                        @click="closeActionDropdown(); openViewDetail(trx.transaksi_id)">
+                        View
+                      </button>
 
-                    <button class="er-dropdown-item er-dropdown-item--send"
-                      @click="closeActionDropdown(); handlePrint(trx.transaksi_id)">
-                      Print
-                    </button>
+                      <button class="er-dropdown-item er-dropdown-item--send"
+                        @click="closeActionDropdown(); handlePrint(trx.transaksi_id)">
+                        Print
+                      </button>
 
-                    <button class="er-dropdown-item er-dropdown-item--delete"
-                      @click="closeActionDropdown(); deleteTransaksi(item.transaksidetail_id)">
-                      Delete
-                    </button>
-                  </div>
+                      <button class="er-dropdown-item er-dropdown-item--delete"
+                        @click="closeActionDropdown(); deleteTransaksi(item.transaksidetail_id)">
+                        Delete
+                      </button>
+                    </div>
+                  </Teleport>
                 </div>
               </td>
             </tr>
@@ -205,16 +209,12 @@ const fetchTransaksi = async () => {
   }
 };
 
-const activeDropdown = ref(null)
-
-const toggleActionDropdown = (id) => {
-  activeDropdown.value =
-    activeDropdown.value === id ? null : id
-}
-
-const closeActionDropdown = () => {
-  activeDropdown.value = null
-}
+const {
+  activeDropdown,
+  closeActionDropdown,
+  setActionDropdownMenu,
+  toggleActionDropdown,
+} = useActionDropdown();
 
 const filteredTransaksi = computed(() => {
   if (!searchQuery.value) return groupedTransaksi.value;
@@ -348,6 +348,7 @@ const deleteTransaksi = async (id) => {
     cancelButtonColor: "#3085d6",
     confirmButtonText: "Ya, hapus!",
     cancelButtonText: "Batal",
+    reverseButtons: true,
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {

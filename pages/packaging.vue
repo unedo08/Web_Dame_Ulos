@@ -5,7 +5,8 @@
     <div class="page-table-toolbar">
       <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari Pengiriman Barang..." />
     </div>
-    <table class="datatable w-full rounded-md overflow-hidden">
+    <div class="datatable-wrapper">
+      <table class="datatable w-full rounded-md overflow-hidden">
       <thead class="bg-blue-100">
         <tr>
           <th class="px-4 py-2 text-left">No</th>
@@ -74,7 +75,8 @@
           </td>
         </tr>
       </tbody>
-    </table>
+      </table>
+    </div>
     <div class="flex justify-between items-center mt-8 mb-4 text-xs">
       <div class="flex items-center space-x-2">
         <label for="perPage">Tampilkan:</label>

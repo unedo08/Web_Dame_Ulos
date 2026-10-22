@@ -447,6 +447,7 @@ const deleteUser = async (id, name) => {
         showCancelButton: true,
         confirmButtonText: "Ya, Hapus",
         cancelButtonText: "Batal",
+        reverseButtons: true,
     });
 
     if (!confirm.isConfirmed) return;

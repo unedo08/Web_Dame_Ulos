@@ -820,7 +820,9 @@
     background: white;
     color: #374151;
     border-radius: 8px;
-    padding: 11px 36px;
+    min-width: 110px;
+    min-height: 44px;
+    padding: 10px 20px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
@@ -833,7 +835,7 @@
 
 .bk-confirm-delete-btn {
     border: none;
-    background: #dc2626;
+    background: #f87171;
     color: white;
     border-radius: 8px;
     padding: 11px 36px;
@@ -844,7 +846,7 @@
 }
 
 .bk-confirm-delete-btn:hover {
-    background: #b91c1c;
+    background: #ef4444;
 }
 
 .bk-icon-delete {

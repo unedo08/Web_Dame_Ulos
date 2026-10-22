@@ -47,36 +47,40 @@
 
             <td>
               <div class="relative inline-block text-left">
-                <button class="er-btn-action" @click.stop="toggleActionDropdown(row.pengirimanBarang_id)">
+                <button class="er-btn-action"
+                  @click.stop="toggleActionDropdown(row.pengirimanBarang_id, $event)">
                   Aksi
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
-                <div v-if="activeDropdown === row.pengirimanBarang_id" class="er-action-dropdown" @click.stop>
-                  <template v-if="row.status_pengiriman !== 'DONE'">
-                    <button class="er-dropdown-item er-dropdown-item--edit"
-                      @click="closeActionDropdown(); openModalEdit(row)">
-                      Edit
+                <Teleport to="body">
+                  <div v-if="activeDropdown === row.pengirimanBarang_id" :ref="setActionDropdownMenu"
+                    class="er-action-dropdown" @click.stop>
+                    <template v-if="row.status_pengiriman !== 'DONE'">
+                      <button class="er-dropdown-item er-dropdown-item--edit"
+                        @click="closeActionDropdown(); openModalEdit(row)">
+                        Edit
+                      </button>
+
+                      <button class="er-dropdown-item er-dropdown-item--send"
+                        @click="closeActionDropdown(); selesaikanPackaging(row)">
+                        Selesai
+                      </button>
+                    </template>
+
+                    <button class="er-dropdown-item er-dropdown-item--delete"
+                      @click="closeActionDropdown(); deleteData(row.pengirimanBarang_id)">
+                      Delete
                     </button>
 
-                    <button class="er-dropdown-item er-dropdown-item--send"
-                      @click="closeActionDropdown(); selesaikanPackaging(row)">
-                      Selesai
+                    <button v-if="row.status_pengiriman === 'DONE'" class="er-dropdown-item er-dropdown-item--print"
+                      @click="closeActionDropdown(); printLabel(row)">
+                      Print
                     </button>
-                  </template>
-
-                  <button class="er-dropdown-item er-dropdown-item--delete"
-                    @click="closeActionDropdown(); deleteData(row.pengirimanBarang_id)">
-                    Delete
-                  </button>
-
-                  <button v-if="row.status_pengiriman === 'DONE'" class="er-dropdown-item er-dropdown-item--print"
-                    @click="closeActionDropdown(); printLabel(row)">
-                    Print
-                  </button>
-                </div>
+                  </div>
+                </Teleport>
               </div>
             </td>
           </tr>
@@ -167,16 +171,12 @@ const fetchData = async () => {
 
 onMounted(fetchData);
 
-const activeDropdown = ref(null)
-
-const toggleActionDropdown = (id) => {
-  activeDropdown.value =
-    activeDropdown.value === id ? null : id
-}
-
-const closeActionDropdown = () => {
-  activeDropdown.value = null
-}
+const {
+  activeDropdown,
+  closeActionDropdown,
+  setActionDropdownMenu,
+  toggleActionDropdown,
+} = useActionDropdown();
 
 function formatTanggal(tanggal) {
   const date = new Date(tanggal);
@@ -229,7 +229,10 @@ const deleteData = async (id) => {
     icon: "warning",
     title: "Hapus?",
     text: "Data akan dihapus permanen.",
-    showCancelButton: true
+    showCancelButton: true,
+    confirmButtonText: "Ya, hapus",
+    cancelButtonText: "Batal",
+    reverseButtons: true,
   });
 
   if (!c.isConfirmed) return;

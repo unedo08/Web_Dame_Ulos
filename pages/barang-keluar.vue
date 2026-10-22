@@ -300,8 +300,8 @@
                         secara permanen. Tindakan ini tidak dapat dibatalkan.
                     </div>
                     <div style="display:flex;gap:12px;justify-content:center">
-                        <button class="bk-confirm-cancel-btn" @click="cancelDelete">Batal</button>
                         <button class="bk-confirm-delete-btn" @click="confirmDelete">Ya, Hapus</button>
+                        <button class="bk-confirm-cancel-btn" @click="cancelDelete">Batal</button>
                     </div>
                 </div>
             </div>

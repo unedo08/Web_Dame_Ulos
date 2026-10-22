@@ -199,38 +199,15 @@ export function useKeuangan() {
     const deleteData = async (item) => {
 
         const result = await Swal.fire({
-            html: `
-                <div class="keuangan-delete-confirmation">
-
-                    <div class="keuangan-delete-icon-warning">
-                        !
-                    </div>
-
-                    <div class="keuangan-delete-title">
-                        Konfirmasi hapus data pengeluaran
-                    </div>
-
-                    <div class="keuangan-delete-subtitle">
-                        Apakah Anda yakin ingin menghapus data pengeluaran ini?
-                    </div>
-
-                </div>
-            `,
-
+            title: "Hapus Pengeluaran?",
+            text: `"${item.pengeluaran_nama}" akan dihapus.`,
+            icon: "warning",
             showCancelButton: true,
-
-            confirmButtonText: "Ya, dihapus",
-            cancelButtonText: "Tidak",
-
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#aaa",
+            confirmButtonText: "Ya, hapus",
+            cancelButtonText: "Batal",
             reverseButtons: true,
-
-            customClass: {
-                popup: "keuangan-swal-popup",
-                confirmButton: "keuangan-swal-confirm-btn",
-                cancelButton: "keuangan-swal-cancel-btn",
-            },
-
-            buttonsStyling: false,
         });
 
         if (!result.isConfirmed) return;
