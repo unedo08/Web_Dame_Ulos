@@ -14,7 +14,8 @@ import {
   DocumentChartBarIcon,
   Cog6ToothIcon,
   ChevronDownIcon,
-  ChevronUpIcon
+  ChevronUpIcon,
+  ChartBarIcon
 } from "@heroicons/vue/24/outline";
 
 const isMobileSidebarOpen = ref(false);
@@ -111,6 +112,11 @@ const items = ref([
     title: "Benang",
     path: "/pewarnaAlam",
     icon: UserIcon
+  },
+  {
+    title: "Grafik Benang",
+    path: "/grafik-benang",
+    icon: ChartBarIcon
   },
   {
     title: "Staff",
@@ -216,6 +222,7 @@ const roleAccess = {
 
   "pewarna-alam": [
     "Benang",
+    "Grafik Benang",
     "Beranda"
   ],
 

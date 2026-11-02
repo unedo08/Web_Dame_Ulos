@@ -31,6 +31,8 @@ const routeRoleMap = {
 
   "/pewarnaAlam": ["super-admin", "pewarna-alam"],
 
+  "/grafik-benang": ["super-admin", "pewarna-alam"],
+
   "/statistik": ["super-admin", "admin"],
 
   "/databasePenjualan": ["super-admin", "admin"],
