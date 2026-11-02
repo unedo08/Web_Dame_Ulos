@@ -1,0 +1,550 @@
+* {
+    font-family: "Nunito", sans-serif;
+}
+
+.hide-col {
+    display: none;
+}
+
+.search-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 385px;
+    height: 34px;
+}
+
+.acara-table-wrapper {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.datatable {
+    width: 100%;
+    min-width: 900px;
+    max-width: none;
+
+    border-collapse: collapse;
+    table-layout: auto;
+
+    margin-top: 20px;
+}
+
+.datatable th,
+.datatable td {
+    padding: 10px 12px;
+
+    text-align: left;
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+.datatable th {
+    background-color: #f4f4f4;
+}
+
+.btn-add {
+    width: 115px;
+    height: 32px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3d8bfd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.btn-add:hover {
+    background-color: #3d8bfd;
+}
+
+/* Modal styles */
+.fixed {
+    position: fixed;
+}
+
+.bg-gray-800 {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.acara-modal-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.acara-modal-table-wrapper .datatable {
+    min-width: 600px;
+    margin-top: 0;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+    .acara-table-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .datatable {
+        width: 900px !important;
+        min-width: 900px !important;
+        max-width: none !important;
+    }
+
+    .btn-add {
+        width: 115px;
+        height: 32px;
+
+        font-size: 11px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+@media (max-width: 767px) {
+    .judul {
+        font-size: 18px !important;
+    }
+
+    .flex.items-center.justify-end {
+        width: 100%;
+    }
+
+    .btn-add {
+        width: 115px !important;
+        height: 34px !important;
+        padding: 0 10px;
+        font-size: 11px;
+        align-self: flex-end;
+    }
+
+    .acara-table-wrapper {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .datatable {
+        display: table;
+        width: 900px !important;
+        min-width: 900px !important;
+        max-width: none !important;
+        table-layout: auto;
+    }
+
+    .datatable th,
+    .datatable td {
+        padding: 9px 11px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .acara-table td.sticky-action {
+        white-space: nowrap;
+    }
+
+    .acara-table td.sticky-action button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 5px;
+        margin-right: 3px;
+    }
+
+    .acara-table td.sticky-action svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:first-child {
+        justify-content: flex-start;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+        padding: 6px 9px;
+        font-size: 10px;
+    }
+
+    .fixed.inset-0 {
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .fixed.inset-0>.bg-white {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 16px !important;
+    }
+
+    .fixed.inset-0 h3 {
+        font-size: 16px;
+    }
+
+    .fixed.inset-0 input,
+    .fixed.inset-0 textarea {
+        width: 100% !important;
+        box-sizing: border-box;
+        font-size: 12px;
+    }
+
+    .fixed.inset-0 .flex.justify-end {
+        gap: 8px;
+    }
+
+    .fixed.inset-0 .flex.justify-end button {
+        margin-right: 0;
+        padding: 8px 14px;
+        font-size: 11px;
+    }
+
+    .acara-modal-table-wrapper .datatable {
+        width: 600px !important;
+        min-width: 600px !important;
+    }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .judul {
+        font-size: 17px !important;
+    }
+
+    .btn-add {
+        width: 110px !important;
+        height: 32px !important;
+
+        font-size: 10px;
+    }
+
+
+    .datatable {
+        width: 900px !important;
+        min-width: 900px !important;
+        max-width: none !important;
+    }
+
+    .datatable th,
+    .datatable td {
+        padding: 8px 10px;
+
+        font-size: 10px;
+
+        white-space: nowrap;
+    }
+
+    .acara-table td.sticky-action button {
+        width: 30px;
+        height: 30px;
+        padding: 4px;
+    }
+
+    .acara-table td.sticky-action svg {
+        width: 17px;
+        height: 17px;
+    }
+}
+
+.cl-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    gap: 16px;
+}
+
+.cl-pagination-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.cl-pagination-sep {
+    color: #9ca3af;
+}
+
+.cl-perpage-select {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #fff;
+    outline: none;
+}
+
+.cl-perpage-select:focus {
+    border-color: #3b82f6;
+}
+
+.cl-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.cl-page-nav,
+.cl-page-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 4px 9px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cl-page-nav:hover:not(:disabled),
+.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
+    background: #f3f4f6;
+}
+
+.cl-page-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cl-page-btn--active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.cl-page-btn--dots {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+}
+
+@media (max-width: 767px) {
+    .cl-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .cl-pagination-left {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .cl-pagination-pages {
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cl-pagination {
+        font-size: 11px;
+    }
+
+    .cl-pagination-left {
+        gap: 6px;
+    }
+
+    .cl-page-nav,
+    .cl-page-btn {
+        min-width: 28px;
+        height: 28px;
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}
+
+/* =========================================
+   STICKY KOLOM AKSI - ACARA
+========================================= */
+
+/* Wrapper tabel utama */
+.acara-table-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+/* Khusus tabel utama, bukan tabel modal */
+.acara-table {
+    width: 100%;
+    min-width: 900px;
+    max-width: none;
+    table-layout: auto;
+
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+/* Header Aksi */
+.acara-table thead th.sticky-action {
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 20 !important;
+
+    width: 150px;
+    min-width: 150px;
+
+    background-color: #f4f4f4 !important;
+
+    border-left: 1px solid #e5e7eb;
+    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
+}
+
+/* Isi kolom Aksi */
+.acara-table tbody td.sticky-action {
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 10 !important;
+
+    width: 150px;
+    min-width: 150px;
+
+    background-color: #fff !important;
+
+    border-left: 1px solid #e5e7eb;
+    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
+
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Baris genap */
+.acara-table tbody tr:nth-child(even) td.sticky-action {
+    background-color: #f9fafb !important;
+}
+
+/* Hover */
+.acara-table tbody tr:hover td.sticky-action {
+    background-color: #f3f4f6 !important;
+}
+
+/* Tombol aksi */
+.acara-table td.sticky-action button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+    padding: 4px;
+
+    margin-right: 3px;
+}
+
+/* Ukuran icon */
+.acara-table td.sticky-action svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Responsive tablet */
+@media (max-width: 1024px) {
+    .acara-table {
+        width: 900px !important;
+        min-width: 900px !important;
+        max-width: none !important;
+    }
+}
+
+/* Responsive mobile */
+@media (max-width: 767px) {
+    .acara-table-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .acara-table {
+        width: 900px !important;
+        min-width: 900px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+    }
+
+    .acara-table thead th.sticky-action,
+    .acara-table tbody td.sticky-action {
+        width: 150px;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .acara-table td.sticky-action button {
+        width: 30px;
+        height: 30px;
+        padding: 4px;
+    }
+
+    .acara-table td.sticky-action svg {
+        width: 17px;
+        height: 17px;
+    }
+}

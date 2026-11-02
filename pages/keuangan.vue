@@ -54,7 +54,7 @@
                         </td>
                         <td>{{ item.sumber_dana_nama }}</td>
                         <td>
-                            <div class="action-wrapper">
+                            <div class="custom-table-aksi action-wrapper">
                                 <button class="action-btn" title="Edit" @click="openModal(item)">
                                     <PencilIcon class="keuangan-icon" />
                                 </button>

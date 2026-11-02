@@ -745,3 +745,39 @@
     font-size: 10px;
   }
 }
+
+
+/* ===== FIXED KOLOM AKSI ===== */
+.cl-table th:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 5;
+    min-width: 112px;
+    background: #F3F4F6;
+    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
+}
+.cl-table td:last-child:not([colspan]) {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+    min-width: 112px;
+    background: #fff;
+    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
+}
+.cl-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
+    background: #F9FAFB;
+}
+.cl-table tbody tr:hover td:last-child:not([colspan]) {
+    background: #F3F4F6;
+}
+.cl-table th:last-child,
+.cl-table td:last-child:not([colspan]) {
+    border-left: 1px solid #E5E7EB;
+}
+.cl-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 84px;
+}

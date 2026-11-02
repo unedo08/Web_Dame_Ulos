@@ -1,0 +1,565 @@
+* {
+  font-family: "Nunito", sans-serif;
+}
+
+.search-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 385px;
+  height: 34px;
+}
+
+.live-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.datatable {
+  width: 100%;
+  min-width: 1100px;
+  max-width: none;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: auto;
+}
+
+.datatable thead {
+  background: #F3F4F6;
+}
+
+.datatable th,
+.datatable td {
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.datatable th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  white-space: nowrap;
+  border-bottom: 1px solid #E5E7EB;
+  user-select: none;
+}
+
+.search-box::placeholder {
+  color: #888;
+}
+
+.btn-add {
+  background-color: #3d8bfd;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-add:hover {
+  background-color: #3d8bfd;
+}
+
+.bg-gray-800 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.bg-white.rounded-lg.shadow-lg {
+  border: 1px solid #E4E6FC;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+input,
+select,
+textarea {
+  background-color: #FDFDFF !important;
+  border: 1px solid #E4E6FC !important;
+  font-size: 14px;
+  color: #000000;
+  transition: all 0.2s ease-in-out;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #808080;
+  opacity: 0.8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #1C9DBD !important;
+  outline: none;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(28, 157, 189, 0.15);
+}
+
+label {
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.inline-flex.items-center {
+  background-color: #FDFDFF !important;
+  border: 1px solid #E4E6FC !important;
+  color: #404040;
+}
+
+button {
+  font-weight: 500;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+button.bg-gray-200 {
+  background-color: #F3F4F6;
+  color: #404040;
+  border: 1px solid #E4E6FC;
+}
+
+button.bg-gray-200:hover {
+  background-color: #E8E9F0;
+}
+
+button.bg-\[\#1C9DBD\] {
+  background: linear-gradient(180deg, #1C9DBD 0%, #0A84FF 100%) !important;
+  border: none;
+}
+
+button.bg-\[\#1C9DBD\]:hover {
+  background: linear-gradient(180deg, #0A84FF 0%, #0077E6 100%) !important;
+}
+
+h3 {
+  color: #000000;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.bg-gray-800.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.text-red-500 {
+  color: #FF5757;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .live-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .datatable {
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+  }
+
+  .search-box {
+    width: 300px;
+  }
+
+  .btn-add {
+    width: 104px !important;
+    height: 30px !important;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .judul {
+    font-size: 18px !important;
+  }
+
+  .flex.space-x-6 {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 18px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .flex.space-x-6::-webkit-scrollbar {
+    display: none;
+  }
+
+  .flex.space-x-6 button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .page-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: none;
+    height: 38px;
+    box-sizing: border-box;
+    margin-bottom: 0 !important;
+  }
+
+  .btn-add {
+    width: auto !important;
+    min-width: 68px;
+    height: 30px !important;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .page-table-toolbar > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .live-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .datatable {
+    display: table;
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+    table-layout: auto;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 9px 11px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .datatable td .flex {
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .datatable td button {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs > div:first-child {
+    justify-content: flex-start;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs > div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+
+  .fixed.inset-0 {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0 > .bg-white.rounded-lg.shadow-lg {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 16px !important;
+  }
+
+  .fixed.inset-0 h3 {
+    font-size: 15px;
+  }
+
+  .fixed.inset-0 input,
+  .fixed.inset-0 select {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+
+  .fixed.inset-0 .flex.justify-end button {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .judul {
+    font-size: 17px !important;
+  }
+
+  .search-box {
+    height: 36px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .btn-add {
+    min-width: 64px;
+    height: 29px !important;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .datatable {
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: none !important;
+  }
+
+  .datatable th,
+  .datatable td {
+    padding: 8px 10px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .datatable td button {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.cl-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 12px;
+  gap: 16px;
+}
+
+.cl-pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.cl-pagination-sep {
+  color: #9ca3af;
+}
+
+.cl-perpage-select {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #fff;
+  outline: none;
+}
+
+.cl-perpage-select:focus {
+  border-color: #3b82f6;
+}
+
+.cl-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.cl-page-nav,
+.cl-page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cl-page-nav:hover:not(:disabled),
+.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
+  background: #f3f4f6;
+}
+
+.cl-page-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cl-page-btn--active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.cl-page-btn--dots {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .cl-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cl-pagination-left {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cl-pagination-pages {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cl-pagination {
+    font-size: 11px;
+  }
+
+  .cl-pagination-left {
+    gap: 6px;
+  }
+
+  .cl-page-nav,
+  .cl-page-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   STICKY KOLOM AKSI - SAMA SEPERTI STAFF
+   Berlaku untuk tabel Order dan Transaction
+   ========================================================= */
+
+.live-order-table,
+.live-transaction-table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+/* Header Aksi */
+.live-order-table thead th.sticky-action,
+.live-transaction-table thead th.sticky-action {
+  position: sticky !important;
+  right: 0 !important;
+  z-index: 20 !important;
+  min-width: 150px;
+  background: #f3f4f6 !important;
+  border-left: 1px solid #e5e7eb;
+  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
+}
+
+/* Isi kolom Aksi */
+.live-order-table tbody td.sticky-action,
+.live-transaction-table tbody td.sticky-action {
+  position: sticky !important;
+  right: 0 !important;
+  z-index: 10 !important;
+  min-width: 150px;
+  background: #fff !important;
+  border-left: 1px solid #e5e7eb;
+  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Background sticky mengikuti baris */
+.live-order-table tbody tr:nth-child(even) td.sticky-action,
+.live-transaction-table tbody tr:nth-child(even) td.sticky-action {
+  background: #f9fafb !important;
+}
+
+.live-order-table tbody tr:hover td.sticky-action,
+.live-transaction-table tbody tr:hover td.sticky-action {
+  background: #f3f4f6 !important;
+}
+
+/* Tombol tetap satu baris */
+.live-order-table td.sticky-action > div {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.live-order-table td.sticky-action button,
+.live-transaction-table td.sticky-action button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .live-order-table thead th.sticky-action,
+  .live-order-table tbody td.sticky-action,
+  .live-transaction-table thead th.sticky-action,
+  .live-transaction-table tbody td.sticky-action {
+    min-width: 150px;
+  }
+}

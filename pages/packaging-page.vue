@@ -1,16 +1,29 @@
 <template>
   <div>
     <title>Packaging</title>
-    <div class="judul text-xl font-semibold mb-4">Daftar Packaging</div>
+
+    <div class="judul text-xl font-semibold mb-4">
+      Daftar Packaging
+    </div>
+
     <div class="page-table-toolbar flex justify-between items-center">
-      <input v-model="searchQuery" type="text" class="search-box standard-search-bar rounded-md"
-        placeholder="Cari Pengiriman Barang..." />
-      <button @click="exportToExcel" class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded">
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="search-box standard-search-bar rounded-md"
+        placeholder="Cari Pengiriman Barang..."
+      />
+
+      <button
+        @click="exportToExcel"
+        class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded"
+      >
         Export Excel
       </button>
     </div>
+
     <div class="packaging-table-wrapper">
-      <table class="datatable rounded-md overflow-hidden">
+      <table class="datatable packaging-table rounded-md">
         <thead class="bg-blue-100">
           <tr>
             <th class="text-left">No</th>
@@ -22,65 +35,93 @@
             <th class="text-left">Alamat</th>
             <th class="text-left">Status Kirim</th>
             <th class="text-left">Barang</th>
-            <th class="text-left">Aksi</th>
+            <th class="text-left sticky-action">Aksi</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="(row, index) in pagination" :key="row.pengirimanBarang_id"
-            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+          <tr
+            v-for="(row, index) in pagination"
+            :key="row.pengirimanBarang_id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+          >
             <td>{{ index + 1 }}</td>
-            <td>{{ formatTanggal(row.created_at) }}</td>
-            <td>{{ row.pengirimanBarang_akun_penerima }}</td>
-            <td>{{ row.pengirimanBarang_nama_penerima }}</td>
-            <td>{{ row.pengirimanBarang_no_telepon }}</td>
-            <td>{{ row.pengirimanBarang_jenis_pengiriman_barang }}</td>
-            <td>{{ row.pengirimanBarang_alamat_pengiriman_barang }}</td>
+
             <td>
-              <span class="text-status px-1 py-1 rounded-full font-semibold"
-                :class="statusChipClass(row.status_pengiriman)">
+              {{ formatTanggal(row.created_at) }}
+            </td>
+
+            <td>
+              {{ row.pengirimanBarang_akun_penerima }}
+            </td>
+
+            <td>
+              {{ row.pengirimanBarang_nama_penerima }}
+            </td>
+
+            <td>
+              {{ row.pengirimanBarang_no_telepon }}
+            </td>
+
+            <td>
+              {{ row.pengirimanBarang_jenis_pengiriman_barang }}
+            </td>
+
+            <td>
+              {{ row.pengirimanBarang_alamat_pengiriman_barang }}
+            </td>
+
+            <td>
+              <span
+                class="text-status px-1 py-1 rounded-full font-semibold"
+                :class="statusChipClass(row.status_pengiriman)"
+              >
                 {{ row.status_pengiriman || '-' }}
               </span>
             </td>
+
             <td>
-              <div v-for="code in row.list_code_nama" :key="code">{{ code }}</div>
+              <div
+                v-for="code in row.list_code_nama"
+                :key="code"
+              >
+                {{ code }}
+              </div>
             </td>
 
-            <td>
-              <div class="relative inline-block text-left">
-                <button class="er-btn-action"
-                  @click.stop="toggleActionDropdown(row.pengirimanBarang_id, $event)">
-                  Aksi
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
+            <!-- STICKY KOLOM AKSI -->
+            <td class="sticky-action">
+              <div class="flex gap-2">
+                <template v-if="row.status_pengiriman !== 'DONE'">
+                  <button
+                    class="px-2 py-1 bg-blue-500 text-white rounded text-xs"
+                    @click="openModalEdit(row)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    class="px-2 py-1 bg-green-600 text-white rounded text-xs"
+                    @click="selesaikanPackaging(row)"
+                  >
+                    Selesai
+                  </button>
+                </template>
+
+                <button
+                  class="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                  @click="deleteData(row.pengirimanBarang_id)"
+                >
+                  Delete
                 </button>
 
-                <Teleport to="body">
-                  <div v-if="activeDropdown === row.pengirimanBarang_id" :ref="setActionDropdownMenu"
-                    class="er-action-dropdown" @click.stop>
-                    <template v-if="row.status_pengiriman !== 'DONE'">
-                      <button class="er-dropdown-item er-dropdown-item--edit"
-                        @click="closeActionDropdown(); openModalEdit(row)">
-                        Edit
-                      </button>
-
-                      <button class="er-dropdown-item er-dropdown-item--send"
-                        @click="closeActionDropdown(); selesaikanPackaging(row)">
-                        Selesai
-                      </button>
-                    </template>
-
-                    <button class="er-dropdown-item er-dropdown-item--delete"
-                      @click="closeActionDropdown(); deleteData(row.pengirimanBarang_id)">
-                      Delete
-                    </button>
-
-                    <button v-if="row.status_pengiriman === 'DONE'" class="er-dropdown-item er-dropdown-item--print"
-                      @click="closeActionDropdown(); printLabel(row)">
-                      Print
-                    </button>
-                  </div>
-                </Teleport>
+                <button
+                  v-if="row.status_pengiriman === 'DONE'"
+                  class="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
+                  @click="printLabel(row)"
+                >
+                  Print
+                </button>
               </div>
             </td>
           </tr>
@@ -88,17 +129,23 @@
       </table>
     </div>
 
+    <!-- PAGINATION -->
     <div class="cl-pagination">
       <div class="cl-pagination-left">
         <span>
-          Menampilkan {{ startItem }} sampai {{ endItem }} dari {{ filteredData.length }}
+          Menampilkan {{ startItem }} sampai {{ endItem }} dari
+          {{ filteredData.length }}
         </span>
 
         <span class="cl-pagination-sep">|</span>
 
         <span>Tampilkan</span>
 
-        <select v-model="itemsPerPage" class="cl-perpage-select" @change="currentPage = 1">
+        <select
+          v-model="itemsPerPage"
+          class="cl-perpage-select"
+          @change="currentPage = 1"
+        >
           <option :value="10">10</option>
           <option :value="25">25</option>
           <option :value="50">50</option>
@@ -109,907 +156,98 @@
       </div>
 
       <div class="cl-pagination-pages">
-        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage = 1">
+        <button
+          class="cl-page-nav"
+          :disabled="currentPage === 1"
+          @click="currentPage = 1"
+        >
           &#xAB;
         </button>
 
-        <button class="cl-page-nav" :disabled="currentPage === 1" @click="currentPage--">
+        <button
+          class="cl-page-nav"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
           &#x3C;
         </button>
 
-        <template v-for="(page, idx) in paginatedPages" :key="idx">
-          <button v-if="page !== '...'" class="cl-page-btn" :class="{ 'cl-page-btn--active': currentPage === page }"
-            @click="currentPage = page">
+        <template
+          v-for="(page, idx) in paginatedPages"
+          :key="idx"
+        >
+          <button
+            v-if="page !== '...'"
+            class="cl-page-btn"
+            :class="{ 'cl-page-btn--active': currentPage === page }"
+            @click="currentPage = page"
+          >
             {{ page }}
           </button>
 
-          <span v-else class="cl-page-btn cl-page-btn--dots">
+          <span
+            v-else
+            class="cl-page-btn cl-page-btn--dots"
+          >
             ...
           </span>
         </template>
 
-        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage++">
+        <button
+          class="cl-page-nav"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
           &#x3E;
         </button>
 
-        <button class="cl-page-nav" :disabled="currentPage === totalPages" @click="currentPage = totalPages">
+        <button
+          class="cl-page-nav"
+          :disabled="currentPage === totalPages"
+          @click="currentPage = totalPages"
+        >
           &#xBB;
         </button>
       </div>
     </div>
-    <ModalEditPackaging v-model:show="isModalOpen" :barang="selectedBarang" :pengiriman="selectedPengiriman"
-      @save="handleSave" @close="isModalOpen = false" />
+
+    <!-- MODAL EDIT -->
+    <ModalEditPackaging
+      v-model:show="isModalOpen"
+      :barang="selectedBarang"
+      :pengiriman="selectedPengiriman"
+      @save="handleSave"
+      @close="isModalOpen = false"
+    />
   </div>
 </template>
 
-
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
-import Swal from "sweetalert2";
-import { useRuntimeConfig } from "#imports";
 import ModalEditPackaging from "../components/ModalEditPackaging.vue";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-
-const config = useRuntimeConfig();
-const url = config.public.apiBase;
-const { $api } = useNuxtApp();
-const pengirimanData = ref([]);
-const searchQuery = ref("");
-const currentPage = ref(1);
-const itemsPerPage = ref(10);
-
-const isModalOpen = ref(false);
-const selectedPengiriman = ref(null);
-const selectedBarang = ref([]);
-
-
-const fetchData = async () => {
-  const res = await $api.get(`${url}/api/pengiriman-barang/get-pengiriman`);
-  pengirimanData.value = res.data.data;
-};
-
-onMounted(fetchData);
+import { usePackaging } from "~/composables/usePackaging";
 
 const {
-  activeDropdown,
-  closeActionDropdown,
-  setActionDropdownMenu,
-  toggleActionDropdown,
-} = useActionDropdown();
-
-function formatTanggal(tanggal) {
-  const date = new Date(tanggal);
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-const openModalEdit = async (row) => {
-  selectedPengiriman.value = row;
-  const trx_id = row.pengirimanBarang_transaksi_id;
-  try {
-
-    const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trx_id}`);
-
-    if (!res.data.data || res.data.data.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Tidak ada barang!",
-        text: "Detail barang untuk transaksi ini tidak ditemukan.",
-      });
-      return;
-    }
-
-    selectedBarang.value = res.data.data.map(item => ({
-      kode: item.code_nama,
-      nama: item.barangentry_nama,
-      jumlah: item.transaksidetail_jumlah_barang,
-      harga: Number(item.transaksidetail_harga_barang),
-      trx_detail_id: item.transaksidetail_id,
-      is_check: true,
-    }));
-
-    isModalOpen.value = true;
-
-  } catch (err) {
-    console.error(err);
-    Swal.fire({
-      icon: "error",
-      title: "Gagal!",
-      text: "Barang Tidak Ditemukan",
-    });
-  }
-};
-
-const deleteData = async (id) => {
-  const c = await Swal.fire({
-    icon: "warning",
-    title: "Hapus?",
-    text: "Data akan dihapus permanen.",
-    showCancelButton: true,
-    confirmButtonText: "Ya, hapus",
-    cancelButtonText: "Batal",
-    reverseButtons: true,
-  });
-
-  if (!c.isConfirmed) return;
-
-  await $api.delete(`${url}/api/pengiriman-barang/${id}`);
-  fetchData();
-
-  Swal.fire("Berhasil", "Data terhapus", "success");
-};
-
-const selesaikanPackaging = async (row) => {
-  try {
-
-    const trxId = row.pengirimanBarang_transaksi_id;
-    const res = await $api.get(`${url}/api/pengiriman-barang/get-transaksi-detail/${trxId}`);
-    const barangList = res.data.data;
-
-    if (!barangList || barangList.length === 0) {
-      Swal.fire("Tidak ada barang!", "Transaksi ini tidak memiliki barang.", "warning");
-      return;
-    }
-
-    for (const item of barangList) {
-      await $api.post(`${url}/api/packaging`, {
-        packaging_transactiondetail_id: item.transaksidetail_id,
-        packaging_nama_akun: row.pengirimanBarang_nama_penerima,
-        packaging_alamat: row.pengirimanBarang_alamat_pengiriman_barang,
-      });
-    }
-
-    setTimeout(() => {
-      fetchData();
-    }, 50);
-
-    Swal.fire({
-      title: "Berhasil!",
-      text: "Semua barang telah dimasukkan ke packaging.",
-      icon: "success",
-      timer: 900,
-      showConfirmButton: false
-    });
-
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error!", "Gagal memproses packaging.", "error");
-  }
-};
-
-const exportToExcel = async () => {
-  try {
-
-    Swal.fire({
-      title: "Menyiapkan data…",
-      text: "Mohon tunggu sebentar",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-
-    const res = await $api.get(`${url}/api/pengiriman-barang/export-data`);
-
-    const data = res.data.data;
-    if (!data || !data.length) {
-      Swal.close();
-      Swal.fire("Tidak ada data", "Data kosong", "info");
-      return;
-    }
-
-    data.sort((a, b) => {
-      const keyA =
-        `${a.pengirimanBarang_nama_penerima}|||${a.pengirimanBarang_alamat_pengiriman_barang}`.toLowerCase();
-      const keyB =
-        `${b.pengirimanBarang_nama_penerima}|||${b.pengirimanBarang_alamat_pengiriman_barang}`.toLowerCase();
-
-      if (keyA !== keyB) return keyA < keyB ? -1 : 1;
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
-
-
-    const exportRows = data.map((r) => ({
-      Tanggal: new Date(r.created_at),
-      "Nama Penerima": r.pengirimanBarang_nama_penerima,
-      "Nama Akun": r.pengirimanBarang_akun_penerima,
-      Alamat: r.pengirimanBarang_alamat_pengiriman_barang,
-      "Kode Barang": r.code_nama,
-      Qty: r.transaksidetail_jumlah_barang,
-      Harga: Number(r.transaksidetail_harga_barang),
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportRows, {
-      cellDates: true,
-      dateNF: "dd-mmm-yyyy",
-    });
-
-    Object.keys(worksheet).forEach((cell) => {
-      if (cell.startsWith("G") && cell !== "G1") {
-        worksheet[cell].z = '"Rp" #,##0';
-      }
-    });
-
-    const merges = [];
-    let start = 0;
-
-    while (start < exportRows.length) {
-      const key =
-        `${exportRows[start]["Nama Penerima"]}|||${exportRows[start]["Alamat"]}`;
-      let end = start;
-
-      while (
-        end + 1 < exportRows.length &&
-        `${exportRows[end + 1]["Nama Penerima"]}|||${exportRows[end + 1]["Alamat"]}` === key
-      ) {
-        end++;
-      }
-
-      if (end > start) {
-        merges.push({ s: { r: start + 1, c: 1 }, e: { r: end + 1, c: 1 } });
-        merges.push({ s: { r: start + 1, c: 3 }, e: { r: end + 1, c: 3 } });
-      }
-
-      start = end + 1;
-    }
-
-    worksheet["!merges"] = merges;
-
-    worksheet["!cols"] = [
-      { wch: 14 },
-      { wch: 22 },
-      { wch: 22 },
-      { wch: 40 },
-      { wch: 16 },
-      { wch: 6 },
-      { wch: 14 },
-    ];
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Packaging");
-
-    const buffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-
-    saveAs(
-      blob,
-      `Packaging_${new Date().toISOString().split("T")[0]}.xlsx`
-    );
-    Swal.close();
-    Swal.fire("Berhasil", "Export Excel selesai.", "success");
-    fetchData();
-  } catch (err) {
-    console.error(err);
-    Swal.close();
-    Swal.fire("Gagal", "Terjadi kesalahan saat export.", "error");
-  }
-};
-
-const handleSave = () => {
-  isModalOpen.value = false;
-  fetchData();
-};
-
-const sortedPengirimanData = computed(() => {
-  return [...pengirimanData.value].sort(
-    (a, b) => b.pengirimanBarang_id - a.pengirimanBarang_id
-  );
-});
-
-const filteredData = computed(() => {
-  const q = searchQuery.value.toLowerCase();
-
-  return sortedPengirimanData.value.filter((x) =>
-    x.pengirimanBarang_nama_penerima?.toLowerCase().includes(q) ||
-    x.pengirimanBarang_akun_penerima?.toLowerCase().includes(q) ||
-    x.pengirimanBarang_alamat_pengiriman_barang?.toLowerCase().includes(q)
-  );
-});
-
-const pagination = computed(() => {
-  if (itemsPerPage.value === "all") return filteredData.value;
-
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  return filteredData.value.slice(start, start + itemsPerPage.value);
-});
-
-const totalPages = computed(() =>
-  itemsPerPage.value === "all"
-    ? 1
-    : Math.ceil(filteredData.value.length / itemsPerPage.value)
-);
-
-const startItem = computed(() => {
-  if (filteredData.value.length === 0) return 0;
-
-  return (currentPage.value - 1) * Number(itemsPerPage.value) + 1;
-});
-
-const endItem = computed(() => {
-  if (filteredData.value.length === 0) return 0;
-
-  return Math.min(
-    currentPage.value * Number(itemsPerPage.value),
-    filteredData.value.length
-  );
-});
-
-const paginatedPages = computed(() => {
-  const pages = [];
-  const total = totalPages.value;
-  const current = currentPage.value;
-
-  if (total <= 5) return [...Array(total).keys()].map((i) => i + 1);
-
-  if (current <= 3) return [1, 2, 3, "...", total];
-  if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
-
-  return [1, "...", current - 1, current, current + 1, "...", total];
-});
-
-const statusChipClass = (status) => {
-  switch (status) {
-    case "DONE":
-      return "bg-green-100 text-green-700 border border-green-300";
-
-    case "IN PROGRESS":
-      return "bg-yellow-100 text-yellow-700 border border-yellow-300";
-
-    default:
-      return "bg-gray-100 text-gray-600 border border-gray-300";
-  }
-};
-
-const printLabel = (row) => {
-  const printWindow = window.open("", "_blank");
-
-  const logoPath = `/image/DameUlosLogo2.png`;
-
-  printWindow.document.write(`
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8" />
-<title>Label Pengiriman</title>
-
-<style>
-  @page{
-    size: 100mm 150mm;
-    margin: 0;
-  }
-
-  body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding: 14mm 10mm;
-  }
-
-  .container{
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-  }
-
-  .logo{
-    text-align:center;
-    margin-bottom: 8px;
-  }
-
-  .logo img{
-    width:130px;
-  }
-
-  .section{
-    margin-top: 6px;
-    font-size: 14px;
-  }
-
-  .label{
-    font-weight:bold;
-  }
-
-  .value{
-    margin-top:2px;
-    margin-bottom:8px;
-  }
-
-  .divider{
-    border-top:2px solid #000;
-    margin:10px 0;
-  }
-
-  .store{
-    font-size: 13px;
-  }
-
-  .quote{
-    margin-top: 10px;
-    font-style: italic;
-    font-size: 12px;
-    line-height: 1.45;
-  }
-
-  .courier{
-    text-align:right;
-    font-weight:bold;
-    font-size:16px;
-    margin-top: 8px;
-  }
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <div class="logo">
-    <img src="${logoPath}" />
-  </div>
-
-  <div class="section">
-    <div class="label">Nama :</div>
-    <div class="value">${row.pengirimanBarang_nama_penerima || "-"}</div>
-
-    <div class="label">Nomor HP :</div>
-    <div class="value">${row.pengirimanBarang_no_telepon || "-"}</div>
-
-    <div class="label">Alamat :</div>
-    <div class="value">${row.pengirimanBarang_alamat_pengiriman_barang || "-"}</div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="store">
-    <b>Galeri Dame Ulos</b><br>
-    081262804500<br>
-    Jl. Gereja HKBP Dame, Desa Lumban Matio, Saitnihuta, Kec. Tarutung, Kab. Tapanuli Utara
-  </div>
-
-  <div class="quote">
-    “Terima kasih telah memilih Dame Ulos. Semoga ulos ini menjadi simbol kasih, kehangatan, dan doa baik dalam setiap kesempatan istimewa.”
-  </div>
-
-  <div class="courier">
-    ${row.pengirimanBarang_jenis_pengiriman_barang || ""}
-  </div>
-
-</div>
-
-<script>
-  window.onload = function(){
-    window.print();
-    window.onafterprint = () => window.close();
-  }
-<\/script>
-
-</body>
-</html>
-  `);
-
-  printWindow.document.close();
-};
-
-watch(currentPage, (v) => {
-  if (v < 1) currentPage.value = 1;
-  if (v > totalPages.value) currentPage.value = totalPages.value;
-});
-
-
-const formatCurrency = (val) =>
-  new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(val);
+  searchQuery,
+  currentPage,
+  itemsPerPage,
+  isModalOpen,
+  selectedPengiriman,
+  selectedBarang,
+  exportToExcel,
+  pagination,
+  formatTanggal,
+  statusChipClass,
+  openModalEdit,
+  selesaikanPackaging,
+  deleteData,
+  printLabel,
+  startItem,
+  endItem,
+  filteredData,
+  totalPages,
+  paginatedPages,
+  handleSave,
+} = usePackaging();
 </script>
 
-
-<style scoped>
-.packaging-table-wrapper {
-  display: block;
-
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-
-.datatable {
-  width: 100%;
-  min-width: 1100px;
-  max-width: none;
-
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.datatable th,
-.datatable td {
-  padding: 10px 12px;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.datatable th {
-  background-color: #f4f4f4;
-}
-
-.text-status {
-  font-size: 8px !important;
-}
-
-.packaging-export-btn {
-  width: 100px !important;
-  height: 32px;
-  padding: 0 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  box-sizing: border-box;
-}
-
-.cl-pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size: 12px;
-  gap: 16px;
-}
-
-.cl-pagination-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.cl-pagination-sep {
-  color: #9ca3af;
-}
-
-.cl-perpage-select {
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 12px;
-  background: #fff;
-  outline: none;
-}
-
-.cl-perpage-select:focus {
-  border-color: #3b82f6;
-}
-
-.cl-pagination-pages {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.cl-page-nav,
-.cl-page-btn {
-  min-width: 30px;
-  height: 30px;
-  padding: 4px 9px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.cl-page-nav:hover:not(:disabled),
-.cl-page-btn:hover:not(.cl-page-btn--active):not(.cl-page-btn--dots) {
-  background: #f3f4f6;
-}
-
-.cl-page-nav:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.cl-page-btn--active {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: #fff;
-}
-
-.cl-page-btn--dots {
-  border-color: transparent;
-  background: transparent;
-  cursor: default;
-}
-
-@media (max-width: 767px) {
-  .cl-pagination {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .cl-pagination-left {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .cl-pagination-pages {
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cl-pagination {
-    font-size: 11px;
-  }
-
-  .cl-pagination-left {
-    gap: 6px;
-  }
-
-  .cl-page-nav,
-  .cl-page-btn {
-    min-width: 28px;
-    height: 28px;
-    padding: 5px 8px;
-    font-size: 11px;
-  }
-}
-
-/* tablet  */
-@media (max-width: 1024px) {
-  .packaging-table-wrapper {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .datatable {
-    width: 1100px !important;
-    min-width: 1100px !important;
-    max-width: none !important;
-  }
-
-  .packaging-export-btn {
-    padding: 7px 12px;
-    font-size: 11px;
-  }
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 767px) {
-
-  .judul {
-    font-size: 18px !important;
-  }
-
-  .page-table-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-
-    gap: 8px;
-  }
-
-  /* Export tetap kecil */
-  .packaging-export-btn {
-    width: 100px !important;
-    height: 32px;
-    padding: 0 12px;
-    font-size: 11px;
-    align-self: flex-end;
-  }
-
-
-  /* =========================
-     TABLE SCROLL
-     ========================= */
-
-  .packaging-table-wrapper {
-    display: block;
-
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-
-  .datatable {
-    display: table;
-
-    width: 1100px !important;
-    min-width: 1100px !important;
-    max-width: none !important;
-
-    table-layout: auto;
-  }
-
-  .datatable th,
-  .datatable td {
-    padding: 9px 11px;
-
-    font-size: 11px;
-
-    white-space: nowrap;
-  }
-
-
-  /* =========================
-     ACTION BUTTON
-     ========================= */
-
-  .datatable td .flex {
-    display: flex;
-
-    flex-wrap: nowrap;
-    gap: 5px;
-  }
-
-  .datatable td button {
-    flex: 0 0 auto;
-
-    padding: 5px 8px;
-
-    font-size: 10px;
-
-    white-space: nowrap;
-  }
-
-
-  /* =========================
-     STATUS
-     ========================= */
-
-  .text-status {
-    font-size: 9px !important;
-    white-space: nowrap;
-  }
-
-
-  /* =========================
-     PAGINATION
-     ========================= */
-
-  .flex.justify-between.items-center.mt-8.mb-4.text-xs {
-    flex-direction: column;
-    align-items: stretch;
-
-    gap: 10px;
-
-    margin-top: 12px;
-  }
-
-  .flex.justify-between.items-center.mt-8.mb-4.text-xs>div:last-child {
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    flex-wrap: wrap;
-
-    gap: 4px;
-  }
-
-  .flex.justify-between.items-center.mt-8.mb-4.text-xs button {
-    padding: 5px 9px;
-    font-size: 10px;
-  }
-}
-
-/* =========================================================
-   SMALL PHONE
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-  .judul {
-    font-size: 17px !important;
-  }
-
-
-  .packaging-export-btn {
-    width: 95px !important;
-    height: 31px;
-    padding: 0 10px;
-    font-size: 10px;
-  }
-
-
-  /* Table tetap lebar */
-  .datatable {
-    width: 1100px !important;
-    min-width: 1100px !important;
-    max-width: none !important;
-  }
-
-  .datatable th,
-  .datatable td {
-    padding: 8px 10px;
-    font-size: 10px;
-    white-space: nowrap;
-  }
-
-
-  /* Action buttons */
-  .datatable td button {
-    padding: 4px 7px;
-    font-size: 10px;
-  }
-}
-
-.er-btn-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: #fff;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.er-btn-action:hover {
-  background: #f3f4f6;
-}
-
-.er-action-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
-  z-index: 50;
-  min-width: 145px;
-  padding: 5px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.er-dropdown-item {
-  display: block;
-  width: 100%;
-  padding: 9px 12px;
-  border: none;
-  border-radius: 5px;
-  background: transparent;
-  text-align: left;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-</style>
+<style scoped src="@/assets/css/packaging-page.css"></style>

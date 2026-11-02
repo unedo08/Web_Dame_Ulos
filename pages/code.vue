@@ -3,56 +3,70 @@
     <title>Menu Code</title>
     <div class="judul text-xl font-semibold mb-4">Menu Code</div>
     <div class="page-table-toolbar flex items-center justify-between">
-      <input
-        class="search-box standard-search-bar mb-2 rounded-md"
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search barang..."
-      />
+      <input class="search-box standard-search-bar mb-2 rounded-md" v-model="searchQuery" type="text"
+        placeholder="Search barang..." />
 
-      <button class="btn-add mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[30px]" @click="openModal">
+      <button class="btn-add mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[30px]"
+        @click="openModal">
         + Tambah
       </button>
     </div>
 
     <div class="datatable-wrapper">
-      <table class="datatable w-full rounded-md overflow-hidden">
-        <thead>
-          <tr>
-            <th class="px-4 py-2 text-left">No.</th>
-            <th class="px-4 py-2 text-left">Kode Barang</th>
-            <th class="px-4 py-2 text-left">Nama Barang</th>
-            <th class="px-4 py-2 text-left">Jumlah Barang</th>
-            <th class="px-4 py-2 text-left">Aksi</th>
-          </tr>
-        </thead>
+      <div class="datatable-scroll">
+        <table class="datatable w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left">No.</th>
+              <th class="px-4 py-2 text-left">Kode Barang</th>
+              <th class="px-4 py-2 text-left">Nama Barang</th>
+              <th class="px-4 py-2 text-left">Jumlah Barang</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
-            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-            <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
-            <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
-            <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
+          <tbody>
+            <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
+              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+              <td class="px-4 py-2">{{ index + 1 }}</td>
+              <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
+              <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
+              <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-            <td class="px-4 py-2">
-              <div class="flex space-x-2">
-                <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
-                  @click="openModelPrint(barang)">
-                  Print
-                </button>
+      <div class="datatable-action">
+        <table class="datatable-action-table">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left">Aksi</th>
+            </tr>
+          </thead>
 
-                <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs" @click="deleteProduct(
-                  barang.jenisbarang_id,
-                  barang.jenisbarang_kode
-                )">
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr v-for="barang in pagination" :key="barang.jenisbarang_id">
+              <td class="px-4 py-2">
+                <div class="flex space-x-2">
+                  <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
+                    @click="openModelPrint(barang)">
+                    Print
+                  </button>
+
+                  <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs" @click="
+                    deleteProduct(
+                      barang.jenisbarang_id,
+                      barang.jenisbarang_kode
+                    )
+                    ">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="cl-pagination">
@@ -95,7 +109,8 @@
       </div>
     </div>
 
-    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-[2000]" @click.self="closeModal">
+    <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-[2000]"
+      @click.self="closeModal">
       <div class="bg-white p-6 rounded-lg max-w-lg w-full">
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
 
@@ -136,7 +151,9 @@
       </div>
     </div>
 
-    <div v-if="isModalPrintOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closePrintModal">
+    <div v-if="isModalPrintOpen"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]"
+      @click.self="closePrintModal">
       <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
         <div class="mb-4">
@@ -482,7 +499,7 @@ watch(isModalOpen, async (val) => {
   table-layout: auto;
 }
 
-.datatable thead{
+.datatable thead {
   background: #F3F4F6;
 }
 
@@ -791,6 +808,108 @@ watch(isModalOpen, async (val) => {
 
   .fixed.inset-0>div {
     max-height: calc(100vh - 16px);
+  }
+}
+
+.datatable-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.datatable-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.datatable {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+.datatable-action {
+  position: relative;
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 150px;
+  z-index: 2;
+  background: #fff;
+  box-shadow: -5px 0 8px rgba(0, 0, 0, 0.10);
+  overflow: hidden;
+}
+
+.datatable-action-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+.datatable thead th,
+.datatable-action-table thead th {
+  height: 46px;
+  box-sizing: border-box;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.datatable tbody td,
+.datatable-action-table tbody td {
+  height: 49px;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.datatable-action-table tbody tr {
+  height: 49px;
+}
+
+.datatable-action-table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+
+.datatable-action-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.datatable-action-table td > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+}
+
+@media (max-width: 1024px) {
+  .datatable-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .datatable {
+    width: 900px;
+    min-width: 900px;
+  }
+
+  .datatable-action {
+    flex-basis: 150px;
+    width: 150px;
+    min-width: 150px;
   }
 }
 </style>
