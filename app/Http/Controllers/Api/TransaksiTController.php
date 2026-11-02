@@ -7,6 +7,7 @@ use App\Models\TransaksiT;
 use App\Models\TransaksiDetailT;
 use App\Models\BarangEntryM;
 use App\Models\CustomerM;
+use App\Models\LiveOrderT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -171,8 +172,12 @@ class TransaksiTController extends Controller
         }
 
         foreach ($transaksi->details as $detail) {
+            // Barang dari LIVE tidak mengurangi stok saat transaksi dibuat,
+            // jadi stoknya juga tidak dikembalikan di sini.
+            $isFromLive = LiveOrderT::where('live_order_barang_id', $detail->transaksidetail_barang_id)->exists();
+
             $barang = BarangEntryM::find($detail->transaksidetail_barang_id);
-            if ($barang) {
+            if ($barang && !$isFromLive) {
                 $barang->increment('barangentry_jumlah_barang', $detail->transaksidetail_jumlah_barang);
             }
         }

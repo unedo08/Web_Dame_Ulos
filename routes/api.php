@@ -139,4 +139,8 @@ Route::middleware(['jwt'])->group(function () {
     Route::prefix('/benang-keluar')->group(function () {
         require __DIR__ . '/api/benangKeluar.php';
     });
+
+    Route::prefix('/grafik-benang')->group(function () {
+        require __DIR__ . '/api/grafikBenang.php';
+    });
 });

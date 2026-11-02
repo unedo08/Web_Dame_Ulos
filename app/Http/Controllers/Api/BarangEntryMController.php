@@ -326,6 +326,13 @@ class BarangEntryMController extends Controller
             ], 404);
         }
 
+        if ($entry->transaksiDetail()->exists()) {
+            return response()->json([
+                'message' => 'Barang sudah memiliki transaksi, tidak bisa dihapus',
+                'code' => 409
+            ], 409);
+        }
+
         // Set delete_id sebelum hapus
         $entry->update([
             'delete_id' => Auth::id()
@@ -605,6 +612,13 @@ class BarangEntryMController extends Controller
             'status' => 'required|string',
         ]);
         $entry = BarangEntryM::findOrFail($id);
+
+        if ($entry->transaksiDetail()->exists()) {
+            return response()->json([
+                'message' => 'Barang sudah memiliki transaksi, tidak bisa dihapus',
+                'code'    => 409
+            ], 409);
+        }
 
         $entry->update([
             'barangentry_status' => 'DELETED',
