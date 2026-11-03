@@ -563,3 +563,107 @@ h3 {
     min-width: 150px;
   }
 }
+
+@media (max-width: 767px) {
+
+  .live-table-wrapper:has(.live-transaction-table) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .live-transaction-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+  }
+
+  .live-transaction-table th:nth-child(1),
+  .live-transaction-table td:nth-child(1) {
+    width: 8%;
+    padding: 9px 5px;
+    text-align: center;
+  }
+
+  .live-transaction-table th:nth-child(2),
+  .live-transaction-table td:nth-child(2) {
+    width: auto;
+    padding: 9px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .live-transaction-table th:nth-child(3),
+  .live-transaction-table td:nth-child(3) {
+    width: 22%;
+    padding: 9px 5px;
+    text-align: center;
+  }
+
+  .live-transaction-table thead th.sticky-action,
+  .live-transaction-table tbody td.sticky-action {
+    position: sticky !important;
+    right: 0 !important;
+    width: 78px !important;
+    min-width: 78px !important;
+    max-width: 78px !important;
+    padding: 9px 5px !important;
+    text-align: center;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .live-transaction-table thead th.sticky-action {
+    z-index: 20 !important;
+    background: #f3f4f6 !important;
+  }
+
+  .live-transaction-table tbody td.sticky-action {
+    z-index: 10 !important;
+    background: #fff !important;
+  }
+
+  .live-transaction-table tbody tr:nth-child(even) td.sticky-action {
+    background: #f9fafb !important;
+  }
+
+  .live-transaction-table tbody tr:hover td.sticky-action {
+    background: #f3f4f6 !important;
+  }
+
+  .live-transaction-table td.sticky-action button {
+    width: 100%;
+    min-width: 0;
+    padding: 5px 4px !important;
+    font-size: 10px !important;
+    white-space: nowrap;
+    border-radius: 6px;
+  }
+
+  .live-transaction-table th,
+  .live-transaction-table td {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .live-transaction-table th:nth-child(2),
+  .live-transaction-table td:nth-child(2) {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .live-transaction-table thead th.sticky-action,
+  .live-transaction-table tbody td.sticky-action {
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+  }
+}
