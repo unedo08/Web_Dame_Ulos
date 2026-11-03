@@ -237,8 +237,10 @@
                         @input="getKeluar" />
                 </div>
                 <div class="bk-actions">
-                    <input type="date" v-model="startDate" class="bk-date-input" />
-                    <input type="date" v-model="endDate" class="bk-date-input" />
+                    <div class="bk-date-filters">
+                        <input type="date" v-model="startDate" class="bk-date-input" />
+                        <input type="date" v-model="endDate" class="bk-date-input" />
+                    </div>
                     <button class="bk-btn-export" @click="exportExcel">Export Excel</button>
                     <button class="bk-btn-add" @click="openKeluarTambah">+ Benang Keluar</button>
                 </div>
@@ -360,7 +362,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Tambah Pewarna Alami</h2>
-                    <button class="bk-modal-close" @click="closePa">✕</button>
+                    <button class="bk-modal-close" @click="closePa"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bk-form-group">
@@ -393,10 +395,10 @@
                         <small v-if="paErrors.sumber_warna">{{ paErrors.sumber_warna }}</small>
                     </div>
                 </div>
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closePa">Batal</button>
                     <button class="bk-btn-save" :disabled="paSubmitting" @click="submitPa">
-                        {{ paSubmitting ? "Menyimpan..." : "Tambah" }}
+                        {{ paSubmitting ? "Menyimpan..." : "Simpan" }}
                     </button>
                 </div>
             </div>
@@ -407,7 +409,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Tambah Textile</h2>
-                    <button class="bk-modal-close" @click="closeTx">✕</button>
+                    <button class="bk-modal-close" @click="closeTx"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bk-form-group">
@@ -432,10 +434,10 @@
                         <small v-if="txErrors.jumlah">{{ txErrors.jumlah }}</small>
                     </div>
                 </div>
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closeTx">Batal</button>
                     <button class="bk-btn-save" :disabled="txSubmitting" @click="submitTx">
-                        {{ txSubmitting ? "Menyimpan..." : "Tambah" }}
+                        {{ txSubmitting ? "Menyimpan..." : "Simpan" }}
                     </button>
                 </div>
             </div>
@@ -446,7 +448,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Edit Benang Masuk</h2>
-                    <button class="bk-modal-close" @click="closeMasukEdit">✕</button>
+                    <button class="bk-modal-close" @click="closeMasukEdit"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bk-form-group">
@@ -478,7 +480,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closeMasukEdit">Batal</button>
                     <button class="bk-btn-save" :disabled="masukEditSubmitting" @click="submitMasukEdit">
                         {{ masukEditSubmitting ? "Menyimpan..." : "Simpan" }}
@@ -492,7 +494,7 @@
             <div class="bk-modal bk-modal-lg">
                 <div class="bk-modal-header">
                     <h2>Tambah Benang Keluar</h2>
-                    <button class="bk-modal-close" @click="closeKeluarTambah">✕</button>
+                    <button class="bk-modal-close" @click="closeKeluarTambah"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bk-form-group">
@@ -562,10 +564,10 @@
                         <button class="bk-btn-add-item" @click="addKeluarRow">+ Add</button>
                     </div>
                 </div>
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closeKeluarTambah">Batal</button>
                     <button class="bk-btn-save" :disabled="keluarSubmitting" @click="submitKeluar">
-                        {{ keluarSubmitting ? "Menyimpan..." : "Tambah" }}
+                        {{ keluarSubmitting ? "Menyimpan..." : "Simpan" }}
                     </button>
                 </div>
             </div>
@@ -576,7 +578,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Penyelesaian Benang Keluar</h2>
-                    <button class="bk-modal-close" @click="closeSelesai">✕</button>
+                    <button class="bk-modal-close" @click="closeSelesai"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bn-warning">
@@ -614,7 +616,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Detail Penyelesaian</h2>
-                    <button class="bk-modal-close" @click="closeKeluarView">✕</button>
+                    <button class="bk-modal-close" @click="closeKeluarView"></button>
                 </div>
                 <div class="bk-modal-body">
                     <div class="bk-view-info">

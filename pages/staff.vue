@@ -130,9 +130,7 @@
                 <div class="staff-modal-header">
                     <h2 class="staff-modal-title">Edit User</h2>
 
-                    <button class="staff-modal-close" @click="closeEditModal">
-                        &#x2715;
-                    </button>
+                    <button class="staff-modal-close" aria-label="Tutup" @click="closeEditModal"></button>
                 </div>
 
                 <div class="staff-modal-body">
@@ -160,7 +158,7 @@
                     </div>
                 </div>
 
-                <div class="staff-modal-footer">
+                <div class="staff-modal-footer form-add-actions">
                     <button class="staff-btn-batal" @click="closeEditModal">
                         Batal
                     </button>
@@ -178,9 +176,7 @@
                 <div class="staff-modal-header">
                     <h2 class="staff-modal-title">Tambah Staff Baru</h2>
 
-                    <button class="staff-modal-close" @click="closeAddModal">
-                        &#x2715;
-                    </button>
+                    <button class="staff-modal-close" aria-label="Tutup" @click="closeAddModal"></button>
                 </div>
 
                 <div class="staff-modal-body">
@@ -240,13 +236,13 @@
                     </div>
                 </div>
 
-                <div class="staff-modal-footer">
+                <div class="staff-modal-footer form-add-actions">
                     <button class="staff-btn-batal" @click="closeAddModal">
                         Batal
                     </button>
 
                     <button class="staff-btn-simpan" @click="submitAddUser">
-                        Tambah
+                        Simpan
                     </button>
                 </div>
             </div>

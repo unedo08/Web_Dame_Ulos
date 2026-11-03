@@ -159,9 +159,7 @@
                         }}
                     </h2>
 
-                    <button class="sd-modal-close" @click="closeModal">
-                        ✕
-                    </button>
+                    <button class="sd-modal-close" aria-label="Tutup" @click="closeModal"></button>
 
                 </div>
 
@@ -217,7 +215,7 @@
 
                 </div>
 
-                <div class="sd-modal-footer">
+                <div class="sd-modal-footer form-add-actions">
 
                     <button class="sd-btn-batal" @click="closeModal">
                         Batal
@@ -231,7 +229,7 @@
                                 ? "Loading..."
                                 : form.sumber_dana_id
                                     ? "Simpan"
-                                    : "Tambah"
+                                    : "                                    Simpan"
                         }}
 
                     </button>

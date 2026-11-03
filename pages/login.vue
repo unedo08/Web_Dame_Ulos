@@ -19,30 +19,42 @@
                 </div>
                 <h4 class="text-2xl font-semibold text-gray-900">Welcome Back!</h4>
                 <h6 class="text-black-600 opacity-50 mb-6">Sign in to Continue to Dame Ulos Application</h6>
-                <form @submit.prevent="handleLogin" class="w-full space-y-4">
+                <form @submit.prevent="handleLogin" class="w-full space-y-4" novalidate>
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
                         <input type="email" id="email" v-model="email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#FFF] focus:ring-2 focus:ring-gray-500" placeholder="Enter Your Email"
-                            required />
+                            :aria-invalid="Boolean(fieldErrors.email)"
+                            :class="{ 'login-input-error': fieldErrors.email }"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#FFF] focus:ring-2 focus:ring-gray-500"
+                            placeholder="Enter Your Email" @input="clearLoginErrors" />
+                        <p v-if="fieldErrors.email" class="login-field-error" role="alert">
+                            {{ fieldErrors.email }}
+                        </p>
                     </div>
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
                         <input type="password" id="password" v-model="password"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#FFF] focus:ring-2 focus:ring-gray-500" placeholder="Enter Your Password"
-                            required />
+                            :aria-invalid="Boolean(fieldErrors.password)"
+                            :class="{ 'login-input-error': fieldErrors.password }"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#FFF] focus:ring-2 focus:ring-gray-500"
+                            placeholder="Enter Your Password" @input="clearLoginErrors" />
+                        <p v-if="fieldErrors.password" class="login-field-error" role="alert">
+                            {{ fieldErrors.password }}
+                        </p>
                     </div>
                     <div class="items-center">
                         <input type="checkbox" id="rememberMe" v-model="rememberMe"
                             class="h-4 w-4 border-gray-300 rounded focus:ring-2 focus:ring-gray-500" />
-                        <label for="rememberMe" class="ml-2 text-sm text-gray-600" style="font-size: 18px;"><b>Remember Me</b></label>
+                        <label for="rememberMe" class="ml-2 text-sm text-gray-600"><b>Remember Me</b></label>
                     </div>
                     <button type="submit"
                         class="w-full bg-[#BD9E77] text-white py-2 rounded-lg font-semibold hover:bg-[#a08c6a] focus:outline-none">
                         Sign in
                     </button>
+                    <p v-if="errorMessage" class="login-error-alert" role="alert" aria-live="polite">
+                        {{ errorMessage }}
+                    </p>
                 </form>
-                <p v-if="errorMessage" class="text-red-500 mt-4 text-sm">{{ errorMessage }}</p>
             </div>
         </div>
     </div>
@@ -58,30 +70,54 @@ export default {
     const email = ref<string>('')
     const password = ref<string>('')
     const errorMessage = ref<string | null>(null)
+    const fieldErrors = ref<{ email: string; password: string }>({ email: '', password: '' })
     const rememberMe = ref<boolean>(false)
     const router = useRouter()
     const { $axios } = useNuxtApp()
 
+    const clearLoginErrors = () => {
+      fieldErrors.value = { email: '', password: '' }
+      errorMessage.value = null
+    }
+
     const handleLogin = async () => {
+      fieldErrors.value = {
+        email: email.value.trim() ? '' : 'email wajib diisi.',
+        password: password.value ? '' : 'password wajib diisi.'
+      }
+      errorMessage.value = null
+
+      if (fieldErrors.value.email || fieldErrors.value.password) {
+        return
+      }
+
       try {
         const response = await $axios.post('/login', {
-          email: email.value,
+          email: email.value.trim(),
           password: password.value,
           rememberMe: rememberMe.value
         })
 
-        // Misalnya, backend mengembalikan token atau status sukses
         if (response.data.success) {
-          console.log('Login successful!')
           router.push('/beranda')
         } else {
-          errorMessage.value = response.data.message || 'Login Failed'
+          errorMessage.value = 'Email atau password yang dimasukkan salah atau belum terdaftar.'
         }
-      } catch (error: any) {
-        if (error.response && error.response.data && error.response.data.message) {
-          errorMessage.value = error.response.data.message
+      } catch (error: unknown) {
+        let responseStatus: number | undefined
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+          const response = error.response
+          if (typeof response === 'object' && response !== null && 'status' in response &&
+              typeof response.status === 'number') {
+            responseStatus = response.status
+          }
+        }
+
+        if (responseStatus === 400 || responseStatus === 401 || responseStatus === 403 ||
+            responseStatus === 404 || responseStatus === 422) {
+          errorMessage.value = 'Email atau password yang dimasukkan salah atau belum terdaftar.'
         } else {
-          errorMessage.value = 'Login Failed'
+          errorMessage.value = 'Tidak dapat memproses login saat ini. Silakan coba lagi.'
         }
       }
     }
@@ -90,6 +126,8 @@ export default {
       email,
       password,
       errorMessage,
+      fieldErrors,
+      clearLoginErrors,
       handleLogin,
       rememberMe
     }
@@ -146,6 +184,29 @@ definePageMeta({
     margin-top: 30px;
 }
 
+.login-field-error,
+.login-error-alert {
+    color: #dc2626;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.login-field-error {
+    margin-top: 4px;
+}
+
+.login-input-error {
+    border-color: #dc2626 !important;
+}
+
+.login-error-alert {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    background: #fef2f2;
+}
+
 @media (max-width: 767px) {
     .container-login {
         display: flex;
@@ -188,7 +249,7 @@ definePageMeta({
     }
 
     .login-panel input:not([type="checkbox"]) {
-        font-size: 16px;
+        font-size: 14px;
     }
 }
 </style>

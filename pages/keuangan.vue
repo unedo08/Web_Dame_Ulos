@@ -14,8 +14,10 @@
                 <MagnifyingGlassIcon class="keuangan-search-icon" />
             </div>
             <div class="header-action">
-                <input type="date" v-model="startDate" class="keuangan-date-input" />
-                <input type="date" v-model="endDate" class="keuangan-date-input" />
+                <div class="keuangan-date-filters">
+                    <input type="date" v-model="startDate" class="keuangan-date-input" />
+                    <input type="date" v-model="endDate" class="keuangan-date-input" />
+                </div>
                 <button class="keuangan-btn-export" @click="exportExcel">
                     Export Excel
                 </button>
@@ -79,7 +81,7 @@
                     <h2>
                         {{ form.pengeluaran_id ? "Edit" : "Tambah" }} Pengeluaran
                     </h2>
-                    <button @click="closeModal">
+                    <button class="form-modal-close-size form-modal-close-inline" aria-label="Tutup form" @click="closeModal">
                         ✕
                     </button>
                 </div>
@@ -179,7 +181,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer form-add-actions">
                     <button class="btn-cancel" @click="closeModal">
                         Batal
                     </button>

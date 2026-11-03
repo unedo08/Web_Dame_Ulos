@@ -1,11 +1,9 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="$emit('close')">
-    <div class="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg">
+    <div class="relative bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Detail Transaksi</h2>
-        <button @click="$emit('close')" class="text-gray-500 hover:text-red-500 text-xl">
-          &times;
-        </button>
+        <button type="button" class="form-modal-close" aria-label="Tutup detail transaksi" @click="$emit('close')"></button>
       </div>
 
       <div v-if="loading" class="text-center py-6">Memuat data...</div>

@@ -14,9 +14,10 @@
                     @input="getData" />
             </div>
             <div class="bk-actions">
-                <input type="date" v-model="startDate" class="bk-date-input" />
-
-                <input type="date" v-model="endDate" class="bk-date-input" />
+                <div class="bk-date-filters">
+                    <input type="date" v-model="startDate" class="bk-date-input" />
+                    <input type="date" v-model="endDate" class="bk-date-input" />
+                </div>
 
                 <button class="bk-btn-export" @click="exportExcel">
                     Export Excel
@@ -154,7 +155,7 @@
             <div class="bk-modal bk-modal-lg">
                 <div class="bk-modal-header">
                     <h2>Tambah Barang Keluar</h2>
-                    <button class="bk-modal-close" @click="closeTambah">✕</button>
+                    <button class="bk-modal-close" @click="closeTambah"></button>
                 </div>
 
                 <div class="bk-modal-body">
@@ -206,7 +207,7 @@
                     </div>
                 </div>
 
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closeTambah">Batal</button>
                     <button class="bk-btn-save" :disabled="isSubmitting" @click="submitTambah">
                         {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
@@ -220,7 +221,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Konfirmasi Pengambilan Barang</h2>
-                    <button class="bk-modal-close" @click="closeEdit">✕</button>
+                    <button class="bk-modal-close" @click="closeEdit"></button>
                 </div>
 
                 <div class="bk-modal-body">
@@ -242,7 +243,7 @@
                     <p v-if="editError" class="bk-alert-required">{{ editError }}</p>
                 </div>
 
-                <div class="bk-modal-footer">
+                <div class="bk-modal-footer form-add-actions">
                     <button class="bk-btn-cancel" @click="closeEdit">Batal</button>
                     <button class="bk-btn-save" :disabled="isSavingEdit || isEditInvalid" @click="submitEdit">
                         {{ isSavingEdit ? "Menyimpan..." : "Selesai" }}
@@ -256,7 +257,7 @@
             <div class="bk-modal">
                 <div class="bk-modal-header">
                     <h2>Detail Pengambilan Barang</h2>
-                    <button class="bk-modal-close" @click="closeView">✕</button>
+                    <button class="bk-modal-close" @click="closeView"></button>
                 </div>
 
                 <div class="bk-modal-body">
@@ -300,8 +301,8 @@
                         secara permanen. Tindakan ini tidak dapat dibatalkan.
                     </div>
                     <div style="display:flex;gap:12px;justify-content:center">
-                        <button class="bk-confirm-delete-btn" @click="confirmDelete">Ya, Hapus</button>
                         <button class="bk-confirm-cancel-btn" @click="cancelDelete">Batal</button>
+                        <button class="bk-confirm-delete-btn" @click="confirmDelete">Ya, Hapus</button>
                     </div>
                 </div>
             </div>

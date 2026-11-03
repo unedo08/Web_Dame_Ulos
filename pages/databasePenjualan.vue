@@ -10,8 +10,10 @@
         placeholder="Cari transaksi penjualan..." />
 
       <div class="penjualan-date-actions">
-        <input type="date" v-model="startDate" class="penjualan-date-input" />
-        <input type="date" v-model="endDate" class="penjualan-date-input" />
+        <div class="penjualan-date-filters">
+          <input type="date" v-model="startDate" class="penjualan-date-input" />
+          <input type="date" v-model="endDate" class="penjualan-date-input" />
+        </div>
 
         <button class="penjualan-export-btn" @click="exportExcel">
           Export Excel

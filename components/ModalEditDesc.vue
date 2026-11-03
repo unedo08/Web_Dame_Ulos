@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="po-desc-overlay fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
     <div class="po-desc-modal bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
-      <button class="absolute top-2 right-2 text-gray-500 hover:text-black" @click="closeModal">✕</button>
+      <button class="form-modal-close-size absolute top-2 right-2 text-gray-500 hover:text-black" aria-label="Tutup form" @click="closeModal"></button>
       <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
 
       <form>
@@ -89,7 +89,7 @@
           </div>
         </div>
 
-        <div class="po-desc-actions flex justify-end mt-6 space-x-4">
+        <div class="po-desc-actions form-add-actions flex justify-end mt-6 space-x-4">
           <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
             Batal
           </button>

@@ -155,10 +155,15 @@
 
       </template>
 
-      <div class="mt-6 flex justify-end space-x-3">
-        <button v-if="type === 'priceTag'" @click="printPriceTag" class="bg-green-600 text-white px-4 py-2 rounded">
+      <div v-if="type === 'priceTag'" class="form-add-actions price-tag-actions mt-6">
+        <button type="button" @click="closeModal">
+          Batal
+        </button>
+        <button type="button" @click="printPriceTag">
           Print
         </button>
+      </div>
+      <div v-else class="mt-6 flex justify-end space-x-3">
         <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">
           Close
         </button>
@@ -424,5 +429,17 @@ watch(
 <style scoped>
 .bg-gray-800 {
   background-color: rgba(0, 0, 0, 0.5);
+}
+</style>
+<style>
+.price-tag-actions > button:last-child {
+  border-color: #3d8bfd !important;
+  background-color: #3d8bfd !important;
+  color: #fff !important;
+}
+
+.price-tag-actions > button:last-child:hover:not(:disabled) {
+  border-color: #3578db !important;
+  background-color: #3578db !important;
 }
 </style>

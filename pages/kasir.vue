@@ -89,27 +89,29 @@
     </div>
   </div>
 
-  <div v-if="openModalHold" class="fixed inset-0 bg-black/40 z-40" @click="openModalHold = false"></div>
+  <div v-if="openModalHold" class="fixed inset-0 bg-black/40 z-[1999]" @click="openModalHold = false"></div>
   <Transition name="slide-right">
     <div v-if="openModalHold"
-      class="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-[2000] overflow-y-auto flex flex-col">
-      <div class="sticky top-0 z-20 bg-white border-b p-4">
+      class="pending-list-panel fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-lg z-[2000] overflow-y-auto flex flex-col">
+      <div class="pending-list-header sticky top-0 z-20 bg-white border-b p-4 relative">
         <div class="flex justify-between items-center">
           <h2 class="text-md font-semibold">Pending List</h2>
-          <button @click="openModalHold = false" class="text-gray-600 hover:text-red-500 text-xl font-bold">
-            &times;
-          </button>
+          <button type="button" class="form-modal-close" aria-label="Tutup pending list"
+            @click="openModalHold = false"></button>
         </div>
         <div class="mt-4">
           <input v-model="searchHold" type="text" placeholder="Cari nama customer..."
             class="w-full border border-gray-300 px-3 py-2 rounded" />
         </div>
       </div>
-      <div class="p-4">
-        <div v-if="filteredList.length === 0" class="text-gray-500">
+      <div v-if="filteredList.length === 0" class="pending-list-empty flex-1 p-4 flex flex-col items-center justify-center text-center text-gray-500">
+        <InboxIcon class="w-12 h-12 mb-3 text-gray-300" aria-hidden="true" />
+        <p>
           Tidak ada transaksi hold saat ini.
-        </div>
-        <div v-else class="space-y-2 transition-slide">
+        </p>
+      </div>
+      <div v-else class="p-4">
+        <div class="space-y-2 transition-slide">
           <div v-for="(item, index) in paginatedList" :key="item.transaksi_id" :class="[
             'relative p-3 border rounded-md flex justify-between items-center cursor-pointer transition-all duration-200',
             item.transaksi_id === currentTransaksiId
@@ -200,7 +202,7 @@ import ModalKasir from "../components/ModalKasir.vue";
 import ModalTambahBarang from "../components/ModalTambahBarang.vue";
 import { useRuntimeConfig } from "#imports";
 import Swal from "sweetalert2";
-import { TrashIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PlusCircleIcon, InboxIcon } from "@heroicons/vue/24/outline";
 import ModalLive from "../components/ModalLive.vue";
 import ModalPreOrder from "../components/ModalPreOrder.vue";
 

@@ -88,11 +88,16 @@ button {
 }
 
 .entry-price-tag-button {
-  background-color: #16a34a !important;
+  background-color: #3d8bfd !important;
 }
 
 .entry-price-tag-button:hover {
-  background-color: #16a34a !important;
+  background-color: #3d8bfd !important;
+}
+
+.entry-export-ready-button,
+.entry-export-ready-button:hover {
+  background-color: #059669 !important;
 }
 
 .btn-print-click {

@@ -51,8 +51,8 @@ const renderChart = () => {
                 legend: {
                     position: "bottom",
                     labels: {
-                        boxWidth: 12,
-                        padding: 12,
+                        boxWidth: 14,
+                        padding: 14,
                         font: { size: 11 }
                     }
                 },

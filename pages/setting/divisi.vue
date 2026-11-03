@@ -192,9 +192,7 @@
                         }}
                     </h2>
 
-                    <button class="dv-modal-close" @click="closeModal">
-                        ✕
-                    </button>
+                    <button class="dv-modal-close" aria-label="Tutup" @click="closeModal"></button>
 
                 </div>
 
@@ -249,7 +247,7 @@
 
                 </div>
 
-                <div class="dv-modal-footer">
+                <div class="dv-modal-footer form-add-actions">
 
                     <button class="dv-btn-batal" @click="closeModal">
                         Batal
@@ -262,7 +260,7 @@
                                 ? "Loading..."
                                 : form.divisi_id
                                     ? "Simpan"
-                                    : "Tambah"
+                                    : "                                    Simpan"
                         }}
 
                     </button>

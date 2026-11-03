@@ -111,7 +111,8 @@
 
     <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 z-[2000]"
       @click.self="closeModal">
-      <div class="bg-white p-6 rounded-lg max-w-lg w-full">
+      <div class="form-modal-container relative bg-white p-6 rounded-lg max-w-lg w-full">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModal"></button>
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
 
         <form @submit.prevent="submitProduct">
@@ -137,14 +138,14 @@
             </p>
           </div>
 
-          <div class="flex justify-end">
+          <div class="flex justify-end form-add-actions">
             <button type="button" @click="closeModal"
               class="mr-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
-              Cancel
+              Batal
             </button>
             <button type="submit" :disabled="isSubmitting"
               class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:bg-gray-400">
-              {{ isSubmitting ? "Saving..." : "Save" }}
+              {{ isSubmitting ? "Saving..." : "              Simpan" }}
             </button>
           </div>
         </form>

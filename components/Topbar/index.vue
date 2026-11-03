@@ -3,7 +3,7 @@
     <div class="topbar-content">
       <div class="text-right">
         <div class="user-info" @click="toggleDropdown">
-          <img src="@/assets/image/avatar-account.png" alt="avatar" class="avatar" />
+          <UserCircleIcon class="avatar" aria-hidden="true" />
           <span class="username">
             {{ name }}
           </span>
@@ -25,6 +25,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { UserCircleIcon } from "@heroicons/vue/24/outline";
 import axios from "axios";
 
 const router = useRouter();
@@ -133,9 +134,10 @@ const onMenuItemClick = async (item) => {
 }
 
 .avatar {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  color: #64748b;
 }
 
 

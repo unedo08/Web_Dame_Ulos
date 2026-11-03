@@ -1,6 +1,7 @@
 <template>
   <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]" @click.self="emit('close')">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
+      <button type="button" class="form-modal-close" aria-label="Tutup form" @click="emit('close')"></button>
       <h2 class="text-xl font-semibold mb-4">Tambah Online Transaksi</h2>
 
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -112,7 +113,7 @@
                 Rp
               </span>
               <input :value="formattedBiayaPengiriman" @input="onInputBiayaPengiriman" type="text"
-                class="w-full border border-gray-300 px-2 py-2 focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-r-md px-2 py-2 focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Biaya Pengiriman" />
             </div>
             <p v-if="errors.biayaPengiriman" class="text-red-500 text-sm mt-1">
@@ -132,7 +133,7 @@
             </p>
           </div>
         </div>
-        <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+        <div class="md:col-span-2 flex justify-end gap-4 mt-8 form-add-actions">
           <button type="button" @click="batalLive"
             class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition">
             Batal
@@ -140,7 +141,7 @@
 
           <button type="button" @click="submitForm" :disabled="isSubmitting"
             class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
-            <span v-if="!isSubmitting">Tambah</span>
+            <span v-if="!isSubmitting">Simpan</span>
             <span v-else>Memproses...</span>
           </button>
         </div>

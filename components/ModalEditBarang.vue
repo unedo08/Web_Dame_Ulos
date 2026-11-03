@@ -4,7 +4,7 @@
       <div class="ready-edit-modal bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] shadow-lg relative">
         <header class="ready-edit-header">
           <h2 class="ready-edit-title text-xl font-bold">Edit Barang Ready</h2>
-          <button class="ready-edit-close text-gray-500 hover:text-black" aria-label="Tutup modal" @click="closeModal">✕</button>
+          <button class="ready-edit-close text-gray-500 hover:text-black" aria-label="Tutup modal" @click="closeModal"></button>
         </header>
 
         <form class="ready-edit-form">
@@ -92,7 +92,7 @@
           </div>
           </div>
 
-          <div class="ready-edit-actions flex justify-end mt-6 space-x-4">
+          <div class="ready-edit-actions form-add-actions flex justify-end mt-6 space-x-4">
             <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @click="closeModal">
               Batal
             </button>
@@ -236,6 +236,10 @@ watch(() => props.show, (newVal) => {
   overflow: hidden !important;
 }
 
+.ready-edit-overlay {
+  z-index: 2000;
+}
+
 .ready-edit-header {
   position: relative;
   display: flex;
@@ -269,6 +273,19 @@ watch(() => props.show, (newVal) => {
   overflow-y: auto;
 }
 
+.ready-edit-fields {
+  gap: 16px !important;
+}
+
+.ready-edit-fields > div:not(.hidden) > label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ready-edit-fields .form-control {
+  margin-bottom: 0;
+}
+
 .form-control {
   width: 100%;
   border: 1px solid #d1d5db;
@@ -292,7 +309,6 @@ watch(() => props.show, (newVal) => {
     padding: 12px !important;
     align-items: flex-start !important;
     justify-content: center !important;
-    z-index: 2000 !important;
   }
 
   .ready-edit-modal {
@@ -316,15 +332,10 @@ watch(() => props.show, (newVal) => {
 
   .ready-edit-fields {
     grid-template-columns: minmax(0, 1fr) !important;
-    gap: 12px !important;
   }
 
   .ready-edit-fields > div:not(.hidden) {
     min-width: 0;
-  }
-
-  .ready-edit-fields .form-control {
-    margin-bottom: 0;
   }
 
   .ready-edit-actions {

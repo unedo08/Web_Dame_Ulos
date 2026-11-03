@@ -171,9 +171,7 @@
                         }}
 
                     </h2>
-                    <button class="jp-modal-close" @click="closeModal">
-                        ✕
-                    </button>
+                    <button class="jp-modal-close" aria-label="Tutup" @click="closeModal"></button>
                 </div>
 
                 <div class="jp-modal-body">
@@ -210,7 +208,7 @@
                     </div>
                 </div>
 
-                <div class="jp-modal-footer">
+                <div class="jp-modal-footer form-add-actions">
                     <button class="jp-btn-batal" @click="closeModal">
                         Batal
                     </button>
@@ -218,13 +216,7 @@
                     <button class="jp-btn-simpan" :disabled="!form.jenis_pengeluaran_nama.trim() || isLoading"
                         @click="handleSave">
 
-                        {{
-                            isLoading
-                                ? "Loading..."
-                                : form.jenis_pengeluaran_id
-                                    ? "Simpan"
-                                    : "Tambah"
-                        }}
+                        {{ isLoading ? "Menyimpan..." : "Simpan" }}
 
                     </button>
                 </div>

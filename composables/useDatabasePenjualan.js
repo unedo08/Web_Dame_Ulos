@@ -446,13 +446,7 @@ export function useDatabasePenjualan() {
                 `Report_Penjualan_${startDate.value}_${endDate.value}.xlsx`
             );
 
-            Swal.fire({
-                icon: "success",
-                title: "Berhasil",
-                text: "File Excel berhasil diunduh",
-                timer: 1500,
-                showConfirmButton: false,
-            });
+            Swal.fire("Berhasil", "Export Excel selesai.", "success");
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Gagal export Excel", "error");

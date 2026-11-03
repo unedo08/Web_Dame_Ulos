@@ -107,7 +107,7 @@
           <h2 class="pm-modal-title">
             {{ isEditMode ? "Edit Metode Pembayaran" : "Tambah Metode Pembayaran" }}
           </h2>
-          <button class="pm-modal-close" @click="closeModal">&#x2715;</button>
+          <button class="pm-modal-close" @click="closeModal"></button>
         </div>
 
         <div class="pm-modal-body">
@@ -133,10 +133,10 @@
           </div>
         </div>
 
-        <div class="pm-modal-footer">
+        <div class="pm-modal-footer form-add-actions">
           <button class="pm-btn-batal" @click="closeModal">Batal</button>
           <button class="pm-btn-simpan" :disabled="!form.carabayar_nama.trim() || isLoading" @click="handleSave">
-            {{ isEditMode ? "Simpan" : "Tambah" }}
+            Simpan
           </button>
         </div>
       </div>

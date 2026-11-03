@@ -25,6 +25,12 @@
   flex-wrap: wrap;
 }
 
+.penjualan-date-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .penjualan-date-input {
   padding: 8px 12px;
   border: 1px solid #d1d5db;
@@ -155,21 +161,31 @@
 
   .penjualan-date-actions {
     width: 100%;
-    justify-content: flex-end;
-    gap: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
 
-  .penjualan-date-input {
-    flex: 1 1 140px;
-    min-width: 130px;
-    height: 32px;
+  .penjualan-date-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .penjualan-date-filters .penjualan-date-input {
+    width: 100%;
+    min-width: 0;
+    height: 38px;
     box-sizing: border-box;
-    padding: 6px 8px;
-    font-size: 11px;
+    padding: 8px 10px;
+    font-size: 12px;
   }
 
   .penjualan-export-btn {
     flex: 0 0 auto;
+    align-self: flex-end;
   }
 
   .penjualan-table-wrapper {

@@ -172,7 +172,7 @@
             @click="openModal('priceTag')">
             Print Price Tag
           </button>
-          <button class="btn-add bg-green-600 text-white text-center rounded-md hover:bg-green-700 w-[130px] h-[30px]"
+          <button class="btn-add entry-export-ready-button text-white text-center rounded-md w-[130px] h-[30px]"
             @click="exportReadyStock">
             Export Ready Stock
           </button>
@@ -512,7 +512,8 @@
     </div>
 
     <div v-if="showModalAdd" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="cancelTambahBarang">
-      <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
+      <div class="form-modal-container relative bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="cancelTambahBarang"></button>
         <h2 class="text-xl font-semibold mb-6 text-left">
           Tambah Barang Masuk
         </h2>
@@ -568,7 +569,7 @@
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_modal)"
                 @input="updateModal($event.target.value)"
-                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Harga Modal" />
             </div>
           </div>
@@ -580,7 +581,7 @@
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_price_tag)"
                 @input="updatePriceTag($event.target.value)"
-                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Harga Price Tag" />
             </div>
           </div>
@@ -592,7 +593,7 @@
               </div>
               <input type="text" :value="formatRupiah2(selectedBarang.barangentry_harga_net)"
                 @input="updateHargaNet($event.target.value)"
-                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-r-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Harga Net" />
             </div>
           </div>
@@ -605,7 +606,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
+        <div class="form-add-actions mt-6">
           <button @click="cancelTambahBarang" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
           </button>
@@ -623,7 +624,8 @@
     <!-- Modal Add Size  -->
     <div v-if="showModalAddSize"
       class="fixed inset-0 z-[2000] flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="cancelSizeBarang">
-      <div class="bg-white rounded-lg shadow-lg p-6 w-[700px]">
+      <div class="form-modal-container relative bg-white rounded-lg shadow-lg p-6 w-[700px]">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="cancelSizeBarang"></button>
         <h2 class="text-xl font-semibold mb-6 text-left">Tambah Size</h2>
 
         <div class="grid gap-4">
@@ -660,7 +662,7 @@
             <label class="block text-gray-700 mb-1">Ukuran Mandar</label>
             <div class="flex">
               <input v-model="selectedBarang.ukuran_mandar" type="text"
-                class="w-full border border-gray-300 rounded-1-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Masukkan Ukuran Mandar" />
               <div class="bg-gray-100 border border-gray-300 rounded-r-md px-3 flex items-center text-gray-600 text-sm">
                 cm
@@ -669,7 +671,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
+        <div class="form-add-actions mt-6">
           <button @click="cancelSizeBarang" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
             Batal
           </button>
@@ -811,7 +813,8 @@
     </div>
 
     <div v-if="showModalEditStock" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50" @click.self="showModalEditStock = false">
-      <div class="bg-white p-6 rounded-md w-80 shadow-md">
+      <div class="form-modal-container relative bg-white p-6 rounded-md w-80 shadow-md">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="showModalEditStock = false"></button>
         <h2 class="text-lg font-semibold mb-4">Tambah Stock</h2>
 
         <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah <span style="color: red">*</span></label>
@@ -819,7 +822,7 @@
           class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:border-blue-300"
           placeholder="Masukkan jumlah" />
 
-        <div class="flex justify-end mt-6 space-x-2">
+        <div class="form-add-actions mt-6">
           <button class="px-4 py-2 bg-gray-300 text-sm rounded hover:bg-gray-400" @click="showModalEditStock = false">
             Batal
           </button>
@@ -845,7 +848,8 @@
       <div class="er-modal">
         <div class="er-header">
           <p class="er-title">Riwayat Perubahan</p>
-          <button class="er-close" @click="showRiwayatModal = false">&#x2715;</button>
+          <button type="button" class="form-modal-close er-close" aria-label="Tutup riwayat perubahan"
+            @click="showRiwayatModal = false"></button>
         </div>
 
         <div class="er-table-wrap">

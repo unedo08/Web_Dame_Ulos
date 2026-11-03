@@ -181,6 +181,15 @@ button.sd-btn-tambah {
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
+  .transaction-form-modal {
+    box-sizing: border-box;
+    width: min(700px, calc(100vw - 48px)) !important;
+    max-width: 700px !important;
+    min-height: min(632px, calc(100dvh - 72px));
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+  }
+
   button.bk-btn-export,
   button.bk-btn-add,
   button.btn-add,
@@ -332,7 +341,7 @@ button.sd-btn-tambah {
   .jp-table-wrap,
   .sd-table-wrap,
   .cl-table-wrap,
-  .staff-table-wrapper,
+  .staff-table-wrap,
   table
 ) {
   margin-top: 0 !important;
@@ -350,9 +359,43 @@ button.sd-btn-tambah {
   .jp-table-wrap,
   .sd-table-wrap,
   .cl-table-wrap,
-  .staff-table-wrapper
+  .staff-table-wrap
 ) > table {
   margin-top: 0 !important;
+}
+
+.page-content :is(
+  .datatable-wrapper,
+  .datatable-scroll,
+  .live-table-wrapper,
+  .penjualan-table-wrapper,
+  .packaging-table-wrapper,
+  .bk-table-wrapper,
+  .table-wrapper,
+  .pm-table-wrap,
+  .dv-table-wrap,
+  .jp-table-wrap,
+  .sd-table-wrap,
+  .cl-table-wrap,
+  .staff-table-wrap,
+  .acara-table-wrapper,
+  .cd-table-scroll
+) {
+  border-radius: 12px !important;
+}
+
+@media screen {
+  table tbody > tr:nth-child(odd) > td {
+    background-color: #ffffff !important;
+  }
+
+  table tbody > tr:nth-child(even) > td {
+    background-color: #f9fafb !important;
+  }
+
+  table tbody > tr:hover > td {
+    background-color: #f3f4f6 !important;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -382,6 +425,42 @@ button.sd-btn-tambah {
 @media (max-width: 767px) {
   .page-content .page-submenu {
     margin-bottom: 12px !important;
+  }
+
+  .page-table-toolbar:not(.kasir-toolbar):has(> button:only-of-type) > button:only-of-type,
+  .page-table-toolbar:not(.kasir-toolbar) :is(
+    .bk-actions,
+    .header-action,
+    .penjualan-date-actions,
+    .flex-wrap.justify-end
+  ):not(.kasir-actions):has(> button:only-of-type) > button:only-of-type {
+    width: auto !important;
+    margin-left: auto !important;
+    align-self: flex-end;
+  }
+
+  .page-table-toolbar:not(.kasir-toolbar):has(> button:nth-of-type(2)) > button,
+  .page-table-toolbar:not(.kasir-toolbar) :is(
+    .bk-actions,
+    .header-action,
+    .penjualan-date-actions,
+    .flex-wrap.justify-end
+  ):not(.kasir-actions):has(> button:nth-of-type(2)) > button {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .page-table-toolbar:not(.kasir-toolbar) :is(
+    .bk-actions,
+    .header-action,
+    .penjualan-date-actions,
+    .flex-wrap.justify-end
+  ):not(.kasir-actions):has(> button:nth-of-type(2)) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
 }
 
@@ -531,6 +610,33 @@ button.sd-btn-tambah {
   max-width: 460px !important;
   padding: 48px 40px 40px !important;
   border-radius: 14px !important;
+}
+
+.swal2-container .swal2-popup.export-loading-popup {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  width: min(460px, calc(100vw - 32px)) !important;
+  max-width: 460px !important;
+  min-height: 220px !important;
+  padding: 48px 40px 40px !important;
+  border-radius: 14px !important;
+}
+
+.swal2-container .swal2-popup.export-loading-popup .swal2-title {
+  margin: 0 0 10px !important;
+  font-size: 18px !important;
+}
+
+.swal2-container .swal2-popup.export-loading-popup .swal2-html-container {
+  margin: 0 0 20px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.swal2-container .swal2-popup.export-loading-popup .swal2-loader {
+  margin: 0 auto !important;
 }
 
 .swal2-container .swal2-popup:has(.swal2-icon.swal2-success) .swal2-icon.swal2-success {
@@ -805,4 +911,407 @@ button[class*="bg-blue-"]:hover,
 .sd-page-active {
   background-color: #3d8bfd !important;
   border-color: #3d8bfd !important;
+}
+
+:is(
+  .modal-header,
+  .bk-modal-header,
+  .jp-modal-header,
+  .pm-modal-header,
+  .dv-modal-header,
+  .sd-modal-header,
+  .staff-modal-header,
+  .packaging-modal-header,
+  .ready-edit-header,
+  .modal-tambah-header
+) {
+  border-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:is(
+  .modal-header,
+  .bk-modal-header,
+  .jp-modal-header,
+  .pm-modal-header,
+  .dv-modal-header,
+  .sd-modal-header,
+  .staff-modal-header,
+  .packaging-modal-header
+) + :is(
+  .modal-body,
+  .bk-modal-body,
+  .jp-modal-body,
+  .pm-modal-body,
+  .dv-modal-body,
+  .sd-modal-body,
+  .staff-modal-body,
+  .packaging-modal-body
+) {
+  padding-top: 16px !important;
+}
+
+.ready-edit-header + .ready-edit-form {
+  padding-top: 21px !important;
+}
+
+.modal-tambah-header {
+  margin-bottom: 17px !important;
+}
+
+.form-add-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  margin-top: 24px !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.form-add-actions:is(
+  .modal-footer,
+  .bk-modal-footer,
+  .jp-modal-footer,
+  .pm-modal-footer,
+  .dv-modal-footer,
+  .sd-modal-footer,
+  .staff-modal-footer,
+  .packaging-modal-footer
+) {
+  margin-top: 0 !important;
+}
+
+.form-add-actions.px-6.py-4 {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+:is(
+  .modal-body,
+  .bk-modal-body,
+  .jp-modal-body,
+  .pm-modal-body,
+  .dv-modal-body,
+  .sd-modal-body,
+  .staff-modal-body,
+  .packaging-modal-body,
+  .modal-tambah-body
+):has(+ .form-add-actions) {
+  padding-bottom: 24px !important;
+}
+
+:is(
+  .modal-body,
+  .bk-modal-body,
+  .jp-modal-body,
+  .pm-modal-body,
+  .dv-modal-body,
+  .sd-modal-body,
+  .staff-modal-body,
+  .packaging-modal-body,
+  .modal-tambah-body
+):has(+ .form-add-actions) > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.form-add-actions > button {
+  box-sizing: border-box;
+  min-width: 90px;
+  min-height: 40px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 10px 24px !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  font-weight: 500 !important;
+}
+
+.form-add-actions > button:first-child {
+  border-color: #d1d5db !important;
+  background-color: #fff !important;
+  color: #374151 !important;
+}
+
+.form-add-actions > button:first-child:hover {
+  background-color: #f9fafb !important;
+}
+
+.form-add-actions > button:last-child {
+  border-color: #0bb4cc !important;
+  background-color: #0bb4cc !important;
+  color: #fff !important;
+}
+
+.form-add-actions > button:last-child:hover:not(:disabled) {
+  border-color: #08a5bd !important;
+  background-color: #08a5bd !important;
+}
+
+.form-add-actions > button:last-child:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .form-add-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-flow: column;
+    gap: 8px !important;
+  }
+
+  .form-add-actions > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+}
+
+.form-modal-close,
+.form-modal-close-size,
+.bk-modal-close,
+.staff-modal-close,
+.pm-modal-close,
+.jp-modal-close,
+.dv-modal-close,
+.sd-modal-close,
+.packaging-modal-close,
+.ready-edit-close,
+.modal-tambah-close,
+.close-btn {
+  box-sizing: border-box !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+:is(
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn
+)::before,
+:is(
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn
+)::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  content: "";
+}
+
+:is(
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn
+)::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+:is(
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn
+)::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.form-modal-close {
+  position: absolute !important;
+  top: 12px !important;
+  right: 24px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.form-modal-close-size:not(.form-modal-close-inline) {
+  position: absolute !important;
+  top: 12px !important;
+  right: 24px !important;
+}
+
+.ready-edit-close {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+
+.form-modal-close:hover {
+  color: #111827 !important;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    font-size: 0 !important;
+  }
+
+  :is(
+    .form-modal-close,
+    .form-modal-close-size,
+    .bk-modal-close,
+    .staff-modal-close,
+    .pm-modal-close,
+    .jp-modal-close,
+    .dv-modal-close,
+    .sd-modal-close,
+    .packaging-modal-close,
+    .ready-edit-close,
+    .modal-tambah-close,
+    .close-btn
+  )::before,
+  :is(
+    .form-modal-close,
+    .form-modal-close-size,
+    .bk-modal-close,
+    .staff-modal-close,
+    .pm-modal-close,
+    .jp-modal-close,
+    .dv-modal-close,
+    .sd-modal-close,
+    .packaging-modal-close,
+    .ready-edit-close,
+    .modal-tambah-close,
+    .close-btn
+  )::after {
+    width: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .form-modal-close,
+  .form-modal-close-size,
+  .bk-modal-close,
+  .staff-modal-close,
+  .pm-modal-close,
+  .jp-modal-close,
+  .dv-modal-close,
+  .sd-modal-close,
+  .packaging-modal-close,
+  .ready-edit-close,
+  .modal-tambah-close,
+  .close-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    font-size: 0 !important;
+  }
+
+  :is(
+    .form-modal-close,
+    .form-modal-close-size,
+    .bk-modal-close,
+    .staff-modal-close,
+    .pm-modal-close,
+    .jp-modal-close,
+    .dv-modal-close,
+    .sd-modal-close,
+    .packaging-modal-close,
+    .ready-edit-close,
+    .modal-tambah-close,
+    .close-btn
+  )::before,
+  :is(
+    .form-modal-close,
+    .form-modal-close-size,
+    .bk-modal-close,
+    .staff-modal-close,
+    .pm-modal-close,
+    .jp-modal-close,
+    .dv-modal-close,
+    .sd-modal-close,
+    .packaging-modal-close,
+    .ready-edit-close,
+    .modal-tambah-close,
+    .close-btn
+  )::after {
+    width: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  select:has(> option:checked:is(:disabled, [value=""])) {
+    font-size: 14px !important;
+  }
+}
+
+.page-table-toolbar :is(input, button),
+.bk-toolbar :is(input, button) {
+  box-sizing: border-box !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
 }

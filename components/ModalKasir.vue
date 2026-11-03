@@ -3,7 +3,7 @@
     <div class="modal-content" @click.stop>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold">{{ title }}</h2>
-        <button class="close-btn" @click="close">×</button>
+        <button class="close-btn" @click="close"></button>
       </div>
       <div>
         <slot />

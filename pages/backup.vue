@@ -72,7 +72,8 @@
       class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50"
       @click.self="closeModal"
     >
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+      <div class="form-modal-container relative bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModal"></button>
         <h3 class="text-xl font-semibold mb-4">Tambah Barang</h3>
         <form @submit.prevent="submitProduct">
           <div class="mb-4">
@@ -136,19 +137,19 @@
             </div>
           </div>
 
-          <div class="flex justify-end">
+          <div class="flex justify-end form-add-actions">
             <button
               type="button"
               @click="closeModal"
               class="mr-4 text-gray-500"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
-              Save
+              Simpan
             </button>
           </div>
         </form>

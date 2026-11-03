@@ -6,14 +6,14 @@
 
     <div class="page-submenu flex space-x-6">
       <button @click="activeTab = 'order'" class="pb-1 text-sm relative"
-        :class="activeTab === 'order' ? 'text-red-900 font-semibold' : 'text-gray-500'">
+        :class="{ 'text-red-900': activeTab === 'order', 'text-gray-500': activeTab !== 'order', 'is-active': activeTab === 'order' }">
         Order
         <span v-if="activeTab === 'order'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 90%"></span>
       </button>
 
       <button @click="activeTab = 'transaction'" class="pb-1 text-sm relative"
-        :class="activeTab === 'transaction' ? 'text-red-900 font-semibold' : 'text-gray-500'">
+        :class="{ 'text-red-900': activeTab === 'transaction', 'text-gray-500': activeTab !== 'transaction', 'is-active': activeTab === 'transaction' }">
         Transaction
         <span v-if="activeTab === 'transaction'" class="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-red-900 mx-auto"
           style="width: 90%"></span>
@@ -247,7 +247,8 @@
   <div v-if="isModalOpenAddOrder"
     class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]"
     @click.self="closeModalAddOrder">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div class="form-modal-container relative bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModalAddOrder"></button>
       <h3 class="text-lg font-semibold mb-4">Tambah Transaksi Live</h3>
 
       <form @submit.prevent="submitLiveOrder">
@@ -319,15 +320,15 @@
           </div>
         </div>
 
-        <div class="flex justify-end space-x-2">
+        <div class="flex justify-end space-x-2 form-add-actions">
           <button type="button" @click="closeModalAddOrder"
             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
             Batal
           </button>
 
           <button type="submit" :disabled="isSubmitting"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
-            {{ isSubmitting ? "Menyimpan..." : "Tambah" }}
+            class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700">
+            {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>
       </form>
@@ -338,7 +339,8 @@
   <div v-if="isModalOpenEditOrder"
     class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]"
     @click.self="closeModalEditOrder">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div class="form-modal-container relative bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModalEditOrder"></button>
       <h3 class="text-lg font-semibold mb-4">Edit Transaksi Live</h3>
 
       <form @submit.prevent="submitLiveEditOrder">
@@ -410,14 +412,14 @@
           </div>
         </div>
 
-        <div class="flex justify-end space-x-2">
+        <div class="flex justify-end space-x-2 form-add-actions">
           <button type="button" @click="closeModalEditOrder"
             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
             Batal
           </button>
 
           <button type="submit" :disabled="isSubmittingEdit"
-            class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#17a2b8]">
+            class="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700">
             {{ isSubmittingEdit ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>
@@ -492,3 +494,8 @@ const {
 </script>
 
 <style scoped src="~/assets/css/live.css"></style>
+<style scoped>
+.page-submenu button.is-active {
+  font-weight: 600;
+}
+</style>

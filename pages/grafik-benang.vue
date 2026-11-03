@@ -33,8 +33,12 @@
         </div>
         <div v-if="isLoadingTahun" class="loading-placeholder">Menunggu data...</div>
         <div v-else-if="!pertahun" class="no-data-placeholder">Data tidak tersedia</div>
-        <div v-else class="chart-inner chart-inner-line">
-          <Line :data="lineData" :options="lineOptions" />
+        <div v-else class="chart-horizontal-scroll">
+          <div class="chart-horizontal-content chart-content-line">
+            <div class="chart-inner chart-inner-line">
+              <Line :data="lineData" :options="lineOptions" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -51,8 +55,12 @@
         </div>
         <div v-if="isLoadingBulan" class="loading-placeholder">Menunggu data...</div>
         <div v-else-if="!chart.rows.length" class="no-data-placeholder">Data tidak tersedia</div>
-        <div v-else class="chart-inner">
-          <Bar :data="barData(chart.rows)" :options="chart.options" />
+        <div v-else class="chart-horizontal-scroll">
+          <div class="chart-horizontal-content chart-content-bar">
+            <div class="chart-inner">
+              <Bar :data="barData(chart.rows)" :options="chart.options" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -358,6 +366,27 @@ function barOptions(xTitle) {
   height: 320px;
 }
 
+.chart-horizontal-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.chart-horizontal-content {
+  width: 100%;
+  min-width: 0;
+}
+
+.chart-content-line {
+  height: 320px;
+}
+
+.chart-content-bar {
+  height: 280px;
+}
+
 .loading-placeholder {
   height: 200px;
   width: 100%;
@@ -383,10 +412,36 @@ function barOptions(xTitle) {
   box-sizing: border-box;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1199px) {
+  .grafik-benang {
+    padding: 28px 24px;
+  }
+
   .chart-grid {
-    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .chart-grid-line {
+    margin-bottom: 20px;
+  }
+
+  .chart-card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 900px) {
+  .grafik-benang {
+    padding: 24px 20px;
+  }
+
+  .chart-grid {
+    gap: 16px;
+  }
+
+  .chart-card {
+    padding: 18px;
   }
 }
 
@@ -395,8 +450,105 @@ function barOptions(xTitle) {
     padding: 16px 12px;
   }
 
+  .chart-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .chart-grid-line {
+    margin-bottom: 14px;
+  }
+
   .chart-card {
-    padding: 18px;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .chart-title {
+    font-size: 13px;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+  }
+
+  .tipe-badge {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grafik-benang {
+    padding: 12px 10px;
+  }
+
+  .chart-grid {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .chart-grid-line {
+    margin-bottom: 10px;
+  }
+
+  .chart-card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .chart-title {
+    font-size: 11px;
+  }
+
+  .chart-subtitle {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .chart-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chart-horizontal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+  }
+
+  .chart-horizontal-content {
+    min-width: 900px;
+  }
+
+  .chart-content-line,
+  .chart-inner-line {
+    height: 250px;
+  }
+
+  .chart-content-bar,
+  .chart-inner {
+    height: 260px;
+  }
+
+  .chart-title {
+    font-size: 16px;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .chart-content-line,
+  .chart-inner-line,
+  .chart-content-bar,
+  .chart-inner {
+    height: 300px;
   }
 }
 </style>

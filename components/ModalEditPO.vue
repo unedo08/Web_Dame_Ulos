@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full max-h-[90vh] overflow-y-auto p-6 relative">
-      <button class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl" @click="closeModal">✕</button>
+      <button class="form-modal-close-size absolute top-3 right-4 text-gray-500 hover:text-black text-2xl" aria-label="Tutup form" @click="closeModal"></button>
       <h2 class="text-xl font-semibold mb-4">Edit Pre-Order Transaksi</h2>
 
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -41,7 +41,7 @@
                 Rp
               </div>
               <input :value="formattedModal" @input="updateModal" type="text"
-                class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
+                class="w-full border border-gray-300 rounded-r-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
                 placeholder="Masukkan Uang Muka (DP)" />
             </div>
           </div>
@@ -85,7 +85,7 @@
                 Rp
               </div>
               <input :value="formattedHargaNet" @input="updateHargaNet" type="text"
-                class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
+                class="w-full border border-gray-300 rounded-r-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right"
                 placeholder="Masukkan Harga Terjual" />
             </div>
           </div>
@@ -99,7 +99,7 @@
                 Rp
               </div>
               <input :value="formattedPriceTag" @input="updatePriceTag" type="text" readonly
-                class="sisa-pembayaran w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right bg-gray-100"
+                class="sisa-pembayaran w-full border border-gray-300 rounded-r-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-right bg-gray-100"
                 placeholder="Masukkan Sisa Pembayaran" />
             </div>
           </div>
@@ -144,7 +144,7 @@
         </div>
 
         <!-- Tombol -->
-        <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+        <div class="md:col-span-2 flex justify-end gap-4 mt-8 form-add-actions">
           <button type="button" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
             @click="closeModal">
             Batal
@@ -162,9 +162,8 @@
     class="fixed inset-0 bg-opacity-70 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]"
     @click.self="showImageModal = false">
     <div class="bg-white p-4 rounded-lg max-w-2xl w-full relative">
-      <button class="absolute right-3 top-2 text-xl text-gray-500 hover:text-black" @click="showImageModal = false">
-        ✕
-      </button>
+      <button type="button" class="form-modal-close" aria-label="Tutup preview gambar"
+        @click="showImageModal = false"></button>
       <h3 class="text-lg font-semibold mb-4">
         Preview Gambar
       </h3>
@@ -304,7 +303,9 @@ const deleteImage = async () => {
     text: "Gambar akan dihapus permanen",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Ya Hapus"
+    confirmButtonText: "Ya Hapus",
+    cancelButtonText: "Batal",
+    reverseButtons: true
   })
 
   if (!confirm.isConfirmed) return

@@ -3,7 +3,7 @@
     <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] w-[800px] max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center px-6 py-4">
         <h2 class="text-lg font-bold">Form Marketing</h2>
-        <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">✕</button>
+        <button @click="$emit('close')" class="form-modal-close-size form-modal-close-inline text-gray-500 hover:text-gray-700" aria-label="Tutup form"></button>
       </div>
 
       <div class="p-6">
@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 px-6 py-4">
+      <div class="flex justify-end gap-2 px-6 py-4 form-add-actions">
         <button @click="closeModal" class="px-4 py-2 rounded-md border border-gray-300 text-gray-800">Batal</button>
 
         <button @click="submitForm" :disabled="isSubmitting"

@@ -428,7 +428,8 @@
         width: 100%;
         box-sizing: border-box;
         padding: 10px 12px 10px 36px;
-        min-height: 40px;
+        height: 38px;
+        min-height: 38px;
     }
 
     .bk-actions {
@@ -449,6 +450,24 @@
        date + date + export + add */
     .bk-actions .bk-date-input {
         width: 100%;
+    }
+
+    .bk-actions .bk-date-filters {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px;
+    }
+
+    .bk-actions .bk-date-filters .bk-date-input {
+        width: 100%;
+        min-width: 0;
+        height: 38px;
+        min-height: 38px;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        font-size: 12px;
     }
 
     .bk-btn-export,
@@ -726,7 +745,7 @@
     }
 
     .bk-actions {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .bk-actions .bk-date-input {

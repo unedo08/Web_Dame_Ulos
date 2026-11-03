@@ -1,6 +1,7 @@
 <template>
     <div v-if="visible" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60" @click.self="close">
         <div class="bg-white rounded-lg shadow-xl max-w-[40%] w-full overflow-y-auto p-6 relative animate-fadeIn">
+            <button type="button" class="form-modal-close" aria-label="Tutup form" @click="close"></button>
             <h2 class="text-xl font-semibold mb-6 border-b pb-3">Kirim Order</h2>
 
             <div class="grid grid-cols-2 gap-4">
@@ -54,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-end gap-3 mt-8">
+            <div class="flex justify-end gap-3 mt-8 form-add-actions">
                 <button @click="close" class="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Batal</button>
                 <button @click="submit"
                     class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Kirim</button>

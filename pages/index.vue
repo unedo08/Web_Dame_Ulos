@@ -10,15 +10,30 @@
           Sign in to Continue to Dame Ulos Application
         </p>
 
-        <form @submit.prevent="handleLogin" class="space-y-4">
+        <form @submit.prevent="handleLogin" class="space-y-4" novalidate>
+          <p v-if="errorMessage" class="login-error-alert" role="alert" aria-live="polite">
+            {{ errorMessage }}
+          </p>
           <div>
             <label class="text-sm font-medium block mb-1">Email</label>
-            <input v-model="email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Email" />
+            <input v-model="email" type="email" :aria-invalid="Boolean(fieldErrors.email)"
+              :class="{ 'login-input-error': fieldErrors.email }"
+              class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Email"
+              @input="clearLoginErrors" />
+            <p v-if="fieldErrors.email" class="login-field-error" role="alert">
+              {{ fieldErrors.email }}
+            </p>
           </div>
 
           <div>
             <label class="text-sm font-medium block mb-1">Password</label>
-            <input v-model="password" type="password" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Password" />
+            <input v-model="password" type="password" :aria-invalid="Boolean(fieldErrors.password)"
+              :class="{ 'login-input-error': fieldErrors.password }"
+              class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan Password"
+              @input="clearLoginErrors" />
+            <p v-if="fieldErrors.password" class="login-field-error" role="alert">
+              {{ fieldErrors.password }}
+            </p>
           </div>
 
           <div class="flex items-center gap-2 text-sm mt-2">
@@ -56,11 +71,12 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useRuntimeConfig } from "#imports";
-import Swal from "sweetalert2";
 
 const email = ref("");
 const password = ref("");
 const rememberMe = ref(false);
+const errorMessage = ref("");
+const fieldErrors = ref({ email: "", password: "" });
 const router = useRouter();
 const url = ref("");
 
@@ -69,10 +85,20 @@ onMounted(() => {
 });
 
 const handleLogin = async () => {
+  fieldErrors.value = {
+    email: email.value.trim() ? "" : "email wajib diisi.",
+    password: password.value ? "" : "password wajib diisi.",
+  };
+  errorMessage.value = "";
+
+  if (fieldErrors.value.email || fieldErrors.value.password) {
+    return;
+  }
+
   try {
     sessionStorage.clear();
     const res = await axios.post(`${url.value}/api/login`, {
-      email: email.value,
+      email: email.value.trim(),
       password: password.value,
     });
     const expiresAt = Date.now() + res.data.expires_in * 1000;
@@ -88,13 +114,19 @@ const handleLogin = async () => {
     localStorage.setItem("expired_at", expiresAt);
 
     router.push("/beranda");
-  } catch (err) {
-    Swal.fire({
-      title: "Gagal!",
-      text: "Terjadi kesalahan saat menambahkan order.",
-      icon: "error",
-    });
+  } catch (error) {
+    const status = error?.response?.status;
+    if ([400, 401, 403, 404, 422].includes(status)) {
+      errorMessage.value = "Email atau password yang dimasukkan salah atau belum terdaftar.";
+    } else {
+      errorMessage.value = "Tidak dapat memproses login saat ini. Silakan coba lagi.";
+    }
   }
+};
+
+const clearLoginErrors = () => {
+  fieldErrors.value = { email: "", password: "" };
+  errorMessage.value = "";
 };
 
 definePageMeta({
@@ -121,6 +153,36 @@ definePageMeta({
   width: 680px;
   height: 727px;
   flex: 1 1 auto;
+}
+
+.login-form-panel input:not([type="checkbox"]),
+.login-form-panel label,
+.login-form-panel button {
+  font-size: 14px;
+}
+
+.login-field-error,
+.login-error-alert {
+  color: #dc2626;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.login-field-error {
+  margin-top: 4px;
+}
+
+.login-input-error {
+  border-color: #dc2626 !important;
+}
+
+.login-error-alert {
+  margin: 0;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fef2f2;
 }
 
 @media (max-width: 767px) {

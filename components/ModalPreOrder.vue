@@ -1,6 +1,7 @@
 <template>
   <div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000] pt-[60px]" @click.self="emit('close')">
-    <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
+  <div class="transaction-form-modal bg-white rounded-lg shadow-xl max-w-[55%] w-full overflow-y-auto p-6 relative">
+      <button type="button" class="form-modal-close" aria-label="Tutup form" @click="emit('close')"></button>
       <h2 class="text-xl font-semibold mb-4">Tambah Pre-Order Transaksi</h2>
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-4">
@@ -41,7 +42,7 @@
               <div class="modal-currency-prefix bg-gray-100 border border-gray-300 rounded-l-md px-3 flex items-center text-gray-600 text-sm">
                 Rp</div>
               <input :value="formattedUangMuka" @input="onInputUangMuka" type="text"
-                class="w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                class="w-full border border-gray-300 rounded-r-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Uang Muka (DP)" />
             </div>
             <p v-if="errors.dp" class="text-red-500 text-sm mt-1">{{ errors.dp }}</p>
@@ -120,7 +121,7 @@
                 Rp
               </div>
               <input :value="formattedSisaPembayaran" type="text"
-                class="sisa-pembayaran w-full border border-gray-300 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                class="sisa-pembayaran w-full border border-gray-300 rounded-r-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 readonly />
             </div>
             <p v-if="errors.sisaPembayaran" class="text-red-500 text-sm mt-1">{{ errors.sisaPembayaran }}</p>
@@ -155,7 +156,7 @@
           </div>
         </div>
 
-        <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+        <div class="md:col-span-2 flex justify-end gap-4 mt-8 form-add-actions">
           <button type="button" @click="batalPreOrder()"
             class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition">
             Batal
@@ -163,7 +164,7 @@
 
           <button type="button" @click="submitForm"
             class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition disabled:bg-gray-400">
-            Tambah
+            Simpan
           </button>
         </div>
 

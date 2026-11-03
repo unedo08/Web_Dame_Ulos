@@ -4,8 +4,9 @@
     @click.self="emit('close')"
   >
     <div
-      class="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-[2000]"
+      class="form-modal-container transaction-form-modal relative max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-300 z-[2000]"
     >
+      <button type="button" class="form-modal-close" aria-label="Tutup form" @click="emit('close')"></button>
       <h2 class="text-2xl font-semibold mb-6">Tambah Online Transaksi</h2>
 
       <form
@@ -150,7 +151,7 @@
         </div>
 
         <!-- Tombol -->
-        <div class="md:col-span-2 flex justify-end gap-4 mt-8">
+        <div class="md:col-span-2 flex justify-end gap-4 mt-8 form-add-actions">
           <button
             type="button"
             class="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition"
@@ -162,7 +163,7 @@
             type="submit"
             class="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition"
           >
-            Tambah
+            Simpan
           </button>
         </div>
       </form>

@@ -47,7 +47,7 @@ const chartOptions = {
   plugins: {
     legend: {
       position: "bottom",
-      labels: { boxWidth: 12, padding: 10, font: { size: 10 } }
+      labels: { boxWidth: 14, padding: 12, font: { size: 11 } }
     },
     tooltip: {
       callbacks: {

@@ -3,7 +3,7 @@
     <div class="modal-tambah-box">
       <div class="modal-tambah-header">
         <h2 class="modal-tambah-title">Tambah Kode Barang</h2>
-        <button class="modal-tambah-close" @click="$emit('close')">×</button>
+        <button class="modal-tambah-close" @click="$emit('close')"></button>
       </div>
 
       <div class="modal-tambah-body">
@@ -18,10 +18,10 @@
       </div>
 
 
-      <div class="modal-tambah-footer">
+      <div class="modal-tambah-footer form-add-actions">
         <button class="btn-batal" @click="$emit('close')">Batal</button>
         <button class="btn-tambah" :disabled="!kodeBarang.trim()" @click="handleTambah">
-          Tambah
+          Simpan
         </button>
       </div>
     </div>

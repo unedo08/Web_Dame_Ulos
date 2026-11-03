@@ -459,7 +459,11 @@ export function useEntry() {
         try {
             Swal.fire({
                 title: "Mengexport data...",
+                text: "Mohon tunggu sebentar, file Anda sedang disiapkan.",
                 allowOutsideClick: false,
+                customClass: {
+                    popup: "export-loading-popup",
+                },
                 didOpen: () => Swal.showLoading(),
             });
 

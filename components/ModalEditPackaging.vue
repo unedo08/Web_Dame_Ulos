@@ -4,9 +4,7 @@
       <div class="packaging-modal-header">
         <h2>Form Packaging</h2>
 
-        <button @click="$emit('close')" class="packaging-modal-close">
-          ✕
-        </button>
+        <button @click="$emit('close')" class="packaging-modal-close" aria-label="Tutup"></button>
       </div>
 
       <div class="packaging-modal-body">
@@ -33,7 +31,7 @@
           </table>
         </div>
       </div>
-      <div class="packaging-modal-footer">
+      <div class="packaging-modal-footer form-add-actions">
         <button @click="closeModal" class="packaging-btn-cancel">
           Batal
         </button>
@@ -297,7 +295,7 @@ function formatCurrency(value) {
 
   border-radius: 6px;
 
-  font-size: 12px;
+  font-size: 14px;
 
   cursor: pointer;
 }
@@ -409,7 +407,7 @@ function formatCurrency(value) {
 
     padding: 0 12px;
 
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -462,7 +460,7 @@ function formatCurrency(value) {
 
     padding: 0 11px;
 
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 </style>

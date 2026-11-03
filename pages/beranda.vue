@@ -93,18 +93,6 @@
     <!-- ROW 3 -->
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Grafik Omset Per Bulan</div>
-        <template v-if="isAvailable('barangMonth')">
-          <div class="chart-horizontal-scroll">
-            <div class="chart-horizontal-content chart-content-monthly">
-              <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
-            </div>
-          </div>
-        </template>
-        <div v-else class="no-data-placeholder">Data tidak tersedia</div>
-      </div>
-
-      <div class="chart-card">
         <div class="chart-title">Diagram pie perbandingan customer baru dan customer lama per bulan</div>
         <template v-if="isAvailable('customerPie')">
           <PiePlatform v-if="customerPie" :dataPlatform="customerPie" />
@@ -112,10 +100,7 @@
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
-    </div>
 
-    <!-- ROW 4 -->
-    <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-title">Jumlah Barang Masuk per bulan</div>
         <template v-if="isAvailable('jenisBarangPie')">
@@ -124,7 +109,10 @@
         </template>
         <div v-else class="no-data-placeholder">Data tidak tersedia</div>
       </div>
+    </div>
 
+    <!-- ROW 4 -->
+    <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-title">Jumlah Barang Terjual per bulan</div>
         <template v-if="isAvailable('barangTerjualPie')">
@@ -144,6 +132,20 @@
             <div class="chart-horizontal-content chart-content-daily">
               <LineBarang v-if="barangLine" :dataBarang="barangLine" />
               <div v-else class="loading-placeholder">Menunggu data...</div>
+            </div>
+          </div>
+        </template>
+        <div v-else class="no-data-placeholder">Data tidak tersedia</div>
+      </div>
+    </div>
+
+    <div class="chart-grid-line">
+      <div class="chart-card-line">
+        <div class="chart-title">Grafik Omset Per Bulan</div>
+        <template v-if="isAvailable('barangMonth')">
+          <div class="chart-horizontal-scroll">
+            <div class="chart-horizontal-content chart-content-monthly">
+              <BarBarang v-if="barangMonth" :dataBarang="barangMonth" />
             </div>
           </div>
         </template>
@@ -713,6 +715,10 @@ onMounted(() => fetchData())
   overflow: hidden;
 }
 
+.chart-grid > .chart-card:only-child {
+  grid-column: 1 / -1;
+}
+
 .chart-card-line {
   width: 100%;
   min-width: 0;
@@ -955,7 +961,7 @@ onMounted(() => fetchData())
   }
 
   .stat-label {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .stat-value {
@@ -1092,7 +1098,7 @@ onMounted(() => fetchData())
   }
 
   .stat-label {
-    font-size: 10px;
+    font-size: 14px;
   }
 
   .stat-value {
@@ -1196,6 +1202,16 @@ onMounted(() => fetchData())
   height: 350px;
 }
 
+.chart-content-daily,
+.chart-content-monthly {
+  height: 320px;
+}
+
+.chart-content-daily :deep(.line-chart-inner),
+.chart-content-monthly :deep(.bar-chart-inner) {
+  height: 320px !important;
+}
+
 /* Pastikan canvas tidak dipaksa mengecil oleh parent */
 .chart-horizontal-content :deep(canvas) {
   max-width: 100% !important;
@@ -1241,7 +1257,97 @@ onMounted(() => fetchData())
   }
 
   .chart-content-monthly {
-    height: 290px;
+    height: 320px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .chart-title {
+    font-size: 16px !important;
+  }
+
+  .chart-subtitle {
+    font-size: 12px !important;
+  }
+
+  .chart-card :deep(.bar-chart-inner) {
+    height: 260px;
+  }
+
+  .chart-card :deep(.line-chart-inner) {
+    height: 250px;
+  }
+
+  .chart-content-daily {
+    height: 250px;
+  }
+
+  .chart-content-daily :deep(.line-chart-inner) {
+    height: 250px;
+  }
+
+  .chart-content-growth :deep(canvas) {
+    height: 250px !important;
+  }
+
+  .chart-content-growth {
+    height: 250px;
+  }
+
+  .chart-content-customer {
+    height: 250px;
+  }
+
+  .chart-content-customer :deep(.customer-chart-wrapper) {
+    height: 250px;
+  }
+
+  .chart-content-monthly {
+    height: 250px;
+  }
+
+  .chart-content-daily :deep(.line-chart-inner),
+  .chart-content-monthly :deep(.bar-chart-inner) {
+    height: 250px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .chart-card :deep(.chart-wrapper) {
+    height: 300px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .chart-card :deep(.chart-wrapper) {
+    height: 260px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .chart-title {
+    font-size: 14px !important;
+  }
+
+  .chart-card :deep(.chart-wrapper) {
+    height: 280px !important;
+  }
+
+  .chart-content-daily,
+  .chart-content-growth,
+  .chart-content-growth :deep(canvas),
+  .chart-content-customer,
+  .chart-content-customer :deep(.customer-chart-wrapper),
+  .chart-card :deep(.line-chart-inner),
+  .chart-card :deep(.bar-chart-inner) {
+    height: 300px !important;
+  }
+
+  .chart-content-daily,
+  .chart-content-monthly,
+  .chart-content-daily :deep(.line-chart-inner),
+  .chart-content-monthly :deep(.bar-chart-inner) {
+    height: 300px !important;
   }
 }
 </style>

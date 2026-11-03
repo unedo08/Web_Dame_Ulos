@@ -128,7 +128,8 @@
 
     <!-- Modal Dialog -->
     <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+      <div class="form-modal-container relative bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModal"></button>
         <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
         <form @submit.prevent="submitAcara">
           <div class="mb-4">
@@ -152,13 +153,13 @@
             </p>
           </div>
 
-          <div class="flex justify-end">
+          <div class="flex justify-end form-add-actions">
             <button type="button" @click="closeModal"
               class="mr-4 px-4 py-2 bg-[#D8D8D8] text-gray-800 rounded-md hover:bg-[#D8D8D8]">
               Batal
             </button>
             <button type="submit" class="px-4 py-2 bg-[#1C9DBD] text-white rounded-md hover:bg-[#1C9DBD]">
-              Tambah
+              Simpan
             </button>
           </div>
         </form>
@@ -186,7 +187,8 @@
     </div>
 
     <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeEditModal">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="form-modal-container relative bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeEditModal"></button>
         <h3 class="text-lg font-semibold mb-4">
           Edit Acara - {{ editForm.acara_nama }}
         </h3>
@@ -238,7 +240,7 @@
           </table>
         </div>
 
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-2 form-add-actions">
           <button @click="closeEditModal" class="px-4 py-2 bg-gray-300 rounded">
             Batal
           </button>
