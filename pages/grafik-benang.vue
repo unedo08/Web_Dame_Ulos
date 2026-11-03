@@ -5,20 +5,27 @@
 
     <!-- FILTER BAR -->
     <div class="filter-bar">
-      <label class="filter-label">Tipe</label>
-      <select v-model="tipe" class="filter-input" @change="fetchAll">
-        <option v-if="!pewarnaList.length" value="PEWARNA_ALAM">Pewarna Alam</option>
-        <option v-for="item in pewarnaList" :key="item.pewarna_id" :value="item.pewarna_kode">
-          {{ item.pewarna_nama }}
-        </option>
-      </select>
-
-      <label class="filter-label">Tahun</label>
-      <input type="number" v-model.number="tahun" class="filter-input filter-input-year" min="2020"
-        :max="currentYear" @change="fetchPertahun" />
-
-      <label class="filter-label">Bulan</label>
-      <input type="month" v-model="bulanInput" class="filter-input" @change="fetchPerbulan" />
+      <h2 class="filter-heading">Filter</h2>
+      <div class="filter-group filter-category">
+        <label class="filter-label">Kategori</label>
+        <select v-model="tipe" class="filter-input" @change="fetchAll">
+          <option v-if="!pewarnaList.length" value="PEWARNA_ALAM">Pewarna Alam</option>
+          <option v-for="item in pewarnaList" :key="item.pewarna_id" :value="item.pewarna_kode">
+            {{ item.pewarna_nama }}
+          </option>
+        </select>
+      </div>
+      <div class="filter-period">
+        <div class="filter-group">
+          <label class="filter-label">Tahun</label>
+          <input type="number" v-model.number="tahun" class="filter-input filter-input-year" min="2020"
+            :max="currentYear" @change="fetchPertahun" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Bulan</label>
+          <input type="month" v-model="bulanInput" class="filter-input" @change="fetchPerbulan" />
+        </div>
+      </div>
     </div>
 
     <!-- GRAFIK PERTAHUN -->
@@ -26,10 +33,13 @@
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <div class="chart-title">Grafik Pertahun {{ pertahun?.tahun || tahun }}</div>
+            <div class="chart-title">
+              <span>Grafik Pertahun</span>
+              <span class="chart-year">{{ pertahun?.tahun || tahun }}</span>
+            </div>
             <div class="chart-subtitle">Perbandingan {{ masukLabel.toLowerCase() }} benang dan benang keluar setiap bulan</div>
           </div>
-          <span class="tipe-badge" :class="tipeBadgeClass">{{ tipeLabel }}</span>
+          <span class="tipe-badge">{{ tipeLabel }}</span>
         </div>
         <div v-if="isLoadingTahun" class="loading-placeholder">Menunggu data...</div>
         <div v-else-if="!pertahun" class="no-data-placeholder">Data tidak tersedia</div>
@@ -48,10 +58,13 @@
       <div v-for="chart in barCharts" :key="chart.key" class="chart-card">
         <div class="chart-header">
           <div>
-            <div class="chart-title">Grafik Perbulan {{ bulanTitle }}</div>
+            <div class="chart-title">
+              <span>Grafik Perbulan</span>
+              <span class="chart-year">{{ bulanTitle }}</span>
+            </div>
             <div class="chart-subtitle">{{ chart.subtitle }}</div>
           </div>
-          <span class="tipe-badge" :class="tipeBadgeClass">{{ tipeLabel }}</span>
+          <span class="tipe-badge">{{ tipeLabel }}</span>
         </div>
         <div v-if="isLoadingBulan" class="loading-placeholder">Menunggu data...</div>
         <div v-else-if="!chart.rows.length" class="no-data-placeholder">Data tidak tersedia</div>
@@ -117,7 +130,6 @@ const tipeLabel = computed(() => {
 // Textile is bought (pembelian), Pewarna Alam is dyed in-house (produksi).
 const isTextile = computed(() => tipe.value === "TEXTILE");
 const masukLabel = computed(() => (isTextile.value ? "Pembelian" : "Produksi"));
-const tipeBadgeClass = computed(() => (isTextile.value ? "tipe-badge--textile" : ""));
 
 const bulanTitle = computed(() =>
   perbulan.value ? `${perbulan.value.bulan_label} ${perbulan.value.tahun}` : ""
@@ -265,6 +277,15 @@ function barOptions(xTitle) {
   box-sizing: border-box;
 }
 
+.filter-heading {
+  display: none;
+}
+
+.filter-group,
+.filter-period {
+  display: contents;
+}
+
 .filter-label {
   font-size: 0.875rem;
   font-weight: 500;
@@ -316,7 +337,7 @@ function barOptions(xTitle) {
   min-width: 0;
   background: #ffffff;
   padding: 28px;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   overflow: hidden;
@@ -331,9 +352,16 @@ function barOptions(xTitle) {
 }
 
 .chart-title {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
   font-weight: 600;
   color: #1e293b;
   line-height: 1.4;
+}
+
+.chart-year {
+  font-weight: 500;
 }
 
 .chart-subtitle {
@@ -343,17 +371,13 @@ function barOptions(xTitle) {
 }
 
 .tipe-badge {
-  background: #06b6d4;
-  color: #ffffff;
+  background: #e9f3ff;
+  color: #285b91;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 12px;
   padding: 6px 16px;
-  border-radius: 999px;
+  border-radius: 8px;
   white-space: nowrap;
-}
-
-.tipe-badge--textile {
-  background: #c96ce6;
 }
 
 .chart-inner {
@@ -446,8 +470,79 @@ function barOptions(xTitle) {
 }
 
 @media (max-width: 767px) {
+  :global(.page-content:has(.grafik-benang)) {
+    padding-top: 60px !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .grafik-benang {
-    padding: 16px 12px;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .page-title {
+    display: none;
+  }
+
+  .filter-bar {
+    display: block;
+    padding: 16px 34px 28px;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 12px;
+  }
+
+  .filter-heading {
+    display: block;
+    margin: 0 0 16px;
+    color: #1e293b;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .filter-group,
+  .filter-period {
+    display: grid;
+  }
+
+  .filter-category {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .filter-period {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.1fr);
+    gap: 20px;
+  }
+
+  .filter-period .filter-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .filter-label {
+    color: #64748b;
+    font-size: 20px;
+  }
+
+  .filter-input,
+  .filter-input-year {
+    width: 100%;
+    min-width: 0;
+    min-height: 70px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    font-size: 20px;
+  }
+
+  .chart-grid,
+  .chart-grid-line {
+    padding: 28px 22px 0;
+    margin-bottom: 0;
   }
 
   .chart-grid {
@@ -457,7 +552,7 @@ function barOptions(xTitle) {
   }
 
   .chart-grid-line {
-    margin-bottom: 14px;
+    margin-bottom: 0;
   }
 
   .chart-card {
@@ -465,27 +560,72 @@ function barOptions(xTitle) {
     border-radius: 12px;
   }
 
+  .chart-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tipe-badge {
+    order: -1;
+  }
+
   .chart-title {
+    display: block;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .chart-year {
+    display: block;
+    margin-top: 6px;
     font-size: 13px;
+    color: #64748b;
   }
 
   .chart-subtitle {
-    font-size: 12px;
+    margin: 14px 0 24px;
+    font-size: 13px;
+    line-height: 1.6;
   }
 
   .tipe-badge {
     font-size: 12px;
-    padding: 5px 12px;
+    padding: 6px 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .grafik-benang {
-    padding: 12px 10px;
+  .filter-bar {
+    padding: 16px 24px 26px;
+  }
+
+  .filter-heading {
+    font-size: 14px;
+  }
+
+  .filter-period {
+    gap: 12px;
+  }
+
+  .filter-label {
+    font-size: 12px;
+  }
+
+  .filter-input,
+  .filter-input-year {
+    min-height: 34px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .chart-grid,
+  .chart-grid-line {
+    padding: 10px 14px 0;
   }
 
   .chart-grid {
-    gap: 10px;
+    gap: 16px;
     margin-bottom: 10px;
   }
 
@@ -493,22 +633,9 @@ function barOptions(xTitle) {
     margin-bottom: 10px;
   }
 
-  .chart-card {
-    padding: 12px;
-    border-radius: 10px;
-  }
-
-  .chart-title {
-    font-size: 11px;
-  }
-
-  .chart-subtitle {
-    font-size: 11px;
-    margin-bottom: 12px;
-  }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .chart-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -544,11 +671,25 @@ function barOptions(xTitle) {
 }
 
 @media (max-width: 767px) {
+  .chart-horizontal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+  }
+
+  .chart-horizontal-content {
+    min-width: 700px;
+  }
+
   .chart-content-line,
-  .chart-inner-line,
+  .chart-inner-line {
+    height: 260px;
+  }
+
   .chart-content-bar,
   .chart-inner {
-    height: 300px;
+    height: 280px;
   }
 }
 </style>
