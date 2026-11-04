@@ -477,6 +477,8 @@ button.sd-btn-tambah {
 :is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"]) :is(h1, h2, h3, h4, h5, h6),
 .swal2-container .swal2-title {
   font-size: 15px !important;
+    font-weight: 600 !important;
+
 }
 
 .swal2-container .swal2-html-container {
@@ -1059,6 +1061,17 @@ button[class*="bg-blue-"]:hover,
   cursor: not-allowed;
 }
 
+.barcode-print-actions > button:last-child {
+  border-color: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.barcode-print-actions > button:last-child:hover:not(:disabled) {
+  border-color: #2563eb !important;
+  background-color: #2563eb !important;
+}
+
 @media (max-width: 767px) {
   .form-add-actions {
     display: grid !important;
@@ -1177,7 +1190,7 @@ button[class*="bg-blue-"]:hover,
 
 .form-modal-close {
   position: absolute !important;
-  top: 12px !important;
+  top: 20px !important;
   right: 24px !important;
   border: 0 !important;
   background: transparent !important;
@@ -1186,9 +1199,32 @@ button[class*="bg-blue-"]:hover,
   z-index: 1;
 }
 
+.form-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-modal-header > :is(h1, h2, h3) {
+  min-width: 0;
+  margin: 0 !important;
+}
+
+.form-modal-header > button.form-modal-close,
+.form-modal-header > button.form-modal-close-size:not(.form-modal-close-inline) {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  flex: 0 0 32px;
+}
+
 .form-modal-close-size:not(.form-modal-close-inline) {
   position: absolute !important;
-  top: 12px !important;
+  top: 20px !important;
   right: 24px !important;
 }
 
@@ -1318,4 +1354,14 @@ button[class*="bg-blue-"]:hover,
   height: 38px !important;
   min-height: 38px !important;
   max-height: 38px !important;
+}
+
+@media screen and (max-width: 767px) {
+  input[type="date"],
+  input[type="month"] {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
 }

@@ -391,8 +391,8 @@ const exportToExcel = async () => {
     saveAs(blob, fileName);
     Swal.close();
     Swal.fire({
-      title: "Berhasil",
-      text: "Export Excel selesai.",
+      title: "Ekspor Data Selesai",
+      text: "Laporan Anda siap disimpan ke perangkat.",
       icon: "success",
       timer: 1500,
       showConfirmButton: false,

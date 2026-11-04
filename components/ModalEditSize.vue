@@ -1,8 +1,10 @@
 <template>
   <div v-if="show" class="po-size-overlay fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
     <div class="po-size-modal bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg relative">
-      <button class="form-modal-close-size absolute top-2 right-2 text-gray-500 hover:text-black" aria-label="Tutup form" @click="closeModal"></button>
-      <h2 class="text-xl font-bold mb-6">Edit Barang Ready</h2>
+      <div class="form-modal-header">
+        <h2 class="text-xl font-bold">Edit Barang Ready</h2>
+        <button class="form-modal-close-size" aria-label="Tutup form" @click="closeModal"></button>
+      </div>
 
       <form>
         <div class="grid gap-4">

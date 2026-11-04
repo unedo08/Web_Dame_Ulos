@@ -155,18 +155,19 @@
     <div v-if="isModalPrintOpen"
       class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]"
       @click.self="closePrintModal">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <div class="relative bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closePrintModal"></button>
         <h3 class="text-lg font-semibold mb-4">Print Barcode</h3>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700">Jumlah Kode</label>
           <input type="number" v-model="printJumlah" min="1"
             class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Masukkan jumlah kode" />
         </div>
-        <div class="flex justify-end">
-          <button class="mr-4 text-gray-500" @click="closePrintModal">
-            Cancel
+        <div class="flex justify-end gap-3 form-add-actions barcode-print-actions">
+          <button type="button" @click="closePrintModal">
+            Batal
           </button>
-          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="handlePrint">
+          <button type="button" @click="handlePrint">
             Print
           </button>
         </div>

@@ -60,7 +60,7 @@
             <div>
               <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Deskripsi Ulos <span
                   class="required">*</span></label>
-              <textarea v-model="form.deskripsiUlos" :disabled="!form.code_barang" rows="3"
+              <textarea v-model="form.deskripsiUlos" :disabled="!form.code_barang" rows="4"
                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Deskripsi Ulos"></textarea>
               <p v-if="errors.deskripsiUlos" class="text-red-500 text-sm mt-1">
@@ -140,7 +140,7 @@
             <div>
               <label class="judul-label block text-sm font-medium text-gray-700 mb-1">Catatan <span
                   class="required">*</span></label>
-              <textarea v-model="form.catatan" :disabled="!form.code_barang" rows="3"
+              <textarea v-model="form.catatan" :disabled="!form.code_barang" rows="4"
                 class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
                 placeholder="Masukkan Catatan"></textarea>
               <p v-if="errors.catatan" class="text-red-500 text-sm mt-1">

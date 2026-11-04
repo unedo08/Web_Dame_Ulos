@@ -129,8 +129,10 @@
     <!-- Modal Dialog -->
     <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
       <div class="form-modal-container relative bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModal"></button>
-        <h3 class="text-xl font-semibold mb-4">Tambah Acara</h3>
+        <div class="form-modal-header">
+          <h3 class="text-xl font-semibold">Tambah Acara</h3>
+          <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeModal"></button>
+        </div>
         <form @submit.prevent="submitAcara">
           <div class="mb-4">
             <label for="acara_nama" class="block text-sm font-medium text-gray-700">Nama Acara <span
@@ -188,10 +190,12 @@
 
     <div v-if="isEditModalOpen" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeEditModal">
       <div class="form-modal-container relative bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeEditModal"></button>
-        <h3 class="text-lg font-semibold mb-4">
-          Edit Acara - {{ editForm.acara_nama }}
-        </h3>
+        <div class="form-modal-header">
+          <h3 class="text-lg font-semibold">
+            Edit Acara - {{ editForm.acara_nama }}
+          </h3>
+          <button type="button" class="form-modal-close" aria-label="Tutup form" @click="closeEditModal"></button>
+        </div>
         <div class="flex gap-2 mb-3">
           <input v-model="barcodeInput" @keyup.enter="addToTemp" type="text" class="flex-1 border rounded-md px-3 py-2"
             placeholder="Scan / ketik barcode" />

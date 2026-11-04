@@ -1127,9 +1127,9 @@ onMounted(() => fetchData())
   }
 
   .filter-input {
-    height: 34px;
-    padding: 6px 9px;
-    font-size: 11px;
+    height: 40px;
+    padding: 10px 14px;
+    font-size: 13px;
     border-radius: 6px;
   }
 

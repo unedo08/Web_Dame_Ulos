@@ -293,8 +293,8 @@ export function usePackaging() {
       Swal.close();
 
       Swal.fire(
-        "Berhasil",
-        "Export Excel selesai.",
+        "Ekspor Data Selesai",
+        "Laporan Anda siap disimpan ke perangkat.",
         "success"
       );
 

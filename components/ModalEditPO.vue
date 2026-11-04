@@ -1,8 +1,10 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="closeModal">
     <div class="bg-white rounded-lg shadow-xl max-w-[55%] w-full max-h-[90vh] overflow-y-auto p-6 relative">
-      <button class="form-modal-close-size absolute top-3 right-4 text-gray-500 hover:text-black text-2xl" aria-label="Tutup form" @click="closeModal"></button>
-      <h2 class="text-xl font-semibold mb-4">Edit Pre-Order Transaksi</h2>
+      <div class="form-modal-header">
+        <h2 class="text-xl font-semibold">Edit Pre-Order Transaksi</h2>
+        <button class="form-modal-close-size" aria-label="Tutup form" @click="closeModal"></button>
+      </div>
 
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- KIRI -->
@@ -50,7 +52,7 @@
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Deskripsi Ulos <span class="required">*</span>
             </label>
-            <textarea v-model="form.preOrderBarang_deskripsi_barang" rows="3"
+            <textarea v-model="form.preOrderBarang_deskripsi_barang" rows="4"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan Deskripsi Ulos"></textarea>
           </div>
@@ -108,13 +110,13 @@
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Catatan <span class="required">*</span>
             </label>
-            <textarea v-model="form.preOrderBarang_catatan" rows="3"
+            <textarea v-model="form.preOrderBarang_catatan" rows="4"
               class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Masukkan Catatan"></textarea>
           </div>
         </div>
 
-        <div class="md:col-span-2 mt-6">
+        <div class="md:col-span-2 mt-2">
           <label class="judul-label block text-sm font-medium mb-2">
             Gambar Pre Order
           </label>
