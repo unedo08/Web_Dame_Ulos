@@ -61,7 +61,7 @@
     <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-header-custom">
-          <h3 class="chart-title">Diagram pie Platform per hari</h3>
+          <h3 class="chart-title">Platform Transaksi (Hari Ini)</h3>
         </div>
         <div class="chart-main-content">
           <template v-if="isAvailable('platformPieDay')">
@@ -73,7 +73,7 @@
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">Jenis Transaksi Hari Ini</div>
+        <div class="chart-title">Jenis Transaksi (Hari Ini)</div>
         <template v-if="isAvailable('transaksiDay')">
           <PieTransaksi v-if="transaksiDay" :dataTransaksi="transaksiDay" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -85,7 +85,7 @@
     <!-- ROW 2 -->
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Jenis Transaksi Bulan Ini</div>
+        <div class="chart-title">Jenis Transaksi (Bulan Ini)</div>
         <template v-if="isAvailable('transaksiMonth')">
           <PieTransaksi v-if="transaksiMonth" :dataTransaksi="transaksiMonth" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -94,7 +94,7 @@
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">Platform Bulan Ini</div>
+        <div class="chart-title">Platform Transaksi (Bulan Ini)</div>
         <template v-if="isAvailable('platformMonth')">
           <PiePlatform v-if="platformMonth" :dataPlatform="platformMonth" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -106,7 +106,7 @@
     <!-- ROW 3 -->
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Diagram pie perbandingan customer baru dan customer lama per bulan</div>
+        <div class="chart-title">Proporsi Pelanggan Baru vs Lama</div>
         <template v-if="isAvailable('customerPie')">
           <PiePlatform v-if="customerPie" :dataPlatform="customerPie" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -115,7 +115,7 @@
       </div>
 
       <div class="chart-card">
-        <div class="chart-title">Jumlah Barang Masuk per bulan</div>
+        <div class="chart-title">Total Barang Masuk (Bulanan)</div>
         <template v-if="isAvailable('jenisBarangPie')">
           <PiePlatform v-if="jenisBarangPie" :dataPlatform="jenisBarangPie" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -127,7 +127,7 @@
     <!-- ROW 4 -->
     <div class="chart-grid">
       <div class="chart-card">
-        <div class="chart-title">Jumlah Barang Terjual per bulan</div>
+        <div class="chart-title">Total Barang Terjual (Bulanan)</div>
         <template v-if="isAvailable('barangTerjualPie')">
           <PiePlatform v-if="barangTerjualPie" :dataPlatform="barangTerjualPie" />
           <div v-else class="loading-placeholder">Menunggu data...</div>
@@ -139,7 +139,7 @@
     <!-- ROW 5 line -->
     <div class="chart-grid-line">
       <div class="chart-card-line">
-        <div class="chart-title">Grafik Omset Per Hari</div>
+        <div class="chart-title">Tren Omset (Harian)</div>
         <template v-if="isAvailable('barangLine')">
           <div class="chart-horizontal-scroll">
             <div class="chart-horizontal-content chart-content-daily">
@@ -154,7 +154,7 @@
 
     <div class="chart-grid-line">
       <div class="chart-card-line">
-        <div class="chart-title">Grafik Omset Per Bulan</div>
+        <div class="chart-title">Tren Omset (Bulanan)</div>
         <template v-if="isAvailable('barangMonth')">
           <div class="chart-horizontal-scroll">
             <div class="chart-horizontal-content chart-content-monthly">
@@ -169,7 +169,7 @@
     <!-- ROW 6 line -->
     <div class="chart-grid-line">
       <div class="chart-card-line">
-        <div class="chart-title">Pertumbuhan customer baru per tahun</div>
+        <div class="chart-title">Pertumbuhan Pelanggan Baru (Tahunan)</div>
         <template v-if="isAvailable('customerLine')">
           <div class="chart-horizontal-scroll">
             <div class="chart-horizontal-content chart-content-growth">
@@ -185,7 +185,7 @@
     <!-- ROW 7 — Nilai Pembelian & Jumlah Transaksi per Customer -->
     <div class="chart-grid-line" style="height: auto;">
       <div class="chart-card-line" style="height: auto; padding-bottom: 28px;">
-        <div class="chart-title">Nilai Pembelian & Jumlah Transaksi per Customer (1 Bulan Terakhir)</div>
+        <div class="chart-title">Analisis Transaksi per Pelanggan (30 Hari Terakhir)</div>
         <template v-if="isAvailable('customerChart')">
           <div class="chart-horizontal-scroll">
             <div class="chart-horizontal-content chart-content-customer">

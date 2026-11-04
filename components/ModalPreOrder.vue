@@ -31,6 +31,7 @@
             </label>
             <div class="relative">
               <input v-model="form.targetSelesai" type="date"
+                :class="{ 'date-placeholder-visible': !form.targetSelesai }"
                 class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100" />
               <span v-if="!form.targetSelesai"
                 class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-gray-400"

@@ -89,7 +89,8 @@
                     <div class="form-group">
                         <label>Tanggal Transaksi <span class="pm-required">*</span></label>
                         <div class="relative">
-                            <input type="date" v-model="form.tanggal" />
+                            <input type="date" v-model="form.tanggal"
+                                :class="{ 'date-placeholder-visible': !form.tanggal }" />
                             <span v-if="!form.tanggal"
                                 class="pointer-events-none absolute inset-y-0 left-[10px] flex items-center text-gray-400"
                                 aria-hidden="true">

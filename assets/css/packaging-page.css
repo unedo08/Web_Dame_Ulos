@@ -36,6 +36,9 @@
   width: 100px !important;
   height: 32px;
   padding: 0 12px;
+  border: 0;
+  background-color: #059669;
+  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -44,6 +47,10 @@
   font-weight: 500;
   white-space: nowrap;
   box-sizing: border-box;
+}
+
+.packaging-export-btn:hover {
+  background-color: #047857;
 }
 
 /* =========================================================

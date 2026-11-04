@@ -16,7 +16,7 @@
 
       <button
         @click="exportToExcel"
-        class="packaging-export-btn bg-green-500 hover:bg-green-600 text-white rounded"
+        class="packaging-export-btn text-white rounded"
       >
         Export Excel
       </button>

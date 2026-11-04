@@ -420,6 +420,16 @@ button.sd-btn-tambah {
   }
 }
 
+input[type="date"].date-placeholder-visible {
+  color: transparent !important;
+}
+
+input[type="date"].date-placeholder-visible::-webkit-date-and-time-value,
+input[type="date"].date-placeholder-visible::-webkit-datetime-edit {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
 @media screen {
   table tbody > tr:nth-child(odd) > td {
     background-color: #ffffff !important;
@@ -1382,6 +1392,16 @@ button[class*="bg-blue-"]:hover,
   select:has(> option:checked:is(:disabled, [value=""])) {
     font-size: 14px !important;
   }
+}
+
+select:not(.cl-perpage-select):not(.cd-perpage-select):not(.staff-per-page):not(.pm-per-page):not(.jp-per-page):not(.dv-per-page):not(.sd-per-page):not(#perPage) {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  padding-right: 48px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364758b' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 9 7 7 7-7'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 16px center !important;
+  background-size: 20px 20px !important;
 }
 
 .page-table-toolbar :is(input, button),
