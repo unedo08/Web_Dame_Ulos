@@ -125,6 +125,35 @@
     }
 }
 
+@media (max-width: 1199px) {
+    .page-table-toolbar.acara-toolbar {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-areas:
+            "search"
+            "action";
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .page-table-toolbar.acara-toolbar > input.acara-search.search-box.standard-search-bar {
+        grid-area: search;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        flex: 1 1 auto !important;
+    }
+
+    .page-table-toolbar.acara-toolbar > .btn-add {
+        grid-area: action;
+        justify-self: end !important;
+        margin: 0 !important;
+    }
+}
+
 /* =========================================================
    MOBILE
    ========================================================= */

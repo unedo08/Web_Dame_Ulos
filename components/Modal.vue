@@ -1,6 +1,7 @@
 <template>
   <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[2000]" @click.self="$emit('close')">
-    <div class="bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto">
+    <div class="relative bg-white border border-gray-300 shadow-lg rounded-[10px] p-6 w-[500px] max-h-[80vh] overflow-auto">
+      <button type="button" class="form-modal-close" aria-label="Tutup popup" @click="closeModal"></button>
       <h2 class="text-xl font-bold mb-4">{{ modalTitle }}</h2>
 
       <template v-if="type === 'desc'">

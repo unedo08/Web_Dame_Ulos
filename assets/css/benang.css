@@ -285,6 +285,23 @@
     cursor:not-allowed;
 }
 
+.bk-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.bk-confirm-actions .bk-confirm-cancel-btn,
+.bk-confirm-actions .bk-confirm-delete-btn {
+    box-sizing: border-box;
+    width: 110px;
+    min-width: 110px;
+    height: 44px;
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
 /* =========================
    TABLET
    768px - 1024px
@@ -802,9 +819,8 @@
         font-size: 12px;
     }
 
-    .bk-confirm-cancel-btn,
-    .bk-confirm-delete-btn {
-        padding: 10px 14px;
+    .bk-confirm-actions .bk-confirm-cancel-btn,
+    .bk-confirm-actions .bk-confirm-delete-btn {
         font-size: 12px;
     }
 }

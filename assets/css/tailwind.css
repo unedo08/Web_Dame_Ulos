@@ -516,13 +516,17 @@ button.sd-btn-tambah {
   display: none !important;
 }
 
-.swal2-container .swal2-popup:has(.swal2-icon.swal2-warning) .swal2-actions :is(.swal2-confirm, .swal2-cancel) {
+.swal2-container .swal2-popup:has(.swal2-icon.swal2-warning) .swal2-actions :is(.swal2-confirm, .swal2-cancel, .swal2-deny) {
   min-width: 110px !important;
   min-height: 44px !important;
   padding: 10px 20px !important;
   border-radius: 8px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
+}
+
+.swal2-container .swal2-popup:has(.swal2-icon.swal2-warning) .swal2-actions :is(.swal2-confirm, .swal2-deny) {
+  width: 100px !important;
 }
 
 .swal2-container .swal2-popup:has(.swal2-icon.swal2-warning) .swal2-confirm {

@@ -56,11 +56,19 @@ export function useGrafikBenang() {
         const [y, m] = (bulanInput.value || "").split("-");
         if (!y || !m) return;
 
+        const selectedYear = Number(y);
+        const yearChanged = tahun.value !== selectedYear;
+        if (yearChanged) tahun.value = selectedYear;
+
         isLoadingBulan.value = true;
         try {
-            const res = await $api.get(`${url.value}/api/grafik-benang/perbulan`, {
-                params: { tipe: tipe.value, tahun: Number(y), bulan: Number(m) },
-            });
+            const results = await Promise.all([
+                yearChanged ? fetchPertahun() : Promise.resolve(),
+                $api.get(`${url.value}/api/grafik-benang/perbulan`, {
+                    params: { tipe: tipe.value, tahun: selectedYear, bulan: Number(m) },
+                }),
+            ]);
+            const res = results[1];
             perbulan.value = res.data.data;
         } catch (err) {
             console.error("Gagal memuat grafik perbulan:", err);

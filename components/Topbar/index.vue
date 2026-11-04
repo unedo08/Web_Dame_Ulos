@@ -100,8 +100,7 @@ const onMenuItemClick = async (item) => {
   height: 60px;
   z-index: 1000;
   background-color: #fff;
-  border-bottom:
-    2px solid #cfcfcf;
+  border-bottom: 1px solid #cfcfcf;
 }
 
 

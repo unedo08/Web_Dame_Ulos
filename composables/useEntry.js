@@ -84,12 +84,12 @@ export function useEntry() {
 
         const result = await Swal.fire({
             title: "Konfirmasi Pengiriman",
-            text: "Pilih metode pengiriman",
+            text: "Silakan pilih metode pengiriman untuk melanjutkan proses pesanan.",
             icon: "warning",
             showDenyButton: true,
             showCancelButton: true,
-            confirmButtonText: "DIKIRIM",
-            denyButtonText: "DIJEMPUT",
+            confirmButtonText: "Dikirim",
+            denyButtonText: "Dijemput",
             confirmButtonColor: "#3B82F6",
             denyButtonColor: "#FBBF24",
             cancelButtonColor: "#9CA3AF",

@@ -43,7 +43,7 @@ export default {
 
 .modal-content {
   background-color: white;
-  max-width: 600px;
+  max-width: 500px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;

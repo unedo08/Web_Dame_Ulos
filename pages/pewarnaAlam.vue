@@ -655,9 +655,9 @@
                     </div>
                     <div class="bk-confirm-title">Konfirmasi hapus data benang masuk</div>
                     <div class="bk-confirm-subtitle">Apakah Anda yakin ingin menghapus data benang ini?</div>
-                    <div style="display:flex;gap:12px;justify-content:center">
-                        <button class="bk-confirm-delete-btn" @click="confirmMasukDelete">Ya, dihapus</button>
+                    <div class="bk-confirm-actions">
                         <button class="bk-confirm-cancel-btn" @click="cancelMasukDelete">Batal</button>
+                        <button class="bk-confirm-delete-btn" @click="confirmMasukDelete">Ya, dihapus</button>
                     </div>
                 </div>
             </div>
@@ -677,9 +677,9 @@
                     </div>
                     <div class="bk-confirm-title">Konfirmasi hapus data benang keluar</div>
                     <div class="bk-confirm-subtitle">Apakah Anda yakin ingin menghapus data benang ini?</div>
-                    <div style="display:flex;gap:12px;justify-content:center">
-                        <button class="bk-confirm-delete-btn" @click="confirmKeluarDelete">Ya, dihapus</button>
+                    <div class="bk-confirm-actions">
                         <button class="bk-confirm-cancel-btn" @click="cancelKeluarDelete">Batal</button>
+                        <button class="bk-confirm-delete-btn" @click="confirmKeluarDelete">Ya, dihapus</button>
                     </div>
                 </div>
             </div>

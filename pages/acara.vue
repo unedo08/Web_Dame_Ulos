@@ -3,8 +3,8 @@
     <title>Acara</title>
     <div class="judul text-xl font-semibold mb-2">Acara</div>
 
-    <div class="page-table-toolbar flex items-center justify-between">
-      <input class="search-box standard-search-bar mb-2 rounded-md" v-model="searchQuery" type="text"
+    <div class="page-table-toolbar acara-toolbar flex items-center justify-between">
+      <input class="search-box standard-search-bar acara-search mb-2 rounded-md" v-model="searchQuery" type="text"
         placeholder="Search acara..." />
       <button class="btn-add mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-[104px] h-[30px]" @click="openModal">
         + Tambah Acara

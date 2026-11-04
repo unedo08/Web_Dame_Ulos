@@ -1,47 +1,60 @@
 <template>
   <div class="beranda">
-    <h1 class="page-title">Beranda</h1>
-    <title>Beranda</title>
+    <div class="beranda-header">
+      <h1 class="page-title">Beranda</h1>
+      <title>Beranda</title>
 
-    <div class="stat-wrapper">
-      <div class="stat-card">
-        <CubeIcon class="stat-icon" />
-        <div>
-          <div class="stat-label">Total Barang Masuk</div>
-          <div class="stat-value">{{ totalBarang }}</div>
+      <div class="summary-filter-row">
+        <div class="stat-wrapper">
+          <div class="stat-card">
+            <svg class="stat-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <path d="m8 14 15-8 17 8-15 8-17-8Z" fill="currentColor" />
+              <path d="m8 14 17 8v5L8 19v-5Zm17 8 15-8v5l-15 8v-5Z" fill="currentColor" />
+              <path d="m8 21 17 8 15-8v5l-15 8-17-8v-5Z" fill="currentColor" />
+              <path d="m8 28 17 8 15-8v5l-15 8-17-8v-5Z" fill="currentColor" />
+              <path d="m8 14 17 8 15-8M8 21l17 8 15-8M8 28l17 8 15-8" stroke="white" stroke-width="1.6"
+                stroke-linejoin="round" />
+            </svg>
+            <div>
+              <div class="stat-label">Total Barang Masuk</div>
+              <div class="stat-value">{{ totalBarang }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-container">
+          <!-- FILTER BAR -->
+          <div class="filter-bar">
+            <div class="filter-type-group">
+              <button class="filter-btn" :class="{ active: selectedFilterType === 'tanggal' }"
+                @click="selectedFilterType = 'tanggal'">Tanggal</button>
+              <button class="filter-btn" :class="{ active: selectedFilterType === 'bulan' }"
+                @click="selectedFilterType = 'bulan'">Bulan</button>
+              <button class="filter-btn" :class="{ active: selectedFilterType === 'tahun' }"
+                @click="selectedFilterType = 'tahun'">Tahun</button>
+            </div>
+
+            <input v-if="selectedFilterType === 'tanggal'" type="date" v-model="filterDateInput" class="filter-input" />
+            <input v-else-if="selectedFilterType === 'bulan'" type="month" v-model="filterMonthInput" class="filter-input" />
+            <input v-else-if="selectedFilterType === 'tahun'" type="number" v-model.number="filterYearInput"
+              class="filter-input filter-input-year" min="2020" :max="currentYear" placeholder="Tahun" />
+
+            <button class="apply-btn" :disabled="!selectedFilterType" @click="applyFilter">Terapkan</button>
+
+            <button v-if="appliedFilter.type" class="reset-btn" @click="clearFilter">Reset</button>
+          </div>
+
+          <!-- Active filter badge -->
+          <div v-if="appliedFilter.type" class="filter-badge">
+            <span class="filter-badge-dot"></span>
+            Filter aktif:
+            <strong v-if="appliedFilter.type === 'tanggal'">Tanggal {{ appliedFilter.date }}</strong>
+            <strong v-else-if="appliedFilter.type === 'bulan'">Bulan {{ appliedFilter.month }}/{{ appliedFilter.year
+            }}</strong>
+            <strong v-else>Tahun {{ appliedFilter.year }}</strong>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-      <div class="filter-type-group">
-        <button class="filter-btn" :class="{ active: selectedFilterType === 'tanggal' }"
-          @click="selectedFilterType = 'tanggal'">Tanggal</button>
-        <button class="filter-btn" :class="{ active: selectedFilterType === 'bulan' }"
-          @click="selectedFilterType = 'bulan'">Bulan</button>
-        <button class="filter-btn" :class="{ active: selectedFilterType === 'tahun' }"
-          @click="selectedFilterType = 'tahun'">Tahun</button>
-      </div>
-
-      <input v-if="selectedFilterType === 'tanggal'" type="date" v-model="filterDateInput" class="filter-input" />
-      <input v-else-if="selectedFilterType === 'bulan'" type="month" v-model="filterMonthInput" class="filter-input" />
-      <input v-else-if="selectedFilterType === 'tahun'" type="number" v-model.number="filterYearInput"
-        class="filter-input filter-input-year" min="2020" :max="currentYear" placeholder="Tahun" />
-
-      <button class="apply-btn" :disabled="!selectedFilterType" @click="applyFilter">Terapkan</button>
-
-      <button v-if="appliedFilter.type" class="reset-btn" @click="clearFilter">Reset</button>
-    </div>
-
-    <!-- Active filter badge -->
-    <div v-if="appliedFilter.type" class="filter-badge">
-      <span class="filter-badge-dot"></span>
-      Filter aktif:
-      <strong v-if="appliedFilter.type === 'tanggal'">Tanggal {{ appliedFilter.date }}</strong>
-      <strong v-else-if="appliedFilter.type === 'bulan'">Bulan {{ appliedFilter.month }}/{{ appliedFilter.year
-      }}</strong>
-      <strong v-else>Tahun {{ appliedFilter.year }}</strong>
     </div>
 
     <!-- ROW 1 -->
@@ -190,7 +203,6 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useRuntimeConfig, useNuxtApp } from "#imports"
-import { CubeIcon } from "@heroicons/vue/24/solid"
 import PieTransaksi from "~/components/PieTransaksi.vue"
 import PiePlatform from "~/components/PiePlatform.vue"
 import BarBarang from "~/components/BarBarang.vue"
@@ -492,11 +504,25 @@ onMounted(() => fetchData())
 .beranda {
   width: 100%;
   max-width: 100%;
-  padding: 32px 40px;
+  padding: 0 40px 32px;
   background: #f1f5f9;
   min-height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
+}
+
+:global(.page-content:has(.beranda)) {
+  background: #ffffff;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.beranda-header {
+  width: calc(100% + 80px);
+  margin: 0 -40px 32px;
+  padding: 2px 40px 0;
+  background: #ffffff;
+  box-sizing: border-box;
 }
 
 .page-title {
@@ -506,17 +532,23 @@ onMounted(() => fetchData())
   margin: 0 0 24px;
 }
 
+.summary-filter-row {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding-bottom:24px
+}
+
+.filter-container {
+  min-width: 0;
+}
+
 .filter-bar {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  width: 100%;
-  background: #ffffff;
-  padding: 16px 24px;
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-  margin-bottom: 16px;
   box-sizing: border-box;
 }
 
@@ -546,13 +578,13 @@ onMounted(() => fetchData())
 }
 
 .filter-btn:hover {
-  border-color: #4f46e5;
-  color: #4f46e5;
+  border-color: #3d8bfd;
+  color: #3d8bfd;
 }
 
 .filter-btn.active {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: #3d8bfd;
+  border-color: #3d8bfd;
   color: #ffffff;
 }
 
@@ -571,7 +603,7 @@ onMounted(() => fetchData())
 }
 
 .filter-input:focus {
-  border-color: #4f46e5;
+  border-color: #3d8bfd;
 }
 
 .filter-input-year {
@@ -583,7 +615,7 @@ onMounted(() => fetchData())
   padding: 7px 20px;
   min-height: 34px;
   border-radius: 8px;
-  background: #4f46e5;
+  background: #3d8bfd;
   color: #ffffff;
   border: none;
   font-size: 0.875rem;
@@ -594,11 +626,11 @@ onMounted(() => fetchData())
 }
 
 .apply-btn:hover:not(:disabled) {
-  background: #4338ca;
+  background: #3d8bfd;
 }
 
 .apply-btn:disabled {
-  background: #a5b4fc;
+  background: #85B6FF;
   cursor: not-allowed;
 }
 
@@ -634,7 +666,7 @@ onMounted(() => fetchData())
   border-radius: 20px;
   padding: 6px 14px;
   font-size: 0.82rem;
-  margin-bottom: 24px;
+  margin: 12px 0 0;
   box-sizing: border-box;
   overflow: hidden;
   white-space: normal;
@@ -650,7 +682,6 @@ onMounted(() => fetchData())
 
 .stat-wrapper {
   width: 100%;
-  margin-bottom: 40px;
 }
 
 .stat-card {
@@ -660,6 +691,7 @@ onMounted(() => fetchData())
   background: #ffffff;
   padding: 22px 32px;
   border-radius: 14px;
+  border: 1px solid #e2e8f0;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   width: 280px;
   max-width: 100%;
@@ -667,20 +699,20 @@ onMounted(() => fetchData())
 }
 
 .stat-icon {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  color: #4f46e5;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  color: #520000;
 }
 
 .stat-label {
-  font-size: 0.9rem;
+  font-size: 14px;
   color: #64748b;
-  margin-bottom: 4px;
+  margin-bottom: -1px;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 28px;
   font-weight: 700;
 
   color: #111827;
@@ -798,7 +830,13 @@ onMounted(() => fetchData())
 @media (max-width: 1199px) {
 
   .beranda {
-    padding: 28px 24px;
+    padding: 0 24px 28px;
+  }
+
+  .beranda-header {
+    width: calc(100% + 48px);
+    margin: 0 -24px 28px;
+    padding: 28px 24px 0;
   }
 
   .chart-grid {
@@ -820,13 +858,6 @@ onMounted(() => fetchData())
     height: 380px;
   }
 
-  .filter-bar {
-    padding: 14px 18px;
-  }
-
-  .stat-wrapper {
-    margin-bottom: 28px;
-  }
 }
 
 
@@ -838,7 +869,13 @@ onMounted(() => fetchData())
 @media (max-width: 900px) {
 
   .beranda {
-    padding: 24px 20px;
+    padding: 0 20px 24px;
+  }
+
+  .beranda-header {
+    width: calc(100% + 40px);
+    margin: 0 -20px 24px;
+    padding: 24px 20px 0;
   }
 
   .chart-grid {
@@ -857,6 +894,16 @@ onMounted(() => fetchData())
   .chart-title {
     font-size: 14px;
     margin-bottom: 14px;
+  }
+
+  .summary-filter-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-bottom:20px
+  }
+
+  .stat-card {
+    width: 100%;
   }
 
   .filter-bar {
@@ -887,8 +934,14 @@ onMounted(() => fetchData())
 @media (max-width: 767px) {
   .beranda {
     width: 100%;
-    padding: 16px 12px;
+    padding: 0 12px 16px;
     overflow-x: hidden;
+  }
+
+  .beranda-header {
+    width: calc(100% + 24px);
+    margin: 0 -12px 16px;
+    padding: 16px 12px 0;
   }
 
   .page-title {
@@ -901,9 +954,6 @@ onMounted(() => fetchData())
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
   }
 
   .filter-type-group {
@@ -937,14 +987,13 @@ onMounted(() => fetchData())
 
   .filter-badge {
     width: 100%;
-    margin-bottom: 16px;
     padding: 7px 10px;
     font-size: 11px;
     border-radius: 10px;
   }
 
   .stat-wrapper {
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
 
   .stat-card {
@@ -1048,7 +1097,13 @@ onMounted(() => fetchData())
 
 @media (max-width: 480px) {
   .beranda {
-    padding: 12px 10px;
+    padding: 0 10px 12px;
+  }
+
+  .beranda-header {
+    width: calc(100% + 20px);
+    margin: 0 -10px 12px;
+    padding: 12px 10px 0;
   }
 
   .page-title {
@@ -1057,8 +1112,7 @@ onMounted(() => fetchData())
   }
 
   .filter-bar {
-    padding: 10px;
-    border-radius: 9px;
+    gap: 8px;
   }
 
   .filter-type-group {
@@ -1155,7 +1209,13 @@ onMounted(() => fetchData())
 @media (max-width: 360px) {
 
   .beranda {
-    padding: 10px 8px;
+    padding: 0 8px 10px;
+  }
+
+  .beranda-header {
+    width: calc(100% + 16px);
+    margin: 0 -8px 10px;
+    padding: 10px 8px 0;
   }
 
   .filter-type-group {
