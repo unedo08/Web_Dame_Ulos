@@ -384,6 +384,42 @@ button.sd-btn-tambah {
   border-radius: 12px !important;
 }
 
+@supports (-webkit-touch-callout: none) {
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 42px;          /* samakan dengan input teks di form */
+    line-height: normal;
+    font-size: 16px;
+    background-color: #fdfdff;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 38px;
+  }
+
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+    min-height: 0;
+  }
+
+  /* hindari ikon native menumpuk dengan ikon buatan */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 @media screen {
   table tbody > tr:nth-child(odd) > td {
     background-color: #ffffff !important;
@@ -796,7 +832,7 @@ button.sd-btn-tambah {
 
 @media screen and (max-width: 767px) {
   :is([class*="modal"], [role="dialog"], [class~="fixed"][class~="inset-0"], .swal2-container) :is(input, textarea, select) {
-    font-size: 16px !important;
+    font-size: 14px !important;
   }
 
   :is(.fixed.inset-0, [class*="modal"][class*="overlay"], .er-overlay, [role="dialog"]) {

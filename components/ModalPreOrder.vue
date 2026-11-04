@@ -29,8 +29,15 @@
             <label class="judul-label block text-sm font-medium text-gray-700 mb-1">
               Target Selesai <span class="required">*</span>
             </label>
-            <input v-model="form.targetSelesai" type="date"
-              class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100" />
+            <div class="relative">
+              <input v-model="form.targetSelesai" type="date"
+                class="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100" />
+              <span v-if="!form.targetSelesai"
+                class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-gray-400"
+                aria-hidden="true">
+                Pilih tanggal
+              </span>
+            </div>
             <p v-if="errors.targetSelesai" class="text-red-500 text-sm mt-1">{{ errors.targetSelesai }}</p>
           </div>
 
