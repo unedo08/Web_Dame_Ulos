@@ -1187,6 +1187,7 @@
 }
 .pm-td-aksi {
     display: flex;
+    position: sticky !important;
     align-items: center;
     justify-content: center;
     gap: 8px;
