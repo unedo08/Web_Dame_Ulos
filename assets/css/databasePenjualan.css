@@ -548,8 +548,6 @@
 
   background-color: #f4f4f4 !important;
 
-  border-left: 1px solid #e5e7eb;
-  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
 }
 
 /* Isi kolom Aksi */
@@ -566,8 +564,6 @@
   text-align: center;
   vertical-align: middle;
 
-  border-left: 1px solid #e5e7eb;
-  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
 }
 
 /* Warna baris bergantian */

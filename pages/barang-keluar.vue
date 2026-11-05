@@ -30,7 +30,7 @@
         </div>
 
         <!-- Table -->
-        <div class="bk-table-wrapper">
+        <div class="bk-table-wrapper" v-sticky-action-shadow>
             <table class="bk-table">
                 <thead>
                     <tr>

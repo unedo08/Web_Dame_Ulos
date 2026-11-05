@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="penjualan-table-wrapper">
+    <div class="penjualan-table-wrapper" v-sticky-action-shadow>
       <table class="datatable rounded-md">
         <thead class="bg-blue-100">
           <tr>

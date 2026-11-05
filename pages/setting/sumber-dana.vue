@@ -17,7 +17,7 @@
             </button>
         </div>
 
-        <div class="sd-table-wrap">
+        <div class="sd-table-wrap" v-sticky-action-shadow>
             <table class="sd-table">
                 <thead>
                     <tr>
@@ -57,13 +57,15 @@
                         </td>
 
                         <td class="sd-td sd-td-aksi">
-                            <button @click="openModal(item)" class="sd-btn-icon">
-                                <PencilIcon class="sd-icon" />
-                            </button>
+                            <div class="pm-aksi-inner">
+                                <button @click="openModal(item)" class="sd-btn-icon">
+                                    <PencilIcon class="sd-icon" />
+                                </button>
 
-                            <button @click="confirmDelete(item)" class="sd-btn-icon sd-btn-delete">
-                                <TrashIcon class="sd-icon delete" />
-                            </button>
+                                <button @click="confirmDelete(item)" class="sd-btn-icon sd-btn-delete">
+                                    <TrashIcon class="sd-icon delete" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

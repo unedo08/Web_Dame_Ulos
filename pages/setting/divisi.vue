@@ -23,7 +23,7 @@
 
         </div>
 
-        <div class="dv-table-wrap">
+        <div class="dv-table-wrap" v-sticky-action-shadow>
 
             <table class="dv-table">
 
@@ -87,15 +87,15 @@
                         </td>
 
                         <td class="dv-td dv-td-aksi">
+                            <div class="pm-aksi-inner">
+                                <button @click="openModal(item)" class="dv-btn-icon">
+                                    <PencilIcon class="dv-icon" />
+                                </button>
 
-                            <button @click="openModal(item)" class="dv-btn-icon">
-                                <PencilIcon class="dv-icon" />
-                            </button>
-
-                            <button @click="confirmDelete(item)" class="dv-btn-icon dv-btn-delete">
-                                <TrashIcon class="dv-icon delete" />
-                            </button>
-
+                                <button @click="confirmDelete(item)" class="dv-btn-icon dv-btn-delete">
+                                    <TrashIcon class="dv-icon delete" />
+                                </button>
+                            </div>
                         </td>
 
                     </tr>

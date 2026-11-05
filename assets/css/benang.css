@@ -900,7 +900,8 @@
 .bk-table {
     width: max-content;
     min-width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
 }
 
 /* Tablet */

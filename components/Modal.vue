@@ -434,8 +434,8 @@ watch(
 </style>
 <style>
 .price-tag-actions > button:last-child {
-  border-color: #3d8bfd !important;
-  background-color: #3d8bfd !important;
+  border-color: #0bb4cc !important;
+  background-color: #0bb4cc !important;
   color: #fff !important;
 }
 

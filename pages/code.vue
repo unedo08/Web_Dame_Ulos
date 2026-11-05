@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <div class="datatable-wrapper">
+    <div class="datatable-wrapper" v-sticky-action-shadow>
       <div class="datatable-scroll">
         <table class="datatable w-full">
           <thead>
@@ -845,7 +845,6 @@ watch(isModalOpen, async (val) => {
   min-width: 150px;
   z-index: 2;
   background: #fff;
-  box-shadow: -5px 0 8px rgba(0, 0, 0, 0.10);
   overflow: hidden;
 }
 

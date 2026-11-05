@@ -471,8 +471,6 @@ button {
   width: 125px;
   white-space: nowrap;
   background-clip: padding-box;
-  border-left: 1px solid #E5E7EB;
-  box-shadow: -5px 0 8px rgba(0, 0, 0, 0.12);
 }
 
 /* Header */

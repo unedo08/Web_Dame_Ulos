@@ -54,7 +54,8 @@
   min-width: 1100px;
   max-width: none;
 
-  border-collapse: collapse;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 
   font-size: 13px;
 
@@ -472,30 +473,31 @@
 
 /* ===== FIXED KOLOM AKSI ===== */
 .custom-table th:last-child {
-    position: sticky;
-    right: 0;
-    z-index: 5;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 20 !important;
     min-width: 112px;
-    background: #F3F4F6;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
+    background-color: #F3F4F6 !important;
+    background-clip: padding-box !important;
+    box-sizing: border-box !important;
 }
 .custom-table td:last-child:not([colspan]) {
-    position: sticky;
-    right: 0;
-    z-index: 2;
+    display: table-cell !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 10 !important;
     min-width: 112px;
-    background: #fff;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    box-sizing: border-box !important;
 }
 .custom-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
-    background: #F9FAFB;
+    background-color: #F9FAFB !important;
 }
 .custom-table tbody tr:hover td:last-child:not([colspan]) {
-    background: #F3F4F6;
-}
-.custom-table th:last-child,
-.custom-table td:last-child:not([colspan]) {
-    border-left: 1px solid #E5E7EB;
+    background-color: #F3F4F6 !important;
 }
 .custom-table-aksi {
     display: flex;

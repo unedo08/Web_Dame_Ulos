@@ -17,7 +17,7 @@
             </button>
         </div>
 
-        <div class="jp-table-wrap">
+        <div class="jp-table-wrap" v-sticky-action-shadow>
             <table class="jp-table">
                 <thead>
                     <tr>
@@ -54,13 +54,15 @@
                             </span>
                         </td>
                         <td class="jp-td jp-td-aksi">
-                            <button @click="openModal(item)" class="jp-btn-icon">
-                                <PencilIcon class="jp-icon" />
-                            </button>
+                            <div class="pm-aksi-inner">
+                                <button @click="openModal(item)" class="jp-btn-icon">
+                                    <PencilIcon class="jp-icon" />
+                                </button>
 
-                            <button @click="confirmDelete(item)" class="jp-btn-icon jp-btn-delete">
-                                <TrashIcon class="jp-icon delete" />
-                            </button>
+                                <button @click="confirmDelete(item)" class="jp-btn-icon jp-btn-delete">
+                                    <TrashIcon class="jp-icon delete" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

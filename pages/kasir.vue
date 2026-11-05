@@ -171,7 +171,7 @@
     </select>
 
     <label>Catatan:</label>
-    <textarea v-model="processForm.notes" class="input-field mb-4" placeholder="Catatan tambahan"></textarea>
+    <textarea v-model="processForm.notes" class="input-field mb-4" rows="4"placeholder="Catatan tambahan"></textarea>
 
     <button @click="checkoutProcess" class="w-full text-white px-4 py-2 rounded-md transition font-semibold" :class="isLoading
       ? 'bg-gray-400 cursor-not-allowed'

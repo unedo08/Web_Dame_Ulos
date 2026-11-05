@@ -11,7 +11,7 @@
       <button class="pm-btn-tambah" @click="openModal()">Tambah</button>
     </div>
 
-    <div class="pm-table-wrap">
+    <div class="pm-table-wrap" v-sticky-action-shadow>
       <table class="pm-table">
         <thead>
           <tr>
@@ -33,12 +33,14 @@
               </span>
             </td>
             <td class="pm-td pm-td-aksi">
-              <button @click="openModal(item)" class="pm-btn-icon" title="Edit">
-                <PencilIcon class="pm-icon" />
-              </button>
-              <button @click="confirmDelete(item)" class="pm-btn-icon pm-btn-delete" title="Hapus">
-                <TrashIcon class="pm-icon delete" />
-              </button>
+              <div class="pm-aksi-inner">
+                <button @click="openModal(item)" class="pm-btn-icon" title="Edit">
+                  <PencilIcon class="pm-icon" />
+                </button>
+                <button @click="confirmDelete(item)" class="pm-btn-icon pm-btn-delete" title="Hapus">
+                  <TrashIcon class="pm-icon delete" />
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

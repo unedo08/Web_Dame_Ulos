@@ -484,8 +484,6 @@
 
     background-color: #f4f4f4 !important;
 
-    border-left: 1px solid #e5e7eb;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
 }
 
 /* Isi kolom Aksi */
@@ -498,9 +496,6 @@
     min-width: 150px;
 
     background-color: #fff !important;
-
-    border-left: 1px solid #e5e7eb;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
 
     text-align: center;
     vertical-align: middle;
@@ -564,6 +559,7 @@
         width: 150px;
         min-width: 150px;
     }
+
 }
 
 @media (max-width: 480px) {

@@ -180,7 +180,6 @@
     z-index: 5;
     min-width: 125px;
     background: #f3f4f6;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
 }
 
 .staff-table td:last-child:not([colspan]) {
@@ -189,7 +188,6 @@
     z-index: 2;
     min-width: 125px;
     background: #fff;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
 }
 
 .staff-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
@@ -199,12 +197,6 @@
 .staff-table tbody tr:hover td:last-child:not([colspan]) {
     background: #f3f4f6;
 }
-
-.staff-table th:last-child,
-.staff-table td:last-child:not([colspan]) {
-    border-left: 1px solid #e5e7eb;
-}
-
 
 /* =========================================================
    ACTION BUTTON

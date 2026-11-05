@@ -18,7 +18,7 @@
         </div>
 
         <!-- TABLE -->
-        <div class="staff-table-wrap">
+        <div class="staff-table-wrap" v-sticky-action-shadow>
             <table class="staff-table">
                 <thead>
                     <tr>

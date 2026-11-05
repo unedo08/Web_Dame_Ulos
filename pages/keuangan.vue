@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper" v-sticky-action-shadow>
             <table class="custom-table">
                 <thead>
                     <tr>

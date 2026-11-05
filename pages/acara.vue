@@ -13,7 +13,7 @@
 
     <!-- Product Table -->
     <div>
-      <div class="acara-table-wrapper">
+      <div class="acara-table-wrapper" v-sticky-action-shadow>
         <table class="datatable acara-table rounded-md">
           <thead class="bg-blue-100">
             <tr>

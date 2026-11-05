@@ -1107,9 +1107,122 @@ button[class*="bg-blue-"]:hover,
   cursor: not-allowed;
 }
 
+.sticky-action-shadow-wrapper .sticky-action,
+.sticky-action-shadow-wrapper th:last-child,
+.sticky-action-shadow-wrapper td:last-child:not([colspan]),
+.sticky-action-shadow-wrapper .datatable-action {
+  border-left: none !important;
+  box-shadow: none !important;
+}
+
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) table thead th:last-child,
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) .sticky-action,
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) table tbody td:last-child:not([colspan]),
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) th:last-child,
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) td:last-child:not([colspan]),
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) .datatable-action {
+  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.14) !important;
+}
+
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end) table thead th:last-child {
+  z-index: 20 !important;
+}
+
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end)
+  table thead th:last-child::before,
+.sticky-action-shadow-wrapper.has-horizontal-overflow:not(.is-at-scroll-end)
+  table tbody td:last-child:not([colspan])::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;          /* tepat di luar tepi kiri sel */
+  left: auto;
+  width: 10px;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.12));
+}
+
+:is(.pm-table, .dv-table, .jp-table, .sd-table, .custom-table, .cl-table, .bk-table) {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+:is(.pm-table, .dv-table, .jp-table, .sd-table) th:last-child,
+:is(.pm-table, .dv-table, .jp-table, .sd-table) :is(.pm-th-aksi, .dv-th-aksi, .jp-th-aksi, .sd-th-aksi) {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  right: 0 !important;
+  z-index: 20 !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  background-color: #F3F4F6 !important;
+  background-clip: padding-box !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
+
+:is(.pm-table, .dv-table, .jp-table, .sd-table) td:last-child:not([colspan]),
+:is(.pm-table, .dv-table, .jp-table, .sd-table) :is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) {
+  display: table-cell !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  right: 0 !important;
+  z-index: 10 !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  background-color: #ffffff !important;
+  background-clip: padding-box !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+
+:is(.pm-table, .dv-table, .jp-table, .sd-table) tbody tr:nth-child(even) td:last-child:not([colspan]),
+:is(.pm-table, .dv-table, .jp-table, .sd-table) tbody tr:nth-child(even) :is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) {
+  background-color: #F9FAFB !important;
+}
+
+:is(.pm-table, .dv-table, .jp-table, .sd-table) tbody tr:hover td:last-child:not([colspan]),
+:is(.pm-table, .dv-table, .jp-table, .sd-table) tbody tr:hover :is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) {
+  background-color: #F3F4F6 !important;
+}
+
+.pm-aksi-inner,
+.dv-aksi-inner,
+.jp-aksi-inner,
+.sd-aksi-inner,
+:is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+:is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+}
+
+:is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) > button {
+  margin: 0 4px !important;
+}
+
+:is(.pm-td-aksi, .dv-td-aksi, .jp-td-aksi, .sd-td-aksi) > :is(.pm-aksi-inner, .dv-aksi-inner, .jp-aksi-inner, .sd-aksi-inner, div) > button {
+  margin: 0 !important;
+}
+
 .barcode-print-actions > button:last-child {
-  border-color: #3b82f6 !important;
-  background-color: #3b82f6 !important;
+  border-color: #0bb4cc !important;
+  background-color: #0bb4cc !important;
   color: #fff !important;
 }
 

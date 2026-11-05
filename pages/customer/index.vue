@@ -19,7 +19,7 @@
     </div>
 
     <!-- Table -->
-    <div class="cl-table-wrap">
+    <div class="cl-table-wrap" v-sticky-action-shadow>
       <table class="cl-table">
         <colgroup>
           <col style="width: 50px">

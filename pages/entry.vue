@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <div class="datatable-wrapper">
+      <div class="datatable-wrapper" v-sticky-action-shadow>
         <table class="datatable rounded-md text-sm">
           <thead>
             <tr>
@@ -179,7 +179,7 @@
         </div>
       </div>
 
-      <div class="datatable-wrapper">
+      <div class="datatable-wrapper" v-sticky-action-shadow>
         <table class="datatable rounded-md text-sm">
           <thead>
             <tr>
@@ -348,7 +348,7 @@
         </div>
       </div>
 
-      <div class="datatable-wrapper">
+      <div class="datatable-wrapper" v-sticky-action-shadow>
         <table class="datatable rounded-md text-sm">
           <thead>
             <tr>

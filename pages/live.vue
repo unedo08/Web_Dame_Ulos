@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="live-table-wrapper">
+      <div class="live-table-wrapper" v-sticky-action-shadow>
         <table class="datatable live-order-table rounded-md">
           <thead class="bg-blue-100">
             <tr>
@@ -162,7 +162,7 @@
         <input v-model="searchQuery" type="text" class="search-box rounded-md" placeholder="Cari data live..." />
       </div>
 
-      <div class="live-table-wrapper">
+      <div class="live-table-wrapper" v-sticky-action-shadow>
         <table class="datatable live-transaction-table rounded-md">
           <thead>
             <tr>

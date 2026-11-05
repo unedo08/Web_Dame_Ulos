@@ -389,8 +389,6 @@
 
   background: #f4f4f4 !important;
 
-  border-left: 1px solid #e5e7eb;
-  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
 }
 
 /* Isi kolom Aksi */
@@ -403,9 +401,6 @@
   min-width: 190px;
 
   background: #fff !important;
-
-  border-left: 1px solid #e5e7eb;
-  box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
 
   white-space: nowrap;
   vertical-align: middle;

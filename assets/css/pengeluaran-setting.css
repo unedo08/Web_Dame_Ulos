@@ -99,7 +99,7 @@
   color: #fff;
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 550;
 
   border-radius: 6px;
 
@@ -157,7 +157,8 @@
 
   max-width: none;
 
-  border-collapse: collapse;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 
   table-layout: auto;
 }
@@ -220,6 +221,12 @@
   vertical-align: middle;
 
   white-space: nowrap;
+
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.jp-tr:last-child .jp-td {
+  border-bottom: none;
 }
 
 .jp-td-no {
@@ -1251,37 +1258,76 @@
 
 
 /* ===== FIXED KOLOM AKSI ===== */
-.jp-table th:last-child {
-    position: sticky;
-    right: 0;
-    z-index: 5;
-    min-width: 112px;
-    background: #F3F4F6;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.18);
-}
-.jp-table td:last-child:not([colspan]) {
-    position: sticky;
-    right: 0;
-    z-index: 2;
-    min-width: 112px;
-    background: #fff;
-    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.12);
-}
-.jp-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
-    background: #F9FAFB;
-}
-.jp-table tbody tr:hover td:last-child:not([colspan]) {
-    background: #F3F4F6;
-}
 .jp-table th:last-child,
-.jp-table td:last-child:not([colspan]) {
-    border-left: 1px solid #E5E7EB;
-}
-.jp-td-aksi {
-    display: flex;
+.jp-th-aksi {
+    position: -webkit-sticky !important;
     position: sticky !important;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-width: 84px;
+    right: 0 !important;
+    z-index: 20 !important;
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
+    background-color: #F3F4F6 !important;
+    background-clip: padding-box !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+}
+
+.jp-table td:last-child:not([colspan]),
+.jp-td-aksi {
+    display: table-cell !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 10 !important;
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
+    background-color: #ffffff !important;
+    background-clip: padding-box !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+.jp-table tbody tr:nth-child(even) td:last-child:not([colspan]),
+.jp-table tbody tr:nth-child(even) .jp-td-aksi {
+    background-color: #F9FAFB !important;
+}
+
+.jp-table tbody tr:hover td:last-child:not([colspan]),
+.jp-table tbody tr:hover .jp-td-aksi {
+    background-color: #F3F4F6 !important;
+}
+
+.jp-td-aksi {
+    white-space: nowrap !important;
+}
+
+.pm-aksi-inner,
+.jp-aksi-inner,
+.jp-td-aksi > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+.jp-td-aksi button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+}
+
+.jp-td-aksi > button {
+    margin: 0 4px !important;
+}
+
+.jp-td-aksi > :is(.pm-aksi-inner, .jp-aksi-inner, div) > button {
+    margin: 0 !important;
 }

@@ -22,7 +22,7 @@
       </button>
     </div>
 
-    <div class="packaging-table-wrapper">
+    <div class="packaging-table-wrapper" v-sticky-action-shadow>
       <table class="datatable packaging-table rounded-md">
         <thead class="bg-blue-100">
           <tr>
