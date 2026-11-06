@@ -344,6 +344,9 @@ button.sd-btn-tambah {
   .staff-table-wrap,
   table
 ) {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(229, 231, 235);
   margin-top: 0 !important;
 }
 
@@ -431,17 +434,36 @@ input[type="date"].date-placeholder-visible::-webkit-datetime-edit {
 }
 
 @media screen {
-  table tbody > tr:nth-child(odd) > td {
+  /* tbody tr.bg-white > td {
     background-color: #ffffff !important;
   }
 
+  tbody tr.bg-gray-50 > td {
+    background-color: #F8FAFA !important;
+  } */
+/* 
   table tbody > tr:nth-child(even) > td {
     background-color: #f9fafb !important;
+  } */
+
+  table tbody > tr,
+  table tbody > tr > td {
+    background-color: #ffffff !important;
   }
 
   table tbody > tr:hover > td {
-    background-color: #f3f4f6 !important;
+    background-color: #F9FAFB !important;
   }
+
+  table tbody > tr > td {
+    border: none;
+    border-bottom:1px solid #f0f0f0;
+  }
+
+  table tbody > tr:last-child > td {
+    border-bottom: none;
+  }
+  
 }
 
 @media (max-width: 1024px) {
@@ -663,6 +685,8 @@ input[type="date"].date-placeholder-visible::-webkit-datetime-edit {
   padding: 48px 40px 40px !important;
   border-radius: 14px !important;
 }
+
+
 
 .swal2-container .swal2-popup.export-loading-popup {
   display: flex !important;

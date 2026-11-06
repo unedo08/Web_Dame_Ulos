@@ -81,7 +81,11 @@
 }
 
 .group-start td {
-  border-top: 2px solid #d1d5db;
+  border-top: 1px solid #BFC8CC;
+}
+
+.datatable tbody > tr:last-child > td {
+  border-bottom: none;
 }
 
 .search-box::placeholder {
