@@ -29,7 +29,7 @@ const routeRoleMap = {
 
   "/acara": ["super-admin", "admin", "marketing", "sosial-media"],
 
-  "/pewarnaAlam": ["super-admin", "pewarna-alam"],
+  "/pewarnaAlam": ["super-admin", "pewarna-alam", "quality-control"],
 
   "/grafik-benang": ["super-admin", "pewarna-alam"],
 
