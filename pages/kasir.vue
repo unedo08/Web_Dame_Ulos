@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in datatableItems" :key="index" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+        <tr v-for="(item, index) in datatableItems" :key="index">
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">{{ item.code_nama }}</td>
           <td class="px-4 py-2">{{ item.barangentry_nama }}</td>

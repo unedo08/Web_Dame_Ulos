@@ -23,8 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id"
-          :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+        <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id">
           <!-- <pre>{{ pengiriman }}</pre> -->
           <td class="px-4 py-2">{{ index + 1 }}</td>
           <td class="px-4 py-2">

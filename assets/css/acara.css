@@ -15,16 +15,17 @@
 
 .acara-table-wrapper {
     display: block;
-
     width: 100%;
     max-width: 100%;
     min-width: 0;
-
     overflow-x: auto;
     overflow-y: hidden;
-
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+      border-width: 1px;
+  border-style: solid;
+  border-color: rgb(229, 231, 235);
+  margin-top: 0 !important;
 }
 
 .datatable {
@@ -95,6 +96,7 @@
     min-width: 600px;
     margin-top: 0;
 }
+
 
 /* =========================================================
    TABLET
@@ -504,12 +506,12 @@
 
 /* Baris genap */
 .acara-table tbody tr:nth-child(even) td.sticky-action {
-    background-color: #f9fafb !important;
+    background-color: #ffff !important;
 }
 
 /* Hover */
 .acara-table tbody tr:hover td.sticky-action {
-    background-color: #f3f4f6 !important;
+    background-color: #f9fafb !important;
 }
 
 /* Tombol aksi */

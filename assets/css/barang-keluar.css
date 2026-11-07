@@ -688,26 +688,26 @@
 }
 
 /* View modal items */
-.bk-view-item {
+/* .bk-view-item {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid #f3f4f6;
     font-size: 13px;
-}
+} */
 
-.bk-view-item:last-child {
+/* .bk-view-item:last-child {
     border-bottom: none;
-}
+} */
 
-.bk-view-item-name {
+/* .bk-view-item-name {
     font-weight: 600;
-}
+} */
 
-.bk-view-item-meta {
+/* .bk-view-item-meta {
     color: #6b7280;
     font-size: 12px;
-}
+} */
 
 .bk-view-info {
     margin-bottom: 16px;
@@ -715,9 +715,100 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.bk-view-info p {
+/* .bk-view-info p {
     margin: 4px 0;
     font-size: 13px;
+} */
+
+/* ----- Info (2 kolom) ----- */
+.bk-view-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    margin-bottom: 20px;
+}
+
+.bk-view-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bk-view-label {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.bk-view-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* ----- Tabel barang ----- */
+.bk-view-table-wrap {
+    max-height: 280px;      /* tabel bisa di-scroll kalau barangnya banyak */
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.bk-view-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bk-view-table th,
+.bk-view-table td {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.bk-view-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f9fafb;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.bk-view-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.bk-col-no {
+    width: 56px;
+}
+
+.bk-col-qty {
+    width: 110px;
+    text-align: right !important;
+}
+
+.bk-qty-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    background: #d9f0f7;
+    font-weight: 600;
+}
+
+.bk-view-empty {
+    text-align: center !important;
+    color: #9ca3af;
+}
+
+/* ----- HP: info jadi 1 kolom ----- */
+@media (max-width: 480px) {
+    .bk-view-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 46px;  
+        font-size: 13px;
+
+    }
 }
 
 /* Footer buttons */
@@ -1335,10 +1426,10 @@
     box-sizing: border-box !important;
 }
 .bk-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
-    background-color: #F9FAFB !important;
+    background-color: #ffff !important;
 }
 .bk-table tbody tr:hover td:last-child:not([colspan]) {
-    background-color: #F3F4F6 !important;
+    background-color: #f9fafb !important;
 }
 .bk-action-group {
     display: flex;

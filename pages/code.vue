@@ -12,7 +12,8 @@
       </button>
     </div>
 
-    <div class="datatable-wrapper" v-sticky-action-shadow>
+    
+    <div class="datatable-wrapper sticky-action-shadow-wrapper" v-sticky-action-shadow>
       <div class="datatable-scroll">
         <table class="datatable w-full">
           <thead>
@@ -21,45 +22,31 @@
               <th class="px-4 py-2 text-left">Kode Barang</th>
               <th class="px-4 py-2 text-left">Nama Barang</th>
               <th class="px-4 py-2 text-left">Jumlah Barang</th>
+              <th class="px-4 py-2 text-left sticky-action">Aksi</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id"
-              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+            <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id">
               <td class="px-4 py-2">{{ index + 1 }}</td>
               <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>
               <td class="px-4 py-2">{{ barang.jenisbarang_nama }}</td>
               <td class="px-4 py-2">{{ barang.jenisbarang_jumlah }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
-      <div class="datatable-action">
-        <table class="datatable-action-table">
-          <thead>
-            <tr>
-              <th class="px-4 py-2 text-left">Aksi</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="barang in pagination" :key="barang.jenisbarang_id">
-              <td class="px-4 py-2">
+              <td class="px-4 py-2 sticky-action">
                 <div class="flex space-x-2">
-                  <button class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
-                    @click="openModelPrint(barang)">
-                    Print
+                  <button
+                    class="px-2 py-1 bg-green-500 text-white hover:bg-green-600 rounded-md text-xs"
+                      @click="openModelPrint(barang)"
+                    >
+                      Print
                   </button>
 
-                  <button class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs" @click="
-                    deleteProduct(
-                      barang.jenisbarang_id,
-                      barang.jenisbarang_kode
-                    )
-                    ">
-                    Delete
+                  <button
+                    class="px-2 py-1 bg-red-500 text-white hover:bg-red-600 rounded-md text-xs"
+                      @click="deleteProduct(barang.jenisbarang_id, barang.jenisbarang_kode)"
+                    >
+                      Delete
                   </button>
                 </div>
               </td>
@@ -629,6 +616,25 @@ watch(isModalOpen, async (val) => {
     min-width: 800px !important;
     max-width: none !important;
   }
+}
+
+.datatable-scroll {
+  overflow-x: auto;
+}
+
+.datatable th.sticky-action,
+.datatable td.sticky-action {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background-color: var(--row-bg);   /* bukan #ffffff lagi */
+}
+
+.datatable th.sticky-action {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  background-color: #f3f4f6;         /* header tetap sama dengan header lain */
 }
 
 

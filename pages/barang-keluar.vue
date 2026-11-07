@@ -260,7 +260,7 @@
                     <button class="bk-modal-close" @click="closeView"></button>
                 </div>
 
-                <div class="bk-modal-body">
+                <!-- <div class="bk-modal-body">
                     <div class="bk-view-info">
                         <p><strong>Outsource:</strong> {{ viewRecord?.barang_keluar_nama_outsource }}</p>
                         <p><strong>Tanggal Keluar:</strong> {{ formatDate(viewRecord?.barang_keluar_tanggal_keluar ||
@@ -275,8 +275,60 @@
                         </div>
                         <div><strong>{{ d.barang_keluar_detail_jumlah }} pcs</strong></div>
                     </div>
-                </div>
+                </div> -->
 
+                <div class="bk-modal-body">
+                    <!-- Info: 2 kolom, label kecil di atas, nilai tebal di bawah -->
+                    <div class="bk-view-info">
+                        <div class="bk-view-field">
+                            <span class="bk-view-label">Outsource</span>
+                            <span class="bk-view-value">{{ viewRecord?.barang_keluar_nama_outsource || "-" }}</span>
+                        </div>
+
+                        <div class="bk-view-field">
+                            <span class="bk-view-label">Tanggal Keluar</span>
+                            <span class="bk-view-value">
+                                {{ formatDate(viewRecord?.barang_keluar_tanggal_keluar || viewRecord?.created_at) }}
+                            </span>
+                        </div>
+
+                        <div class="bk-view-field">
+                            <span class="bk-view-label">Tanggal Masuk</span>
+                            <span class="bk-view-value">{{ formatDate(viewRecord?.barang_keluar_tanggal_masuk) }}</span>
+                        </div>
+
+                        <div class="bk-view-field">
+                            <span class="bk-view-label">Petugas / Author</span>
+                            <span class="bk-view-value">{{ viewRecord?.completer?.name || "-" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Daftar barang berbentuk tabel -->
+                    <div class="bk-view-table-wrap">
+                        <table class="bk-view-table">
+                            <thead>
+                                <tr>
+                                    <th class="bk-col-no">No</th>
+                                    <th>Nama Barang</th>
+                                    <th class="bk-col-qty">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(d, i) in viewRecord?.details" :key="d.barang_keluar_detail_id">
+                                    <td class="bk-col-no">{{ i + 1 }}</td>
+                                    <td>{{ d.barang_keluar_detail_nama_barang || "-" }}</td>
+                                    <td class="bk-col-qty">
+                                        <span class="bk-qty-badge">{{ d.barang_keluar_detail_jumlah }} pcs</span>
+                                    </td>
+                                </tr>
+
+                                <tr v-if="!viewRecord?.details?.length">
+                                    <td colspan="3" class="bk-view-empty">Tidak ada barang</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="bk-modal-footer">
                     <button class="bk-btn-save" @click="closeView">Tutup</button>
                 </div>

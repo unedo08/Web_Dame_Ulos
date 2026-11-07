@@ -1202,12 +1202,12 @@
 
 .pm-table tbody tr:nth-child(even) td:last-child:not([colspan]),
 .pm-table tbody tr:nth-child(even) .pm-td-aksi {
-    background-color: #F9FAFB !important;
+    background-color: #ffff !important;
 }
 
 .pm-table tbody tr:hover td:last-child:not([colspan]),
 .pm-table tbody tr:hover .pm-td-aksi {
-    background-color: #F3F4F6 !important;
+    background-color: #f9fafb !important;
 }
 
 .pm-td-aksi {

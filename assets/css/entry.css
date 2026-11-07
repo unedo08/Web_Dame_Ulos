@@ -492,7 +492,7 @@ button {
 
 /* Hover */
 .datatable tbody tr:hover td.sticky-action {
-  background-color: #F3F4F6 !important;
+  background-color: #f9fafb !important;
 }
 
 /* Tombol di kolom Aksi */

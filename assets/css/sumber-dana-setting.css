@@ -1203,12 +1203,12 @@
 
 .sd-table tbody tr:nth-child(even) td:last-child:not([colspan]),
 .sd-table tbody tr:nth-child(even) .sd-td-aksi {
-    background-color: #F9FAFB !important;
+    background-color: #ffff !important;
 }
 
 .sd-table tbody tr:hover td:last-child:not([colspan]),
 .sd-table tbody tr:hover .sd-td-aksi {
-    background-color: #F3F4F6 !important;
+    background-color: #f9fafb !important;
 }
 
 .sd-td-aksi {

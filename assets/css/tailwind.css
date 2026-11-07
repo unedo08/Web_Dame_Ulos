@@ -350,6 +350,7 @@ button.sd-btn-tambah {
   margin-top: 0 !important;
 }
 
+
 .page-content .page-table-toolbar + :is(
   .datatable-wrapper,
   .live-table-wrapper,
@@ -1420,6 +1421,7 @@ button[class*="bg-blue-"]:hover,
 .form-modal-close:hover {
   color: #111827 !important;
 }
+
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .form-modal-close,

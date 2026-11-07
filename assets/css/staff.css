@@ -195,7 +195,7 @@
 }
 
 .staff-table tbody tr:hover td:last-child:not([colspan]) {
-    background: #f3f4f6;
+    background: #f9fafb;
 }
 
 /* =========================================================

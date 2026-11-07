@@ -771,10 +771,10 @@
     box-sizing: border-box !important;
 }
 .cl-table tbody tr:nth-child(even) td:last-child:not([colspan]) {
-    background-color: #F9FAFB !important;
+    background-color: #ffff !important;
 }
 .cl-table tbody tr:hover td:last-child:not([colspan]) {
-    background-color: #F3F4F6 !important;
+    background-color: #f9fafb !important;
 }
 .cl-actions {
     display: flex;

@@ -529,12 +529,12 @@ h3 {
 /* Background sticky mengikuti baris */
 .live-order-table tbody tr:nth-child(even) td.sticky-action,
 .live-transaction-table tbody tr:nth-child(even) td.sticky-action {
-  background: #f9fafb !important;
+  background: #FFFF !important;
 }
 
 .live-order-table tbody tr:hover td.sticky-action,
 .live-transaction-table tbody tr:hover td.sticky-action {
-  background: #f3f4f6 !important;
+  background: #f9fafb !important;
 }
 
 /* Tombol tetap satu baris */
@@ -627,10 +627,6 @@ h3 {
 
   .live-transaction-table tbody tr:nth-child(even) td.sticky-action {
     background: #f9fafb !important;
-  }
-
-  .live-transaction-table tbody tr:hover td.sticky-action {
-    background: #f3f4f6 !important;
   }
 
   .live-transaction-table td.sticky-action button {

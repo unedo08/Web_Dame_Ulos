@@ -43,7 +43,6 @@
           <tr
             v-for="(row, index) in pagination"
             :key="row.pengirimanBarang_id"
-            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
           >
             <td>{{ index + 1 }}</td>
 
