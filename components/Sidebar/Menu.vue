@@ -160,6 +160,7 @@ const items = ref([
       },
       {
         title: "Benang",
+        key: "Setting Benang",
         path: "/setting/jenis-benang",
       },
     ],
@@ -210,6 +211,7 @@ const roleAccess = {
     "Kasir",
     "Database Penjualan",
     "Barang Keluar",
+    "Benang",
   ],
 
   packaging: [
@@ -255,7 +257,7 @@ const filteredMenu = computed(() => {
       }
       const filteredChildren =
         item.children.filter((child) =>
-          access.includes(child.title)
+          access.includes(child.key || child.title)
         );
 
       if (filteredChildren.length > 0) {
