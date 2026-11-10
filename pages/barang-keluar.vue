@@ -49,7 +49,13 @@
                         <td colspan="8" style="text-align:center;padding:32px;color:#9ca3af">Memuat data...</td>
                     </tr>
                     <tr v-else-if="filteredData.length === 0" class="bk-empty-row">
-                        <td colspan="8">Data tidak ditemukan</td>
+                        <td colspan="8">
+                            <EmptyState
+                                :search-query="search"
+                                title="Data barang keluar tidak ditemukan"
+                                message="Belum ada data barang keluar."
+                            />
+                        </td>
                     </tr>
                     <tr v-else v-for="row in paginatedData" :key="row.barang_keluar_id">
                         <td>{{ formatDate(row.barang_keluar_tanggal_keluar || row.created_at) }}</td>

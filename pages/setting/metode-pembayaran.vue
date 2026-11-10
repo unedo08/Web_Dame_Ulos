@@ -47,8 +47,11 @@
       </table>
 
       <div v-if="filteredData.length === 0" class="pm-empty">
-        <!-- <img src="/icons/empty-state.svg" alt="empty" class="pm-empty-icon" onerror="this.style.display='none'" /> -->
-        <p class="pm-empty-text">Data Tidak Ditemukan</p>
+        <EmptyState
+          :search-query="search"
+          title="Data metode pembayaran tidak ditemukan"
+          message="Belum ada data metode pembayaran."
+        />
       </div>
     </div>
 

@@ -51,6 +51,15 @@
           </thead>
 
           <tbody>
+            <tr v-if="totalGroups === 0">
+              <td colspan="8">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data live tidak ditemukan"
+                  message="Belum ada data live."
+                />
+              </td>
+            </tr>
             <template v-for="(items, akun) in paginatedGroupedData" :key="akun">
               <tr v-for="(pengiriman, index) in items" :class="[
                 index % 2 === 0 ? 'bg-white' : 'bg-gray-50',

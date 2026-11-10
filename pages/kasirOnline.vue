@@ -30,6 +30,15 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="datatableItems.length === 0">
+          <td colspan="5">
+            <EmptyState
+              :search-query="searchQueryCustomer"
+              title="Data customer tidak ditemukan"
+              message="Belum ada data customer."
+            />
+          </td>
+        </tr>
         <tr v-for="(item, index) in datatableItems" :key="index">
           <td>{{ index + 1 }}</td>
           <td>{{ item.barangentry_nama }}</td>

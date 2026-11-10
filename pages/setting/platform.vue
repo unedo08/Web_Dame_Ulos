@@ -52,7 +52,11 @@
       </table>
 
       <div v-if="filteredData.length === 0" class="pm-empty">
-        <p class="pm-empty-text">Data Tidak Ditemukan</p>
+        <EmptyState
+          :search-query="search"
+          title="Data platform tidak ditemukan"
+          message="Belum ada data platform."
+        />
       </div>
     </div>
 

@@ -66,9 +66,11 @@
 
             <!-- EMPTY STATE -->
             <div v-if="filteredUsers.length === 0" class="staff-empty">
-                <p class="staff-empty-text">
-                    Data Staff Tidak Ditemukan
-                </p>
+                <EmptyState
+                    :search-query="searchQuery"
+                    title="Data staff tidak ditemukan"
+                    message="Belum ada data staff."
+                />
             </div>
         </div>
 

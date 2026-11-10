@@ -23,6 +23,15 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="pagination.length === 0">
+          <td colspan="11">
+            <EmptyState
+              :search-query="searchQuery"
+              title="Data transaksi tidak ditemukan"
+              message="Belum ada data transaksi."
+            />
+          </td>
+        </tr>
         <tr v-for="(trx, index) in pagination" :key="trx.transaksi_id">
           <td>{{ index + 1 }}</td>
           <td>{{ trx.transaksi_nama_customer }}</td>

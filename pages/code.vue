@@ -27,6 +27,15 @@
           </thead>
 
           <tbody>
+            <tr v-if="pagination.length === 0">
+              <td colspan="5">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data kode tidak ditemukan"
+                  message="Belum ada data kode."
+                />
+              </td>
+            </tr>
             <tr v-for="(barang, index) in pagination" :key="barang.jenisbarang_id">
               <td class="px-4 py-2">{{ index + 1 }}</td>
               <td class="px-4 py-2">{{ barang.jenisbarang_kode }}</td>

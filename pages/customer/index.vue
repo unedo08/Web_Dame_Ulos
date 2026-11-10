@@ -94,7 +94,13 @@
 
         <tbody>
           <tr v-if="paginatedCustomer.length === 0">
-            <td colspan="8" class="cl-empty">Tidak ada data customer.</td>
+            <td colspan="8" class="cl-empty">
+              <EmptyState
+                :search-query="searchQuery"
+                title="Data customer tidak ditemukan"
+                message="Belum ada data customer."
+              />
+            </td>
           </tr>
           <tr v-for="(cust, index) in paginatedCustomer" :key="cust.customer_id">
             <td class="cl-col-num">{{ startItem + index }}</td>

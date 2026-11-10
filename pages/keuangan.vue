@@ -68,7 +68,11 @@
                     </tr>
                     <tr v-if="financeData.length === 0">
                         <td colspan="8" class="empty-table">
-                            Data Tidak Ditemukan
+                            <EmptyState
+                                :search-query="search"
+                                title="Data keuangan tidak ditemukan"
+                                message="Belum ada data keuangan."
+                            />
                         </td>
                     </tr>
                 </tbody>

@@ -66,7 +66,6 @@
 }
 
 .empty-state {
-  border: 1px dashed #ddd;
   border-radius: 8px;
   padding: 60px 20px;
   display: flex;
@@ -75,7 +74,7 @@
   align-items: center;
   text-align: center;
   color: #5D5D5D;
-  background-color: #F8F9FB;
+  background-color: #ffffff;
 }
 
 .empty-icon {

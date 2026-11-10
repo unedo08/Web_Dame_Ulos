@@ -28,6 +28,15 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="pagination.length === 0">
+              <td colspan="8">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data acara tidak ditemukan"
+                  message="Belum ada data acara."
+                />
+              </td>
+            </tr>
             <tr v-for="acara in pagination" :key="acara.acara_id"
               class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <td class="px-4 py-2">{{ acara.acara_nama }}</td>

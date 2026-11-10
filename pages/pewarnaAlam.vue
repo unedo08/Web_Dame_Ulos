@@ -50,7 +50,13 @@
                                 Memuat data...</td>
                         </tr>
                         <tr v-else-if="masukPaginated.length === 0" class="bk-empty-row">
-                            <td :colspan="isSuperAdmin ? 7 : 6">Data tidak ditemukan</td>
+                            <td :colspan="isSuperAdmin ? 7 : 6">
+                                <EmptyState
+                                    :search-query="masukSearch"
+                                    title="Data benang masuk tidak ditemukan"
+                                    message="Belum ada data benang masuk."
+                                />
+                            </td>
                         </tr>
                         <tr v-else v-for="row in masukPaginated" :key="row.benang_masuk_id">
                             <td>{{ formatDate(row.tanggal) }}</td>
@@ -159,7 +165,12 @@
                             <td colspan="4" style="text-align:center;padding:32px;color:#9ca3af">Memuat data...</td>
                         </tr>
                         <tr v-else-if="stokPaginated.length === 0" class="bk-empty-row">
-                            <td colspan="4">Data tidak ditemukan</td>
+                            <td colspan="4">
+                                <EmptyState
+                                    title="Data stok tidak ditemukan"
+                                    message="Belum ada data stok benang."
+                                />
+                            </td>
                         </tr>
                         <tr v-else v-for="(row, i) in stokPaginated" :key="i">
                             <td>
@@ -268,7 +279,13 @@
                             <td colspan="11" style="text-align:center;padding:32px;color:#9ca3af">Memuat data...</td>
                         </tr>
                         <tr v-else-if="keluarPaginated.length === 0" class="bk-empty-row">
-                            <td colspan="11">Data tidak ditemukan</td>
+                            <td colspan="11">
+                                <EmptyState
+                                    :search-query="keluarSearch"
+                                    title="Data benang keluar tidak ditemukan"
+                                    message="Belum ada data benang keluar."
+                                />
+                            </td>
                         </tr>
                         <tr v-else v-for="row in keluarPaginated" :key="row.benang_keluar_id">
                             <td>{{ row.petugas || "-" }}</td>

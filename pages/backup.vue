@@ -39,6 +39,15 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="listBarang.length === 0">
+            <td colspan="6">
+              <EmptyState
+                :search-query="searchQuery"
+                title="Data barang tidak ditemukan"
+                message="Belum ada data barang."
+              />
+            </td>
+          </tr>
           <tr v-for="barang in listBarang" :key="barang.jenisbarang_id">
             <td>{{ barang.no }}</td>
             <td>{{ barang.jenisbarang_kode }}</td>

@@ -40,6 +40,15 @@
         </thead>
 
         <tbody>
+          <tr v-if="pagination.length === 0">
+            <td colspan="10">
+              <EmptyState
+                :search-query="searchQuery"
+                title="Data packaging tidak ditemukan"
+                message="Belum ada data packaging."
+              />
+            </td>
+          </tr>
           <tr
             v-for="(row, index) in pagination"
             :key="row.pengirimanBarang_id"

@@ -34,13 +34,12 @@
                 </div>
 
                 <div v-if="!product" class="empty-state">
-                    <div class="empty-icon">
-                         <img :src="DefaultPencarianIcons" class="pencarian-icon" />
-                    </div>
-
-                    <div class="empty-text">
-                        Masukkan kode barang untuk melihat detail
-                    </div>
+                    <EmptyState
+                        :search-query="codeBarang"
+                        title="Produk tidak ditemukan"
+                        message="Scan atau masukkan kode barang."
+                        compact
+                    />
                 </div>
 
                 <div v-else class="product-card">

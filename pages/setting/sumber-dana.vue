@@ -72,9 +72,11 @@
             </table>
 
             <div v-if="filteredData.length === 0" class="sd-empty">
-                <p class="sd-empty-text">
-                    Data Tidak Ditemukan
-                </p>
+                <EmptyState
+                    :search-query="search"
+                    title="Data sumber dana tidak ditemukan"
+                    message="Belum ada data sumber dana."
+                />
             </div>
 
         </div>

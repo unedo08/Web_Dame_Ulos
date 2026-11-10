@@ -63,6 +63,15 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="(isSearchActive ? filteredBarang : pagination).length === 0">
+              <td colspan="14">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data barang tidak ditemukan"
+                  message="Belum ada data barang."
+                />
+              </td>
+            </tr>
             <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
               class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <td class="px-4 py-2">
@@ -201,6 +210,15 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="(isSearchActive ? filteredBarang : pagination).length === 0">
+              <td colspan="14">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data barang tidak ditemukan"
+                  message="Belum ada data barang."
+                />
+              </td>
+            </tr>
             <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
               class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <td class="px-4 py-2">
@@ -370,6 +388,15 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="(isSearchActive ? filteredBarang : pagination).length === 0">
+              <td colspan="14">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data barang tidak ditemukan"
+                  message="Belum ada data barang."
+                />
+              </td>
+            </tr>
             <tr v-for="barang in isSearchActive ? filteredBarang : pagination" :key="barang.kode_barang"
               class="odd:bg-white even:bg-gray-50 hover:bg-gray-100">
               <!-- <pre>{{ barang }}</pre> -->

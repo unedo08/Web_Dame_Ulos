@@ -43,6 +43,15 @@
         </thead>
 
         <tbody>
+          <tr v-if="paginatedTransaksi.length === 0">
+            <td colspan="14">
+              <EmptyState
+                :search-query="searchQuery"
+                title="Data penjualan tidak ditemukan"
+                message="Belum ada data penjualan."
+              />
+            </td>
+          </tr>
           <template v-for="(trx, trxIndex) in paginatedTransaksi" :key="trx.transaksi_id">
             <tr v-for="(item, i) in trx.items" :key="item.transaksidetail_id" :class="[
               trxIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50',

@@ -23,6 +23,15 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="pagination.length === 0">
+          <td colspan="11">
+            <EmptyState
+              :search-query="searchQuery"
+              title="Data pengiriman tidak ditemukan"
+              message="Belum ada data pengiriman."
+            />
+          </td>
+        </tr>
         <tr v-for="(pengiriman, index) in pagination" :key="pengiriman.pengirimanBarang_id">
           <!-- <pre>{{ pengiriman }}</pre> -->
           <td class="px-4 py-2">{{ index + 1 }}</td>

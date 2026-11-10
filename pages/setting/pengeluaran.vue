@@ -69,9 +69,11 @@
             </table>
 
             <div v-if="filteredData.length === 0" class="jp-empty">
-                <p class="jp-empty-text">
-                    Data Tidak Ditemukan
-                </p>
+                <EmptyState
+                    :search-query="search"
+                    title="Data pengeluaran tidak ditemukan"
+                    message="Belum ada data pengeluaran."
+                />
             </div>
         </div>
 

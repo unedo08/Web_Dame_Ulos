@@ -105,9 +105,11 @@
             </table>
 
             <div v-if="filteredData.length === 0" class="dv-empty">
-                <p class="dv-empty-text">
-                    Data Tidak Ditemukan
-                </p>
+                <EmptyState
+                    :search-query="search"
+                    title="Data divisi tidak ditemukan"
+                    message="Belum ada data divisi."
+                />
             </div>
 
         </div>

@@ -105,10 +105,12 @@
         </div>
       </div>
       <div v-if="filteredList.length === 0" class="pending-list-empty flex-1 p-4 flex flex-col items-center justify-center text-center text-gray-500">
-        <InboxIcon class="w-12 h-12 mb-3 text-gray-300" aria-hidden="true" />
-        <p>
-          Tidak ada transaksi hold saat ini.
-        </p>
+        <EmptyState
+          :search-query="searchHold"
+          title="Transaksi hold tidak ditemukan"
+          message="Tidak ada transaksi hold saat ini."
+          compact
+        />
       </div>
       <div v-else class="p-4">
         <div class="space-y-2 transition-slide">

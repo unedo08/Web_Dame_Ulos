@@ -86,7 +86,13 @@
           </thead>
           <tbody>
             <tr v-if="paginatedTransaksi.length === 0">
-              <td colspan="7" class="cd-table-empty">Tidak ada data transaksi.</td>
+              <td colspan="7" class="cd-table-empty">
+                <EmptyState
+                  :search-query="searchQuery"
+                  title="Data transaksi tidak ditemukan"
+                  message="Belum ada data transaksi."
+                />
+              </td>
             </tr>
             <tr v-for="(trx, i) in paginatedTransaksi" :key="i">
               <td>{{ formatDate(trx.created_at) }}</td>
