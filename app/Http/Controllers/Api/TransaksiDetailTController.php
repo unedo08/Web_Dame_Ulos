@@ -130,18 +130,13 @@ class TransaksiDetailTController extends Controller
             return response()->json(['message' => 'Transaction detail not found.'], 404);
         }
 
-        // Barang dari LIVE tidak mengurangi stok saat transaksi dibuat,
-        // jadi stoknya juga tidak dikembalikan di sini.
-        $isFromLive = LiveOrderT::where('live_order_barang_id', $detail->transaksidetail_barang_id)->exists();
+        DB::transaction(function () use ($detail) {
+            $detail->kembalikanStok(Auth::id());
 
-        $barang = BarangEntryM::find($detail->transaksidetail_barang_id);
-        if ($barang && !$isFromLive) {
-            $barang->increment('barangentry_jumlah_barang', $detail->transaksidetail_jumlah_barang);
-        }
-
-        $detail->delete_id = Auth::id();
-        $detail->save();
-        $detail->delete();
+            $detail->delete_id = Auth::id();
+            $detail->save();
+            $detail->delete();
+        });
 
         return response()->json([
             'message' => 'Transaction detail deleted successfully.'

@@ -45,6 +45,36 @@ class TransaksiDetailT extends Model
         return $this->hasOne(PengirimanBarangT::class, 'pengirimanBarang_transaksi_id', 'transaksidetail_transaksi_id');
     }
 
-    
+    /**
+     * Kembalikan stok barang saat detail transaksi dihapus.
+     *
+     * - Barang biasa: stok dikurangi saat detail dibuat, jadi dikembalikan sejumlah detail.
+     * - Barang dari LIVE: stok dikurangi saat live order dibuat. Live order yang terkait
+     *   ikut dihapus (soft delete) dan stoknya dikembalikan, sama seperti hapus live order.
+     */
+    public function kembalikanStok($userId)
+    {
+        $barang = BarangEntryM::find($this->transaksidetail_barang_id);
+        if (!$barang) {
+            return;
+        }
 
+        $isFromLive = LiveOrderT::where('live_order_barang_id', $this->transaksidetail_barang_id)->exists();
+
+        if (!$isFromLive) {
+            $barang->increment('barangentry_jumlah_barang', $this->transaksidetail_jumlah_barang);
+            return;
+        }
+
+        $liveOrder = LiveOrderT::where('live_order_barang_id', $this->transaksidetail_barang_id)
+            ->orderByDesc('is_check')
+            ->orderByDesc('live_order_id')
+            ->first();
+
+        $barang->increment('barangentry_jumlah_barang', $liveOrder->live_order_jumlah_barang);
+
+        $liveOrder->delete_id = $userId;
+        $liveOrder->save();
+        $liveOrder->delete();
+    }
 }
